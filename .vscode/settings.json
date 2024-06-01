@@ -1,0 +1,11 @@
+{
+  "editor.tabSize": 2,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "explorer.compactFolders": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "typescript.preferences.quoteStyle": "double",
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "**/node_modules/@radix-ui"
+  ]
+}
