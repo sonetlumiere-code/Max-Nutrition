@@ -1,10 +1,5 @@
-import { Button } from "@/components/ui/button"
+import { redirect } from "next/navigation"
 
 export default function Home() {
-  return (
-    <>
-      Home
-      <Button>Hello</Button>
-    </>
-  )
+  redirect("/shop")
 }
