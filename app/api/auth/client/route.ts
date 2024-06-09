@@ -31,7 +31,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { message: "Invalid request payload." },
+        { message: "Correo o contraseña no válidos." },
         { status: 422 }
       )
     }
@@ -41,7 +41,7 @@ export async function POST(req: Request): Promise<NextResponse> {
       error.code === "P2002"
     ) {
       return NextResponse.json(
-        { message: "Email already registered." },
+        { message: "El Email ya se encuentra registrado." },
         { status: 409 }
       )
     }

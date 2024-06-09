@@ -43,7 +43,7 @@ export const ClientSignUpForm = ({
       if (error instanceof AxiosError) {
         if (error.response?.status === 409) {
           toast({
-            title: error.response?.data.message || "Correo ya registrado.",
+            title: error.response?.data.message || "Email ya registrado.",
             variant: "destructive",
           })
         } else {
