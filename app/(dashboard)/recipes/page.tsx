@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 
-export default function Welcome() {
+export default function RecipesPage() {
   return (
     <>
       <div className="flex items-center">

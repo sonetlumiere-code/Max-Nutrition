@@ -24,7 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-export default function Customers() {
+export default function CustomersPage() {
   return (
     <>
       <div className="flex items-center">

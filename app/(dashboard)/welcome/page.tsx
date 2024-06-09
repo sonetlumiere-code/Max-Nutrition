@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 
-export default function Dashboard() {
+export default function WelcomePage() {
   return (
     <>
       <div className="flex items-center">
