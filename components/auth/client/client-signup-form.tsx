@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Icons } from "@/components/icons"
 import { UserAuthSchema, zodAuthSchema } from "@/lib/validations/auth-validator"
+import axios, { AxiosError } from "axios"
+import { toast } from "@/components/ui/use-toast"
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -31,7 +33,28 @@ export const ClientSignUpForm = ({
   })
 
   const onSubmit = async (data: UserAuthSchema) => {
-    // TO DO
+    console.log(data)
+
+    try {
+      const res = await axios.post("/api/auth/client", data)
+      console.log(res)
+    } catch (error) {
+      console.error(error)
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 409) {
+          toast({
+            title: error.response?.data.message || "Correo ya registrado.",
+            variant: "destructive",
+          })
+        } else {
+          toast({
+            title: "Ha ocurrido un error.",
+            description: "Por favor, intenta de nuevo más tarde.",
+            variant: "destructive",
+          })
+        }
+      }
+    }
   }
 
   const signInWithGoogle = async () => {
