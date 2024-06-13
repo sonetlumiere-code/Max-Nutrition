@@ -33,11 +33,15 @@ export const ClientSignUpForm = ({
   })
 
   const onSubmit = async (data: UserAuthSchema) => {
-    console.log(data)
-
     try {
-      const res = await axios.post("/api/auth/client", data)
-      console.log(res)
+      const res = await axios.post("/api/auth/signup", data)
+
+      if (res.status === 200) {
+        toast({
+          title: res.data.message,
+          description: "La cuenta se ha creado correctamente.",
+        })
+      }
     } catch (error) {
       console.error(error)
       if (error instanceof AxiosError) {

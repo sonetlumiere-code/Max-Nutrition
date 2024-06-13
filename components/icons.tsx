@@ -1,9 +1,18 @@
-import { ChevronLeft, Eye, Loader2, LucideProps } from "lucide-react"
+import {
+  ChevronLeft,
+  Eye,
+  LayoutDashboard,
+  Loader2,
+  LucideProps,
+  ShoppingCart,
+} from "lucide-react"
 
 export const Icons = {
   chevronLeft: ChevronLeft,
   spinner: Loader2,
   eye: Eye,
+  shoppingCart: ShoppingCart,
+  layoutDashboard: LayoutDashboard,
   google: ({ ...props }: LucideProps) => (
     <svg
       className='mr-2 h-4 w-4'

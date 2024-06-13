@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import Image from "next/image"
-import { ClientLoginForm } from "@/components/auth/client/client-login-form"
+import { ClientLoginForm } from "@/components/auth/login-form"
 
 export const metadata: Metadata = {
   title: "Ingresar a mi cuenta - Máxima nutrición",
@@ -49,7 +49,7 @@ export default function ClientLoginPage() {
         <ClientLoginForm />
         <p className='px-8 text-center text-sm text-muted-foreground'>
           <Link
-            href='/client-signup'
+            href='/signup'
             className='hover:text-brand underline underline-offset-4'
           >
             ¿Aún no tenés cuenta? Registrate

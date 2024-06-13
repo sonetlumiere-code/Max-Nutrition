@@ -9,10 +9,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Icons } from "@/components/icons"
 import { UserAuthSchema, zodAuthSchema } from "@/lib/validations/auth-validator"
+import { signIn } from "next-auth/react"
 
-interface AuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const AdminLoginForm = ({ className, ...props }: AuthFormProps) => {
+export const ClientLoginForm = ({ className, ...props }: UserAuthFormProps) => {
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
 
   const {
@@ -28,7 +29,11 @@ export const AdminLoginForm = ({ className, ...props }: AuthFormProps) => {
   })
 
   const onSubmit = async (data: UserAuthSchema) => {
-    // TO DO
+    await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      // redirect: false,
+    })
   }
 
   const signInWithGoogle = async () => {

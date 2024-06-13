@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
-import { User } from "@prisma/client"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 import { zodAuthSchema } from "@/lib/validations/auth-validator"
 import prisma from "@/lib/db/db"
@@ -13,19 +12,14 @@ export async function POST(req: Request): Promise<NextResponse> {
 
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    const user: User = await prisma.user.create({
+    await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
       },
     })
 
-    const userWithoutPassword = {
-      ...user,
-      password: null,
-    }
-
-    return NextResponse.json(userWithoutPassword)
+    return NextResponse.json({ message: "Cuenta creada." }, { status: 200 })
   } catch (error) {
     console.error("Error: ", error)
 
