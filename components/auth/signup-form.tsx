@@ -12,12 +12,9 @@ import { UserAuthSchema, zodAuthSchema } from "@/lib/validations/auth-validator"
 import axios, { AxiosError } from "axios"
 import { toast } from "@/components/ui/use-toast"
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const ClientSignUpForm = ({
-  className,
-  ...props
-}: UserAuthFormProps) => {
+export const SignUpForm = ({ className, ...props }: SignUpFormProps) => {
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
 
   const {
@@ -108,10 +105,11 @@ export const ClientSignUpForm = ({
             )}
           </div>
           <Button disabled={isSubmitting || isGoogleLoading}>
-            {isSubmitting && (
+            {isSubmitting ? (
               <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            ) : (
+              <>Crear cuenta con correo</>
             )}
-            Crear cuenta con correo
           </Button>
         </div>
       </form>

@@ -11,9 +11,9 @@ import { Icons } from "@/components/icons"
 import { UserAuthSchema, zodAuthSchema } from "@/lib/validations/auth-validator"
 import { signIn } from "next-auth/react"
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const ClientLoginForm = ({ className, ...props }: UserAuthFormProps) => {
+export const LoginForm = ({ className, ...props }: LoginFormProps) => {
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
 
   const {
@@ -83,10 +83,11 @@ export const ClientLoginForm = ({ className, ...props }: UserAuthFormProps) => {
             )}
           </div>
           <Button disabled={isSubmitting || isGoogleLoading}>
-            {isSubmitting && (
+            {isSubmitting ? (
               <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            ) : (
+              <>Iniciar sesión con correo</>
             )}
-            Iniciar sesión con correo
           </Button>
         </div>
       </form>

@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
-import { ClientSignUpForm } from "@/components/auth/signup-form"
+import { SignUpForm } from "@/components/auth/signup-form"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Ingresa a tu cuenta",
 }
 
-export default function ClientSignupPage() {
+export default function SignupPage() {
   return (
     <div className='container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
       <Link
@@ -54,7 +54,7 @@ export default function ClientSignupPage() {
               cuenta
             </p>
           </div>
-          <ClientSignUpForm />
+          <SignUpForm />
         </div>
       </div>
     </div>

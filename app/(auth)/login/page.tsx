@@ -4,14 +4,14 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import Image from "next/image"
-import { ClientLoginForm } from "@/components/auth/login-form"
+import { LoginForm } from "@/components/auth/login-form"
 
 export const metadata: Metadata = {
   title: "Ingresar a mi cuenta - Máxima nutrición",
   description: "Ingresa a tu cuenta",
 }
 
-export default function ClientLoginPage() {
+export default function LoginPage() {
   return (
     <div className='container flex h-screen w-screen flex-col items-center justify-center'>
       <Link
@@ -46,7 +46,7 @@ export default function ClientLoginPage() {
             Introduce tu correo para iniciar sesión
           </p>
         </div>
-        <ClientLoginForm />
+        <LoginForm />
         <p className='px-8 text-center text-sm text-muted-foreground'>
           <Link
             href='/signup'
