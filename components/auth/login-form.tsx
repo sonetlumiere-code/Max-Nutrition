@@ -120,6 +120,7 @@ const LoginForm = () => {
                       </span>
                     </div>
                   </FormControl>
+                  <FormMessage />
                   <Button
                     size='sm'
                     variant='link'
@@ -130,7 +131,6 @@ const LoginForm = () => {
                       ¿Olvidaste tu contraseña?
                     </Link>
                   </Button>
-                  <FormMessage />
                 </FormItem>
               )}
             />
