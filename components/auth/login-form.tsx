@@ -1,96 +1,153 @@
 "use client"
 
-import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { loginSchema } from "@/lib/validations/login-validation"
+import { login } from "@/actions/login"
 import { Icons } from "@/components/icons"
-import { UserAuthSchema, zodAuthSchema } from "@/lib/validations/auth-validator"
-import { signIn } from "next-auth/react"
+import GoogleAuth from "@/components/auth/google-auth"
+import FormError from "@/components/auth/form-error"
+import FormSuccess from "@/components/auth/form-success"
+import { useState } from "react"
+import { useSearchParams } from "next/navigation"
+import Link from "next/link"
 
-interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+const LoginForm = () => {
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState<string>("")
+  const [success, setSuccess] = useState<string>("")
 
-export const LoginForm = ({ className, ...props }: LoginFormProps) => {
-  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
+  const searchParams = useSearchParams()
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "El email ya se encuentra registrado."
+      : ""
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<UserAuthSchema>({
-    resolver: zodResolver(zodAuthSchema),
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   })
 
-  const onSubmit = async (data: UserAuthSchema) => {
-    await signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      // redirect: false,
-    })
-  }
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = form
 
-  const signInWithGoogle = async () => {
-    setIsGoogleLoading(true)
-    // TO DO
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    setError("")
+    setSuccess("")
+
+    const res = await login(values)
+
+    if (res && res.success) {
+      setSuccess(res.success)
+    }
+
+    if (res && res.error) {
+      setError(res.error)
+    }
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className='grid gap-4'>
-          <div className='grid gap-1.5'>
-            <Label htmlFor='email'>Correo electrónico</Label>
-            <Input
-              id='email'
-              placeholder='nombre@ejemplo.com'
-              type='email'
-              autoCapitalize='none'
-              autoComplete='email'
-              autoCorrect='off'
-              disabled={isSubmitting || isGoogleLoading}
-              {...register("email")}
+    <div className='grid gap-6'>
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
+          <div className='space-y-3'>
+            <FormField
+              control={form.control}
+              name='email'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder='email'
+                      disabled={isSubmitting}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors?.email && (
-              <p className='px-1 text-xs text-red-600'>
-                {errors.email.message}
-              </p>
-            )}
+
+            <FormField
+              control={form.control}
+              name='password'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contraseña</FormLabel>
+                  <FormControl>
+                    <div className='relative'>
+                      <Input
+                        placeholder='contraseña'
+                        type={showPassword ? "text" : "password"}
+                        autoCapitalize='none'
+                        autoComplete='on'
+                        disabled={isSubmitting}
+                        {...field}
+                      />
+                      <span className='absolute inset-y-0 end-1'>
+                        <Button
+                          type='button'
+                          size='icon'
+                          variant='ghost'
+                          className='hover:bg-transparent'
+                          disabled={isSubmitting}
+                          onClick={() => setShowPassword((prev) => !prev)}
+                        >
+                          <span className='sr-only'></span>
+                          {showPassword ? (
+                            <Icons.eyeOff className='h-5 w-5' />
+                          ) : (
+                            <Icons.eye className='h-5 w-5' />
+                          )}
+                        </Button>
+                      </span>
+                    </div>
+                  </FormControl>
+                  <Button
+                    size='sm'
+                    variant='link'
+                    asChild
+                    className='px-0 font-normal'
+                  >
+                    <Link href='/reset-password'>
+                      ¿Olvidaste tu contraseña?
+                    </Link>
+                  </Button>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
-          <div className='grid gap-1.5'>
-            <Label htmlFor='email'>Contraseña</Label>
-            <Input
-              id='password'
-              placeholder='contraseña'
-              type='password'
-              autoCapitalize='none'
-              autoComplete='password'
-              autoCorrect='off'
-              disabled={isSubmitting || isGoogleLoading}
-              {...register("password")}
-            />
-            {errors?.password && (
-              <p className='px-1 text-xs text-red-600'>
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-          <Button disabled={isSubmitting || isGoogleLoading}>
+          <FormError message={error || urlError} />
+          <FormSuccess message={success} />
+
+          <Button type='submit' disabled={isSubmitting}>
             {isSubmitting ? (
-              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+              <Icons.spinner className='w-4 h-4 animate-spin' />
             ) : (
-              <>Iniciar sesión con correo</>
+              <>Iniciar sesión</>
             )}
           </Button>
-        </div>
-      </form>
+        </form>
+      </Form>
 
       <div className='relative'>
         <div className='absolute inset-0 flex items-center'>
@@ -98,24 +155,14 @@ export const LoginForm = ({ className, ...props }: LoginFormProps) => {
         </div>
         <div className='relative flex justify-center text-xs uppercase'>
           <span className='bg-background px-2 text-muted-foreground'>
-            O continuar con
+            O continúa con
           </span>
         </div>
       </div>
 
-      <Button
-        variant='outline'
-        type='button'
-        disabled={isSubmitting || isGoogleLoading}
-        onClick={signInWithGoogle}
-      >
-        {isGoogleLoading ? (
-          <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
-        ) : (
-          <Icons.google />
-        )}
-        Google
-      </Button>
+      <GoogleAuth isSubmitting={isSubmitting} />
     </div>
   )
 }
+
+export default LoginForm

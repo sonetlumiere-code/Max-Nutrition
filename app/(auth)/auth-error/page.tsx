@@ -1,18 +1,10 @@
-import { Metadata } from "next"
-import Link from "next/link"
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import Image from "next/image"
-import LoginForm from "@/components/auth/login-form"
-import { Suspense } from "react"
+import Link from "next/link"
 
-export const metadata: Metadata = {
-  title: "Ingresar a mi cuenta - Máxima nutrición",
-  description: "Ingresa a tu cuenta.",
-}
-
-export default function LoginPage() {
+const AuthErrorPage = () => {
   return (
     <div className='container flex h-screen w-screen flex-col items-center justify-center'>
       <Link
@@ -33,7 +25,7 @@ export default function LoginPage() {
             <span className='sr-only'>Home</span>
             <Image
               src='/img/auth.png'
-              alt='Máxima Nutrición logo'
+              alt='Auth logo'
               height={36}
               width={120}
               quality={100}
@@ -41,15 +33,23 @@ export default function LoginPage() {
             />
           </Link>
           <h1 className='text-2xl font-semibold tracking-tight'>
-            Bienvenido de nuevo
+            Oops! Algo salió mal.
           </h1>
           <p className='text-sm text-muted-foreground'>
-            Introduce tu correo para iniciar sesión
+            La autenticación falló, intenta nuevamente más tarde.
           </p>
         </div>
-        <Suspense>
-          <LoginForm />
-        </Suspense>
+
+        <Link
+          href='/login'
+          className={cn(
+            buttonVariants({ variant: "ghost" }),
+            "w-full text-center"
+          )}
+        >
+          Iniciar sesión
+        </Link>
+
         <p className='px-8 text-center text-sm text-muted-foreground'>
           <Link
             href='/signup'
@@ -62,3 +62,5 @@ export default function LoginPage() {
     </div>
   )
 }
+
+export default AuthErrorPage

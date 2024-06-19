@@ -1,13 +1,13 @@
 import { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
-import { SignUpForm } from "@/components/auth/signup-form"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import SignUpForm from "@/components/auth/signup-form"
 
 export const metadata: Metadata = {
-  title: "Ingresar a mi cuenta - Máxima nutrición",
-  description: "Ingresa a tu cuenta",
+  title: "Crear cuenta - Máxima nutrición",
+  description: "Crea una cuenta para comenzar.",
 }
 
 export default function SignupPage() {
@@ -23,13 +23,13 @@ export default function SignupPage() {
         Iniciar sesión
       </Link>
       <div className='relative hidden h-full flex-col p-10 text-white dark:border-r lg:flex'>
-        <div className='absolute inset-0 bg-[url("../public/img/login.jpg")]' />
+        <div className='absolute inset-0 bg-[url("../public/img/gradient.jpeg")]' />
         <div className='relative z-20 flex items-center'>
           <Link href='/' className='block'>
             <span className='sr-only'>Home</span>
             <Image
-              src='/img/logo.png'
-              alt='Máxima nutrición logo'
+              src='/img/auth.png'
+              alt='Máxima Nutrición logo'
               height={36}
               width={120}
               quality={100}
@@ -38,8 +38,8 @@ export default function SignupPage() {
         </div>
         <div className='relative z-20 mt-auto'>
           <blockquote className='space-y-2'>
-            <p className='text-md'>Máxima nutrición</p>
-            <footer className='text-sm'>Máxima nutrición</footer>
+            {/* <p className='text-md'>Máxima Nutrición</p> */}
+            <footer className='text-sm'>Máxima Nutrición</footer>
           </blockquote>
         </div>
       </div>

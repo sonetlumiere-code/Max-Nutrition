@@ -1,20 +1,38 @@
 import NextAuth from "next-auth"
-import authConfig from "./auth.config"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import prisma from "@/lib/db/db"
+import authConfig from "./auth.config"
 import { Role } from "@prisma/client"
-import { getUser, updateUser } from "@/actions/user"
+import { getUser } from "@/data/user"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  pages: {
+    signIn: "/login",
+    error: "/auth-error",
+  },
   events: {
     async linkAccount({ user }) {
-      if (user) {
-        await updateUser(user.id, { emailVerified: new Date() })
-      }
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() },
+      })
     },
   },
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider !== "credentials") {
+        return true
+      }
+
+      const existingUser = await getUser({ where: { id: user.id } })
+
+      if (!existingUser?.emailVerified) {
+        return false
+      }
+
+      return true
+    },
+
     async jwt({ token }) {
       if (!token.sub) return token
 
@@ -39,7 +57,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session
     },
   },
+  adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
-  jwt: { maxAge: 365 * 24 * 60 * 60 },
+  jwt: { maxAge: 7 * 24 * 60 * 60 }, // 1 week
   ...authConfig,
 })

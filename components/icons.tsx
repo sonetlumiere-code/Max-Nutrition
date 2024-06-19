@@ -1,6 +1,9 @@
 import {
   ChevronLeft,
+  CircleAlert,
+  CircleCheck,
   Eye,
+  EyeOff,
   LayoutDashboard,
   Loader2,
   LucideProps,
@@ -11,8 +14,11 @@ export const Icons = {
   chevronLeft: ChevronLeft,
   spinner: Loader2,
   eye: Eye,
+  eyeOff: EyeOff,
   shoppingCart: ShoppingCart,
   layoutDashboard: LayoutDashboard,
+  circleCheck: CircleCheck,
+  circleAlert: CircleAlert,
   google: ({ ...props }: LucideProps) => (
     <svg
       className='mr-2 h-4 w-4'

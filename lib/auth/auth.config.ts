@@ -1,15 +1,11 @@
 import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
+import { loginSchema } from "../validations/login-validation"
+import prisma from "@/lib/db/db"
 import bcrypt from "bcryptjs"
-import { zodAuthSchema } from "../validations/auth-validator"
-import { getUser } from "@/actions/user"
 
 export default {
-  pages: {
-    signIn: "/login",
-    error: "/error",
-  },
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -18,12 +14,12 @@ export default {
 
     Credentials({
       async authorize(credentials) {
-        const validatedFields = zodAuthSchema.safeParse(credentials)
+        const validatedFields = loginSchema.safeParse(credentials)
 
         if (validatedFields.success) {
           const { email, password } = validatedFields.data
 
-          const user = await getUser({
+          const user = await prisma.user.findUnique({
             where: {
               email,
             },

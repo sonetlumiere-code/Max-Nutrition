@@ -1,5 +1,5 @@
 import NextAuth from "next-auth"
-import authConfig from "./lib/auth/auth.config"
+import authConfig from "@/lib/auth/auth.config"
 import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
