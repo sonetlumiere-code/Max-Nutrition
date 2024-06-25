@@ -75,12 +75,12 @@ model PasswordResetToken {
 model Ingredient {
   id       String  @id @default(cuid())
   name     String
-  price    Decimal // x 1000 grams || unity
-  waste    Decimal
-  carbs    Decimal
-  proteins Decimal
-  fats     Decimal
-  fiber    Decimal
+  price    Decimal @default(0) // x 1000 grams || unity
+  waste    Decimal @default(0)
+  carbs    Decimal @default(0)
+  proteins Decimal @default(0)
+  fats     Decimal @default(0)
+  fiber    Decimal @default(0)
 
   @@map("ingredients")
 }

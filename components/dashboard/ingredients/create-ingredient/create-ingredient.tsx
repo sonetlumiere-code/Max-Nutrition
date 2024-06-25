@@ -1,5 +1,6 @@
 "use client"
 
+import { createIngredient } from "@/actions/ingredients/create-ingredient"
 import { Icons } from "@/components/icons"
 import {
   Breadcrumb,
@@ -47,7 +48,8 @@ const CreateIngredient = () => {
   } = form
 
   const onSubmit = async (data: IngredientSchema) => {
-    console.log(data)
+    const res = await createIngredient(data)
+    console.log(res)
   }
 
   return (
