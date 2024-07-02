@@ -7,7 +7,7 @@ export const ingredientSchema = z.object({
     .min(1, { message: "Ingresa el precio del ingrediente." }),
   waste: z.coerce
     .number()
-    .min(0, { message: "Porcentaje máximo 100%." })
+    .min(0, { message: "Porcentaje mínimo 0%." })
     .max(100, { message: "Porcentaje máximo 100%." })
     .optional(),
   carbs: z.coerce.number(),
