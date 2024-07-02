@@ -23,12 +23,15 @@ import {
 import { Input } from "@/components/ui/input"
 import { ingredientSchema } from "@/lib/validations/ingredients-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 type IngredientSchema = z.infer<typeof ingredientSchema>
 
 const CreateIngredient = () => {
+  const router = useRouter()
+
   const form = useForm<IngredientSchema>({
     resolver: zodResolver(ingredientSchema),
     defaultValues: {
@@ -50,6 +53,9 @@ const CreateIngredient = () => {
   const onSubmit = async (data: IngredientSchema) => {
     const res = await createIngredient(data)
     console.log(res)
+    if (res.success) {
+      router.push("/ingredients")
+    }
   }
 
   return (
