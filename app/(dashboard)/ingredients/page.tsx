@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { getIngredients } from "@/data/ingredients"
 import Link from "next/link"
 import {
@@ -23,6 +23,7 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card"
 import {
   Breadcrumb,
@@ -31,6 +32,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { cn } from "@/lib/utils"
 
 export default async function IngredientsPage() {
   const ingredients = await getIngredients()
@@ -56,7 +58,25 @@ export default async function IngredientsPage() {
       {ingredients && ingredients.length > 0 ? (
         <Card>
           <CardHeader>
-            <CardDescription>Ingredientes</CardDescription>
+            <div className='space-between flex items-center'>
+              <div className='max-w-screen-sm'>
+                <CardTitle className='text-xl'>Ingredientes</CardTitle>
+                <CardDescription className='hidden md:block'>
+                  Gestiona y actualiza el inventario de los ingredientes.
+                </CardDescription>
+              </div>
+              <div className='ml-auto'>
+                <Link
+                  href='ingredients/create-ingredient'
+                  className={cn(buttonVariants({ variant: "default" }))}
+                >
+                  <>
+                    <Icons.circlePlus className='mr-2 h-4 w-4' />
+                    Agregar Ingrediente
+                  </>
+                </Link>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <Table>
@@ -76,8 +96,8 @@ export default async function IngredientsPage() {
                 {ingredients.map((ingredient) => (
                   <TableRow key={ingredient.id}>
                     <TableCell>{ingredient.name}</TableCell>
-                    <TableCell>{ingredient.price}</TableCell>
-                    <TableCell>{ingredient.waste}</TableCell>
+                    <TableCell>$ {ingredient.price}</TableCell>
+                    <TableCell>{ingredient.waste} %</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

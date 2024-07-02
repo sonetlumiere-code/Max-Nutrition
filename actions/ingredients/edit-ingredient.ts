@@ -7,7 +7,13 @@ import { z } from "zod"
 
 type IngredientSchema = z.infer<typeof ingredientSchema>
 
-export async function createIngredient(values: IngredientSchema) {
+export async function editIngredient({
+  id,
+  values,
+}: {
+  id: string
+  values: IngredientSchema
+}) {
   const validatedFields = ingredientSchema.safeParse(values)
 
   if (!validatedFields.success) {
@@ -17,18 +23,15 @@ export async function createIngredient(values: IngredientSchema) {
   const { name, price, waste } = validatedFields.data
 
   try {
-    const ingredient = await prisma.ingredient.create({
-      data: {
-        name,
-        price,
-        waste,
-      },
+    const ingredient = await prisma.ingredient.update({
+      where: { id },
+      data: { name, price, waste },
     })
 
     revalidatePath("/ingredients")
 
     return { success: ingredient }
   } catch (error) {
-    return { error: "Hubo un problema al crear el ingrediente." }
+    return { error: "Hubo un problema al actualizar el ingrediente." }
   }
 }

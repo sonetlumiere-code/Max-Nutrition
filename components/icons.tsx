@@ -2,6 +2,7 @@ import {
   ChevronLeft,
   CircleAlert,
   CircleCheck,
+  CirclePlus,
   Eye,
   EyeOff,
   LayoutDashboard,
@@ -25,6 +26,7 @@ export const Icons = {
   moreHorizontal: MoreHorizontal,
   pencil: Pencil,
   thrash2: Trash2,
+  circlePlus: CirclePlus,
   google: ({ ...props }: LucideProps) => (
     <svg
       className='mr-2 h-4 w-4'

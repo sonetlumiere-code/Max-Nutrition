@@ -1,10 +1,6 @@
 "use client"
 
-import { createIngredient } from "@/actions/ingredients/create-ingredient"
-import { Icons } from "@/components/icons"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { Ingredient } from "@prisma/client"
 import {
   Form,
   FormControl,
@@ -13,29 +9,30 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { ingredientSchema } from "@/lib/validations/ingredients-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/icons"
+import { editIngredient } from "@/actions/ingredients/edit-ingredient"
+import { useRouter } from "next/navigation"
+import { toast } from "@/components/ui/use-toast"
 
 type IngredientSchema = z.infer<typeof ingredientSchema>
 
-const CreateIngredient = () => {
+type EditIngredientProps = {
+  ingredient: Ingredient
+}
+
+const EditIngredient = ({ ingredient }: EditIngredientProps) => {
   const router = useRouter()
 
   const form = useForm<IngredientSchema>({
     resolver: zodResolver(ingredientSchema),
-    defaultValues: {
-      name: "",
-      price: 0,
-      waste: 0,
-      carbs: 0,
-      proteins: 0,
-      fats: 0,
-      fiber: 0,
-    },
+    defaultValues: ingredient,
   })
 
   const {
@@ -44,10 +41,22 @@ const CreateIngredient = () => {
   } = form
 
   const onSubmit = async (data: IngredientSchema) => {
-    const res = await createIngredient(data)
-    console.log(res)
+    const res = await editIngredient({ id: ingredient.id, values: data })
+
     if (res.success) {
       router.push("/ingredients")
+      toast({
+        title: "Ingrediente actualizado",
+        description: "El ingrediente se actualizó correctamente.",
+      })
+    }
+
+    if (res.error) {
+      toast({
+        variant: "destructive",
+        title: "Error actualizando ingrediente.",
+        description: res.error,
+      })
     }
   }
 
@@ -122,7 +131,7 @@ const CreateIngredient = () => {
               {isSubmitting && (
                 <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
               )}
-              Agregar nuevo Ingrediente
+              Editar Ingrediente
             </Button>
           </CardFooter>
         </Card>
@@ -131,4 +140,4 @@ const CreateIngredient = () => {
   )
 }
 
-export default CreateIngredient
+export default EditIngredient
