@@ -14,6 +14,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Icons } from "@/components/icons"
@@ -33,6 +34,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { cn } from "@/lib/utils"
+import DeleteIngredient from "@/components/dashboard/ingredients/delete-ingredient/delete-ingredient"
 
 export default async function IngredientsPage() {
   const ingredients = await getIngredients()
@@ -99,7 +101,7 @@ export default async function IngredientsPage() {
                     <TableCell>$ {ingredient.price}</TableCell>
                     <TableCell>{ingredient.waste} %</TableCell>
                     <TableCell>
-                      <DropdownMenu>
+                      <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                           <Button
                             aria-haspopup='true'
@@ -112,7 +114,6 @@ export default async function IngredientsPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align='end'>
                           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-
                           <Link
                             href={`ingredients/edit-ingredient/${ingredient.id}`}
                           >
@@ -121,10 +122,9 @@ export default async function IngredientsPage() {
                               Editar
                             </DropdownMenuItem>
                           </Link>
-
+                          <DropdownMenuSeparator />
                           <DropdownMenuItem>
-                            <Icons.thrash2 className='w-4 h-4 mr-2' />
-                            Eliminar
+                            <DeleteIngredient ingredient={ingredient} />
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

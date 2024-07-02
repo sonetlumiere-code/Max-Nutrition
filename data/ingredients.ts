@@ -1,3 +1,5 @@
+"use server"
+
 import prisma from "@/lib/db/db"
 import { Ingredient } from "@prisma/client"
 
