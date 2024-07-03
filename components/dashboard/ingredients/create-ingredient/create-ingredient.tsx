@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { toast } from "@/components/ui/use-toast"
 import { ingredientSchema } from "@/lib/validations/ingredients-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
@@ -45,9 +46,21 @@ const CreateIngredient = () => {
 
   const onSubmit = async (data: IngredientSchema) => {
     const res = await createIngredient(data)
-    console.log(res)
+
     if (res.success) {
       router.push("/ingredients")
+      toast({
+        title: "Nuevo ingrediente creado",
+        description: "El ingrediente ha sido creado correctamente.",
+      })
+    }
+
+    if (res.error) {
+      toast({
+        variant: "destructive",
+        title: "Error creando ingrediente",
+        description: res.error,
+      })
     }
   }
 

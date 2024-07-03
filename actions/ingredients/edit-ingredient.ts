@@ -32,6 +32,6 @@ export async function editIngredient({
 
     return { success: ingredient }
   } catch (error) {
-    return { error: "Hubo un problema al actualizar el ingrediente." }
+    return { error: "Hubo un error al actualizar el ingrediente." }
   }
 }

@@ -29,6 +29,6 @@ export async function createIngredient(values: IngredientSchema) {
 
     return { success: ingredient }
   } catch (error) {
-    return { error: "Hubo un problema al crear el ingrediente." }
+    return { error: "Hubo un error al crear el ingrediente." }
   }
 }
