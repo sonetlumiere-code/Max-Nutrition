@@ -2,12 +2,16 @@ import {
   ChevronLeft,
   CircleAlert,
   CircleCheck,
+  CirclePlus,
   Eye,
   EyeOff,
   LayoutDashboard,
   Loader2,
   LucideProps,
+  MoreHorizontal,
+  Pencil,
   ShoppingCart,
+  Trash2,
 } from "lucide-react"
 
 export const Icons = {
@@ -19,6 +23,10 @@ export const Icons = {
   layoutDashboard: LayoutDashboard,
   circleCheck: CircleCheck,
   circleAlert: CircleAlert,
+  moreHorizontal: MoreHorizontal,
+  pencil: Pencil,
+  thrash2: Trash2,
+  circlePlus: CirclePlus,
   google: ({ ...props }: LucideProps) => (
     <svg
       className='mr-2 h-4 w-4'

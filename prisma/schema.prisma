@@ -71,3 +71,16 @@ model PasswordResetToken {
   @@unique([email, token])
   @@map("password_reset_tokens")
 }
+
+model Ingredient {
+  id       String @id @default(cuid())
+  name     String
+  price    Float  @default(0) // x 1000 grams || unity
+  waste    Float  @default(0)
+  carbs    Float  @default(0)
+  proteins Float  @default(0)
+  fats     Float  @default(0)
+  fiber    Float  @default(0)
+
+  @@map("ingredients")
+}

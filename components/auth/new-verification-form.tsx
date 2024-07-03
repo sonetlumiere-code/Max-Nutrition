@@ -3,7 +3,7 @@
 import { Icons } from "@/components/icons"
 import { useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
-import { newVerification } from "@/actions/new-verification"
+import { newVerification } from "@/actions/auth/new-verification"
 import FormError from "@/components/auth/form-error"
 import FormSuccess from "@/components/auth/form-success"
 import Link from "next/link"

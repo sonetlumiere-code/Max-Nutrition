@@ -18,7 +18,7 @@ import FormError from "@/components/auth/form-error"
 import FormSuccess from "@/components/auth/form-success"
 import { useState } from "react"
 import { resetPasswordSchema } from "@/lib/validations/reset-password"
-import { resetPassword } from "@/actions/reset-password"
+import { resetPassword } from "@/actions/auth/reset-password"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 

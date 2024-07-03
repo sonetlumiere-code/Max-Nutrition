@@ -21,7 +21,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { newPasswordSchema } from "@/lib/validations/new-password-validation"
 import { useSearchParams } from "next/navigation"
-import { newPassword } from "@/actions/new-password"
+import { newPassword } from "@/actions/auth/new-password"
 
 const NewPasswordForm = () => {
   const [showPassword, setShowPassword] = useState(false)

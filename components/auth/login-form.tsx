@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { loginSchema } from "@/lib/validations/login-validation"
-import { login } from "@/actions/login"
+import { login } from "@/actions/auth/login"
 import { Icons } from "@/components/icons"
 import GoogleAuth from "@/components/auth/google-auth"
 import FormError from "@/components/auth/form-error"
