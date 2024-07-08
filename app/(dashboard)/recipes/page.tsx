@@ -34,9 +34,11 @@ import {
 import { getRecipes } from "@/data/recipes"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import DeleteRecipe from "@/components/dashboard/recipes/delete-recipe/delete-recipe"
 
 export default async function RecipesPage() {
   const recipes = await getRecipes()
+
   return (
     <>
       <Breadcrumb>
@@ -120,7 +122,7 @@ export default async function RecipesPage() {
                           </Link>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>
-                            {/* <DeleteIngredient ingredient={ingredient} /> */}
+                            <DeleteRecipe recipe={recipe} />
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
