@@ -74,7 +74,7 @@ export default async function IngredientsPage() {
                 >
                   <>
                     <Icons.circlePlus className='mr-2 h-4 w-4' />
-                    Agregar Ingrediente
+                    Agregar
                   </>
                 </Link>
               </div>
@@ -156,6 +156,7 @@ export default async function IngredientsPage() {
 
             <Button className='mt-4' asChild>
               <Link href='/ingredients/create-ingredient'>
+                <Icons.circlePlus className='mr-2 h-4 w-4' />
                 Crear ingrediente
               </Link>
             </Button>
