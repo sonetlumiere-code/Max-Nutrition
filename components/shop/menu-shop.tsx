@@ -18,7 +18,7 @@ const MenuShop = () => {
       </header>
       <div className='grid gap-8'>
         <div className='grid gap-4'>
-          <h2 className='text-lg font-semibold'>Appetizers</h2>
+          <h2 className='text-lg font-semibold'>Vegetarianos</h2>
           <div className='grid gap-6'>
             <div className='grid grid-cols-[auto_1fr_auto] items-center gap-4'>
               <img
@@ -29,12 +29,16 @@ const MenuShop = () => {
                 className='rounded-lg object-cover'
               />
               <div className='space-y-1'>
-                <h3 className='text-base font-semibold'>Bruschetta</h3>
+                <h3 className='text-base font-semibold'>
+                  Musaka de berenjenas
+                </h3>
                 <p className='text-sm text-muted-foreground line-clamp-2'>
-                  Toasted bread topped with tomatoes, garlic, and basil.
+                  Exquisita musaka griega con capas de berenjenas asadas, carne
+                  de cordero, salsa de tomate y bechamel gratinada. Ideal para
+                  una comida reconfortante.
                 </p>
               </div>
-              <p className='text-base font-semibold'>$3200</p>
+              <p className='text-base font-semibold'>$4.000</p>
             </div>
             <div className='grid grid-cols-[auto_1fr_auto] items-center gap-4'>
               <img
@@ -55,7 +59,7 @@ const MenuShop = () => {
           </div>
         </div>
         <div className='grid gap-4'>
-          <h2 className='text-lg font-semibold'>Entrees</h2>
+          <h2 className='text-lg font-semibold'>Con carne</h2>
           <div className='grid gap-6'>
             <div className='grid grid-cols-[auto_1fr_auto] items-center gap-4'>
               <img
@@ -89,43 +93,6 @@ const MenuShop = () => {
                 </p>
               </div>
               <p className='text-base font-semibold'>$22.99</p>
-            </div>
-          </div>
-        </div>
-        <div className='grid gap-4'>
-          <h2 className='text-lg font-semibold'>Desserts</h2>
-          <div className='grid gap-6'>
-            <div className='grid grid-cols-[auto_1fr_auto] items-center gap-4'>
-              <img
-                src='img/placeholder.svg'
-                width='80'
-                height='80'
-                alt='Dish Image'
-                className='rounded-lg object-cover'
-              />
-              <div className='space-y-1'>
-                <h3 className='text-base font-semibold'>Tiramisu</h3>
-                <p className='text-sm text-muted-foreground'>
-                  Layers of coffee-soaked ladyfingers and mascarpone cream.
-                </p>
-              </div>
-              <p className='text-base font-semibold'>$8.99</p>
-            </div>
-            <div className='grid grid-cols-[auto_1fr_auto] items-center gap-4'>
-              <img
-                src='img/placeholder.svg'
-                width='80'
-                height='80'
-                alt='Dish Image'
-                className='rounded-lg object-cover'
-              />
-              <div className='space-y-1'>
-                <h3 className='text-base font-semibold'>Crème Brûlée</h3>
-                <p className='text-sm text-muted-foreground'>
-                  A rich, creamy custard with a caramelized sugar topping.
-                </p>
-              </div>
-              <p className='text-base font-semibold'>$9.99</p>
             </div>
           </div>
         </div>
