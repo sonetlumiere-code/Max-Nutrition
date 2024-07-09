@@ -2,7 +2,6 @@
 
 import { createIngredient } from "@/actions/ingredients/create-ingredient"
 import { Icons } from "@/components/icons"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import {
@@ -14,9 +13,18 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
+import { unitToSpanish } from "@/helpers/helpers"
 import { ingredientSchema } from "@/lib/validations/ingredients-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { UnitOfMeasurement } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -40,6 +48,7 @@ const CreateIngredient = () => {
   })
 
   const {
+    control,
     handleSubmit,
     formState: { isSubmitting },
   } = form
@@ -72,7 +81,7 @@ const CreateIngredient = () => {
           <CardContent>
             <div className='space-y-3'>
               <FormField
-                control={form.control}
+                control={control}
                 name='name'
                 render={({ field }) => (
                   <FormItem>
@@ -90,7 +99,7 @@ const CreateIngredient = () => {
               />
 
               <FormField
-                control={form.control}
+                control={control}
                 name='price'
                 render={({ field }) => (
                   <FormItem>
@@ -110,7 +119,39 @@ const CreateIngredient = () => {
               />
 
               <FormField
-                control={form.control}
+                control={control}
+                name={"unit"}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unidad de medida</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.values(UnitOfMeasurement).map((unit) => (
+                          <SelectItem
+                            key={unit}
+                            value={unit}
+                            className='capitalize'
+                          >
+                            {unitToSpanish(unit)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
                 name='waste'
                 render={({ field }) => (
                   <FormItem>
@@ -135,7 +176,7 @@ const CreateIngredient = () => {
               {isSubmitting && (
                 <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
               )}
-              Agregar nuevo Ingrediente
+              Agregar Ingrediente
             </Button>
           </CardFooter>
         </Card>

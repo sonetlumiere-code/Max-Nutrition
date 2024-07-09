@@ -75,7 +75,7 @@ model PasswordResetToken {
 enum UnitOfMeasurement {
   UNIT
   GRAM
-  LITER
+  MILLILITER
 }
 
 model Ingredient {

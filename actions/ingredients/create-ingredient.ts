@@ -14,7 +14,7 @@ export async function createIngredient(values: IngredientSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { name, price, waste } = validatedFields.data
+  const { name, price, waste, unit } = validatedFields.data
 
   try {
     const ingredient = await prisma.ingredient.create({
@@ -22,6 +22,7 @@ export async function createIngredient(values: IngredientSchema) {
         name,
         price,
         waste,
+        unit,
       },
     })
 

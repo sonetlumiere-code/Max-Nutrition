@@ -1,6 +1,6 @@
 "use client"
 
-import { Ingredient } from "@prisma/client"
+import { Ingredient, UnitOfMeasurement } from "@prisma/client"
 import {
   Form,
   FormControl,
@@ -20,6 +20,14 @@ import { Icons } from "@/components/icons"
 import { editIngredient } from "@/actions/ingredients/edit-ingredient"
 import { useRouter } from "next/navigation"
 import { toast } from "@/components/ui/use-toast"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { unitToSpanish } from "@/helpers/helpers"
 
 type IngredientSchema = z.infer<typeof ingredientSchema>
 
@@ -36,6 +44,7 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
   })
 
   const {
+    control,
     handleSubmit,
     formState: { isSubmitting },
   } = form
@@ -68,7 +77,7 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
           <CardContent>
             <div className='space-y-3'>
               <FormField
-                control={form.control}
+                control={control}
                 name='name'
                 render={({ field }) => (
                   <FormItem>
@@ -86,7 +95,7 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
               />
 
               <FormField
-                control={form.control}
+                control={control}
                 name='price'
                 render={({ field }) => (
                   <FormItem>
@@ -106,7 +115,39 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
               />
 
               <FormField
-                control={form.control}
+                control={control}
+                name={"unit"}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unidad de medida</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.values(UnitOfMeasurement).map((unit) => (
+                          <SelectItem
+                            key={unit}
+                            value={unit}
+                            className='capitalize'
+                          >
+                            {unitToSpanish(unit)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
                 name='waste'
                 render={({ field }) => (
                   <FormItem>

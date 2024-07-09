@@ -5,11 +5,15 @@ import { Ingredient } from "@prisma/client"
 
 export const getIngredients = async (): Promise<Ingredient[] | null> => {
   try {
-    const ingredients = await prisma.ingredient.findMany()
+    const ingredients = await prisma.ingredient.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    })
 
     return ingredients
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching ingredients:", error)
     return null
   }
 }
@@ -25,7 +29,7 @@ export const getIngredient = async (params: {
 
     return ingredient
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching ingredient:", error)
     return null
   }
 }

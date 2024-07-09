@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { cn } from "@/lib/utils"
 import DeleteIngredient from "@/components/dashboard/ingredients/delete-ingredient/delete-ingredient"
+import { unitToSpanish } from "@/helpers/helpers"
 
 export default async function IngredientsPage() {
   const ingredients = await getIngredients()
@@ -86,6 +87,7 @@ export default async function IngredientsPage() {
                 <TableRow>
                   <TableHead>Nombre</TableHead>
                   <TableHead>Precio</TableHead>
+                  <TableHead>Unidad de medida</TableHead>
                   <TableHead className='hidden md:table-cell'>
                     Desperdicio
                   </TableHead>
@@ -99,6 +101,7 @@ export default async function IngredientsPage() {
                   <TableRow key={ingredient.id}>
                     <TableCell>{ingredient.name}</TableCell>
                     <TableCell>$ {ingredient.price}</TableCell>
+                    <TableCell>{unitToSpanish(ingredient.unit)}</TableCell>
                     <TableCell>{ingredient.waste} %</TableCell>
                     <TableCell>
                       <DropdownMenu modal={false}>
