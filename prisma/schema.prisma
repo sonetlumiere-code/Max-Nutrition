@@ -72,15 +72,46 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
+enum UnitOfMeasurement {
+  UNIT
+  GRAM
+  LITER
+}
+
 model Ingredient {
-  id       String @id @default(cuid())
-  name     String
-  price    Float  @default(0) // x 1000 grams || unity
-  waste    Float  @default(0)
-  carbs    Float  @default(0)
-  proteins Float  @default(0)
-  fats     Float  @default(0)
-  fiber    Float  @default(0)
+  id       String             @id @default(cuid())
+  name     String             @unique
+  unit     UnitOfMeasurement
+  price    Float              @default(0)
+  waste    Float              @default(0)
+  carbs    Float              @default(0)
+  proteins Float              @default(0)
+  fats     Float              @default(0)
+  fiber    Float              @default(0)
+  recipes  RecipeIngredient[]
 
   @@map("ingredients")
+}
+
+model Recipe {
+  id           String             @id @default(cuid())
+  name         String
+  description  String?
+  instructions String?
+  portions     Int                @default(1)
+  ingredients  RecipeIngredient[]
+
+  @@map("recipes")
+}
+
+model RecipeIngredient {
+  id           String @id @default(cuid())
+  recipeId     String
+  ingredientId String
+  quantity     Float
+
+  recipe     Recipe     @relation(fields: [recipeId], references: [id])
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@unique([recipeId, ingredientId])
 }
