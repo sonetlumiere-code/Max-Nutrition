@@ -3,7 +3,11 @@ import { z } from "zod"
 
 export const ingredientSchema = z.object({
   name: z.string().min(1, { message: "Ingresa el nombre del ingrediente." }),
-  unit: z.nativeEnum(UnitOfMeasurement),
+  unit: z.nativeEnum(UnitOfMeasurement, {
+    errorMap: (issue, ctx) => {
+      return { message: "Selecciona la unidad de medida." }
+    },
+  }),
   price: z.coerce
     .number()
     .min(1, { message: "Ingresa el precio del ingrediente." }),
