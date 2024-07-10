@@ -28,18 +28,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useEffect, useState } from "react"
-import { getIngredients } from "@/data/ingredients"
 
 type RecipeSchema = z.infer<typeof recipeSchema>
 
 type EditRecipeProps = {
   recipe: Recipe & { ingredients: RecipeIngredient[] }
+  ingredients: Ingredient[] | null
 }
 
-const EditRecipe = ({ recipe }: EditRecipeProps) => {
-  const [ingredients, setIngredients] = useState<Ingredient[] | null>(null)
-
+const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
   const router = useRouter()
 
   const form = useForm<RecipeSchema>({
@@ -61,15 +58,6 @@ const EditRecipe = ({ recipe }: EditRecipeProps) => {
     control,
     name: "ingredients",
   })
-
-  useEffect(() => {
-    const getData = async () => {
-      const ingredients = await getIngredients()
-      setIngredients(ingredients)
-    }
-
-    getData()
-  }, [])
 
   const onSubmit = async (data: RecipeSchema) => {
     const res = await editRecipe({ id: recipe.id, values: data })

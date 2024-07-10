@@ -22,20 +22,20 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
-import { getIngredients } from "@/data/ingredients"
 import { recipeSchema } from "@/lib/validations/recipes-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Ingredient } from "@prisma/client"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 
 type RecipeSchema = z.infer<typeof recipeSchema>
 
-const CreateRecipe = () => {
-  const [ingredients, setIngredients] = useState<Ingredient[] | null>(null)
-
+const CreateRecipe = ({
+  ingredients,
+}: {
+  ingredients: Ingredient[] | null
+}) => {
   const router = useRouter()
 
   const form = useForm<RecipeSchema>({
@@ -57,15 +57,6 @@ const CreateRecipe = () => {
     control,
     name: "ingredients",
   })
-
-  useEffect(() => {
-    const getData = async () => {
-      const ingredients = await getIngredients()
-      setIngredients(ingredients)
-    }
-
-    getData()
-  }, [])
 
   const onSubmit = async (data: RecipeSchema) => {
     const res = await createRecipe(data)

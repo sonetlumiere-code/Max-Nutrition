@@ -1,4 +1,4 @@
-import { getIngredient } from "@/data/ingredients"
+import { getIngredient, getIngredients } from "@/data/ingredients"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -28,6 +28,8 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
     redirect("/welcome")
   }
 
+  const ingredients = await getIngredients()
+
   return (
     <div className='space-y-6'>
       <Breadcrumb>
@@ -48,7 +50,7 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
 
       <h2 className='font-semibold text-lg'>Editar Receta</h2>
 
-      <EditRecipe recipe={recipe} />
+      <EditRecipe recipe={recipe} ingredients={ingredients} />
     </div>
   )
 }
