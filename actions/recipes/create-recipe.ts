@@ -14,13 +14,22 @@ export async function createRecipe(values: RecipeSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { name, description } = validatedFields.data
+  const { name, description, ingredients } = validatedFields.data
 
   try {
     const recipe = await prisma.recipe.create({
       data: {
         name,
         description,
+        ingredients: {
+          create: ingredients.map((ingredient) => ({
+            ingredientId: ingredient.ingredientId,
+            quantity: ingredient.quantity,
+          })),
+        },
+      },
+      include: {
+        ingredients: true,
       },
     })
 
@@ -28,6 +37,7 @@ export async function createRecipe(values: RecipeSchema) {
 
     return { success: recipe }
   } catch (error) {
+    console.error("Error creating recipe:", error)
     return { error: "Hubo un error al crear la receta." }
   }
 }

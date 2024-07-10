@@ -20,7 +20,9 @@ interface EditRecipePageProps {
 const EditRecipePage = async ({ params }: EditRecipePageProps) => {
   const { recipeId } = params
 
-  const recipe = await getRecipe({ where: { id: recipeId } })
+  const recipe = await getRecipe({
+    where: { id: recipeId },
+  })
 
   if (!recipe) {
     redirect("/welcome")

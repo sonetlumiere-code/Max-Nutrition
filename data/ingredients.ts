@@ -1,14 +1,16 @@
 "use server"
 
 import prisma from "@/lib/db/db"
-import { Ingredient } from "@prisma/client"
 
-export const getIngredients = async (): Promise<Ingredient[] | null> => {
+export const getIngredients = async () => {
   try {
     const ingredients = await prisma.ingredient.findMany({
       orderBy: {
         name: "asc",
       },
+      // include: {
+      //   recipes: true,
+      // },
     })
 
     return ingredients
@@ -23,9 +25,14 @@ export const getIngredient = async (params: {
     id?: string
     name?: string
   }
-}): Promise<Ingredient | null> => {
+}) => {
   try {
-    const ingredient = await prisma.ingredient.findFirst(params)
+    const ingredient = await prisma.ingredient.findFirst({
+      ...params,
+      // include: {
+      //   recipes: true,
+      // },
+    })
 
     return ingredient
   } catch (error) {

@@ -13,6 +13,7 @@ export async function deleteIngredient({ id }: { id: string }) {
 
     return { success: ingredient }
   } catch (error) {
+    console.error(error)
     return { error: "Hubo un error al eliminar el ingrediente." }
   }
 }

@@ -10,11 +10,15 @@ import {
   LucideProps,
   MoreHorizontal,
   Pencil,
+  Plus,
   ShoppingCart,
   Trash2,
+  X,
 } from "lucide-react"
 
 export const Icons = {
+  plus: Plus,
+  x: X,
   chevronLeft: ChevronLeft,
   spinner: Loader2,
   eye: Eye,
