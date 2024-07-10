@@ -37,7 +37,7 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href='/ingredients'>Recetas</BreadcrumbLink>
+            <BreadcrumbLink href='/recipes'>Recetas</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
