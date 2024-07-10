@@ -23,69 +23,19 @@ export async function editRecipe({
   const { name, description, ingredients } = validatedFields.data
 
   try {
-    // Fetch the existing recipe with its ingredients
-    const existingRecipe = await prisma.recipe.findUnique({
-      where: { id },
-      include: { ingredients: true },
-    })
-
-    if (!existingRecipe) {
-      return { error: "Receta no encontrada." }
-    }
-
-    // Upsert new or existing ingredients
-    await Promise.all(
-      ingredients.map((ingredient) =>
-        prisma.recipeIngredient.upsert({
-          where: {
-            recipeId_ingredientId: {
-              recipeId: id,
-              ingredientId: ingredient.ingredientId,
-            },
-          },
-          update: {
-            quantity: ingredient.quantity,
-          },
-          create: {
-            recipeId: id,
-            ingredientId: ingredient.ingredientId,
-            quantity: ingredient.quantity,
-          },
-        })
-      )
-    )
-
-    // Remove ingredients no longer associated with the recipe
-    const existingIngredientIds = existingRecipe.ingredients.map(
-      (ingredient) => ingredient.ingredientId
-    )
-    const newIngredientIds = ingredients.map(
-      (ingredient) => ingredient.ingredientId
-    )
-
-    const ingredientsToRemove = existingIngredientIds.filter(
-      (id) => !newIngredientIds.includes(id)
-    )
-
-    await Promise.all(
-      ingredientsToRemove.map((ingredientId) =>
-        prisma.recipeIngredient.delete({
-          where: {
-            recipeId_ingredientId: {
-              recipeId: id,
-              ingredientId,
-            },
-          },
-        })
-      )
-    )
-
-    // Update the recipe details
+    // Update the recipe with nested writes for ingredients
     const updatedRecipe = await prisma.recipe.update({
       where: { id },
       data: {
         name,
         description,
+        ingredients: {
+          deleteMany: {}, // Deletes all current recipe ingredients
+          create: ingredients.map((ingredient) => ({
+            ingredientId: ingredient.ingredientId,
+            quantity: ingredient.quantity,
+          })),
+        },
       },
       include: {
         ingredients: true,
