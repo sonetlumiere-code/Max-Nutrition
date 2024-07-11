@@ -1,4 +1,4 @@
-import { getIngredient, getIngredients } from "@/data/ingredients"
+import { getIngredients } from "@/data/ingredients"
 import {
   Breadcrumb,
   BreadcrumbItem,
