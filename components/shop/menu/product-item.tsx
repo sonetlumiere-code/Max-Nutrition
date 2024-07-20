@@ -1,17 +1,12 @@
 "use client"
+
 import React, { useState } from "react"
 import DialogMenu from "./dialog-menu"
 import DrawerMenu from "./drawer-menu"
+import { Product } from "@prisma/client"
 
 interface ProductItemProps {
-  item: {
-    id: number
-    title: string
-    description: string
-    price: number
-    image: string
-    options: Array<{ value: string; label: string }>
-  }
+  item: Product
   isDesktop: boolean
 }
 

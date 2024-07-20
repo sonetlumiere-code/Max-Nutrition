@@ -8,7 +8,14 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { ShoppingCart, Bell, Search, MapPin } from "lucide-react"
+import { Bell, Search, MapPin } from "lucide-react"
+import dynamic from "next/dynamic"
+import { Skeleton } from "@/components/ui/skeleton"
+
+const DynamicCartButton = dynamic(() => import("./cart-button"), {
+  loading: () => <Skeleton className='w-6 h-6 rounded-full'></Skeleton>,
+  ssr: false,
+})
 
 export default function NavbarShop() {
   return (
@@ -34,12 +41,9 @@ export default function NavbarShop() {
         <Link href='#' className='relative' prefetch={false}>
           <MapPin className='w-6 h-6 text-muted-foreground' />
         </Link>
-        <Link href='#' className='relative' prefetch={false}>
-          <ShoppingCart className='w-6 h-6 text-muted-foreground' />
-          <div className='absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium'>
-            3
-          </div>
-        </Link>
+
+        <DynamicCartButton />
+
         <Link href='#' className='relative' prefetch={false}>
           <Bell className='w-6 h-6 text-muted-foreground' />
           <div className='absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium'>

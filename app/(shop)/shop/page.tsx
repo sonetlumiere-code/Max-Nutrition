@@ -6,14 +6,15 @@ import { cn } from "@/lib/utils"
 import { Role } from "@prisma/client"
 import Link from "next/link"
 import Shop from "@/components/shop/shop"
+import { CartProvider } from "@/components/cart-provider"
 
 const ShopPage = async () => {
   const session = await auth()
   const isAdmin = session?.user.role === Role.ADMIN
 
   return (
-    <>
-      <div>
+    <CartProvider>
+      {/* <div>
         <nav>
           {isAdmin ? (
             <Link
@@ -51,9 +52,9 @@ const ShopPage = async () => {
             Iniciar sesion
           </Link>
         )}
-      </div>
-      <Shop></Shop>
-    </>
+      </div> */}
+      <Shop />
+    </CartProvider>
   )
 }
 
