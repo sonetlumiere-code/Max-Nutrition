@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { Role } from "@prisma/client"
 import Link from "next/link"
-import MenuShop from "@/components/shop/menu-shop"
+import Shop from "@/components/shop/shop"
 
 const ShopPage = async () => {
   const session = await auth()
@@ -52,7 +52,7 @@ const ShopPage = async () => {
           </Link>
         )}
       </div>
-      <MenuShop></MenuShop>
+      <Shop></Shop>
     </>
   )
 }
