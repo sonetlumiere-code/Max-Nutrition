@@ -1,7 +1,7 @@
 "use server"
 
 import prisma from "@/lib/db/db"
-import { recipeSchema } from "@/lib/validations/recipes-validation"
+import { recipeSchema } from "@/lib/validations/recipe-validation"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 

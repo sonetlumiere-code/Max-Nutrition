@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
 import { unitToSpanish } from "@/helpers/helpers"
-import { ingredientSchema } from "@/lib/validations/ingredients-validation"
+import { ingredientSchema } from "@/lib/validations/ingredient-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { UnitOfMeasurement } from "@prisma/client"
 import { useRouter } from "next/navigation"

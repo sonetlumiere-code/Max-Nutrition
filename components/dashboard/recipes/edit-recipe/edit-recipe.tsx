@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { useRouter } from "next/navigation"
 import { toast } from "@/components/ui/use-toast"
-import { recipeSchema } from "@/lib/validations/recipes-validation"
+import { recipeSchema } from "@/lib/validations/recipe-validation"
 import { editRecipe } from "@/actions/recipes/edit-recipe"
 import { Label } from "@/components/ui/label"
 import {

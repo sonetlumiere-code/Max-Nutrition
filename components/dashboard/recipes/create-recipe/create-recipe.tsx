@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
-import { recipeSchema } from "@/lib/validations/recipes-validation"
+import { recipeSchema } from "@/lib/validations/recipe-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Ingredient } from "@prisma/client"
 import { useRouter } from "next/navigation"

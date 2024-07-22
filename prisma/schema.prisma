@@ -9,9 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
 }
 
 enum Role {
@@ -158,17 +158,21 @@ model RecipeIngredient {
 }
 
 model Product {
-  id          String      @id @default(cuid())
-  name        String
-  description String
-  price       Float
-  image       String
-  recipeId    String?     @unique
-  recipe      Recipe?     @relation(fields: [recipeId], references: [id])
-  categories  Category[]
-  orderItems  OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id               String      @id @default(cuid())
+  name             String
+  description      String
+  price            Float
+  promotionalPrice Float
+  featured         Boolean     @default(false)
+  stock            Boolean     @default(true)
+  show             Boolean     @default(true)
+  image            String
+  recipeId         String?     @unique
+  recipe           Recipe?     @relation(fields: [recipeId], references: [id])
+  categories       Category[]
+  orderItems       OrderItem[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
   @@map("products")
 }

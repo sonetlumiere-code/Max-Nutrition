@@ -12,7 +12,7 @@ import {
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { ingredientSchema } from "@/lib/validations/ingredients-validation"
+import { ingredientSchema } from "@/lib/validations/ingredient-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
