@@ -1,0 +1,227 @@
+"use client"
+
+import { createProduct } from "@/actions/products/create-product"
+import { Icons } from "@/components/icons"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
+import { toast } from "@/components/ui/use-toast"
+import { productSchema } from "@/lib/validations/product-validation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+type ProductSchema = z.infer<typeof productSchema>
+
+const CreateProduct = () => {
+  const router = useRouter()
+
+  const form = useForm<ProductSchema>({
+    resolver: zodResolver(productSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      price: 0,
+      promotionalPrice: 0,
+      featured: false,
+      stock: true,
+      show: true,
+      image: "",
+    },
+  })
+
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = form
+
+  const onSubmit = async (data: ProductSchema) => {
+    const res = await createProduct(data)
+
+    if (res.success) {
+      router.push("/products")
+      toast({
+        title: "Nuevo producto creado",
+        description: "El producto ha sido creado correctamente.",
+      })
+    }
+
+    if (res.error) {
+      toast({
+        variant: "destructive",
+        title: "Error creando producto",
+        description: res.error,
+      })
+    }
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
+        <Card className='max-w-screen-md'>
+          <CardHeader></CardHeader>
+          <CardContent>
+            <div className='space-y-3'>
+              <FormField
+                control={control}
+                name='name'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nombre</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Nombre del producto'
+                        disabled={isSubmitting}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name='description'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder='Describa el producto'
+                        disabled={isSubmitting}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name='price'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Precio (AR$)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        step='0.1'
+                        placeholder='Precio en pesos'
+                        disabled={isSubmitting}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name='promotionalPrice'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Precio promocional (AR$)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='number'
+                        step='0.1'
+                        placeholder='Precio promocional en pesos'
+                        disabled={isSubmitting}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='featured'
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                    <div className='space-y-0.5'>
+                      <FormLabel className='text-base'>Destacado</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                        aria-readonly
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='stock'
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                    <div className='space-y-0.5'>
+                      <FormLabel className='text-base'>Stock</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                        aria-readonly
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='show'
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                    <div className='space-y-0.5'>
+                      <FormLabel className='text-base'>Mostrar</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                        aria-readonly
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button type='submit' disabled={isSubmitting}>
+              {isSubmitting && (
+                <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+              )}
+              Agregar producto
+            </Button>
+          </CardFooter>
+        </Card>
+      </form>
+    </Form>
+  )
+}
+
+export default CreateProduct

@@ -32,5 +32,6 @@ export const productSchema = z.object({
           ? true
           : ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
       { message: "La imagen debe ser de tipo .jpg, .jpeg, .png o .webp" }
-    ),
+    )
+    .optional(),
 })

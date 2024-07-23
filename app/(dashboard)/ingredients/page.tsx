@@ -151,10 +151,10 @@ export default async function IngredientsPage() {
         >
           <div className='flex flex-col items-center gap-1 text-center'>
             <h3 className='text-2xl font-bold tracking-tight'>
-              Todavía no tenes ningun ingrediente
+              Todavía no tenés ningun ingrediente
             </h3>
             <p className='text-sm text-muted-foreground'>
-              Cargá tu primer ingrediente haciendo click en el siguiente boton
+              Cargá tu primer ingrediente haciendo click en el siguiente botón
             </p>
 
             <Button className='mt-4' asChild>
