@@ -9,7 +9,7 @@ import {
   useEffect,
 } from "react"
 
-type CartItem = {
+export type CartItem = {
   product: Product
   quantity: number
 }
@@ -19,6 +19,8 @@ type CartProviderState = {
   addItem: (product: Product, quantity: number) => void
   removeItem: (id: string) => void
   clearCart: () => void
+  incrementQuantity: (id: string) => void
+  decrementQuantity: (id: string) => void
 }
 
 const initialState: CartProviderState = {
@@ -26,6 +28,8 @@ const initialState: CartProviderState = {
   addItem: () => null,
   removeItem: () => null,
   clearCart: () => null,
+  incrementQuantity: () => null,
+  decrementQuantity: () => null,
 }
 
 const CartProviderContext = createContext<CartProviderState>(initialState)
@@ -61,6 +65,24 @@ export function CartProvider({ children }: CartProviderProps) {
     })
   }
 
+  const incrementQuantity = (id: string) => {
+    setItems((prevItems) =>
+      prevItems.map((i) =>
+        i.product.id === id ? { ...i, quantity: i.quantity + 1 } : i
+      )
+    )
+  }
+
+  const decrementQuantity = (id: string) => {
+    setItems((prevItems) =>
+      prevItems.map((i) =>
+        i.product.id === id && i.quantity > 1
+          ? { ...i, quantity: i.quantity - 1 }
+          : i
+      )
+    )
+  }
+
   const removeItem = (id: string) => {
     setItems((prevItems) => prevItems.filter((i) => i.product.id !== id))
   }
@@ -74,6 +96,8 @@ export function CartProvider({ children }: CartProviderProps) {
     addItem,
     removeItem,
     clearCart,
+    incrementQuantity,
+    decrementQuantity,
   }
 
   return (

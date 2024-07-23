@@ -85,8 +85,23 @@ export const menuData = [
     category: "Proteicos (5)",
     items: [
       {
-        id: "1",
+        id: "6",
         name: "Musaka de berenjenas",
+        description:
+          "Exquisita musaka griega con capas de berenjenas asadas, carne de cordero, salsa de tomate y bechamel gratinada.",
+        price: 4000,
+        image: "img/musaka-berenj.jpg",
+        recipeId: null,
+        createdAt: new Date("2024-07-19T12:00:00Z"),
+        updatedAt: new Date("2024-07-19T12:00:00Z"),
+        // options: [
+        //   { value: "con-sal", label: "Con Sal" },
+        //   { value: "sin-sal", label: "Sin Sal" },
+        // ],
+      },
+      {
+        id: "7",
+        name: "Musaka de berenjenas 2",
         description:
           "Exquisita musaka griega con capas de berenjenas asadas, carne de cordero, salsa de tomate y bechamel gratinada.",
         price: 4000,
