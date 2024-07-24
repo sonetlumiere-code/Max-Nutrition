@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getProducts } from "@/data/products"
 import { cn } from "@/lib/utils"
+import DeleteProduct from "@/components/dashboard/products/delete-product/delete-product"
 
 export default async function ProductsPage() {
   const products = await getProducts()
@@ -136,7 +137,7 @@ export default async function ProductsPage() {
                           </Link>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem>
-                            {/* DeleteProduct */}
+                            <DeleteProduct product={product} />
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
