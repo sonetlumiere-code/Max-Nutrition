@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Icons } from "@/components/icons"
 import { Button, buttonVariants } from "@/components/ui/button"
 import Link from "next/link"
@@ -85,6 +86,7 @@ export default async function ProductsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Imagen</TableHead>
                   <TableHead>Nombre</TableHead>
                   <TableHead className='hidden md:table-cell'>
                     Descripción
@@ -95,11 +97,22 @@ export default async function ProductsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {products.map((recipe) => (
-                  <TableRow key={recipe.id}>
-                    <TableCell>{recipe.name}</TableCell>
+                {products.map((product) => (
+                  <TableRow key={product.id}>
+                    <TableCell>
+                      <img
+                        src={
+                          product.image
+                            ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${product.image}`
+                            : "/img/no-image.jpg"
+                        }
+                        alt='Product image'
+                        className='w-8 h-8 rounded-md ml-4'
+                      />
+                    </TableCell>
+                    <TableCell>{product.name}</TableCell>
                     <TableCell className='max-w-28 hidden md:table-cell'>
-                      <p className='truncate'>{recipe.description}</p>
+                      <p className='truncate'>{product.description}</p>
                     </TableCell>
                     <TableCell>
                       <DropdownMenu modal={false}>
@@ -115,7 +128,7 @@ export default async function ProductsPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align='end'>
                           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <Link href={`products/edit-recipe/${recipe.id}`}>
+                          <Link href={`products/edit-product/${product.id}`}>
                             <DropdownMenuItem>
                               <Icons.pencil className='w-4 h-4 mr-2' />
                               Editar
