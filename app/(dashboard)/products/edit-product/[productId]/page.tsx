@@ -45,7 +45,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h2 className='font-semibold text-lg'>Editar Receta</h2>
+      <h2 className='font-semibold text-lg'>Editar Producto</h2>
 
       <EditProduct product={product} />
     </div>
