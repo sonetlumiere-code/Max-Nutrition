@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { Product } from "@prisma/client"
@@ -40,9 +41,12 @@ const EditProduct = ({ product }: EditProductProps) => {
 
   const {
     control,
+    watch,
     handleSubmit,
     formState: { isSubmitting, isValid },
   } = form
+
+  const imageFile = watch("imageFile")
 
   const onSubmit = async (data: ProductSchema) => {
     if (data.imageFile?.length) {
@@ -177,25 +181,25 @@ const EditProduct = ({ product }: EditProductProps) => {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name='featured'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                    <div className='space-y-0.5'>
-                      <FormLabel className='text-base'>Destacado</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isSubmitting}
-                        aria-readonly
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              {product.image && (!imageFile || imageFile?.length === 0) && (
+                <img
+                  src={
+                    product.image
+                      ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${product.image}`
+                      : "/img/no-image.jpg"
+                  }
+                  alt='Product image'
+                  className='w-40 h-40 object-cover rounded-md'
+                />
+              )}
+
+              {imageFile?.length > 0 && (
+                <img
+                  src={URL.createObjectURL(imageFile[0])}
+                  alt='Image to upload'
+                  className='w-40 h-40 object-cover rounded-md'
+                />
+              )}
 
               <FormField
                 control={form.control}
@@ -224,6 +228,26 @@ const EditProduct = ({ product }: EditProductProps) => {
                   <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                     <div className='space-y-0.5'>
                       <FormLabel className='text-base'>Mostrar</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                        aria-readonly
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='featured'
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                    <div className='space-y-0.5'>
+                      <FormLabel className='text-base'>Destacado</FormLabel>
                     </div>
                     <FormControl>
                       <Switch

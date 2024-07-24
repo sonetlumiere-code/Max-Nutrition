@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { createProduct } from "@/actions/products/create-product"
@@ -43,9 +44,12 @@ const CreateProduct = () => {
 
   const {
     control,
+    watch,
     handleSubmit,
     formState: { isSubmitting },
   } = form
+
+  const imageFile = watch("imageFile")
 
   const onSubmit = async (data: ProductSchema) => {
     if (data.imageFile?.length) {
@@ -176,25 +180,13 @@ const CreateProduct = () => {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name='featured'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                    <div className='space-y-0.5'>
-                      <FormLabel className='text-base'>Destacado</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isSubmitting}
-                        aria-readonly
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              {imageFile?.length > 0 && (
+                <img
+                  src={URL.createObjectURL(imageFile[0])}
+                  alt='Image to upload'
+                  className='w-40 h-40 object-cover rounded-md'
+                />
+              )}
 
               <FormField
                 control={form.control}
@@ -223,6 +215,26 @@ const CreateProduct = () => {
                   <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                     <div className='space-y-0.5'>
                       <FormLabel className='text-base'>Mostrar</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                        aria-readonly
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='featured'
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                    <div className='space-y-0.5'>
+                      <FormLabel className='text-base'>Destacado</FormLabel>
                     </div>
                     <FormControl>
                       <Switch
