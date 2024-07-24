@@ -31,7 +31,6 @@ export default function NavDashboard() {
       <div className='flex h-full max-h-screen flex-col gap-2'>
         <div className='flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6'>
           <Link href='/' className='flex items-center gap-2 font-semibold'>
-            <Package2 className='h-6 w-6' />
             <span>Máxima Nutrición </span>
           </Link>
           <Button variant='outline' size='icon' className='ml-auto h-8 w-8'>
@@ -40,7 +39,7 @@ export default function NavDashboard() {
           </Button>
         </div>
         <div className='flex-1'>
-          <nav className='grid items-start px-2 text-sm font-medium lg:px-4'>
+          <nav className='grid items-start px-2 font-medium lg:px-4'>
             {[
               { href: "/welcome", label: "Inicio", icon: Home },
               { href: "/orders", label: "Pedidos", icon: ShoppingCart },
