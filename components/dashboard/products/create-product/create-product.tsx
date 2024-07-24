@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import uploadImage from "@/actions/cloudinary/upload-image"
 
 type ProductSchema = z.infer<typeof productSchema>
 
@@ -47,6 +48,14 @@ const CreateProduct = () => {
   } = form
 
   const onSubmit = async (data: ProductSchema) => {
+    if (data.imageFile?.length) {
+      const formData = new FormData()
+      formData.append("imageFile", data.imageFile[0])
+      const uploadRes = await uploadImage(formData)
+      data.image = uploadRes.public_id || ""
+      data.imageFile = []
+    }
+
     const res = await createProduct(data)
 
     if (res.success) {
@@ -142,6 +151,24 @@ const CreateProduct = () => {
                         placeholder='Precio promocional en pesos'
                         disabled={isSubmitting}
                         {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='imageFile'
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
+                    <FormLabel>Imagen</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...fieldProps}
+                        type='file'
+                        onChange={(event) => onChange(event.target.files)}
                       />
                     </FormControl>
                     <FormMessage />

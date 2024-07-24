@@ -8,8 +8,6 @@ import { z } from "zod"
 type ProductSchema = z.infer<typeof productSchema>
 
 export async function createProduct(values: ProductSchema) {
-  values.imageFile = []
-
   const validatedFields = productSchema.safeParse(values)
 
   if (!validatedFields.success) {
