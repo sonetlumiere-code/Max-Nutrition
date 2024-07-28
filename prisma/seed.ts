@@ -2,7 +2,10 @@ import { Ingredient, PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
-export const ingredientsData: Omit<Ingredient, "id">[] = [
+export const ingredientsData: Omit<
+  Ingredient,
+  "id" | "createdAt" | "updatedAt"
+>[] = [
   {
     name: "Aceite",
     waste: 0,
