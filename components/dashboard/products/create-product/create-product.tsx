@@ -22,10 +22,22 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import uploadImage from "@/actions/cloudinary/upload-image"
+import { Recipe, RecipeIngredient } from "@prisma/client"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type ProductSchema = z.infer<typeof productSchema>
 
-const CreateProduct = () => {
+type CreateProductProps = {
+  recipes: (Recipe & { ingredients: RecipeIngredient[] })[] | null
+}
+
+const CreateProduct = ({ recipes }: CreateProductProps) => {
   const router = useRouter()
 
   const form = useForm<ProductSchema>({
@@ -39,6 +51,7 @@ const CreateProduct = () => {
       stock: true,
       show: true,
       image: "",
+      recipeId: "",
     },
   })
 
@@ -187,6 +200,34 @@ const CreateProduct = () => {
                   className='w-40 h-40 object-cover rounded-md'
                 />
               )}
+
+              <FormField
+                control={form.control}
+                name='recipeId'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Receta</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Selecciona una receta' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {recipes?.map((recipe) => (
+                          <SelectItem key={recipe.id} value={recipe.id}>
+                            {recipe.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}

@@ -23,6 +23,7 @@ export async function createProduct(values: ProductSchema) {
     featured,
     stock,
     show,
+    recipeId,
   } = validatedFields.data
 
   try {
@@ -36,6 +37,9 @@ export async function createProduct(values: ProductSchema) {
         featured,
         stock,
         show,
+        recipe: {
+          connect: { id: recipeId },
+        },
       },
     })
 

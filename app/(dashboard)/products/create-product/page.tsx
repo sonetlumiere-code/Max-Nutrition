@@ -7,8 +7,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { getRecipes } from "@/data/recipes"
 
 const CreateProductPage = async () => {
+  const recipes = await getRecipes()
+
   return (
     <div className='space-y-6'>
       <Breadcrumb>
@@ -29,7 +32,7 @@ const CreateProductPage = async () => {
 
       <h2 className='font-semibold text-lg'>Agregar Producto</h2>
 
-      <CreateProduct />
+      <CreateProduct recipes={recipes} />
     </div>
   )
 }
