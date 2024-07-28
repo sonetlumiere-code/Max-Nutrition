@@ -10,7 +10,11 @@ import {
 import { getIngredients } from "@/data/ingredients"
 
 const CreateRecipePage = async () => {
-  const ingredients = await getIngredients()
+  const ingredients = await getIngredients({
+    orderBy: {
+      name: "asc",
+    },
+  })
 
   return (
     <div className='space-y-6'>

@@ -10,7 +10,11 @@ import {
 import { getRecipes } from "@/data/recipes"
 
 const CreateProductPage = async () => {
-  const recipes = await getRecipes()
+  const recipes = await getRecipes({
+    include: {
+      product: true,
+    },
+  })
 
   return (
     <div className='space-y-6'>

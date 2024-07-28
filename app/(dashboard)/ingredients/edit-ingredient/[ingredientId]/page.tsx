@@ -17,7 +17,9 @@ interface EditIngredientPageProps {
 const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
   const { ingredientId } = params
 
-  const ingredient = await getIngredient({ where: { id: ingredientId } })
+  const ingredient = await getIngredient({
+    where: { id: ingredientId },
+  })
 
   if (!ingredient) {
     redirect("/welcome")

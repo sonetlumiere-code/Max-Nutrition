@@ -29,6 +29,7 @@ export async function editProduct({
     featured,
     stock,
     show,
+    recipeId,
   } = validatedFields.data
 
   try {
@@ -43,6 +44,9 @@ export async function editProduct({
         featured,
         stock,
         show,
+        ...(recipeId
+          ? { recipe: { connect: { id: recipeId } } }
+          : { recipe: { disconnect: true } }),
       },
     })
 

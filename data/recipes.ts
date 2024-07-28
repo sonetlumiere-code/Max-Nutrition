@@ -1,16 +1,20 @@
 "use server"
 
 import prisma from "@/lib/db/db"
+import { PopulatedRecipe } from "@/types/types"
 
-export const getRecipes = async () => {
+export const getRecipes = async (params?: {
+  include?: {
+    ingredients?: boolean
+    product?: boolean
+  }
+}) => {
   try {
     const recipes = await prisma.recipe.findMany({
-      include: {
-        ingredients: true,
-      },
+      ...params,
     })
 
-    return recipes
+    return recipes as PopulatedRecipe[]
   } catch (error) {
     console.error(error)
     return null
@@ -22,16 +26,17 @@ export const getRecipe = async (params: {
     id?: string
     description?: string
   }
+  include?: {
+    ingredients?: boolean
+    product?: boolean
+  }
 }) => {
   try {
     const recipe = await prisma.recipe.findFirst({
       ...params,
-      include: {
-        ingredients: true,
-      },
     })
 
-    return recipe
+    return recipe as PopulatedRecipe
   } catch (error) {
     console.error(error)
     return null

@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { Product } from "@prisma/client"
 import {
   Form,
   FormControl,
@@ -24,14 +23,24 @@ import { editProduct } from "@/actions/products/edit-product"
 import { Switch } from "@/components/ui/switch"
 import uploadImage from "@/actions/cloudinary/upload-image"
 import deleteImage from "@/actions/cloudinary/delete-image"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { PopulatedRecipe } from "@/types/types"
+import { Product } from "@prisma/client"
 
 type ProductSchema = z.infer<typeof productSchema>
 
 type EditProductProps = {
   product: Product
+  recipes: PopulatedRecipe[] | null
 }
 
-const EditProduct = ({ product }: EditProductProps) => {
+const EditProduct = ({ product, recipes }: EditProductProps) => {
   const router = useRouter()
 
   const form = useForm<ProductSchema>({
@@ -200,6 +209,45 @@ const EditProduct = ({ product }: EditProductProps) => {
                   className='w-40 h-40 object-cover rounded-md'
                 />
               )}
+
+              <FormField
+                control={form.control}
+                name='recipeId'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Receta</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value || ""}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Selecciona una receta' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {recipes?.map((recipe) => (
+                          <SelectItem
+                            key={recipe.id}
+                            value={recipe.id}
+                            disabled={!!recipe.product}
+                          >
+                            {!!recipe.product ? (
+                              <div className='flex'>
+                                <p>{recipe.name}</p>
+                                {/* <Badge>{recipe.product?.name}</Badge> */}
+                              </div>
+                            ) : (
+                              <p>{recipe.name}</p>
+                            )}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}

@@ -23,14 +23,13 @@ export async function editRecipe({
   const { name, description, ingredients } = validatedFields.data
 
   try {
-    // Update the recipe with nested writes for ingredients
     const updatedRecipe = await prisma.recipe.update({
       where: { id },
       data: {
         name,
         description,
         ingredients: {
-          deleteMany: {}, // Deletes all current recipe ingredients
+          deleteMany: {},
           create: ingredients.map((ingredient) => ({
             ingredientId: ingredient.ingredientId,
             quantity: ingredient.quantity,

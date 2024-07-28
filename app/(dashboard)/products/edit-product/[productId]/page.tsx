@@ -9,6 +9,7 @@ import {
 import { redirect } from "next/navigation"
 import { getProduct } from "@/data/products"
 import EditProduct from "@/components/dashboard/products/edit-product/edit-product"
+import { getRecipes } from "@/data/recipes"
 
 interface EditProductPageProps {
   params: {
@@ -18,6 +19,11 @@ interface EditProductPageProps {
 
 const EditProductPage = async ({ params }: EditProductPageProps) => {
   const { productId } = params
+  const recipes = await getRecipes({
+    include: {
+      product: true,
+    },
+  })
 
   const product = await getProduct({
     where: { id: productId },
@@ -47,7 +53,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
 
       <h2 className='font-semibold text-lg'>Editar Producto</h2>
 
-      <EditProduct product={product} />
+      <EditProduct product={product} recipes={recipes} />
     </div>
   )
 }

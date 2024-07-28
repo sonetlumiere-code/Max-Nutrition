@@ -22,7 +22,6 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import uploadImage from "@/actions/cloudinary/upload-image"
-import { Recipe, RecipeIngredient } from "@prisma/client"
 import {
   Select,
   SelectContent,
@@ -30,11 +29,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { PopulatedRecipe } from "@/types/types"
 
 type ProductSchema = z.infer<typeof productSchema>
 
 type CreateProductProps = {
-  recipes: (Recipe & { ingredients: RecipeIngredient[] })[] | null
+  recipes: PopulatedRecipe[] | null
 }
 
 const CreateProduct = ({ recipes }: CreateProductProps) => {
@@ -209,7 +209,7 @@ const CreateProduct = ({ recipes }: CreateProductProps) => {
                     <FormLabel>Receta</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      defaultValue={field.value || ""}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -218,8 +218,19 @@ const CreateProduct = ({ recipes }: CreateProductProps) => {
                       </FormControl>
                       <SelectContent>
                         {recipes?.map((recipe) => (
-                          <SelectItem key={recipe.id} value={recipe.id}>
-                            {recipe.name}
+                          <SelectItem
+                            key={recipe.id}
+                            value={recipe.id}
+                            disabled={!!recipe.product}
+                          >
+                            {!!recipe.product ? (
+                              <div className='flex'>
+                                <p>{recipe.name}</p>
+                                {/* <Badge>{recipe.product?.name}</Badge> */}
+                              </div>
+                            ) : (
+                              <p>{recipe.name}</p>
+                            )}
                           </SelectItem>
                         ))}
                       </SelectContent>

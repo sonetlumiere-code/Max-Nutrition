@@ -1,6 +1,7 @@
 "use server"
 
 import prisma from "@/lib/db/db"
+import { PopulatedProduct } from "@/types/types"
 
 export const getProducts = async () => {
   try {
@@ -18,14 +19,16 @@ export const getProduct = async (params: {
     id?: string
     description?: string
   }
+  include?: {
+    recipe?: boolean
+  }
 }) => {
   try {
     const product = await prisma.product.findFirst({
       ...params,
-      // include: {},
     })
 
-    return product
+    return product as PopulatedProduct
   } catch (error) {
     console.error(error)
     return null

@@ -38,7 +38,11 @@ import DeleteIngredient from "@/components/dashboard/ingredients/delete-ingredie
 import { unitToSpanish } from "@/helpers/helpers"
 
 export default async function IngredientsPage() {
-  const ingredients = await getIngredients()
+  const ingredients = await getIngredients({
+    orderBy: {
+      name: "asc",
+    },
+  })
 
   return (
     <>

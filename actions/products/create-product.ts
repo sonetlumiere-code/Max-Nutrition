@@ -37,9 +37,7 @@ export async function createProduct(values: ProductSchema) {
         featured,
         stock,
         show,
-        recipe: {
-          connect: { id: recipeId },
-        },
+        ...(recipeId ? { recipe: { connect: { id: recipeId } } } : {}),
       },
     })
 

@@ -28,11 +28,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { PopulatedRecipe } from "@/types/types"
 
 type RecipeSchema = z.infer<typeof recipeSchema>
 
 type EditRecipeProps = {
-  recipe: Recipe & { ingredients: RecipeIngredient[] }
+  recipe: PopulatedRecipe
   ingredients: Ingredient[] | null
 }
 

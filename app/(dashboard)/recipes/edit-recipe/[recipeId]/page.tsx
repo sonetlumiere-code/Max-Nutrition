@@ -22,13 +22,18 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
 
   const recipe = await getRecipe({
     where: { id: recipeId },
+    include: { ingredients: true },
   })
 
   if (!recipe) {
     redirect("/welcome")
   }
 
-  const ingredients = await getIngredients()
+  const ingredients = await getIngredients({
+    orderBy: {
+      name: "asc",
+    },
+  })
 
   return (
     <div className='space-y-6'>
