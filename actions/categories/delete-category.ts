@@ -5,18 +5,6 @@ import { revalidatePath } from "next/cache"
 
 export async function deleteCategory({ id }: { id: string }) {
   try {
-    await prisma.category.update({
-      where: { id },
-      data: {
-        products: {
-          set: [],
-        },
-        promotions: {
-          set: [],
-        },
-      },
-    })
-
     const category = await prisma.category.delete({
       where: { id },
     })
