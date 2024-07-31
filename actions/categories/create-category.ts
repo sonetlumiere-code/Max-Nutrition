@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db/db"
 import { categorySchema } from "@/lib/validations/category-validation"
+import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
 type CategorySchema = z.infer<typeof categorySchema>
@@ -28,6 +29,8 @@ export async function createCategory(values: CategorySchema) {
         },
       },
     })
+
+    revalidatePath("/categories")
 
     return { success: newCategory }
   } catch (error) {

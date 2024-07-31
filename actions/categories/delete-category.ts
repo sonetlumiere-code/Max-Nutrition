@@ -1,6 +1,7 @@
 "use server"
 
 import prisma from "@/lib/db/db"
+import { revalidatePath } from "next/cache"
 
 export async function deleteCategory({ id }: { id: string }) {
   try {
@@ -19,6 +20,8 @@ export async function deleteCategory({ id }: { id: string }) {
     const category = await prisma.category.delete({
       where: { id },
     })
+
+    revalidatePath("/categories")
 
     return { success: category }
   } catch (error) {
