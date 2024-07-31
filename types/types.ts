@@ -1,4 +1,11 @@
-import { Ingredient, Product, Recipe, RecipeIngredient } from "@prisma/client"
+import {
+  Category,
+  Ingredient,
+  Product,
+  PromotionCategory,
+  Recipe,
+  RecipeIngredient,
+} from "@prisma/client"
 
 export type PopulatedRecipe = Recipe & {
   ingredients?: RecipeIngredient[]
@@ -11,4 +18,9 @@ export type PopulatedProduct = Product & {
 
 export type PopulatedIngredient = Ingredient & {
   recipes?: RecipeIngredient[]
+}
+
+export type PopulatedCategory = Category & {
+  products?: Category[]
+  promotions?: PromotionCategory[]
 }

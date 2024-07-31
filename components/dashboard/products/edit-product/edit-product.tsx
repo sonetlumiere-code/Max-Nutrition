@@ -75,7 +75,7 @@ const EditProduct = ({ product, recipes }: EditProductProps) => {
     if (res.success) {
       router.push("/products")
       toast({
-        title: "Producto actualizada",
+        title: "Producto actualizado",
         description: "El producto se actualizó correctamente.",
       })
     }
@@ -104,7 +104,7 @@ const EditProduct = ({ product, recipes }: EditProductProps) => {
                     <FormLabel>Nombre</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder='Editar producto'
+                        placeholder='Nombre del producto'
                         disabled={isSubmitting}
                         {...field}
                       />

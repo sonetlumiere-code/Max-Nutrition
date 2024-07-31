@@ -6,32 +6,32 @@ import { z } from "zod"
 
 type CategorySchema = z.infer<typeof categorySchema>
 
-export async function updateCategory(id: string, values: CategorySchema) {
+export async function createCategory(values: CategorySchema) {
   const validatedFields = categorySchema.safeParse(values)
 
   if (!validatedFields.success) {
     return { error: "Campos inválidos." }
   }
 
-  const { name, categoriesIds, promotionsIds } = validatedFields.data
+  const { name, productsIds, promotionsIds } = validatedFields.data
 
   try {
-    const updatedCategory = await prisma.category.update({
-      where: { id },
+    const newCategory = await prisma.category.create({
       data: {
         name,
         products: {
-          set: categoriesIds?.map((productId) => ({ id: productId })) || [],
+          connect: productsIds?.map((productId) => ({ id: productId })) || [],
         },
         promotions: {
-          set: promotionsIds?.map((promotionId) => ({ id: promotionId })) || [],
+          connect:
+            promotionsIds?.map((promotionId) => ({ id: promotionId })) || [],
         },
       },
     })
 
-    return { success: updatedCategory }
+    return { success: newCategory }
   } catch (error) {
-    console.error("Error updating category:", error)
-    return { error: "Hubo un error al actualizar la categoría." }
+    console.error("Error creating category:", error)
+    return { error: "Hubo un error al crear la categoría." }
   }
 }

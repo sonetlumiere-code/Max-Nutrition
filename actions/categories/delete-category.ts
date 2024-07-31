@@ -2,9 +2,8 @@
 
 import prisma from "@/lib/db/db"
 
-export async function deleteCategory(id: string) {
+export async function deleteCategory({ id }: { id: string }) {
   try {
-    // Disconnect related products and promotions
     await prisma.category.update({
       where: { id },
       data: {
@@ -17,12 +16,11 @@ export async function deleteCategory(id: string) {
       },
     })
 
-    // Delete the category
-    await prisma.category.delete({
+    const category = await prisma.category.delete({
       where: { id },
     })
 
-    return { success: "Categoría eliminada con éxito." }
+    return { success: category }
   } catch (error) {
     console.error("Error deleting category:", error)
     return { error: "Hubo un error al eliminar la categoría." }

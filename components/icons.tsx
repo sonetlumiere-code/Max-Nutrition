@@ -14,6 +14,17 @@ import {
   ShoppingCart,
   Trash2,
   X,
+  Bell,
+  Home,
+  Users,
+  LineChart,
+  NotebookText,
+  Wheat,
+  Pizza,
+  CircleUser,
+  Menu,
+  Search,
+  Box,
 } from "lucide-react"
 
 export const Icons = {
@@ -31,6 +42,17 @@ export const Icons = {
   pencil: Pencil,
   thrash2: Trash2,
   circlePlus: CirclePlus,
+  bell: Bell,
+  home: Home,
+  users: Users,
+  lineChart: LineChart,
+  notebookText: NotebookText,
+  wheat: Wheat,
+  pizza: Pizza,
+  circleUser: CircleUser,
+  menu: Menu,
+  search: Search,
+  box: Box,
   google: ({ ...props }: LucideProps) => (
     <svg
       className='mr-2 h-4 w-4'

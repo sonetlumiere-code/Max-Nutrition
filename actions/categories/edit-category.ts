@@ -6,14 +6,20 @@ import { z } from "zod"
 
 type CategorySchema = z.infer<typeof categorySchema>
 
-export async function updateCategory(id: string, values: CategorySchema) {
+export async function editCategory({
+  id,
+  values,
+}: {
+  id: string
+  values: CategorySchema
+}) {
   const validatedFields = categorySchema.safeParse(values)
 
   if (!validatedFields.success) {
     return { error: "Campos inválidos." }
   }
 
-  const { name, categoriesIds, promotionsIds } = validatedFields.data
+  const { name, productsIds, promotionsIds } = validatedFields.data
 
   try {
     const updatedCategory = await prisma.category.update({
@@ -21,7 +27,7 @@ export async function updateCategory(id: string, values: CategorySchema) {
       data: {
         name,
         products: {
-          set: categoriesIds?.map((productId) => ({ id: productId })) || [],
+          set: productsIds?.map((productId) => ({ id: productId })) || [],
         },
         promotions: {
           set: promotionsIds?.map((promotionId) => ({ id: promotionId })) || [],

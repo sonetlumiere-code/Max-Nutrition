@@ -1,17 +1,7 @@
 "use client"
+
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
-  Bell,
-  Home,
-  ShoppingCart,
-  Users,
-  LineChart,
-  Package2,
-  NotebookText,
-  Wheat,
-  Pizza,
-} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -20,6 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { navItems } from "./nav-items"
+import { Icons } from "@/components/icons"
 
 export default function NavDashboard() {
   const pathname = usePathname()
@@ -34,34 +26,29 @@ export default function NavDashboard() {
             <span>Máxima Nutrición </span>
           </Link>
           <Button variant='outline' size='icon' className='ml-auto h-8 w-8'>
-            <Bell className='h-4 w-4' />
+            <Icons.bell className='h-4 w-4' />
             <span className='sr-only'>Toggle notifications</span>
           </Button>
         </div>
         <div className='flex-1'>
           <nav className='grid items-start px-2 font-medium lg:px-4'>
-            {[
-              { href: "/welcome", label: "Inicio", icon: Home },
-              { href: "/orders", label: "Pedidos", icon: ShoppingCart },
-              { href: "/products", label: "Productos", icon: Pizza },
-              { href: "/recipes", label: "Recetas", icon: NotebookText },
-              { href: "/ingredients", label: "Ingredientes", icon: Wheat },
-              { href: "/customers", label: "Clientes", icon: Users },
-              { href: "/analytics", label: "Analytics", icon: LineChart },
-            ].map(({ href, label, icon: Icon }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
-                  isActive(href)
-                    ? "bg-muted text-primary"
-                    : "text-muted-foreground"
-                } transition-all hover:text-primary`}
-              >
-                <Icon className='h-4 w-4' />
-                {label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const Icon = Icons[item.icon]
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                    isActive(item.href)
+                      ? "bg-muted text-primary"
+                      : "text-muted-foreground"
+                  } transition-all hover:text-primary`}
+                >
+                  <Icon className='h-4 w-4' />
+                  {item.label}
+                </Link>
+              )
+            })}
             <hr />
           </nav>
         </div>
