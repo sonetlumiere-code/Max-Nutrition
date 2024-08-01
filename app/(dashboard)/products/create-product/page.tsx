@@ -7,14 +7,18 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { getCategories } from "@/data/categories"
 import { getRecipes } from "@/data/recipes"
 
 const CreateProductPage = async () => {
-  const recipes = await getRecipes({
-    include: {
-      product: true,
-    },
-  })
+  const [recipes, categories] = await Promise.all([
+    getRecipes({
+      include: {
+        product: true,
+      },
+    }),
+    getCategories(),
+  ])
 
   return (
     <div className='space-y-6'>
@@ -36,7 +40,7 @@ const CreateProductPage = async () => {
 
       <h2 className='font-semibold text-lg'>Agregar Producto</h2>
 
-      <CreateProduct recipes={recipes} />
+      <CreateProduct recipes={recipes} categories={categories} />
     </div>
   )
 }

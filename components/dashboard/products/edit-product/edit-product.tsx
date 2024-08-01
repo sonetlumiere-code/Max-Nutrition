@@ -30,22 +30,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { PopulatedRecipe } from "@/types/types"
-import { Product } from "@prisma/client"
+import { PopulatedProduct, PopulatedRecipe } from "@/types/types"
+import { Category, Product } from "@prisma/client"
+import { MultiSelect } from "@/components/multi-select"
 
 type ProductSchema = z.infer<typeof productSchema>
 
 type EditProductProps = {
-  product: Product
+  product: PopulatedProduct
   recipes: PopulatedRecipe[] | null
+  categories: Category[] | null
 }
 
-const EditProduct = ({ product, recipes }: EditProductProps) => {
+const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
   const router = useRouter()
 
   const form = useForm<ProductSchema>({
     resolver: zodResolver(productSchema),
-    defaultValues: product,
+    defaultValues: {
+      ...product,
+      categoriesIds: product.categories?.map((category) => category.id),
+    },
   })
 
   const {
@@ -209,6 +214,28 @@ const EditProduct = ({ product, recipes }: EditProductProps) => {
                   className='w-40 h-40 object-cover rounded-md'
                 />
               )}
+
+              <FormField
+                control={form.control}
+                name='categoriesIds'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col'>
+                    <FormLabel>Categorías</FormLabel>
+                    <MultiSelect
+                      options={
+                        categories?.map((category) => ({
+                          value: category.id,
+                          label: category.name,
+                        })) || []
+                      }
+                      selected={field.value || []}
+                      onChange={field.onChange}
+                      disabled={isSubmitting}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}

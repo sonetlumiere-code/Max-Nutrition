@@ -21,6 +21,7 @@ export const getProduct = async (params: {
   }
   include?: {
     recipe?: boolean
+    categories?: boolean
   }
 }) => {
   try {

@@ -30,14 +30,17 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { PopulatedRecipe } from "@/types/types"
+import { MultiSelect } from "@/components/multi-select"
+import { Category } from "@prisma/client"
 
 type ProductSchema = z.infer<typeof productSchema>
 
 type CreateProductProps = {
   recipes: PopulatedRecipe[] | null
+  categories: Category[] | null
 }
 
-const CreateProduct = ({ recipes }: CreateProductProps) => {
+const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
   const router = useRouter()
 
   const form = useForm<ProductSchema>({
@@ -200,6 +203,28 @@ const CreateProduct = ({ recipes }: CreateProductProps) => {
                   className='w-40 h-40 object-cover rounded-md'
                 />
               )}
+
+              <FormField
+                control={form.control}
+                name='categoriesIds'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col'>
+                    <FormLabel>Categorías</FormLabel>
+                    <MultiSelect
+                      options={
+                        categories?.map((category) => ({
+                          value: category.id,
+                          label: category.name,
+                        })) || []
+                      }
+                      selected={field.value || []}
+                      onChange={field.onChange}
+                      disabled={isSubmitting}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}

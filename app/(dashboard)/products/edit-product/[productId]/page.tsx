@@ -10,6 +10,7 @@ import { redirect } from "next/navigation"
 import { getProduct } from "@/data/products"
 import EditProduct from "@/components/dashboard/products/edit-product/edit-product"
 import { getRecipes } from "@/data/recipes"
+import { getCategories } from "@/data/categories"
 
 interface EditProductPageProps {
   params: {
@@ -19,15 +20,19 @@ interface EditProductPageProps {
 
 const EditProductPage = async ({ params }: EditProductPageProps) => {
   const { productId } = params
-  const recipes = await getRecipes({
-    include: {
-      product: true,
-    },
-  })
 
-  const product = await getProduct({
-    where: { id: productId },
-  })
+  const [product, recipes, categories] = await Promise.all([
+    getProduct({
+      where: { id: productId },
+      include: { categories: true },
+    }),
+    getRecipes({
+      include: {
+        product: true,
+      },
+    }),
+    getCategories(),
+  ])
 
   if (!product) {
     redirect("/welcome")
@@ -53,7 +58,11 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
 
       <h2 className='font-semibold text-lg'>Editar Producto</h2>
 
-      <EditProduct product={product} recipes={recipes} />
+      <EditProduct
+        product={product}
+        recipes={recipes}
+        categories={categories}
+      />
     </div>
   )
 }

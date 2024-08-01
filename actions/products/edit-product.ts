@@ -30,6 +30,7 @@ export async function editProduct({
     stock,
     show,
     recipeId,
+    categoriesIds,
   } = validatedFields.data
 
   try {
@@ -47,6 +48,9 @@ export async function editProduct({
         ...(recipeId
           ? { recipe: { connect: { id: recipeId } } }
           : { recipe: { disconnect: true } }),
+        categories: {
+          set: categoriesIds?.map((categoryId) => ({ id: categoryId })) || [],
+        },
       },
     })
 

@@ -35,4 +35,5 @@ export const productSchema = z.object({
     )
     .optional(),
   recipeId: z.string().nullable(),
+  categoriesIds: z.array(z.string()).optional(),
 })
