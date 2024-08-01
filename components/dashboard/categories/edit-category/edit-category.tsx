@@ -3,7 +3,7 @@
 import { Category } from "@prisma/client"
 import { toast } from "@/components/ui/use-toast"
 import { categorySchema } from "@/lib/validations/category-validation"
-import { PopulatedProduct } from "@/types/types"
+import { PopulatedCategory, PopulatedProduct } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
@@ -21,11 +21,12 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { editCategory } from "@/actions/categories/edit-category"
+import { MultiSelect } from "@/components/multi-select"
 
 type CategorySchema = z.infer<typeof categorySchema>
 
 type EditCategoryProps = {
-  category: Category
+  category: PopulatedCategory
   products: PopulatedProduct[] | null
 }
 
@@ -37,7 +38,10 @@ const EditCategory = ({ category, products }: EditCategoryProps) => {
 
   const form = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
-    defaultValues: category,
+    defaultValues: {
+      ...category,
+      productsIds: category.products?.map((product) => product.id) || [],
+    },
   })
 
   const {
@@ -86,6 +90,28 @@ const EditCategory = ({ category, products }: EditCategoryProps) => {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='productsIds'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col'>
+                    <FormLabel>Productos</FormLabel>
+                    <MultiSelect
+                      options={
+                        products?.map((product) => ({
+                          value: product.id,
+                          label: product.name,
+                        })) || []
+                      }
+                      selected={field.value || []}
+                      onChange={field.onChange}
+                      disabled={isSubmitting}
+                    />
                     <FormMessage />
                   </FormItem>
                 )}

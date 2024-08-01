@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { MultiSelect } from "@/components/multi-select"
 
 type CategorySchema = z.infer<typeof categorySchema>
 
@@ -87,6 +88,28 @@ const CreateCategory = ({ products }: CreateCategoryProps) => {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='productsIds'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col'>
+                    <FormLabel>Productos</FormLabel>
+                    <MultiSelect
+                      options={
+                        products?.map((product) => ({
+                          value: product.id,
+                          label: product.name,
+                        })) || []
+                      }
+                      selected={field.value || []}
+                      onChange={field.onChange}
+                      disabled={isSubmitting}
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
