@@ -25,6 +25,8 @@ import {
   Menu,
   Search,
   Box,
+  ChevronsUpDown,
+  Check,
 } from "lucide-react"
 
 export const Icons = {
@@ -53,6 +55,8 @@ export const Icons = {
   menu: Menu,
   search: Search,
   box: Box,
+  chevronsUpDown: ChevronsUpDown,
+  check: Check,
   google: ({ ...props }: LucideProps) => (
     <svg
       className='mr-2 h-4 w-4'
