@@ -23,7 +23,7 @@ const DeleteProduct = ({ product }: DeleteProductProps) => {
 
       if (res.success) {
         toast({
-          title: "Producto eliminada",
+          title: "Producto eliminado",
           description: `El producto ${res.success.name} ha sido eliminado.`,
         })
       }
