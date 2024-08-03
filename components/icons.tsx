@@ -28,6 +28,7 @@ import {
   ChevronsUpDown,
   Check,
   BadgePercent,
+  Truck,
 } from "lucide-react"
 
 export const Icons = {
@@ -59,6 +60,7 @@ export const Icons = {
   chevronsUpDown: ChevronsUpDown,
   check: Check,
   badgePercent: BadgePercent,
+  truck: Truck,
   google: ({ ...props }: LucideProps) => (
     <svg
       className='mr-2 h-4 w-4'
