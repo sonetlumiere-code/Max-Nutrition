@@ -20,20 +20,21 @@ interface EditRecipePageProps {
 const EditRecipePage = async ({ params }: EditRecipePageProps) => {
   const { recipeId } = params
 
-  const recipe = await getRecipe({
-    where: { id: recipeId },
-    include: { ingredients: true },
-  })
+  const [recipe, ingredients] = await Promise.all([
+    getRecipe({
+      where: { id: recipeId },
+      include: { ingredients: true },
+    }),
+    getIngredients({
+      orderBy: {
+        name: "asc",
+      },
+    }),
+  ])
 
   if (!recipe) {
     redirect("/welcome")
   }
-
-  const ingredients = await getIngredients({
-    orderBy: {
-      name: "asc",
-    },
-  })
 
   return (
     <div className='space-y-6'>

@@ -2,6 +2,7 @@ import {
   Category,
   Ingredient,
   Product,
+  Promotion,
   PromotionCategory,
   Recipe,
   RecipeIngredient,
@@ -24,4 +25,8 @@ export type PopulatedIngredient = Ingredient & {
 export type PopulatedCategory = Category & {
   products?: Category[]
   promotions?: PromotionCategory[]
+}
+
+export type PopulatedPromotion = Promotion & {
+  categories?: PromotionCategory[]
 }
