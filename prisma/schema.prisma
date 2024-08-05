@@ -239,24 +239,24 @@ model Category {
   @@map("categories")
 }
 
-model ShopSetting {
-  id               String         @id @default(cuid())
-  operationalHours String
-  shippingCosts    ShippingCost[]
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+// model ShopSetting {
+//   id               String         @id @default(cuid())
+//   operationalHours String
+//   shippingCosts    ShippingZone[]
+//   createdAt        DateTime       @default(now())
+//   updatedAt        DateTime       @updatedAt
 
-  @@map("shop_settings")
-}
+//   @@map("shop_settings")
+// }
 
-model ShippingCost {
-  id             String      @id @default(cuid())
-  neighborhood   String
-  cost           Float
-  shopSettingsId String
-  shopSetting    ShopSetting @relation(fields: [shopSettingsId], references: [id])
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+model ShippingZone {
+  id           String   @id @default(cuid())
+  neighborhood String
+  cost         Float
+  // shopSettingsId String
+  // shopSetting    ShopSetting @relation(fields: [shopSettingsId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("shipping_costs")
 }
