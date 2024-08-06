@@ -14,12 +14,12 @@ export async function createShippingZone(values: ShippingZoneSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { neighborhood, cost } = validatedFields.data
+  const { zone, cost } = validatedFields.data
 
   try {
     const shippingZone = await prisma.shippingZone.create({
       data: {
-        neighborhood,
+        zone,
         cost,
       },
     })

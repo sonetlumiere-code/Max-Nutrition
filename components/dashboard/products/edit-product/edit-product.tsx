@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { PopulatedProduct, PopulatedRecipe } from "@/types/types"
-import { Category, Product } from "@prisma/client"
+import { Category } from "@prisma/client"
 import { MultiSelect } from "@/components/multi-select"
 
 type ProductSchema = z.infer<typeof productSchema>

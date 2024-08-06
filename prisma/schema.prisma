@@ -250,13 +250,13 @@ model Category {
 // }
 
 model ShippingZone {
-  id           String   @id @default(cuid())
-  neighborhood String
-  cost         Float
+  id        String   @id @default(cuid())
+  zone      String
+  cost      Float    @default(0)
   // shopSettingsId String
   // shopSetting    ShopSetting @relation(fields: [shopSettingsId], references: [id])
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("shipping_costs")
 }
