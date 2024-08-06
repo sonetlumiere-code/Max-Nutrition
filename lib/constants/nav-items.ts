@@ -13,6 +13,6 @@ export const navItems: {
   { href: "/ingredients", label: "Ingredientes", icon: "wheat" },
   { href: "/customers", label: "Clientes", icon: "users" },
   { href: "/promotions", label: "Promociones", icon: "badgePercent" },
-  { href: "/shippings", label: "Envíos", icon: "truck" },
+  { href: "/shipping-zones", label: "Envíos", icon: "truck" },
   { href: "/analytics", label: "Analytics", icon: "lineChart" },
 ] as const

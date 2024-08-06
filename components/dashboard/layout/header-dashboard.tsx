@@ -28,7 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import SignOutButton from "../../sign-out-button"
-import { navItems } from "./nav-items"
+import { navItems } from "../../../lib/constants/nav-items"
 import { Icons } from "@/components/icons"
 import { usePathname } from "next/navigation"
 
