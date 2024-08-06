@@ -22,6 +22,8 @@ export const getShippingZone = async (params: {
     const shippingZone = await prisma.shippingZone.findFirst({
       ...params,
     })
+
+    return shippingZone
   } catch (error) {
     console.error(error)
     return null
