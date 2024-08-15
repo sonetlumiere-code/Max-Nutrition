@@ -129,6 +129,10 @@ export const menuData = [
         description:
           "Exquisita musaka griega con capas de berenjenas asadas, carne de cordero, salsa de tomate y bechamel gratinada.",
         price: 4000,
+        promotionalPrice: 0,
+        featured: false,
+        stock: true,
+        show: true,
         image: "img/musaka-berenj.jpg",
         recipeId: null,
         createdAt: new Date("2024-07-19T12:00:00Z"),

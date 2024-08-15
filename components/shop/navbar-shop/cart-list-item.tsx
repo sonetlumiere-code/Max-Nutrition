@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { CartItem, useCart } from "@/components/cart-provider"
 import { Button } from "@/components/ui/button"
 import { TableCell, TableRow } from "@/components/ui/table"
