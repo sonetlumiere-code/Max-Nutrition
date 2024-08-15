@@ -13,7 +13,7 @@ const ShopPage = async () => {
   const isAdmin = session?.user.role === Role.ADMIN
 
   return (
-    <CartProvider>
+    <>
       {/* <div>
         <nav>
           {isAdmin ? (
@@ -53,8 +53,10 @@ const ShopPage = async () => {
           </Link>
         )}
       </div> */}
-      <Shop />
-    </CartProvider>
+      <CartProvider>
+        <Shop />
+      </CartProvider>
+    </>
   )
 }
 
