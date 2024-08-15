@@ -4,13 +4,6 @@ import React, { useState, useEffect } from "react"
 import { menuData } from "./menudata"
 import ProductItem from "./product-item"
 import { useCart } from "@/components/cart-provider"
-import { Skeleton } from "@/components/ui/skeleton"
-import dynamic from "next/dynamic"
-
-const DynamicCartButton = dynamic(() => import("../navbar-shop/cart-button"), {
-  loading: () => <Skeleton className='w-6 h-6 rounded-full'></Skeleton>,
-  ssr: false,
-})
 
 const MenuShop = () => {
   const { items } = useCart()
@@ -64,7 +57,6 @@ const MenuShop = () => {
           </div>
         ))}
       </div>
-      <DynamicCartButton />
       {items && items.length > 0 ? (
         <div className='fixed bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4'>
           <button className='w-full bg-green-500 text-white py-4 text-center rounded-lg opacity-90 hover:opacity-100 shadow-xl'>
