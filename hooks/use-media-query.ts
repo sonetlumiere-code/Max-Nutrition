@@ -1,4 +1,3 @@
-// hooks/use-media-query.ts
 import { useEffect, useState } from "react"
 
 export function useMediaQuery(query: string) {
@@ -8,7 +7,7 @@ export function useMediaQuery(query: string) {
     const mediaQuery = window.matchMedia(query)
     const handleChange = () => setMatches(mediaQuery.matches)
     mediaQuery.addEventListener("change", handleChange)
-    handleChange() // Check on mount (callback with the current value)
+    handleChange()
     return () => mediaQuery.removeEventListener("change", handleChange)
   }, [query])
 

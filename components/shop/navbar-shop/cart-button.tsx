@@ -34,8 +34,9 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
 const CartButton = () => {
-  const { items } = useCart()
   const [open, setOpen] = React.useState(false)
+
+  const { items } = useCart()
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   const CartContent = () => (
