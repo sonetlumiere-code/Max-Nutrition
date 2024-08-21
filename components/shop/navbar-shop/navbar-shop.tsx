@@ -25,6 +25,7 @@ const CartNavButton = dynamic(() => import("./cart-nav-button"), {
 export default async function NavbarShop() {
   const session = await auth()
   const isAdmin = session?.user.role === Role.ADMIN
+
   return (
     <>
       {isAdmin ? (
@@ -65,9 +66,6 @@ export default async function NavbarShop() {
           <Link href='#' className='relative' prefetch={false}>
             <MapPin className='w-6 h-6 text-muted-foreground' />
           </Link>
-          {/* <DynamicCartButton /> */}
-
-          <CartNavButton />
 
           {/* <Link href='#' className='relative' prefetch={false}>
           <Bell className='w-6 h-6 text-muted-foreground' />
@@ -77,39 +75,43 @@ export default async function NavbarShop() {
         </Link> */}
 
           {session?.user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar className='h-9 w-9'>
-                  <AvatarImage src='/placeholder-user.jpg' />
-                  <AvatarFallback>
-                    {session?.user?.image ? (
-                      <img
-                        src={session.user.image}
-                        alt={session.user.name ?? "User"}
-                      />
-                    ) : (
-                      <User className='w-6 h-6' />
-                    )}
-                  </AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align='end'>
-                <DropdownMenuItem>
-                  <User className='w-4 h-4 mr-2' /> Mis datos
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <ScrollText className='w-4 h-4 mr-2' /> Pedidos
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className='p-0'>
-                  <SignOutButton>
-                    <Button type='button' variant='ghost'>
-                      <LogOut className='w-4 h-4 mr-2' /> Cerrar sesión
-                    </Button>
-                  </SignOutButton>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <>
+              <CartNavButton />
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className='h-9 w-9'>
+                    <AvatarImage src='/placeholder-user.jpg' />
+                    <AvatarFallback>
+                      {session?.user?.image ? (
+                        <img
+                          src={session.user.image}
+                          alt={session.user.name ?? "User"}
+                        />
+                      ) : (
+                        <User className='w-6 h-6' />
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align='end'>
+                  <DropdownMenuItem>
+                    <User className='w-4 h-4 mr-2' /> Mis datos
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <ScrollText className='w-4 h-4 mr-2' /> Pedidos
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className='p-0'>
+                    <SignOutButton>
+                      <Button type='button' variant='ghost'>
+                        <LogOut className='w-4 h-4 mr-2' /> Cerrar sesión
+                      </Button>
+                    </SignOutButton>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           ) : (
             <Link
               href='/login'
