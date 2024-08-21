@@ -21,6 +21,8 @@ type CartProviderState = {
   clearCart: () => void
   incrementQuantity: (id: string) => void
   decrementQuantity: (id: string) => void
+  open: boolean
+  setOpen: (value: boolean) => void
 }
 
 const initialState: CartProviderState = {
@@ -30,6 +32,8 @@ const initialState: CartProviderState = {
   clearCart: () => null,
   incrementQuantity: () => null,
   decrementQuantity: () => null,
+  open: false,
+  setOpen: () => null,
 }
 
 const CartProviderContext = createContext<CartProviderState>(initialState)
@@ -46,6 +50,8 @@ export function CartProvider({ children }: CartProviderProps) {
     }
     return initialState.items
   })
+
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(items))
@@ -98,6 +104,8 @@ export function CartProvider({ children }: CartProviderProps) {
     clearCart,
     incrementQuantity,
     decrementQuantity,
+    open,
+    setOpen,
   }
 
   return (

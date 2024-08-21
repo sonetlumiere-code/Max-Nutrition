@@ -11,7 +11,6 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Search, MapPin, User, ScrollText, LogOut } from "lucide-react"
 import dynamic from "next/dynamic"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Role } from "@prisma/client"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
@@ -19,8 +18,7 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import SignOutButton from "@/components/sign-out-button"
 
-const DynamicCartButton = dynamic(() => import("./cart-button"), {
-  loading: () => <Skeleton className='w-6 h-6 rounded-full'></Skeleton>,
+const CartNavButton = dynamic(() => import("./cart-nav-button"), {
   ssr: false,
 })
 
@@ -67,7 +65,10 @@ export default async function NavbarShop() {
           <Link href='#' className='relative' prefetch={false}>
             <MapPin className='w-6 h-6 text-muted-foreground' />
           </Link>
-          <DynamicCartButton />
+          {/* <DynamicCartButton /> */}
+
+          <CartNavButton />
+
           {/* <Link href='#' className='relative' prefetch={false}>
           <Bell className='w-6 h-6 text-muted-foreground' />
           <div className='absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium'>

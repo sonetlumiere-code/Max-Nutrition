@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { useCart } from "@/components/cart-provider"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,14 +28,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { MoveLeftIcon, ShoppingCart } from "lucide-react"
-import CartListItem from "./cart-list-item"
+import CartListItem from "../cart/cart-list-item"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
 const CartButton = () => {
-  const [open, setOpen] = React.useState(false)
-
-  const { items } = useCart()
+  const { items, open, setOpen } = useCart()
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   const CartContent = () => (
@@ -96,14 +93,6 @@ const CartButton = () => {
     return (
       <div className='relative flex items-center'>
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button variant='ghost'>
-              <ShoppingCart className='w-6 h-6 text-muted-foreground' />
-              <div className='absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium'>
-                {items.reduce((acc, curr) => acc + curr.quantity, 0)}
-              </div>
-            </Button>
-          </DialogTrigger>
           <DialogContent className='sm:max-w-[600px]'>
             <CartContent />
           </DialogContent>
@@ -115,14 +104,6 @@ const CartButton = () => {
   return (
     <div className='relative flex items-center'>
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger asChild>
-          <Button variant='ghost'>
-            <ShoppingCart className='w-6 h-6 text-muted-foreground' />
-            <div className='absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium'>
-              {items.reduce((acc, curr) => acc + curr.quantity, 0)}
-            </div>
-          </Button>
-        </DrawerTrigger>
         <DrawerContent className='min-h-[40vh]'>
           <CartContent />
         </DrawerContent>
