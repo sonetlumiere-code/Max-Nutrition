@@ -10,15 +10,15 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import {
   Table,
@@ -32,24 +32,16 @@ import CartListItem from "../cart/cart-list-item"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
-const CartButton = () => {
+const Cart = () => {
   const { items, open, setOpen } = useCart()
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
+  const createOrder = () => {
+    console.log(items)
+  }
+
   const CartContent = () => (
     <>
-      <DrawerHeader>
-        <DrawerTitle>Carrito</DrawerTitle>
-        {items.length > 0 ? (
-          <DrawerDescription>
-            Tus productos agregados al carrito actualmente
-          </DrawerDescription>
-        ) : (
-          <DrawerDescription>
-            <h3>No tienes productos agregados al carrito actualmente</h3>
-          </DrawerDescription>
-        )}
-      </DrawerHeader>
       {items.length > 0 ? (
         <ScrollArea className='lg:h-[30vh] h-[60vh]'>
           <Table className='border'>
@@ -71,21 +63,6 @@ const CartButton = () => {
           <ShoppingCart className='w-16 h-16 text-muted-foreground' />
         </div>
       )}
-      <DrawerFooter className='border-t-2 lg:border-t-0'>
-        {items.length > 1 ? <Button>Continuar con el pedido</Button> : null}
-
-        {items.length > 1 ? (
-          <DrawerClose asChild>
-            <Button variant='outline'>Cancelar</Button>
-          </DrawerClose>
-        ) : (
-          <DrawerClose asChild>
-            <Button variant='outline'>
-              <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
-            </Button>
-          </DrawerClose>
-        )}
-      </DrawerFooter>
     </>
   )
 
@@ -94,7 +71,36 @@ const CartButton = () => {
       <div className='relative flex items-center'>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className='sm:max-w-[600px]'>
+            <DialogHeader>
+              <DialogTitle>Carrito</DialogTitle>
+              {items.length > 0 ? (
+                <DialogDescription>
+                  Tus productos agregados al carrito actualmente
+                </DialogDescription>
+              ) : (
+                <DialogDescription>
+                  <h3>No tienes productos agregados al carrito actualmente</h3>
+                </DialogDescription>
+              )}
+            </DialogHeader>
             <CartContent />
+            <DialogFooter className='flex flex-col'>
+              {items.length > 1 ? (
+                <Button onClick={createOrder}>Continuar con el pedido</Button>
+              ) : null}
+
+              {items.length > 1 ? (
+                <DialogClose asChild>
+                  <Button variant='outline'>Cancelar</Button>
+                </DialogClose>
+              ) : (
+                <DialogClose asChild>
+                  <Button variant='outline'>
+                    <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+                  </Button>
+                </DialogClose>
+              )}
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -105,11 +111,40 @@ const CartButton = () => {
     <div className='relative flex items-center'>
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerContent className='min-h-[40vh]'>
+          <DrawerHeader>
+            <DrawerTitle>Carrito</DrawerTitle>
+            {items.length > 0 ? (
+              <DrawerDescription>
+                Tus productos agregados al carrito actualmente
+              </DrawerDescription>
+            ) : (
+              <DrawerDescription>
+                <h3>No tienes productos agregados al carrito actualmente</h3>
+              </DrawerDescription>
+            )}
+          </DrawerHeader>
           <CartContent />
+          <DrawerFooter className='border-t-2 lg:border-t-0'>
+            {items.length > 1 ? (
+              <Button onClick={createOrder}>Continuar con el pedido</Button>
+            ) : null}
+
+            {items.length > 1 ? (
+              <DrawerClose asChild>
+                <Button variant='outline'>Cancelar</Button>
+              </DrawerClose>
+            ) : (
+              <DrawerClose asChild>
+                <Button variant='outline'>
+                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+                </Button>
+              </DrawerClose>
+            )}
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </div>
   )
 }
 
-export default CartButton
+export default Cart

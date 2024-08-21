@@ -4,11 +4,11 @@ import NavbarShop from "./navbar-shop/navbar-shop"
 import ProductsList from "./products/products-list"
 import { auth } from "@/lib/auth/auth"
 
-const CartFixedButton = dynamic(() => import("./cart-fixed-button"), {
+const Cart = dynamic(() => import("./cart/cart"), {
   ssr: false,
 })
 
-const Cart = dynamic(() => import("./cart/cart"), {
+const CartFixedButton = dynamic(() => import("./cart-fixed-button"), {
   ssr: false,
 })
 

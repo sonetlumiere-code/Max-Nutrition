@@ -63,10 +63,9 @@ export default async function NavbarShop() {
           />
         </div>
         <div className='flex items-center gap-4'>
-          <Link href='#' className='relative' prefetch={false}>
+          {/* <Link href='#' className='relative' prefetch={false}>
             <MapPin className='w-6 h-6 text-muted-foreground' />
-          </Link>
-
+          </Link> */}
           {/* <Link href='#' className='relative' prefetch={false}>
           <Bell className='w-6 h-6 text-muted-foreground' />
           <div className='absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium'>
