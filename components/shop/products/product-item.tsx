@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import DialogMenu from "./dialog-menu"
-import DrawerMenu from "./drawer-menu"
+import DialogProductDetail from "./dialog-product-detail"
+import DrawerProductDetail from "./drawer-product-detail"
 import { Product } from "@prisma/client"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
@@ -16,9 +16,9 @@ const ProductItem: React.FC<ProductItemProps> = ({ item }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   return isDesktop ? (
-    <DialogMenu item={item} open={open} setOpen={setOpen} />
+    <DialogProductDetail item={item} open={open} setOpen={setOpen} />
   ) : (
-    <DrawerMenu item={item} open={open} setOpen={setOpen} />
+    <DrawerProductDetail item={item} open={open} setOpen={setOpen} />
   )
 }
 

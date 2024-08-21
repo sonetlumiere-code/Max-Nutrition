@@ -15,6 +15,7 @@ import { Minus, Plus } from "lucide-react"
 import { useCart } from "@/components/cart-provider"
 import { Product } from "@prisma/client"
 import { toast } from "@/components/ui/use-toast"
+import ProductCard from "./product-card"
 
 interface DialogMenuProps {
   item: Product
@@ -22,7 +23,11 @@ interface DialogMenuProps {
   setOpen: (open: boolean) => void
 }
 
-const DialogMenu: React.FC<DialogMenuProps> = ({ item, open, setOpen }) => {
+const DialogProductDetail: React.FC<DialogMenuProps> = ({
+  item,
+  open,
+  setOpen,
+}) => {
   const [quantity, setQuantity] = useState(1)
 
   const { addItem } = useCart()
@@ -37,23 +42,8 @@ const DialogMenu: React.FC<DialogMenuProps> = ({ item, open, setOpen }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <div className='grid grid-cols-[auto_1fr_auto] items-center gap-4 hover:cursor-pointer hover:shadow-sm'>
-          <img
-            src={item.image}
-            width='80'
-            height='80'
-            alt={item.name}
-            className='rounded-lg object-cover'
-          />
-          <div className='space-y-1'>
-            <h3 className='text-base text-left font-semibold'>{item.name}</h3>
-            <p className='text-sm text-left text-muted-foreground line-clamp-2'>
-              {item.description}
-            </p>
-          </div>
-          <p className='text-base font-semibold'>${item.price}</p>
-        </div>
+      <DialogTrigger>
+        <ProductCard product={item} />
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
@@ -115,4 +105,4 @@ const DialogMenu: React.FC<DialogMenuProps> = ({ item, open, setOpen }) => {
   )
 }
 
-export default DialogMenu
+export default DialogProductDetail

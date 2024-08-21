@@ -16,6 +16,7 @@ import { Minus, Plus } from "lucide-react"
 import { Product } from "@prisma/client"
 import { useCart } from "@/components/cart-provider"
 import { toast } from "@/components/ui/use-toast"
+import ProductCard from "./product-card"
 
 interface DrawerMenuProps {
   item: Product
@@ -23,7 +24,11 @@ interface DrawerMenuProps {
   setOpen: (open: boolean) => void
 }
 
-const DrawerMenu: React.FC<DrawerMenuProps> = ({ item, open, setOpen }) => {
+const DrawerProductDetail: React.FC<DrawerMenuProps> = ({
+  item,
+  open,
+  setOpen,
+}) => {
   const [quantity, setQuantity] = useState(1)
 
   const { addItem } = useCart()
@@ -38,23 +43,8 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ item, open, setOpen }) => {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <div className='grid grid-cols-[auto_1fr_auto] items-center gap-4 hover:cursor-pointer hover:shadow-sm'>
-          <img
-            src={item.image}
-            width='80'
-            height='80'
-            alt={item.name}
-            className='rounded-lg object-cover'
-          />
-          <div className='space-y-1'>
-            <h3 className='text-base text-left font-semibold'>{item.name}</h3>
-            <p className='text-sm text-left text-muted-foreground line-clamp-2'>
-              {item.description}
-            </p>
-          </div>
-          <p className='text-base font-semibold'>${item.price}</p>
-        </div>
+      <DrawerTrigger>
+        <ProductCard product={item} />
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className='text-left'>
@@ -117,4 +107,4 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ item, open, setOpen }) => {
   )
 }
 
-export default DrawerMenu
+export default DrawerProductDetail
