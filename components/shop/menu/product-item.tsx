@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import { useState } from "react"
 import DialogMenu from "./dialog-menu"
 import DrawerMenu from "./drawer-menu"
 import { Product } from "@prisma/client"
