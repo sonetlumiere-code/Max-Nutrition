@@ -74,15 +74,14 @@ export default function HeaderDashboard() {
           <div className='mt-auto'>
             <Card>
               <CardHeader>
-                <CardTitle>Upgrade to Pro</CardTitle>
+                <CardTitle>Abrir tienda</CardTitle>
                 <CardDescription>
-                  Unlock all features and get unlimited access to our support
-                  team.
+                  Horario activo: 7:00 hs a 23:00 hs
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button size='sm' className='w-full'>
-                  Upgrade
+                  Abrir tienda
                 </Button>
               </CardContent>
             </Card>

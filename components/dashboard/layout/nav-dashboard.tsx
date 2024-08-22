@@ -57,8 +57,7 @@ export default function NavDashboard() {
             <CardHeader className='p-2 pt-0 md:p-4'>
               <CardTitle>Abrir tienda</CardTitle>
               <CardDescription>
-                Unlock all features and get unlimited access to our support
-                team.
+                Horario activo: 7:00 hs a 23:00 hs
               </CardDescription>
             </CardHeader>
             <CardContent className='p-2 pt-0 md:p-4 md:pt-0'>
