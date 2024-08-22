@@ -33,9 +33,6 @@ type EditCategoryProps = {
 const EditCategory = ({ category, products }: EditCategoryProps) => {
   const router = useRouter()
 
-  console.log(category)
-  console.log(products)
-
   const form = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
     defaultValues: {

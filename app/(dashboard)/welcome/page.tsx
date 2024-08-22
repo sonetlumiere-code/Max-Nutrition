@@ -3,14 +3,13 @@ import { auth } from "@/lib/auth/auth"
 export default async function WelcomePage() {
   const session = await auth()
 
+  console.log(session)
+
   return (
     <>
       <div className='flex items-center'>
         <h1 className='text-lg font-semibold md:text-2xl'>Bienvenida Xime!</h1>
       </div>
-      {/* <small>
-        <pre>{JSON.stringify(session, null, 4)}</pre>
-      </small> */}
     </>
   )
 }

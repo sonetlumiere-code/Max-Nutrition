@@ -31,8 +31,6 @@ type CreateCategoryProps = {
 const CreateCategory = ({ products }: CreateCategoryProps) => {
   const router = useRouter()
 
-  console.log(products)
-
   const form = useForm<CategorySchema>({
     resolver: zodResolver(categorySchema),
     defaultValues: {

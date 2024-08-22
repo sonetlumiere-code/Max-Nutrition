@@ -33,7 +33,7 @@ export default function CustomersPage() {
       <Card>
         <CardHeader>
           <CardDescription>
-            Administra tus productos y visualiza su rendimiento en ventas.
+            Administra tus clientes y visualiza su información.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -44,10 +44,10 @@ export default function CustomersPage() {
                   <span className='sr-only'>Imagen</span>
                 </TableHead>
                 <TableHead>Nombre</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead className='hidden md:table-cell'>Precio</TableHead>
+                <TableHead>Dirección</TableHead>
+                <TableHead>Ciudad</TableHead>
                 <TableHead className='hidden md:table-cell'>
-                  Ventas Totales
+                  Código Postal
                 </TableHead>
                 <TableHead className='hidden md:table-cell'>
                   Creado el
@@ -62,14 +62,10 @@ export default function CustomersPage() {
                 <TableCell className='hidden sm:table-cell'>
                   <CircleUser className='h-8 w-8 text-muted-foreground' />
                 </TableCell>
-                <TableCell className='font-medium'>
-                  Máquina de Limonada Láser
-                </TableCell>
-                <TableCell>
-                  <Badge variant='outline'>Borrador</Badge>
-                </TableCell>
-                <TableCell className='hidden md:table-cell'>$499.99</TableCell>
-                <TableCell className='hidden md:table-cell'>25</TableCell>
+                <TableCell className='font-medium'>Juan Pérez</TableCell>
+                <TableCell>Calle Falsa 123</TableCell>
+                <TableCell>Ciudad de México</TableCell>
+                <TableCell className='hidden md:table-cell'>01234</TableCell>
                 <TableCell className='hidden md:table-cell'>
                   2023-07-12 10:42 AM
                 </TableCell>
@@ -93,14 +89,10 @@ export default function CustomersPage() {
                 <TableCell className='hidden sm:table-cell'>
                   <CircleUser className='h-8 w-8 text-muted-foreground' />
                 </TableCell>
-                <TableCell className='font-medium'>
-                  Auriculares Hypernova
-                </TableCell>
-                <TableCell>
-                  <Badge variant='outline'>Activo</Badge>
-                </TableCell>
-                <TableCell className='hidden md:table-cell'>$129.99</TableCell>
-                <TableCell className='hidden md:table-cell'>100</TableCell>
+                <TableCell className='font-medium'>Ana López</TableCell>
+                <TableCell>Avenida Siempre Viva 742</TableCell>
+                <TableCell>Guadalajara</TableCell>
+                <TableCell className='hidden md:table-cell'>56789</TableCell>
                 <TableCell className='hidden md:table-cell'>
                   2023-10-18 03:21 PM
                 </TableCell>
@@ -124,14 +116,10 @@ export default function CustomersPage() {
                 <TableCell className='hidden sm:table-cell'>
                   <CircleUser className='h-8 w-8 text-muted-foreground' />
                 </TableCell>
-                <TableCell className='font-medium'>
-                  Lámpara de Escritorio AeroGlow
-                </TableCell>
-                <TableCell>
-                  <Badge variant='outline'>Activo</Badge>
-                </TableCell>
-                <TableCell className='hidden md:table-cell'>$39.99</TableCell>
-                <TableCell className='hidden md:table-cell'>50</TableCell>
+                <TableCell className='font-medium'>Carlos Sánchez</TableCell>
+                <TableCell>Calle Principal 45</TableCell>
+                <TableCell>Monterrey</TableCell>
+                <TableCell className='hidden md:table-cell'>34567</TableCell>
                 <TableCell className='hidden md:table-cell'>
                   2023-11-29 08:15 AM
                 </TableCell>
@@ -155,14 +143,10 @@ export default function CustomersPage() {
                 <TableCell className='hidden sm:table-cell'>
                   <CircleUser className='h-8 w-8 text-muted-foreground' />
                 </TableCell>
-                <TableCell className='font-medium'>
-                  Bebida Energética TechTonic
-                </TableCell>
-                <TableCell>
-                  <Badge variant='secondary'>Borrador</Badge>
-                </TableCell>
-                <TableCell className='hidden md:table-cell'>$2.99</TableCell>
-                <TableCell className='hidden md:table-cell'>0</TableCell>
+                <TableCell className='font-medium'>Lucía Gómez</TableCell>
+                <TableCell>Avenida Las Flores 678</TableCell>
+                <TableCell>Tijuana</TableCell>
+                <TableCell className='hidden md:table-cell'>89012</TableCell>
                 <TableCell className='hidden md:table-cell'>
                   2023-12-25 11:59 PM
                 </TableCell>
@@ -186,47 +170,12 @@ export default function CustomersPage() {
                 <TableCell className='hidden sm:table-cell'>
                   <CircleUser className='h-8 w-8 text-muted-foreground' />
                 </TableCell>
-                <TableCell className='font-medium'>
-                  Controlador Pro Gamer Gear
-                </TableCell>
-                <TableCell>
-                  <Badge variant='outline'>Activo</Badge>
-                </TableCell>
-                <TableCell className='hidden md:table-cell'>$59.99</TableCell>
-                <TableCell className='hidden md:table-cell'>75</TableCell>
+                <TableCell className='font-medium'>Diego Rodríguez</TableCell>
+                <TableCell>Calle Secundaria 987</TableCell>
+                <TableCell>Querétaro</TableCell>
+                <TableCell className='hidden md:table-cell'>23456</TableCell>
                 <TableCell className='hidden md:table-cell'>
                   2024-01-01 12:00 AM
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button aria-haspopup='true' size='icon' variant='ghost'>
-                        <MoreHorizontal className='h-4 w-4' />
-                        <span className='sr-only'>Mostrar menú</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align='end'>
-                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                      <DropdownMenuItem>Editar</DropdownMenuItem>
-                      <DropdownMenuItem>Eliminar</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className='hidden sm:table-cell'>
-                  <CircleUser className='h-8 w-8 text-muted-foreground' />
-                </TableCell>
-                <TableCell className='font-medium'>
-                  Visor de Realidad Virtual Luminous
-                </TableCell>
-                <TableCell>
-                  <Badge variant='outline'>Activo</Badge>
-                </TableCell>
-                <TableCell className='hidden md:table-cell'>$199.99</TableCell>
-                <TableCell className='hidden md:table-cell'>30</TableCell>
-                <TableCell className='hidden md:table-cell'>
-                  2024-02-14 02:14 PM
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -249,7 +198,7 @@ export default function CustomersPage() {
         </CardContent>
         <CardFooter>
           <div className='text-xs text-muted-foreground'>
-            Mostrando <strong>1-10</strong> de <strong>32</strong> productos
+            Mostrando <strong>1-5</strong> de <strong>32</strong> clientes
           </div>
         </CardFooter>
       </Card>

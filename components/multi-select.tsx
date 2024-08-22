@@ -82,10 +82,7 @@ function MultiSelect({
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal={true} {...props}>
-      <PopoverTrigger
-        asChild
-        className={cn("hover:bg-transparent hover:border-ring", className)}
-      >
+      <PopoverTrigger asChild className={cn("hover:bg-transparent", className)}>
         <Button
           variant='outline'
           role='combobox'
