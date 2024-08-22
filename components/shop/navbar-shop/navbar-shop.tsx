@@ -45,7 +45,7 @@ export default async function NavbarShop() {
         </header>
       ) : null}
       <header className='flex items-center justify-between bg-white shadow-sm px-4 sm:px-6 lg:px-8 py-4'>
-        <Link href='#' className='flex items-center gap-2' prefetch={false}>
+        <Link href='/' className='flex items-center gap-2' prefetch={false}>
           <img
             src='img/mxm-logo.png'
             width='116'
@@ -79,7 +79,7 @@ export default async function NavbarShop() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Avatar className='h-9 w-9'>
+                  <Avatar className='h-9 w-9 cursor-pointer'>
                     <AvatarImage src='/placeholder-user.jpg' />
                     <AvatarFallback>
                       {session?.user?.image ? (
@@ -101,13 +101,11 @@ export default async function NavbarShop() {
                     <ScrollText className='w-4 h-4 mr-2' /> Pedidos
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className='p-0'>
-                    <SignOutButton>
-                      <Button type='button' variant='ghost'>
-                        <LogOut className='w-4 h-4 mr-2' /> Cerrar sesión
-                      </Button>
-                    </SignOutButton>
-                  </DropdownMenuItem>
+                  <SignOutButton>
+                    <DropdownMenuItem>
+                      <LogOut className='w-4 h-4 mr-2' /> Cerrar sesión
+                    </DropdownMenuItem>
+                  </SignOutButton>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>

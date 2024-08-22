@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
@@ -27,12 +28,10 @@ export default function SignupPage() {
         <div className='relative z-20 flex items-center'>
           <Link href='/' className='block'>
             <span className='sr-only'>Home</span>
-            <Image
-              src='/img/auth.png'
-              alt='Máxima Nutrición logo'
-              height={36}
-              width={120}
-              quality={100}
+            <img
+              src='img/mxm-logo.png'
+              alt='MXM Máxima Nutrición'
+              className='mx-auto py-4 invert'
             />
           </Link>
         </div>

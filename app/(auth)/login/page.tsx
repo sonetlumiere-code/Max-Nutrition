@@ -1,9 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 import { Metadata } from "next"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import Image from "next/image"
 import LoginForm from "@/components/auth/login-form"
 import { Suspense } from "react"
 
@@ -31,20 +31,17 @@ export default function LoginPage() {
         <div className='flex flex-col space-y-2 text-center'>
           <Link href='/' className='block'>
             <span className='sr-only'>Home</span>
-            <Image
-              src='/img/auth.png'
-              alt='Máxima Nutrición logo'
-              height={36}
-              width={120}
-              quality={100}
+            <img
+              src='img/mxm-logo.png'
+              alt='MXM Máxima Nutrición'
               className='mx-auto py-4'
             />
           </Link>
-          <h1 className='text-2xl font-semibold tracking-tight'>
+          {/* <h1 className='text-2xl font-semibold tracking-tight'>
             Bienvenido de nuevo
-          </h1>
+          </h1> */}
           <p className='text-sm text-muted-foreground'>
-            Introduce tu correo para iniciar sesión
+            Ingresa tus credenciales para iniciar sesión
           </p>
         </div>
         <Suspense>
