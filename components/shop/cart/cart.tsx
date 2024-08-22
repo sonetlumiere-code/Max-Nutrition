@@ -82,11 +82,11 @@ const Cart = () => {
 
             <CartContent />
             <DialogFooter className='flex flex-col'>
-              {items.length > 1 ? (
+              {items.length >= 1 ? (
                 <Button onClick={createOrder}>Continuar con el pedido</Button>
               ) : null}
 
-              {items.length > 1 ? (
+              {items.length >= 1 ? (
                 <DialogClose asChild>
                   <Button variant='outline'>Cancelar</Button>
                 </DialogClose>
@@ -118,11 +118,11 @@ const Cart = () => {
           </DrawerHeader>
           <CartContent />
           <DrawerFooter className='border-t-2 lg:border-t-0'>
-            {items.length > 1 ? (
+            {items.length >= 1 ? (
               <Button onClick={createOrder}>Continuar con el pedido</Button>
             ) : null}
 
-            {items.length > 1 ? (
+            {items.length >= 1 ? (
               <DrawerClose asChild>
                 <Button variant='outline'>Cancelar</Button>
               </DrawerClose>

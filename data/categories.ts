@@ -5,7 +5,12 @@ import { PopulatedCategory } from "@/types/types"
 
 export const getCategories = async () => {
   try {
-    const categories = await prisma.category.findMany()
+    const categories = await prisma.category.findMany({
+      include: {
+        products: true,
+        promotions: true,
+      },
+    })
 
     return categories
   } catch (error) {

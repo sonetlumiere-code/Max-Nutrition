@@ -18,14 +18,14 @@ import { useCart } from "@/components/cart-provider"
 import { toast } from "@/components/ui/use-toast"
 import ProductCard from "./product-card"
 
-interface DrawerMenuProps {
-  item: Product
+interface DrawerProductDetailsProps {
+  product: Product
   open: boolean
   setOpen: (open: boolean) => void
 }
 
-const DrawerProductDetail: React.FC<DrawerMenuProps> = ({
-  item,
+const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
+  product,
   open,
   setOpen,
 }) => {
@@ -34,7 +34,7 @@ const DrawerProductDetail: React.FC<DrawerMenuProps> = ({
   const { addItem } = useCart()
 
   const addToCart = () => {
-    addItem(item, quantity)
+    addItem(product, quantity)
     setOpen(false)
     toast({
       title: "Item agregado al carrito",
@@ -44,18 +44,22 @@ const DrawerProductDetail: React.FC<DrawerMenuProps> = ({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger>
-        <ProductCard product={item} />
+        <ProductCard product={product} />
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <img
-            src={item.image}
-            alt={item.name}
+            src={
+              product.image
+                ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${product.image}`
+                : "/img/no-image.jpg"
+            }
+            alt={product.name}
             className='rounded-lg w-full h-[200px] object-cover'
           />
-          <DrawerTitle className='text-left py-2'>{item.name}</DrawerTitle>
+          <DrawerTitle className='text-left py-2'>{product.name}</DrawerTitle>
           <DrawerDescription className='text-left'>
-            {item.description}
+            {product.description}
           </DrawerDescription>
         </DrawerHeader>
         {/* <RadioGroup defaultValue={item.options[0].value} className='p-4'>
@@ -70,7 +74,7 @@ const DrawerProductDetail: React.FC<DrawerMenuProps> = ({
           <hr />
           <div className='flex items-center justify-between'>
             <h3 className='font-bold'>Tu pedido</h3>
-            <h3 className='font-bold'>${item.price}</h3>
+            <h3 className='font-bold'>${product.price}</h3>
           </div>
           <div className='flex items-center gap-4'>
             <div className='flex items-center gap-2 border-2 rounded-md'>

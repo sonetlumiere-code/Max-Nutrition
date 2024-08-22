@@ -1,15 +1,19 @@
-import { menuData } from "./menudata"
+import { PopulatedCategory } from "@/types/types"
 import ProductItem from "./product-item"
 
-const ProductsList = () => {
+type ProductsListProps = {
+  categories: PopulatedCategory[]
+}
+
+const ProductsList = ({ categories }: ProductsListProps) => {
   return (
     <div className='grid gap-8'>
-      {menuData.map((category) => (
+      {categories.map((category) => (
         <div className='grid gap-4' key={category.id}>
-          <h2 className='text-xl font-semibold'>{category.category}</h2>
+          <h2 className='text-xl font-semibold'>{category.name}</h2>
           <div className='grid gap-6'>
-            {category.items.map((item) => (
-              <ProductItem key={item.id} item={item} />
+            {category.products?.map((product) => (
+              <ProductItem key={product.id} product={product} />
             ))}
           </div>
         </div>

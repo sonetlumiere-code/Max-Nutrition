@@ -17,14 +17,14 @@ import { Product } from "@prisma/client"
 import { toast } from "@/components/ui/use-toast"
 import ProductCard from "./product-card"
 
-interface DialogMenuProps {
-  item: Product
+interface DialogProductDetailProps {
+  product: Product
   open: boolean
   setOpen: (open: boolean) => void
 }
 
-const DialogProductDetail: React.FC<DialogMenuProps> = ({
-  item,
+const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
+  product,
   open,
   setOpen,
 }) => {
@@ -33,7 +33,7 @@ const DialogProductDetail: React.FC<DialogMenuProps> = ({
   const { addItem } = useCart()
 
   const addToCart = () => {
-    addItem(item, quantity)
+    addItem(product, quantity)
     setOpen(false)
     toast({
       title: "Item agregado al carrito",
@@ -43,18 +43,22 @@ const DialogProductDetail: React.FC<DialogMenuProps> = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
-        <ProductCard product={item} />
+        <ProductCard product={product} />
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <img
-            src={item.image}
-            alt={item.name}
+            src={
+              product.image
+                ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${product.image}`
+                : "/img/no-image.jpg"
+            }
+            alt={product.name}
             className='rounded-lg w-full h-[200px] object-cover mt-5'
           />
-          <DialogTitle className='text-left py-2'>{item.name}</DialogTitle>
+          <DialogTitle className='text-left py-2'>{product.name}</DialogTitle>
           <DialogDescription className='text-left'>
-            {item.description}
+            {product.description}
           </DialogDescription>
         </DialogHeader>
         {/* <RadioGroup defaultValue={item.options[0].value} className='pt-4'>
@@ -67,7 +71,7 @@ const DialogProductDetail: React.FC<DialogMenuProps> = ({
         </RadioGroup> */}
         <div className='flex items-center justify-between'>
           <h3 className='font-bold'>Tu pedido</h3>
-          <h3 className='font-bold'>${item.price}</h3>
+          <h3 className='font-bold'>${product.price}</h3>
         </div>
         <div className='flex items-center gap-4'>
           <div className='flex items-center gap-2 border-2 rounded-md'>

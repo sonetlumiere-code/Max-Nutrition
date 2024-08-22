@@ -3,6 +3,7 @@ import { CartProvider } from "../cart-provider"
 import NavbarShop from "./navbar-shop/navbar-shop"
 import ProductsList from "./products/products-list"
 import { auth } from "@/lib/auth/auth"
+import { getCategories } from "@/data/categories"
 
 const Cart = dynamic(() => import("./cart/cart"), {
   ssr: false,
@@ -14,6 +15,7 @@ const CartFixedButton = dynamic(() => import("./cart-fixed-button"), {
 
 const Shop = async () => {
   const session = await auth()
+  const categories = await getCategories()
 
   return (
     <CartProvider session={session}>
@@ -30,7 +32,7 @@ const Shop = async () => {
           </p>
         </header>
 
-        <ProductsList />
+        {categories && <ProductsList categories={categories} />}
 
         {session?.user && <CartFixedButton />}
       </div>

@@ -11,7 +11,11 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
     <TableRow>
       <TableCell className='font-medium text-left space-x-2 flex w-11/12'>
         <img
-          src={cartItem.product.image}
+          src={
+            cartItem.product.image
+              ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${cartItem.product.image}`
+              : "/img/no-image.jpg"
+          }
           className='h-10 w-10 rounded-md'
           alt={cartItem.product.name}
         />

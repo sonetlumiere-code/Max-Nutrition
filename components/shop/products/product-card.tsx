@@ -9,7 +9,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <div className='grid grid-cols-[auto_1fr_auto] items-center gap-4 hover:cursor-pointer hover:shadow-sm'>
       <img
-        src={product.image}
+        src={
+          product.image
+            ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${product.image}`
+            : "/img/no-image.jpg"
+        }
         width='80'
         height='80'
         alt={product.name}

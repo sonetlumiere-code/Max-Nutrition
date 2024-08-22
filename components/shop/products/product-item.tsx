@@ -7,18 +7,18 @@ import { Product } from "@prisma/client"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
 interface ProductItemProps {
-  item: Product
+  product: Product
 }
 
-const ProductItem: React.FC<ProductItemProps> = ({ item }) => {
+const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
   const [open, setOpen] = useState(false)
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   return isDesktop ? (
-    <DialogProductDetail item={item} open={open} setOpen={setOpen} />
+    <DialogProductDetail product={product} open={open} setOpen={setOpen} />
   ) : (
-    <DrawerProductDetail item={item} open={open} setOpen={setOpen} />
+    <DrawerProductDetail product={product} open={open} setOpen={setOpen} />
   )
 }
 
