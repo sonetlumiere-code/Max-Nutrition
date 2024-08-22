@@ -16,7 +16,7 @@ const Shop = async () => {
   const session = await auth()
 
   return (
-    <CartProvider>
+    <CartProvider session={session}>
       <Cart />
 
       <NavbarShop />

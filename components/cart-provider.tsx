@@ -1,6 +1,7 @@
 "use client"
 
 import { Product } from "@prisma/client"
+import { Session } from "next-auth"
 import {
   createContext,
   useContext,
@@ -40,12 +41,13 @@ const CartProviderContext = createContext<CartProviderState>(initialState)
 
 type CartProviderProps = {
   children: ReactNode
+  session: Session | null
 }
 
-export function CartProvider({ children }: CartProviderProps) {
+export function CartProvider({ children, session }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>(() => {
-    if (typeof window !== "undefined") {
-      const storedCart = localStorage.getItem("cart")
+    if (typeof window !== "undefined" && session?.user.id) {
+      const storedCart = localStorage.getItem(`cart_${session.user.id}`)
       return storedCart ? JSON.parse(storedCart) : initialState.items
     }
     return initialState.items
@@ -54,8 +56,10 @@ export function CartProvider({ children }: CartProviderProps) {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(items))
-  }, [items])
+    if (session?.user.id) {
+      localStorage.setItem(`cart_${session.user.id}`, JSON.stringify(items))
+    }
+  }, [items, session?.user.id])
 
   const addItem = (product: Product, quantity: number) => {
     setItems((prevItems) => {
