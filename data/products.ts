@@ -35,3 +35,20 @@ export const getProduct = async (params: {
     return null
   }
 }
+
+export const getProductsByIds = async (ids: string[]) => {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    })
+
+    return products
+  } catch (error) {
+    console.error("Error fetching products by IDs:", error)
+    return null
+  }
+}

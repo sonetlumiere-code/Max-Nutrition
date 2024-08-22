@@ -178,14 +178,13 @@ model Product {
 }
 
 model Order {
-  id          String      @id @default(cuid())
-  customerId  String
-  orderDate   DateTime
-  totalAmount Float
-  customer    Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  items       OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id         String      @id @default(cuid())
+  customerId String
+  total      Float
+  customer   Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  items      OrderItem[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
   @@map("orders")
 }

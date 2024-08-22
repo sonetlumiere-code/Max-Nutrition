@@ -1,0 +1,55 @@
+"use server"
+
+import { getProductsByIds } from "@/data/products"
+import prisma from "@/lib/db/db"
+import { orderSchema } from "@/lib/validations/order-validation"
+import { z } from "zod"
+
+type OrderSchema = z.infer<typeof orderSchema>
+
+export async function createOrder(values: OrderSchema) {
+  const validatedFields = orderSchema.safeParse(values)
+
+  if (!validatedFields.success) {
+    return { error: "Campos inválidos." }
+  }
+
+  const { customerId, items } = validatedFields.data
+  const productsIds = items.map((item) => item.productId)
+
+  try {
+    const products = await getProductsByIds(productsIds)
+
+    if (!products || products.length !== productsIds.length) {
+      return { error: "Invalid product id." }
+    }
+
+    const total = items.reduce((acc, item) => {
+      const product = products.find((p) => p.id === item.productId)
+      return acc + (product ? product.price * item.quantity : 0)
+    }, 0)
+
+    const order = await prisma.order.create({
+      data: {
+        customerId,
+        total,
+        items: {
+          create: items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          })),
+        },
+      },
+      include: {
+        items: true,
+      },
+    })
+
+    // revalidatePath("/orders")
+
+    return { order }
+  } catch (error) {
+    console.error("Error creating order:", error)
+    return { error: "Hubo un error al crear la orden." }
+  }
+}
