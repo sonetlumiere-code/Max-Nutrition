@@ -73,16 +73,13 @@ const Cart = () => {
           <DialogContent className='sm:max-w-[600px]'>
             <DialogHeader>
               <DialogTitle>Carrito</DialogTitle>
-              {items.length > 0 ? (
-                <DialogDescription>
-                  Tus productos agregados al carrito actualmente
-                </DialogDescription>
-              ) : (
-                <DialogDescription>
-                  <h3>No tienes productos agregados al carrito actualmente</h3>
-                </DialogDescription>
-              )}
+              <DialogDescription>
+                {items.length > 0
+                  ? "Tus productos agregados al carrito actualmente"
+                  : "No tienes productos agregados al carrito actualmente"}
+              </DialogDescription>
             </DialogHeader>
+
             <CartContent />
             <DialogFooter className='flex flex-col'>
               {items.length > 1 ? (
@@ -113,15 +110,11 @@ const Cart = () => {
         <DrawerContent className='min-h-[40vh]'>
           <DrawerHeader>
             <DrawerTitle>Carrito</DrawerTitle>
-            {items.length > 0 ? (
-              <DrawerDescription>
-                Tus productos agregados al carrito actualmente
-              </DrawerDescription>
-            ) : (
-              <DrawerDescription>
-                <h3>No tienes productos agregados al carrito actualmente</h3>
-              </DrawerDescription>
-            )}
+            <DrawerDescription>
+              {items.length > 0
+                ? "Tus productos agregados al carrito actualmente"
+                : "No tienes productos agregados al carrito actualmente"}
+            </DrawerDescription>
           </DrawerHeader>
           <CartContent />
           <DrawerFooter className='border-t-2 lg:border-t-0'>

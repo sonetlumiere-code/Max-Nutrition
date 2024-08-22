@@ -6,6 +6,7 @@ import { Minus, Plus, Trash2 } from "lucide-react"
 
 const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
   const { decrementQuantity, incrementQuantity, removeItem } = useCart()
+
   return (
     <TableRow>
       <TableCell className='font-medium text-left space-x-2 flex w-11/12'>
