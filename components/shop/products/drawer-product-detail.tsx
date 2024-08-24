@@ -17,6 +17,8 @@ import { Product } from "@prisma/client"
 import { useCart } from "@/components/cart-provider"
 import { toast } from "@/components/ui/use-toast"
 import ProductCard from "./product-card"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
 
 interface DrawerProductDetailsProps {
   product: Product
@@ -62,14 +64,19 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
             {product.description}
           </DrawerDescription>
         </DrawerHeader>
-        {/* <RadioGroup defaultValue={item.options[0].value} className='p-4'>
-          {item.options.map((option) => (
+
+        <RadioGroup defaultValue={"con-sal"} className='p-4'>
+          {[
+            { value: "con-sal", label: "Con Sal" },
+            { value: "sin-sal", label: "Sin Sal" },
+          ].map((option) => (
             <div className='flex items-center space-x-2' key={option.value}>
               <RadioGroupItem value={option.value} id={option.value} />
               <Label htmlFor={option.value}>{option.label}</Label>
             </div>
           ))}
-        </RadioGroup> */}
+        </RadioGroup>
+
         <DrawerFooter>
           <hr />
           <div className='flex items-center justify-between'>
