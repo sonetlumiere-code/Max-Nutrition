@@ -22,7 +22,8 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
         <div className='space-y-2'>
           <h3>{cartItem.product.name}</h3>
           <p className='text-muted-foreground'>
-            Con sal - ${cartItem.product.price}
+            {cartItem.variation.withSalt === "yes" ? "Con sal" : "Sin sal"} - $
+            {cartItem.product.price}
           </p>
         </div>
       </TableCell>
@@ -34,8 +35,8 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
             className='rounded-full p-1 hover:bg-muted transition-colors'
             onClick={
               cartItem.quantity === 1
-                ? () => removeItem(cartItem.product.id)
-                : () => decrementQuantity(cartItem.product.id)
+                ? () => removeItem(cartItem.id)
+                : () => decrementQuantity(cartItem.id)
             }
           >
             {cartItem.quantity === 1 ? (
@@ -51,7 +52,7 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
             variant='link'
             size='icon'
             className='rounded-full p-1 hover:bg-muted transition-colors'
-            onClick={() => incrementQuantity(cartItem.product.id)}
+            onClick={() => incrementQuantity(cartItem.id)}
           >
             <Plus className='w-4 h-4' />
           </Button>

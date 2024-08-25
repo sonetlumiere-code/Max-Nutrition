@@ -32,11 +32,12 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
   setOpen,
 }) => {
   const [quantity, setQuantity] = useState(1)
+  const [variations, setVariations] = useState({ withSalt: "yes" })
 
   const { addItem } = useCart()
 
   const addToCart = () => {
-    addItem(product, quantity)
+    addItem(product, quantity, variations)
     setOpen(false)
     toast({
       title: "Item agregado al carrito",
@@ -65,10 +66,14 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
           </DrawerDescription>
         </DrawerHeader>
 
-        <RadioGroup defaultValue={"con-sal"} className='p-4'>
+        <RadioGroup
+          value={variations.withSalt}
+          onValueChange={(value) => setVariations({ withSalt: value })}
+          className='p-4'
+        >
           {[
-            { value: "con-sal", label: "Con Sal" },
-            { value: "sin-sal", label: "Sin Sal" },
+            { value: "yes", label: "Con Sal" },
+            { value: "no", label: "Sin Sal" },
           ].map((option) => (
             <div className='flex items-center space-x-2' key={option.value}>
               <RadioGroupItem value={option.value} id={option.value} />

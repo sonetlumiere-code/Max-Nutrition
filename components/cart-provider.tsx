@@ -2,6 +2,7 @@
 
 import { Product } from "@prisma/client"
 import { Session } from "next-auth"
+import { v4 as uuidv4 } from "uuid"
 import {
   createContext,
   useContext,
@@ -9,15 +10,18 @@ import {
   ReactNode,
   useEffect,
 } from "react"
+import { Variation } from "@/types/types"
 
 export type CartItem = {
+  id: string
   product: Product
   quantity: number
+  variation: Variation
 }
 
 type CartProviderState = {
   items: CartItem[]
-  addItem: (product: Product, quantity: number) => void
+  addItem: (product: Product, quantity: number, variation: Variation) => void
   removeItem: (id: string) => void
   clearCart: () => void
   incrementQuantity: (id: string) => void
@@ -61,24 +65,36 @@ export function CartProvider({ children, session }: CartProviderProps) {
     }
   }, [items, session?.user.id])
 
-  const addItem = (product: Product, quantity: number) => {
+  const addItem = (
+    product: Product,
+    quantity: number,
+    variation: { [key: string]: string }
+  ) => {
+    const itemId = uuidv4()
+
     setItems((prevItems) => {
-      const existingItem = prevItems.find((i) => i.product.id === product.id)
+      const existingItem = prevItems.find(
+        (i) =>
+          i.product.id === product.id &&
+          JSON.stringify(i.variation) === JSON.stringify(variation)
+      )
+
       if (existingItem) {
         return prevItems.map((i) =>
-          i.product.id === product.id
+          i.id === existingItem.id
             ? { ...i, quantity: i.quantity + quantity }
             : i
         )
       }
-      return [...prevItems, { product, quantity }]
+
+      return [...prevItems, { id: itemId, product, quantity, variation }]
     })
   }
 
   const incrementQuantity = (id: string) => {
     setItems((prevItems) =>
       prevItems.map((i) =>
-        i.product.id === id ? { ...i, quantity: i.quantity + 1 } : i
+        i.id === id ? { ...i, quantity: i.quantity + 1 } : i
       )
     )
   }
@@ -86,15 +102,13 @@ export function CartProvider({ children, session }: CartProviderProps) {
   const decrementQuantity = (id: string) => {
     setItems((prevItems) =>
       prevItems.map((i) =>
-        i.product.id === id && i.quantity > 1
-          ? { ...i, quantity: i.quantity - 1 }
-          : i
+        i.id === id && i.quantity > 1 ? { ...i, quantity: i.quantity - 1 } : i
       )
     )
   }
 
   const removeItem = (id: string) => {
-    setItems((prevItems) => prevItems.filter((i) => i.product.id !== id))
+    setItems((prevItems) => prevItems.filter((i) => i.id !== id))
   }
 
   const clearCart = () => {

@@ -53,7 +53,7 @@ const Cart = () => {
             </TableHeader>
             <TableBody>
               {items.map((item) => (
-                <CartListItem key={item.product.id} cartItem={item} />
+                <CartListItem key={item.id} cartItem={item} />
               ))}
             </TableBody>
           </Table>

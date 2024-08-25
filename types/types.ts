@@ -30,3 +30,5 @@ export type PopulatedCategory = Category & {
 export type PopulatedPromotion = Promotion & {
   categories?: PromotionCategory[]
 }
+
+export type Variation = { [key: string]: string }
