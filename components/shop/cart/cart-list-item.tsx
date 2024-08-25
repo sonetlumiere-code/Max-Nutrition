@@ -22,7 +22,7 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
         <div className='space-y-2'>
           <h3>{cartItem.product.name}</h3>
           <p className='text-muted-foreground'>
-            {cartItem.variation.withSalt === "yes" ? "Con sal" : "Sin sal"} - $
+            {cartItem.variation.withSalt ? "Con sal" : "Sin sal"} - $
             {cartItem.product.price}
           </p>
         </div>

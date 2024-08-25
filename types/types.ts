@@ -31,4 +31,4 @@ export type PopulatedPromotion = Promotion & {
   categories?: PromotionCategory[]
 }
 
-export type Variation = { [key: string]: string }
+export type Variation = { [key: string]: boolean }
