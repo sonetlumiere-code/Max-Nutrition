@@ -36,9 +36,14 @@ import {
 import { getProducts } from "@/data/products"
 import { cn } from "@/lib/utils"
 import DeleteProduct from "@/components/dashboard/products/delete-product/delete-product"
+import { Badge } from "@/components/ui/badge"
 
 export default async function ProductsPage() {
-  const products = await getProducts()
+  const products = await getProducts({
+    include: {
+      categories: true,
+    },
+  })
 
   return (
     <>
@@ -89,9 +94,11 @@ export default async function ProductsPage() {
                 <TableRow>
                   <TableHead>Imagen</TableHead>
                   <TableHead>Nombre</TableHead>
-                  <TableHead className='hidden md:table-cell'>
+                  {/* <TableHead className='hidden md:table-cell'>
                     Descripción
-                  </TableHead>
+                  </TableHead> */}
+                  <TableHead>Categorías</TableHead>
+                  <TableHead>Mostrar</TableHead>
                   <TableHead>
                     <span>Acciones</span>
                   </TableHead>
@@ -112,8 +119,22 @@ export default async function ProductsPage() {
                       />
                     </TableCell>
                     <TableCell>{product.name}</TableCell>
-                    <TableCell className='max-w-28 hidden md:table-cell'>
+                    {/* <TableCell className='max-w-28 hidden md:table-cell'>
                       <p className='truncate'>{product.description}</p>
+                    </TableCell> */}
+                    <TableCell>
+                      {product.categories?.map((category) => (
+                        <Badge key={category.id}>{category.name}</Badge>
+                      ))}
+                    </TableCell>
+                    <TableCell>
+                      {product.show ? (
+                        <Badge className='bg-emerald-500 hover:bg-emerald-500/80"'>
+                          Si
+                        </Badge>
+                      ) : (
+                        <Badge variant='destructive'>No</Badge>
+                      )}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu modal={false}>

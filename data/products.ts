@@ -3,11 +3,17 @@
 import prisma from "@/lib/db/db"
 import { PopulatedProduct } from "@/types/types"
 
-export const getProducts = async () => {
+export const getProducts = async (params?: {
+  include?: {
+    categories?: boolean
+  }
+}) => {
   try {
-    const products = await prisma.product.findMany()
+    const products = await prisma.product.findMany({
+      ...params,
+    })
 
-    return products
+    return products as PopulatedProduct[]
   } catch (error) {
     console.error(error)
     return null
