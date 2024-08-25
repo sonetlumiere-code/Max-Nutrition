@@ -37,7 +37,6 @@ import { getProducts } from "@/data/products"
 import { cn } from "@/lib/utils"
 import DeleteProduct from "@/components/dashboard/products/delete-product/delete-product"
 import { Badge } from "@/components/ui/badge"
-import { editProduct } from "@/actions/products/edit-product"
 import ShowProductBadge from "@/components/dashboard/products/list/show-product-badge"
 
 export default async function ProductsPage() {

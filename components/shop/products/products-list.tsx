@@ -12,9 +12,12 @@ const ProductsList = ({ categories }: ProductsListProps) => {
         <div className='grid gap-4' key={category.id}>
           <h2 className='text-xl font-semibold'>{category.name}</h2>
           <div className='grid gap-6'>
-            {category.products?.map((product) => (
-              <ProductItem key={product.id} product={product} />
-            ))}
+            {category.products?.map(
+              (product) =>
+                product.show && (
+                  <ProductItem key={product.id} product={product} />
+                )
+            )}
           </div>
         </div>
       ))}
