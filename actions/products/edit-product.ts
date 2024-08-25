@@ -5,16 +5,18 @@ import { productSchema } from "@/lib/validations/product-validation"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
-type ProductSchema = z.infer<typeof productSchema>
+const partialProductSchema = productSchema.partial()
+
+type PartialProductSchema = z.infer<typeof partialProductSchema>
 
 export async function editProduct({
   id,
   values,
 }: {
   id: string
-  values: ProductSchema
+  values: Partial<PartialProductSchema>
 }) {
-  const validatedFields = productSchema.safeParse(values)
+  const validatedFields = partialProductSchema.safeParse(values)
 
   if (!validatedFields.success) {
     return { error: "Campos inválidos." }
@@ -37,20 +39,23 @@ export async function editProduct({
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
-        name,
-        description: description || "",
-        price,
-        promotionalPrice: promotionalPrice || 0,
-        image: image || "",
-        featured,
-        stock,
-        show,
-        ...(recipeId
-          ? { recipe: { connect: { id: recipeId } } }
-          : { recipe: { disconnect: true } }),
-        categories: {
-          set: categoriesIds?.map((categoryId) => ({ id: categoryId })) || [],
-        },
+        ...(name !== undefined && { name }), // Conditionally include fields
+        ...(description !== undefined && { description }),
+        ...(price !== undefined && { price }),
+        ...(promotionalPrice !== undefined && { promotionalPrice }),
+        ...(image !== undefined && { image }),
+        ...(featured !== undefined && { featured }),
+        ...(stock !== undefined && { stock }),
+        ...(show !== undefined && { show }),
+        ...(recipeId !== undefined &&
+          (recipeId
+            ? { recipe: { connect: { id: recipeId } } }
+            : { recipe: { disconnect: true } })),
+        ...(categoriesIds !== undefined && {
+          categories: {
+            set: categoriesIds.map((categoryId) => ({ id: categoryId })),
+          },
+        }),
       },
     })
 
