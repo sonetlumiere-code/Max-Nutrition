@@ -1,6 +1,8 @@
 import {
   Category,
   Ingredient,
+  Order,
+  OrderItem,
   Product,
   Promotion,
   PromotionCategory,
@@ -29,6 +31,14 @@ export type PopulatedCategory = Category & {
 
 export type PopulatedPromotion = Promotion & {
   categories?: PromotionCategory[]
+}
+
+export type PopulatedOrder = Order & {
+  items?: PopulatedOrderItem[]
+}
+
+export type PopulatedOrderItem = OrderItem & {
+  product: Product
 }
 
 export type Variation = { [key: string]: boolean }

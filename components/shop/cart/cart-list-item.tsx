@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { Minus, Plus, Trash2 } from "lucide-react"
 
-const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
+const CartListItem = ({
+  cartItem,
+  isLoading,
+}: {
+  cartItem: CartItem
+  isLoading: boolean
+}) => {
   const { decrementQuantity, incrementQuantity, removeItem } = useCart()
 
   return (
@@ -38,6 +44,7 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
                 ? () => removeItem(cartItem.id)
                 : () => decrementQuantity(cartItem.id)
             }
+            disabled={isLoading}
           >
             {cartItem.quantity === 1 ? (
               <Trash2 className='w-4 h-4 text-destructive' />
@@ -53,6 +60,7 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
             size='icon'
             className='rounded-full p-1 hover:bg-muted transition-colors'
             onClick={() => incrementQuantity(cartItem.id)}
+            disabled={isLoading}
           >
             <Plus className='w-4 h-4' />
           </Button>

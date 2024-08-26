@@ -6,6 +6,7 @@ export const orderSchema = z.object({
     z.object({
       productId: z.string(),
       quantity: z.coerce.number().min(1),
+      variation: z.object({ withSalt: z.boolean() }),
     })
   ),
 })

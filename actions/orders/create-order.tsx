@@ -15,12 +15,13 @@ export async function createOrder(values: OrderSchema) {
   }
 
   const { customerId, items } = validatedFields.data
-  const productsIds = items.map((item) => item.productId)
+  const productIds = items.map((item) => item.productId)
+  const uniqueProductIds = Array.from(new Set(productIds))
 
   try {
-    const products = await getProductsByIds(productsIds)
+    const products = await getProductsByIds(uniqueProductIds)
 
-    if (!products || products.length !== productsIds.length) {
+    if (!products || products.length !== uniqueProductIds.length) {
       return { error: "Invalid product id." }
     }
 
@@ -37,6 +38,7 @@ export async function createOrder(values: OrderSchema) {
           create: items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
+            withSalt: item.variation.withSalt,
           })),
         },
       },
@@ -47,7 +49,7 @@ export async function createOrder(values: OrderSchema) {
 
     // revalidatePath("/orders")
 
-    return { order }
+    return { success: order }
   } catch (error) {
     console.error("Error creating order:", error)
     return { error: "Hubo un error al crear la orden." }

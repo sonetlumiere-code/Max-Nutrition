@@ -19,7 +19,7 @@ const Shop = async () => {
 
   return (
     <CartProvider session={session}>
-      <Cart />
+      <Cart session={session} />
 
       <NavbarShop />
 

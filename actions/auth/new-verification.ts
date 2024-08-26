@@ -1,6 +1,9 @@
 "use server"
 
 import prisma from "@/lib/db/db"
+import { createCustomer } from "../customer/create-customer"
+import { Role } from "@prisma/client"
+import { updateUser } from "./user"
 
 export const newVerification = async (token: string) => {
   const existingToken = await prisma.verificationToken.findFirst({
@@ -27,12 +30,9 @@ export const newVerification = async (token: string) => {
     return { error: "El email no existe." }
   }
 
-  await prisma.user.update({
-    where: { id: existingUser.id },
-    data: {
-      emailVerified: new Date(),
-      email: existingToken.email,
-    },
+  await updateUser(existingUser.id, {
+    emailVerified: new Date(),
+    email: existingToken.email,
   })
 
   await prisma.verificationToken.delete({

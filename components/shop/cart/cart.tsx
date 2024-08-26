@@ -31,13 +31,60 @@ import { MoveLeftIcon, ShoppingCart } from "lucide-react"
 import CartListItem from "../cart/cart-list-item"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { createOrder } from "@/actions/orders/create-order"
+import { Session } from "next-auth"
+import { toast } from "@/components/ui/use-toast"
+import { useState } from "react"
 
-const Cart = () => {
+type CartProps = {
+  session: Session | null
+}
+
+const Cart = ({ session }: CartProps) => {
   const { items, open, setOpen } = useCart()
   const isDesktop = useMediaQuery("(min-width: 768px)")
+  const [isLoading, setIsLoading] = useState(false)
 
-  const createOrder = () => {
+  const placeOrder = async () => {
     console.log(items)
+
+    if (!session?.user.id) {
+      setOpen(false)
+      console.warn("Customer must be logged in")
+      return
+    }
+
+    setIsLoading(true)
+
+    const res = await createOrder({
+      customerId: session?.user.id,
+      items: items.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        variation: {
+          withSalt: item.variation.withSalt,
+        },
+      })),
+    })
+
+    console.log(res)
+
+    setIsLoading(false)
+
+    if (res.success) {
+      toast({
+        title: "Pedido creado",
+        description: "Tu pedido se ha creado correctamente.",
+      })
+    }
+
+    if (res.error) {
+      toast({
+        variant: "destructive",
+        title: "Error creando pedido",
+        description: res.error,
+      })
+    }
   }
 
   const CartContent = () => (
@@ -53,7 +100,11 @@ const Cart = () => {
             </TableHeader>
             <TableBody>
               {items.map((item) => (
-                <CartListItem key={item.id} cartItem={item} />
+                <CartListItem
+                  key={item.id}
+                  cartItem={item}
+                  isLoading={isLoading}
+                />
               ))}
             </TableBody>
           </Table>
@@ -83,16 +134,20 @@ const Cart = () => {
             <CartContent />
             <DialogFooter className='flex flex-col'>
               {items.length >= 1 ? (
-                <Button onClick={createOrder}>Continuar con el pedido</Button>
+                <Button onClick={placeOrder} disabled={isLoading}>
+                  Continuar con el pedido
+                </Button>
               ) : null}
 
               {items.length >= 1 ? (
                 <DialogClose asChild>
-                  <Button variant='outline'>Cancelar</Button>
+                  <Button variant='outline' disabled={isLoading}>
+                    Cancelar
+                  </Button>
                 </DialogClose>
               ) : (
                 <DialogClose asChild>
-                  <Button variant='outline'>
+                  <Button variant='outline' disabled={isLoading}>
                     <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
                   </Button>
                 </DialogClose>
@@ -119,16 +174,20 @@ const Cart = () => {
           <CartContent />
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             {items.length >= 1 ? (
-              <Button onClick={createOrder}>Continuar con el pedido</Button>
+              <Button onClick={placeOrder} disabled={isLoading}>
+                Continuar con el pedido
+              </Button>
             ) : null}
 
             {items.length >= 1 ? (
               <DrawerClose asChild>
-                <Button variant='outline'>Cancelar</Button>
+                <Button variant='outline' disabled={isLoading}>
+                  Cancelar
+                </Button>
               </DrawerClose>
             ) : (
               <DrawerClose asChild>
-                <Button variant='outline'>
+                <Button variant='outline' disabled={isLoading}>
                   <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
                 </Button>
               </DrawerClose>
