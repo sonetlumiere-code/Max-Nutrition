@@ -11,6 +11,7 @@ export const getOrders = async () => {
             product: true,
           },
         },
+        customer: true,
       },
     })
 

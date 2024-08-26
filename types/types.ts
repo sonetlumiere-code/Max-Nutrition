@@ -37,6 +37,7 @@ export type PopulatedPromotion = Promotion & {
 
 export type PopulatedOrder = Order & {
   items?: PopulatedOrderItem[]
+  customer?: PopulatedCustomer
 }
 
 export type PopulatedOrderItem = OrderItem & {

@@ -5,6 +5,7 @@ import ProductsList from "./products/products-list"
 import { auth } from "@/lib/auth/auth"
 import { getCategories } from "@/data/categories"
 import { getCustomer } from "@/data/customer"
+import { Role } from "@prisma/client"
 
 const Cart = dynamic(() => import("./cart/cart"), {
   ssr: false,
@@ -17,9 +18,11 @@ const CartFixedButton = dynamic(() => import("./cart-fixed-button"), {
 const Shop = async () => {
   const session = await auth()
 
-  const [customer, categories] = await Promise.all([
-    getCustomer(session?.user.id || ""),
+  const [categories, customer] = await Promise.all([
     getCategories(),
+    session?.user.role === Role.USER
+      ? getCustomer(session.user.id || "")
+      : Promise.resolve(null),
   ])
 
   return (
