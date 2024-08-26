@@ -31,12 +31,9 @@ import { MoveLeftIcon, ShoppingCart } from "lucide-react"
 import CartListItem from "../cart/cart-list-item"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { createOrder } from "@/actions/orders/create-order"
-import { toast } from "@/components/ui/use-toast"
-import { useState } from "react"
+import { useCreateOrder } from "@/hooks/use-create-order"
 import { PopulatedCustomer } from "@/types/types"
 import { Session } from "next-auth"
-import { Role } from "@prisma/client"
 
 type CartProps = {
   session: Session | null
@@ -44,57 +41,9 @@ type CartProps = {
 }
 
 const Cart = ({ session, customer }: CartProps) => {
-  const { items, open, setOpen, clearCart } = useCart()
+  const { items, open, setOpen } = useCart()
+  const { isLoading, placeOrder } = useCreateOrder(session, customer)
   const isDesktop = useMediaQuery("(min-width: 768px)")
-  const [isLoading, setIsLoading] = useState(false)
-
-  const placeOrder = async () => {
-    if (session?.user.role === Role.ADMIN) {
-      setOpen(false)
-      console.warn("Admin cannot place an order in shop")
-      return
-    }
-
-    if (!customer) {
-      console.warn("No customer to place order")
-      return
-    }
-
-    setIsLoading(true)
-
-    const res = await createOrder({
-      customerId: customer.id,
-      items: items.map((item) => ({
-        productId: item.product.id,
-        quantity: item.quantity,
-        variation: {
-          withSalt: item.variation.withSalt,
-        },
-      })),
-    })
-
-    console.log(res)
-    // TO DO: push to customer orders history
-
-    setIsLoading(false)
-
-    if (res.success) {
-      setOpen(false)
-      clearCart()
-      toast({
-        title: "Pedido creado",
-        description: "Tu pedido se ha creado correctamente.",
-      })
-    }
-
-    if (res.error) {
-      toast({
-        variant: "destructive",
-        title: "Error creando pedido",
-        description: res.error,
-      })
-    }
-  }
 
   const CartContent = () => (
     <>
