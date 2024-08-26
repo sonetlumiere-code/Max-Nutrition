@@ -35,20 +35,28 @@ import { createOrder } from "@/actions/orders/create-order"
 import { toast } from "@/components/ui/use-toast"
 import { useState } from "react"
 import { PopulatedCustomer } from "@/types/types"
+import { Session } from "next-auth"
+import { Role } from "@prisma/client"
 
 type CartProps = {
+  session: Session | null
   customer: PopulatedCustomer | null
 }
 
-const Cart = ({ customer }: CartProps) => {
+const Cart = ({ session, customer }: CartProps) => {
   const { items, open, setOpen, clearCart } = useCart()
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const [isLoading, setIsLoading] = useState(false)
 
   const placeOrder = async () => {
-    if (!customer) {
+    if (session?.user.role === Role.ADMIN) {
       setOpen(false)
       console.warn("Admin cannot place an order in shop")
+      return
+    }
+
+    if (!customer) {
+      console.warn("No customer to place order")
       return
     }
 
@@ -66,6 +74,7 @@ const Cart = ({ customer }: CartProps) => {
     })
 
     console.log(res)
+    // TO DO: push to customer orders history
 
     setIsLoading(false)
 
