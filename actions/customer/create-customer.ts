@@ -32,10 +32,11 @@ export async function createCustomer(values: CustomerSchema) {
       },
       include: {
         address: true,
+        orders: true,
       },
     })
 
-    return { customer }
+    return { success: customer }
   } catch (error) {
     console.error("Error creating customer:", error)
     return { error: "Hubo un error al crear el cliente." }

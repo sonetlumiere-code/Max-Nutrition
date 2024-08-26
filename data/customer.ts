@@ -15,6 +15,7 @@ export const getCustomer = async (
       },
       include: {
         address: true,
+        orders: true,
       },
     })
 
@@ -36,8 +37,8 @@ export const getCustomer = async (
       userId,
     })
 
-    if (newCustomer.customer) {
-      return newCustomer.customer
+    if (newCustomer.success) {
+      return newCustomer.success
     }
 
     return null
