@@ -31,7 +31,9 @@ export async function editCategory({
           set: productsIds?.map((productId) => ({ id: productId })) || [],
         },
         promotions: {
-          set: promotionsIds?.map((promotionId) => ({ id: promotionId })) || [],
+          deleteMany: {},
+          connect:
+            promotionsIds?.map((promotionId) => ({ id: promotionId })) || [],
         },
       },
     })
