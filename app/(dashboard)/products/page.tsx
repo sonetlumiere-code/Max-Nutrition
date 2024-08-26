@@ -123,7 +123,7 @@ export default async function ProductsPage() {
                     {/* <TableCell className='max-w-28 hidden md:table-cell'>
                       <p className='truncate'>{product.description}</p>
                     </TableCell> */}
-                    <TableCell>
+                    <TableCell className='space-x-1'>
                       {product.categories?.map((category) => (
                         <Badge key={category.id}>{category.name}</Badge>
                       ))}

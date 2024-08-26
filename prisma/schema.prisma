@@ -103,7 +103,7 @@ model CustomerAddress {
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  Order      Order[]
+  // Order      Order[]
 
   @@map("customer_addresses")
 }
@@ -179,14 +179,14 @@ model Product {
 }
 
 model Order {
-  id                String          @id @default(cuid())
+  id                String      @id @default(cuid())
   customerId        String
   total             Float
-  customer          Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  address           CustomerAddress @relation(fields: [customerAddressId], references: [id])
+  customer          Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  // address           CustomerAddress @relation(fields: [customerAddressId], references: [id])
   items             OrderItem[]
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
   customerAddressId String
 
   @@map("orders")

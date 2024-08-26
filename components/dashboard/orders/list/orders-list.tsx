@@ -9,7 +9,7 @@ type OrdersListProps = {
 const OrdersList = ({ orders }: OrdersListProps) => {
   console.log(orders)
 
-  return <div>OrdersList</div>
+  return null
 }
 
 export default OrdersList
