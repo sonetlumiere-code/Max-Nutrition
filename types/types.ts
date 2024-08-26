@@ -1,5 +1,7 @@
 import {
   Category,
+  Customer,
+  CustomerAddress,
   Ingredient,
   Order,
   OrderItem,
@@ -38,7 +40,12 @@ export type PopulatedOrder = Order & {
 }
 
 export type PopulatedOrderItem = OrderItem & {
-  product: Product
+  product?: Product
+}
+
+export type PopulatedCustomer = Customer & {
+  address?: CustomerAddress[]
+  orders?: Order[]
 }
 
 export type Variation = { [key: string]: boolean }

@@ -32,32 +32,30 @@ import CartListItem from "../cart/cart-list-item"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { createOrder } from "@/actions/orders/create-order"
-import { Session } from "next-auth"
 import { toast } from "@/components/ui/use-toast"
 import { useState } from "react"
+import { PopulatedCustomer } from "@/types/types"
 
 type CartProps = {
-  session: Session | null
+  customer: PopulatedCustomer | null
 }
 
-const Cart = ({ session }: CartProps) => {
-  const { items, open, setOpen } = useCart()
+const Cart = ({ customer }: CartProps) => {
+  const { items, open, setOpen, clearCart } = useCart()
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const [isLoading, setIsLoading] = useState(false)
 
   const placeOrder = async () => {
-    console.log(items)
-
-    if (!session?.user.id) {
+    if (!customer) {
       setOpen(false)
-      console.warn("Customer must be logged in")
+      console.warn("Admin cannot place an order in shop")
       return
     }
 
     setIsLoading(true)
 
     const res = await createOrder({
-      customerId: session?.user.id,
+      customerId: customer.id,
       items: items.map((item) => ({
         productId: item.product.id,
         quantity: item.quantity,
@@ -72,6 +70,8 @@ const Cart = ({ session }: CartProps) => {
     setIsLoading(false)
 
     if (res.success) {
+      setOpen(false)
+      clearCart()
       toast({
         title: "Pedido creado",
         description: "Tu pedido se ha creado correctamente.",

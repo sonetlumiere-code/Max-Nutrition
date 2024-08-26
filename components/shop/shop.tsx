@@ -4,6 +4,7 @@ import NavbarShop from "./navbar-shop/navbar-shop"
 import ProductsList from "./products/products-list"
 import { auth } from "@/lib/auth/auth"
 import { getCategories } from "@/data/categories"
+import { getCustomer } from "@/data/customer"
 
 const Cart = dynamic(() => import("./cart/cart"), {
   ssr: false,
@@ -15,11 +16,15 @@ const CartFixedButton = dynamic(() => import("./cart-fixed-button"), {
 
 const Shop = async () => {
   const session = await auth()
-  const categories = await getCategories()
+
+  const [customer, categories] = await Promise.all([
+    getCustomer(session?.user.id || ""),
+    getCategories(),
+  ])
 
   return (
     <CartProvider session={session}>
-      <Cart session={session} />
+      <Cart customer={customer} />
 
       <NavbarShop />
 

@@ -43,7 +43,11 @@ export async function createOrder(values: OrderSchema) {
         },
       },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: true,
+          },
+        },
       },
     })
 

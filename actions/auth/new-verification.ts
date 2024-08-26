@@ -1,8 +1,6 @@
 "use server"
 
 import prisma from "@/lib/db/db"
-import { createCustomer } from "../customer/create-customer"
-import { Role } from "@prisma/client"
 import { updateUser } from "./user"
 
 export const newVerification = async (token: string) => {
