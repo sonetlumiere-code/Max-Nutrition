@@ -1,22 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Search, MapPin, User, ScrollText, LogOut } from "lucide-react"
+import { Search, User } from "lucide-react"
 import dynamic from "next/dynamic"
 import { Role } from "@prisma/client"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import SignOutButton from "@/components/sign-out-button"
+import ProfileDropdown from "./profile-dropdown"
 
 const CartNavButton = dynamic(() => import("./cart-nav-button"), {
   ssr: false,
@@ -77,37 +69,7 @@ export default async function NavbarShop() {
             <>
               <CartNavButton />
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Avatar className='h-9 w-9 cursor-pointer'>
-                    <AvatarImage src='/placeholder-user.jpg' />
-                    <AvatarFallback>
-                      {session?.user?.image ? (
-                        <img
-                          src={session.user.image}
-                          alt={session.user.name ?? "User"}
-                        />
-                      ) : (
-                        <User className='w-6 h-6' />
-                      )}
-                    </AvatarFallback>
-                  </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align='end'>
-                  <DropdownMenuItem>
-                    <User className='w-4 h-4 mr-2' /> Mis datos
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <ScrollText className='w-4 h-4 mr-2' /> Pedidos
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <SignOutButton>
-                    <DropdownMenuItem>
-                      <LogOut className='w-4 h-4 mr-2' /> Cerrar sesión
-                    </DropdownMenuItem>
-                  </SignOutButton>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <ProfileDropdown session={session} />
             </>
           ) : (
             <Link

@@ -20,20 +20,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { MoveLeftIcon, ShoppingCart } from "lucide-react"
-import CartListItem from "../cart/cart-list-item"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { MoveLeftIcon } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { useCreateOrder } from "@/hooks/use-create-order"
 import { PopulatedCustomer } from "@/types/types"
 import { Session } from "next-auth"
+import CartContent from "./cart-content"
 
 type CartProps = {
   session: Session | null
@@ -44,36 +36,6 @@ const Cart = ({ session, customer }: CartProps) => {
   const { items, open, setOpen } = useCart()
   const { isLoading, placeOrder } = useCreateOrder(session, customer)
   const isDesktop = useMediaQuery("(min-width: 768px)")
-
-  const CartContent = () => (
-    <>
-      {items.length > 0 ? (
-        <ScrollArea className='lg:h-[30vh] h-[60vh]'>
-          <Table className='border'>
-            <TableHeader>
-              <TableRow>
-                <TableHead className='text-left'>Producto</TableHead>
-                <TableHead className='text-right'>Cantidad</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {items.map((item) => (
-                <CartListItem
-                  key={item.id}
-                  cartItem={item}
-                  isLoading={isLoading}
-                />
-              ))}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      ) : (
-        <div className='flex items-center justify-center h-44'>
-          <ShoppingCart className='w-16 h-16 text-muted-foreground' />
-        </div>
-      )}
-    </>
-  )
 
   if (isDesktop) {
     return (
@@ -89,7 +51,8 @@ const Cart = ({ session, customer }: CartProps) => {
               </DialogDescription>
             </DialogHeader>
 
-            <CartContent />
+            <CartContent items={items} isLoading={isLoading} />
+
             <DialogFooter className='flex flex-col'>
               {items.length >= 1 ? (
                 <Button onClick={placeOrder} disabled={isLoading}>
@@ -129,7 +92,9 @@ const Cart = ({ session, customer }: CartProps) => {
                 : "No tienes productos agregados al carrito actualmente"}
             </DrawerDescription>
           </DrawerHeader>
-          <CartContent />
+
+          <CartContent items={items} isLoading={isLoading} />
+
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             {items.length >= 1 ? (
               <Button onClick={placeOrder} disabled={isLoading}>

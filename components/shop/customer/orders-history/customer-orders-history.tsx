@@ -1,0 +1,82 @@
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { useMediaQuery } from "@/hooks/use-media-query"
+import { Dispatch, SetStateAction } from "react"
+import CustomerOrderHistoryContent from "./customer-orders-history-content"
+import { Button } from "@/components/ui/button"
+import { MoveLeftIcon } from "lucide-react"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer"
+
+type CustomerOrdersHistory = {
+  open: boolean
+  setOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const CustomerOrderHistory = ({ open, setOpen }: CustomerOrdersHistory) => {
+  const isDesktop = useMediaQuery("(min-width: 768px)")
+
+  if (isDesktop) {
+    return (
+      <div className='relative flex items-center'>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent className='sm:max-w-[600px]'>
+            <DialogHeader>
+              <DialogTitle>Historial de pedidos</DialogTitle>
+              <DialogDescription>Pedidos realizados</DialogDescription>
+
+              <CustomerOrderHistoryContent />
+
+              <DialogFooter className='flex flex-col'>
+                <DialogClose asChild>
+                  <Button variant='outline'>
+                    <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      </div>
+    )
+  }
+
+  return (
+    <div className='relative flex items-center'>
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerContent className='min-h-[40vh]'>
+          <DrawerHeader>
+            <DrawerTitle>Historial de pedidos</DrawerTitle>
+            <DrawerDescription>Pedidos realizados</DrawerDescription>
+          </DrawerHeader>
+
+          <CustomerOrderHistoryContent />
+
+          <DrawerFooter className='border-t-2 lg:border-t-0'>
+            <DrawerClose asChild>
+              <Button variant='outline'>
+                <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </div>
+  )
+}
+
+export default CustomerOrderHistory
