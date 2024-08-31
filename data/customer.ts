@@ -15,7 +15,19 @@ export const getCustomer = async (
       },
       include: {
         address: true,
-        orders: true,
+        orders: {
+          // take: 5,
+          orderBy: {
+            createdAt: "desc",
+          },
+          include: {
+            items: {
+              include: {
+                product: true,
+              },
+            },
+          },
+        },
       },
     })
 

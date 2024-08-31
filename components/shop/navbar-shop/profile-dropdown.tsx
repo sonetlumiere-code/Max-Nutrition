@@ -15,12 +15,14 @@ import SignOutButton from "@/components/sign-out-button"
 import { useState } from "react"
 import CustomerOrderHistory from "../customer/orders-history/customer-orders-history"
 import CustomerInfo from "../customer/info/customer-info"
+import { PopulatedCustomer } from "@/types/types"
 
 type ProfileDropdownProps = {
   session: Session | null
+  customer: PopulatedCustomer | null
 }
 
-const ProfileDropdown = ({ session }: ProfileDropdownProps) => {
+const ProfileDropdown = ({ session, customer }: ProfileDropdownProps) => {
   const [openOrdersHistory, setOpenOrdersHistory] = useState(false)
   const [openCustomerInfo, setOpenCustomerInfo] = useState(false)
 
@@ -61,9 +63,14 @@ const ProfileDropdown = ({ session }: ProfileDropdownProps) => {
       <CustomerOrderHistory
         open={openOrdersHistory}
         setOpen={setOpenOrdersHistory}
+        orders={customer?.orders || []}
       />
 
-      <CustomerInfo open={openCustomerInfo} setOpen={setOpenCustomerInfo} />
+      <CustomerInfo
+        open={openCustomerInfo}
+        setOpen={setOpenCustomerInfo}
+        customer={customer}
+      />
     </>
   )
 }

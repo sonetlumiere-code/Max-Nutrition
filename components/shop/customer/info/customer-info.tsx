@@ -21,13 +21,15 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer"
 import CustomerInfoContent from "./customer-info-content"
+import { PopulatedCustomer } from "@/types/types"
 
 type CustomerOrdersHistory = {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
+  customer: PopulatedCustomer | null
 }
 
-const CustomerInfo = ({ open, setOpen }: CustomerOrdersHistory) => {
+const CustomerInfo = ({ open, setOpen, customer }: CustomerOrdersHistory) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {
@@ -39,7 +41,7 @@ const CustomerInfo = ({ open, setOpen }: CustomerOrdersHistory) => {
               <DialogTitle>Mis datos</DialogTitle>
               <DialogDescription>Mis datos</DialogDescription>
 
-              <CustomerInfoContent />
+              <CustomerInfoContent customer={customer} />
 
               <DialogFooter className='flex flex-col'>
                 <DialogClose asChild>
@@ -64,7 +66,7 @@ const CustomerInfo = ({ open, setOpen }: CustomerOrdersHistory) => {
             <DrawerDescription>Mis datos</DrawerDescription>
           </DrawerHeader>
 
-          <CustomerInfoContent />
+          <CustomerInfoContent customer={customer} />
 
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             <DrawerClose asChild>

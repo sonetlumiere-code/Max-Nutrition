@@ -3,6 +3,7 @@
 import { getProductsByIds } from "@/data/products"
 import prisma from "@/lib/db/db"
 import { orderSchema } from "@/lib/validations/order-validation"
+import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
 type OrderSchema = z.infer<typeof orderSchema>
@@ -51,7 +52,7 @@ export async function createOrder(values: OrderSchema) {
       },
     })
 
-    // revalidatePath("/orders")
+    revalidatePath("/shop")
 
     return { success: order }
   } catch (error) {

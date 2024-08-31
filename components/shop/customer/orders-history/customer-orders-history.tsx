@@ -21,13 +21,19 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
+import { PopulatedOrder } from "@/types/types"
 
 type CustomerOrdersHistory = {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
+  orders: PopulatedOrder[]
 }
 
-const CustomerOrderHistory = ({ open, setOpen }: CustomerOrdersHistory) => {
+const CustomerOrderHistory = ({
+  open,
+  setOpen,
+  orders,
+}: CustomerOrdersHistory) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {
@@ -39,7 +45,7 @@ const CustomerOrderHistory = ({ open, setOpen }: CustomerOrdersHistory) => {
               <DialogTitle>Historial de pedidos</DialogTitle>
               <DialogDescription>Pedidos realizados</DialogDescription>
 
-              <CustomerOrderHistoryContent />
+              <CustomerOrderHistoryContent orders={orders} />
 
               <DialogFooter className='flex flex-col'>
                 <DialogClose asChild>
@@ -64,7 +70,7 @@ const CustomerOrderHistory = ({ open, setOpen }: CustomerOrdersHistory) => {
             <DrawerDescription>Pedidos realizados</DrawerDescription>
           </DrawerHeader>
 
-          <CustomerOrderHistoryContent />
+          <CustomerOrderHistoryContent orders={orders} />
 
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             <DrawerClose asChild>

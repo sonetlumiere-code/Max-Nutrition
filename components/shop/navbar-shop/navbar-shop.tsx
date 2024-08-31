@@ -9,12 +9,17 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import ProfileDropdown from "./profile-dropdown"
+import { PopulatedCustomer } from "@/types/types"
 
 const CartNavButton = dynamic(() => import("./cart-nav-button"), {
   ssr: false,
 })
 
-export default async function NavbarShop() {
+type NavbarShopProps = {
+  customer: PopulatedCustomer | null
+}
+
+export default async function NavbarShop({ customer }: NavbarShopProps) {
   const session = await auth()
   const isAdmin = session?.user.role === Role.ADMIN
 
@@ -69,7 +74,7 @@ export default async function NavbarShop() {
             <>
               <CartNavButton />
 
-              <ProfileDropdown session={session} />
+              <ProfileDropdown session={session} customer={customer} />
             </>
           ) : (
             <Link

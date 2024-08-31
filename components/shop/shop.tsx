@@ -29,7 +29,7 @@ const Shop = async () => {
     <CartProvider session={session}>
       <Cart session={session} customer={customer} />
 
-      <NavbarShop />
+      <NavbarShop customer={customer} />
 
       <div className='flex flex-col w-full max-w-4xl mx-auto pt-8 pb-24 px-4 md:px-6'>
         <header className='flex items-center justify-between mb-8 bg-emerald-100 p-4 rounded-md'>
