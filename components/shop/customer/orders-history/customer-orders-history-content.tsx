@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 import { PopulatedOrder } from "@/types/types"
 
 type CustomerOrderHistoryContentProps = {
@@ -16,19 +17,33 @@ type CustomerOrderHistoryContentProps = {
 const CustomerOrdersHistoryContent = ({
   orders,
 }: CustomerOrderHistoryContentProps) => {
-  console.log(orders)
-
   return (
     <div className='space-y-4 p-4'>
       {orders.length > 0 ? (
-        <Accordion type='single' collapsible className='w-full'>
+        <Accordion type='single' collapsible className=''>
           {orders.map((order, i) => (
             <AccordionItem key={order.id} value={`item-${order.id}`}>
-              <AccordionTrigger>
+              <AccordionTrigger className='hover:no-underline'>
                 <div className='flex justify-between w-5/6'>
                   <small>{order.createdAt.toLocaleDateString()}</small>
                   <small>$ {order.total}</small>
-                  <Badge>Pendiente</Badge>
+                  <Badge
+                    className={cn("ml-4", {
+                      "bg-amber-500 hover:bg-amber-500/80":
+                        order.status === "Pending",
+                      "bg-sky-500 hover:bg-sky-500/80":
+                        order.status === "Accepted",
+                      "bg-emerald-500 hover:bg-emerald-500/80":
+                        order.status === "Completed",
+                      "bg-destructive hover:bg-destructive/80":
+                        order.status === "Cancelled",
+                    })}
+                  >
+                    {order.status === "Pending" && "Pendiente"}
+                    {order.status === "Accepted" && "Aceptado"}
+                    {order.status === "Completed" && "Completado"}
+                    {order.status === "Cancelled" && "Cancelado"}
+                  </Badge>
                 </div>
               </AccordionTrigger>
               <AccordionContent>

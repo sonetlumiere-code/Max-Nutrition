@@ -178,16 +178,24 @@ model Product {
   @@map("products")
 }
 
+enum OrderStatus {
+  Pending
+  Accepted
+  Completed
+  Cancelled
+}
+
 model Order {
-  id                String      @id @default(cuid())
-  customerId        String
-  total             Float
-  customer          Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  id         String      @id @default(cuid())
+  customerId String
+  total      Float
+  customer   Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
   // address           CustomerAddress @relation(fields: [customerAddressId], references: [id])
-  items             OrderItem[]
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  customerAddressId String
+  items      OrderItem[]
+  status     OrderStatus @default(Pending)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  // customerAddressId String
 
   @@map("orders")
 }
