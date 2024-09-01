@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getOrders } from "@/data/orders"
+import { cn } from "@/lib/utils"
 
 export default async function OrdersPage() {
   const orders = await getOrders()
@@ -133,15 +134,23 @@ export default async function OrdersPage() {
                           )}
                         </TableCell>
                         <TableCell className='hidden sm:table-cell'>
-                          {Math.random() < 0.5 ? (
-                            <Badge className='text-xs bg-amber-500 hover:bg-amber-500/80'>
-                              Pendiente
-                            </Badge>
-                          ) : (
-                            <Badge className='text-xs bg-emerald-500 hover:bg-emerald-500/80'>
-                              Completado
-                            </Badge>
-                          )}
+                          <Badge
+                            className={cn("", {
+                              "bg-amber-500 hover:bg-amber-500/80":
+                                order.status === "Pending",
+                              "bg-sky-500 hover:bg-sky-500/80":
+                                order.status === "Accepted",
+                              "bg-emerald-500 hover:bg-emerald-500/80":
+                                order.status === "Completed",
+                              "bg-destructive hover:bg-destructive/80":
+                                order.status === "Cancelled",
+                            })}
+                          >
+                            {order.status === "Pending" && "Pendiente"}
+                            {order.status === "Accepted" && "Aceptado"}
+                            {order.status === "Completed" && "Completado"}
+                            {order.status === "Cancelled" && "Cancelado"}
+                          </Badge>
                         </TableCell>
                         <TableCell className='hidden md:table-cell'>
                           {order.createdAt.toLocaleDateString()}

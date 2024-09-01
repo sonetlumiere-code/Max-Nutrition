@@ -28,7 +28,7 @@ const CustomerOrdersHistoryContent = ({
                   <small>{order.createdAt.toLocaleDateString()}</small>
                   <small>$ {order.total}</small>
                   <Badge
-                    className={cn("ml-4", {
+                    className={cn("", {
                       "bg-amber-500 hover:bg-amber-500/80":
                         order.status === "Pending",
                       "bg-sky-500 hover:bg-sky-500/80":
