@@ -13,7 +13,7 @@ import { Session } from "next-auth"
 import { LogOut, ScrollText, User } from "lucide-react"
 import SignOutButton from "@/components/sign-out-button"
 import { useState } from "react"
-import CustomerOrderHistory from "../customer/orders-history/customer-orders-history"
+import CustomerOrdersHistory from "../customer/orders-history/customer-orders-history"
 import CustomerInfo from "../customer/info/customer-info"
 import { PopulatedCustomer } from "@/types/types"
 
@@ -60,7 +60,7 @@ const ProfileDropdown = ({ session, customer }: ProfileDropdownProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <CustomerOrderHistory
+      <CustomerOrdersHistory
         open={openOrdersHistory}
         setOpen={setOpenOrdersHistory}
         orders={customer?.orders || []}

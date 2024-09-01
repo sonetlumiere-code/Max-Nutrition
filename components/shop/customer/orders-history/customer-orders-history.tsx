@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Dispatch, SetStateAction } from "react"
-import CustomerOrderHistoryContent from "./customer-orders-history-content"
+import CustomerOrdersHistoryContent from "./customer-orders-history-content"
 import { Button } from "@/components/ui/button"
 import { MoveLeftIcon } from "lucide-react"
 import {
@@ -29,7 +29,7 @@ type CustomerOrdersHistory = {
   orders: PopulatedOrder[]
 }
 
-const CustomerOrderHistory = ({
+const CustomerOrdersHistory = ({
   open,
   setOpen,
   orders,
@@ -45,7 +45,7 @@ const CustomerOrderHistory = ({
               <DialogTitle>Historial de pedidos</DialogTitle>
               <DialogDescription>Pedidos realizados</DialogDescription>
 
-              <CustomerOrderHistoryContent orders={orders} />
+              <CustomerOrdersHistoryContent orders={orders} />
 
               <DialogFooter className='flex flex-col'>
                 <DialogClose asChild>
@@ -70,7 +70,7 @@ const CustomerOrderHistory = ({
             <DrawerDescription>Pedidos realizados</DrawerDescription>
           </DrawerHeader>
 
-          <CustomerOrderHistoryContent orders={orders} />
+          <CustomerOrdersHistoryContent orders={orders} />
 
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             <DrawerClose asChild>
@@ -85,4 +85,4 @@ const CustomerOrderHistory = ({
   )
 }
 
-export default CustomerOrderHistory
+export default CustomerOrdersHistory
