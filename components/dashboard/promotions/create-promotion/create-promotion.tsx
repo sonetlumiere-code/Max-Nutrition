@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/use-toast"
 import { promotionSchema } from "@/lib/validations/promotion-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -40,6 +41,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
     defaultValues: {
       name: "",
       description: "",
+      isActive: true,
       discountType: PromotionDiscountType.Fixed,
       discount: 0,
       categories: [{ categoryId: "", quantity: 0 }],
@@ -117,6 +119,26 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                       />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='isActive'
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                    <div className='space-y-0.5'>
+                      <FormLabel>Promoción activa</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                        aria-readonly
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />

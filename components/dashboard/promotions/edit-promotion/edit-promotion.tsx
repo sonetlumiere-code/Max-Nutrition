@@ -30,6 +30,7 @@ import { promotionSchema } from "@/lib/validations/promotion-validation"
 import { Category, PromotionDiscountType } from "@prisma/client"
 import { editPromotion } from "@/actions/promotions/edit-promotion"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Switch } from "@/components/ui/switch"
 
 type PromotionSchema = z.infer<typeof promotionSchema>
 
@@ -46,6 +47,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
     defaultValues: {
       name: promotion.name,
       description: promotion.description || "",
+      isActive: promotion.isActive,
       discountType: promotion.discountType,
       discount: promotion.discount,
       categories: promotion.categories,
@@ -123,6 +125,26 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                       />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='isActive'
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                    <div className='space-y-0.5'>
+                      <FormLabel>Promoción activa</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isSubmitting}
+                        aria-readonly
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />

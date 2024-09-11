@@ -221,6 +221,7 @@ model Promotion {
   discountType PromotionDiscountType
   discount     Float
   categories   PromotionCategory[]
+  isActive     Boolean               @default(true)
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
 

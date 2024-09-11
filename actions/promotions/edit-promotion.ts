@@ -20,7 +20,7 @@ export async function editPromotion({
     return { error: "Campos inválidos." }
   }
 
-  const { name, description, discountType, discount, categories } =
+  const { name, description, discountType, discount, isActive, categories } =
     validatedFields.data
 
   try {
@@ -31,6 +31,7 @@ export async function editPromotion({
         description,
         discountType,
         discount,
+        isActive,
         categories: {
           deleteMany: {},
           create: categories.map((category) => ({

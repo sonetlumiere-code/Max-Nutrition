@@ -11,6 +11,8 @@ export const promotionSchema = z
     discount: z.coerce
       .number()
       .min(0, { message: "El descuento debe ser mayor o igual a 0." }),
+
+    isActive: z.boolean(),
     categories: z.array(
       z.object({
         categoryId: z.string().min(1, { message: "Selecciona una categoría." }),

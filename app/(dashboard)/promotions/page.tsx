@@ -35,6 +35,7 @@ import { getPromotions } from "@/data/promotions"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import DeletePromotion from "@/components/dashboard/promotions/delete-promotion/delete-promotion"
+import { Badge } from "@/components/ui/badge"
 
 const PromotionsPage = async () => {
   const promotions = await getPromotions()
@@ -88,6 +89,7 @@ const PromotionsPage = async () => {
                   <TableHead className='hidden md:table-cell'>
                     Descripción
                   </TableHead>
+                  <TableHead>Estado</TableHead>
                   <TableHead>
                     <span>Acciones</span>
                   </TableHead>
@@ -99,6 +101,15 @@ const PromotionsPage = async () => {
                     <TableCell>{promotion.name}</TableCell>
                     <TableCell className='max-w-28 hidden md:table-cell'>
                       <p className='truncate'>{promotion.description}</p>
+                    </TableCell>
+                    <TableCell>
+                      {promotion.isActive ? (
+                        <Badge className='bg-emerald-500 hover:bg-emerald-500/80'>
+                          Activa
+                        </Badge>
+                      ) : (
+                        <Badge variant='destructive'>Inactiva</Badge>
+                      )}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu modal={false}>

@@ -14,7 +14,7 @@ export async function createPromotion(values: PromotionSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { name, description, discountType, discount, categories } =
+  const { name, description, discountType, discount, isActive, categories } =
     validatedFields.data
 
   try {
@@ -24,6 +24,7 @@ export async function createPromotion(values: PromotionSchema) {
         description,
         discountType,
         discount,
+        isActive,
         categories: {
           create: categories.map((category) => ({
             categoryId: category.categoryId,
