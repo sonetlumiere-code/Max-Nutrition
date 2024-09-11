@@ -14,13 +14,15 @@ export async function createPromotion(values: PromotionSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { name, description, discount, categories } = validatedFields.data
+  const { name, description, discountType, discount, categories } =
+    validatedFields.data
 
   try {
     const promotion = await prisma.promotion.create({
       data: {
         name,
         description,
+        discountType,
         discount,
         categories: {
           create: categories.map((category) => ({

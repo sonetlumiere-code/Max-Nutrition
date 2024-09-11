@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -24,7 +25,7 @@ import {
 import { toast } from "@/components/ui/use-toast"
 import { promotionSchema } from "@/lib/validations/promotion-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Category } from "@prisma/client"
+import { Category, PromotionDiscountType } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -39,6 +40,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
     defaultValues: {
       name: "",
       description: "",
+      discountType: PromotionDiscountType.Fixed,
       discount: 0,
       categories: [{ categoryId: "", quantity: 0 }],
     },
@@ -48,6 +50,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
     control,
     handleSubmit,
     formState: { isSubmitting },
+    watch,
   } = form
 
   const { fields, append, remove } = useFieldArray({
@@ -118,25 +121,77 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                 )}
               />
 
-              <FormField
-                control={control}
-                name='discount'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descuento (%)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        step='0.1'
-                        placeholder='Descuento en porcentaje'
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <fieldset className='border p-5 rounded-md'>
+                <legend>
+                  <Label className='mx-2'>Descuento</Label>
+                </legend>
+                <div className='grid grid-cols-2 gap-3'>
+                  <FormField
+                    control={form.control}
+                    name='discountType'
+                    render={({ field }) => (
+                      <FormItem className='space-y-3'>
+                        <FormLabel>Tipo de descuento</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            disabled={isSubmitting}
+                            className='flex flex-col space-y-1'
+                          >
+                            <FormItem className='flex items-center space-x-3 space-y-0'>
+                              <FormControl>
+                                <RadioGroupItem
+                                  value={PromotionDiscountType.Fixed}
+                                />
+                              </FormControl>
+                              <FormLabel className='font-normal'>
+                                Descuento fijo
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className='flex items-center space-x-3 space-y-0'>
+                              <FormControl>
+                                <RadioGroupItem
+                                  value={PromotionDiscountType.Percentage}
+                                />
+                              </FormControl>
+                              <FormLabel className='font-normal'>
+                                Descuento porcentual
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={control}
+                    name='discount'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          Descuento{" "}
+                          {watch("discountType") === PromotionDiscountType.Fixed
+                            ? "fijo"
+                            : "porcentual"}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type='number'
+                            step='0.1'
+                            placeholder='Descuento en porcentaje'
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </fieldset>
 
               <fieldset className='border p-5 rounded-md'>
                 <legend>
@@ -145,64 +200,72 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                 <div className='space-y-3'>
                   {fields.map((field, index) => (
                     <div key={field.id} className='flex justify-between gap-2'>
-                      <FormField
-                        control={control}
-                        name={`categories.${index}.categoryId`}
-                        render={({ field }) => (
-                          <FormItem className='flex flex-col w-2/5'>
-                            <FormLabel className='text-xs'>Categoría</FormLabel>
-                            <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder='Selecciona una categoría' />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {categories?.map(({ id, name }) => (
-                                    <SelectItem key={id} value={id}>
-                                      {name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <div className=' w-1/2'>
+                        <FormField
+                          control={control}
+                          name={`categories.${index}.categoryId`}
+                          render={({ field }) => (
+                            <FormItem className='flex flex-col'>
+                              <FormLabel className='text-xs'>
+                                Categoría
+                              </FormLabel>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder='Selecciona una categoría' />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {categories?.map(({ id, name }) => (
+                                      <SelectItem key={id} value={id}>
+                                        {name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
-                      <FormField
-                        control={control}
-                        name={`categories.${index}.quantity`}
-                        render={({ field }) => (
-                          <FormItem className='flex flex-col w-2/5'>
-                            <FormLabel className='text-xs'>Cantidad</FormLabel>
-                            <FormControl>
-                              <Input
-                                type='number'
-                                min={0}
-                                placeholder='Cantidad'
-                                disabled={isSubmitting}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <div className='w-1/2 flex justify-between'>
+                        <FormField
+                          control={control}
+                          name={`categories.${index}.quantity`}
+                          render={({ field }) => (
+                            <FormItem className='flex flex-col'>
+                              <FormLabel className='text-xs'>
+                                Cantidad
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  type='number'
+                                  min={0}
+                                  placeholder='Cantidad'
+                                  disabled={isSubmitting}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                      <div className='flex items-end justify-between'>
-                        <Button
-                          type='button'
-                          size='icon'
-                          variant='ghost'
-                          onClick={() => remove(index)}
-                          disabled={isSubmitting || fields.length === 1}
-                        >
-                          <Icons.x className='w-3 h-3' />
-                        </Button>
+                        <div className='flex items-end justify-between'>
+                          <Button
+                            type='button'
+                            size='icon'
+                            variant='ghost'
+                            onClick={() => remove(index)}
+                            disabled={isSubmitting || fields.length === 1}
+                          >
+                            <Icons.x className='w-3 h-3' />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}

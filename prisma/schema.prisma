@@ -215,15 +215,21 @@ model OrderItem {
 }
 
 model Promotion {
-  id          String              @id @default(cuid())
-  name        String
-  description String
-  discount    Float
-  categories  PromotionCategory[]
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  id           String                @id @default(cuid())
+  name         String
+  description  String
+  discountType PromotionDiscountType
+  discount     Float
+  categories   PromotionCategory[]
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
 
   @@map("promotions")
+}
+
+enum PromotionDiscountType {
+  Fixed
+  Percentage
 }
 
 model PromotionCategory {

@@ -20,7 +20,8 @@ export async function editPromotion({
     return { error: "Campos inválidos." }
   }
 
-  const { name, description, discount, categories } = validatedFields.data
+  const { name, description, discountType, discount, categories } =
+    validatedFields.data
 
   try {
     const updatedPromotion = await prisma.promotion.update({
@@ -28,6 +29,7 @@ export async function editPromotion({
       data: {
         name,
         description,
+        discountType,
         discount,
         categories: {
           deleteMany: {},
