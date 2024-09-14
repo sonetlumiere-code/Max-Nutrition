@@ -108,39 +108,44 @@ model CustomerAddress {
   @@map("customer_addresses")
 }
 
-enum UnitOfMeasurement {
+enum Measurement {
   UNIT
   GRAM
   MILLILITER
+
+  @@map("Measurement")
 }
 
 model Ingredient {
-  id        String             @id @default(cuid())
-  name      String             @unique
-  unit      UnitOfMeasurement
-  price     Float              @default(0)
-  waste     Float              @default(0)
-  carbs     Float              @default(0)
-  proteins  Float              @default(0)
-  fats      Float              @default(0)
-  fiber     Float              @default(0)
-  recipes   RecipeIngredient[]
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
+  id          String             @id @default(cuid())
+  name        String             @unique
+  measurement Measurement
+  price       Float              @default(0)
+  brand       String?
+  waste       Float              @default(0)
+  carbs       Float              @default(0)
+  proteins    Float              @default(0)
+  fats        Float              @default(0)
+  fiber       Float              @default(0)
+  calories    Float              @default(0)
+  recipes     RecipeIngredient[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
 
   @@map("ingredients")
 }
 
 model Recipe {
-  id           String             @id @default(cuid())
-  name         String
-  description  String?
-  instructions String?
-  portions     Int                @default(1)
-  ingredients  RecipeIngredient[]
-  product      Product?
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  id                String             @id @default(cuid())
+  name              String
+  description       String?
+  instructions      String?
+  timeToCookMinutes Int?               @default(0)
+  portions          Int                @default(1)
+  ingredients       RecipeIngredient[]
+  product           Product?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
   @@map("recipes")
 }

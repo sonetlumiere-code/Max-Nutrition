@@ -1,12 +1,12 @@
-import { UnitOfMeasurement } from "@prisma/client"
+import { Measurement } from "@prisma/client"
 
-export const unitToSpanish = (unit: UnitOfMeasurement): string => {
-  switch (unit) {
-    case UnitOfMeasurement.GRAM:
+export const unitToSpanish = (measurement: Measurement): string => {
+  switch (measurement) {
+    case Measurement.GRAM:
       return "Gramo"
-    case UnitOfMeasurement.MILLILITER:
+    case Measurement.MILLILITER:
       return "Mililitro"
-    case UnitOfMeasurement.UNIT:
+    case Measurement.UNIT:
       return "Unidad"
     default:
       return "Desconocido"

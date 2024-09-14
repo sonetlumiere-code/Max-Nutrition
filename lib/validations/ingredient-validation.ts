@@ -1,9 +1,9 @@
-import { UnitOfMeasurement } from "@prisma/client"
+import { Measurement } from "@prisma/client"
 import { z } from "zod"
 
 export const ingredientSchema = z.object({
   name: z.string().min(1, { message: "Ingresa el nombre del ingrediente." }),
-  unit: z.nativeEnum(UnitOfMeasurement, {
+  measurement: z.nativeEnum(Measurement, {
     errorMap: (issue, ctx) => {
       return { message: "Selecciona la unidad de medida." }
     },

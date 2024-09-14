@@ -1,6 +1,6 @@
 "use client"
 
-import { Ingredient, UnitOfMeasurement } from "@prisma/client"
+import { Ingredient, Measurement } from "@prisma/client"
 import {
   Form,
   FormControl,
@@ -116,7 +116,7 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
 
               <FormField
                 control={control}
-                name={"unit"}
+                name={"measurement"}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Unidad de medida</FormLabel>
@@ -130,13 +130,13 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {Object.values(UnitOfMeasurement).map((unit) => (
+                        {Object.values(Measurement).map((measurement) => (
                           <SelectItem
-                            key={unit}
-                            value={unit}
+                            key={measurement}
+                            value={measurement}
                             className='capitalize'
                           >
-                            {unitToSpanish(unit)}
+                            {unitToSpanish(measurement)}
                           </SelectItem>
                         ))}
                       </SelectContent>

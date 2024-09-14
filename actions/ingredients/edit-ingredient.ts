@@ -20,12 +20,12 @@ export async function editIngredient({
     return { error: "Campos inválidos." }
   }
 
-  const { name, price, waste, unit } = validatedFields.data
+  const { name, price, waste, measurement } = validatedFields.data
 
   try {
     const ingredient = await prisma.ingredient.update({
       where: { id },
-      data: { name, price, waste, unit },
+      data: { name, price, waste, measurement },
     })
 
     revalidatePath("/ingredients")

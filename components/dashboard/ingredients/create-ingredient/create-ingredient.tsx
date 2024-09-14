@@ -24,7 +24,7 @@ import { toast } from "@/components/ui/use-toast"
 import { unitToSpanish } from "@/helpers/helpers"
 import { ingredientSchema } from "@/lib/validations/ingredient-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { UnitOfMeasurement } from "@prisma/client"
+import { Measurement } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -120,7 +120,7 @@ const CreateIngredient = () => {
 
               <FormField
                 control={control}
-                name={"unit"}
+                name={"measurement"}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Unidad de medida</FormLabel>
@@ -134,13 +134,13 @@ const CreateIngredient = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {Object.values(UnitOfMeasurement).map((unit) => (
+                        {Object.values(Measurement).map((measurement) => (
                           <SelectItem
-                            key={unit}
-                            value={unit}
+                            key={measurement}
+                            value={measurement}
                             className='capitalize'
                           >
-                            {unitToSpanish(unit)}
+                            {unitToSpanish(measurement)}
                           </SelectItem>
                         ))}
                       </SelectContent>

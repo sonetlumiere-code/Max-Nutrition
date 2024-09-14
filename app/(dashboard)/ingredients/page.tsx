@@ -105,7 +105,9 @@ export default async function IngredientsPage() {
                   <TableRow key={ingredient.id}>
                     <TableCell>{ingredient.name}</TableCell>
                     <TableCell>$ {ingredient.price}</TableCell>
-                    <TableCell>{unitToSpanish(ingredient.unit)}</TableCell>
+                    <TableCell>
+                      {unitToSpanish(ingredient.measurement)}
+                    </TableCell>
                     <TableCell>{ingredient.waste} %</TableCell>
                     <TableCell>
                       <DropdownMenu modal={false}>
