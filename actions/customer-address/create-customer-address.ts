@@ -1,0 +1,39 @@
+"use server"
+
+import prisma from "@/lib/db/db"
+import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
+import { revalidatePath } from "next/cache"
+import { z } from "zod"
+
+type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
+
+export async function createCustomerAddress(
+  customerId: string,
+  values: CustomerAddressSchema
+) {
+  const validatedFields = customerAddressSchema.safeParse(values)
+
+  if (!validatedFields.success) {
+    return { error: "Campos inválidos." }
+  }
+
+  const { address, city, postCode } = validatedFields.data
+
+  try {
+    const newAddress = await prisma.customerAddress.create({
+      data: {
+        customerId,
+        address,
+        city,
+        postCode,
+      },
+    })
+
+    revalidatePath("/customer-info")
+
+    return { success: newAddress }
+  } catch (error) {
+    console.error("Error creating customer:", error)
+    return { error: "Hubo un error al crear la dirección." }
+  }
+}

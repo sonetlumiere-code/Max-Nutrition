@@ -96,7 +96,7 @@ model Customer {
 
 model CustomerAddress {
   id         String   @id @default(cuid())
-  customerId String   @unique
+  customerId String
   address    String
   city       String
   postCode   String
