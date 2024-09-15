@@ -23,13 +23,13 @@ import {
 import CustomerInfoContent from "./customer-info-content"
 import { PopulatedCustomer } from "@/types/types"
 
-type CustomerOrdersHistory = {
+type CustomerInfoProps = {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   customer: PopulatedCustomer | null
 }
 
-const CustomerInfo = ({ open, setOpen, customer }: CustomerOrdersHistory) => {
+const CustomerInfo = ({ open, setOpen, customer }: CustomerInfoProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {
