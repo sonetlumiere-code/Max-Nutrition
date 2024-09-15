@@ -110,10 +110,16 @@ export default function HeaderDashboard() {
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Configuración</DropdownMenuItem>
+          <Link href={"/shop-settings"}>
+            <DropdownMenuItem>
+              <Icons.settings className='w-4 h-4 mr-2' />
+              Configuración
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <SignOutButton>
             <DropdownMenuItem className='cursor-pointer'>
+              <Icons.logOut className='w-4 h-4 mr-2' />
               Cerrar sesión
             </DropdownMenuItem>
           </SignOutButton>

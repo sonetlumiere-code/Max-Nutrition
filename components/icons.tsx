@@ -29,6 +29,8 @@ import {
   Check,
   BadgePercent,
   Truck,
+  Settings,
+  LogOut,
 } from "lucide-react"
 
 export const Icons = {
@@ -45,6 +47,8 @@ export const Icons = {
   moreHorizontal: MoreHorizontal,
   pencil: Pencil,
   thrash2: Trash2,
+  settings: Settings,
+  logOut: LogOut,
   circlePlus: CirclePlus,
   bell: Bell,
   home: Home,
