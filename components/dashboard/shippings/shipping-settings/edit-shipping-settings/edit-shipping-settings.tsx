@@ -49,7 +49,6 @@ const EditShippingSettings = ({
   } = form
 
   const onSubmit = async (data: ShippingSettingsSchema) => {
-    console.log(data)
     const res = await editShippingSettings({ values: data })
 
     if (res.success) {
