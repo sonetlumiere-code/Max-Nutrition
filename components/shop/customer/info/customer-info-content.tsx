@@ -9,7 +9,11 @@ type CustomerInfoContentProps = {
 const CustomerInfoContent = ({ customer }: CustomerInfoContentProps) => {
   console.log(customer)
 
-  return <div>CustomerInfoContent</div>
+  return (
+    <>
+      <div>CustomerInfoContent</div>
+    </>
+  )
 }
 
 export default CustomerInfoContent

@@ -9,7 +9,12 @@ const CartNavButton = () => {
   const { items, setOpen } = useCart()
 
   return (
-    <Button variant='ghost' onClick={() => setOpen(true)} className='relative'>
+    <Button
+      variant='ghost'
+      size='icon'
+      onClick={() => setOpen(true)}
+      className='relative'
+    >
       <ShoppingCart className='w-6 h-6 text-muted-foreground' />
       <div className='absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium'>
         {items.reduce((acc, curr) => acc + curr.quantity, 0)}

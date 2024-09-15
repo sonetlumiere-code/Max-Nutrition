@@ -38,50 +38,46 @@ const CustomerOrdersHistory = ({
 
   if (isDesktop) {
     return (
-      <div className='relative flex items-center'>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className='sm:max-w-[600px]'>
-            <DialogHeader>
-              <DialogTitle>Historial de pedidos</DialogTitle>
-              <DialogDescription>Pedidos realizados</DialogDescription>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className='sm:max-w-[600px]'>
+          <DialogHeader>
+            <DialogTitle>Historial de pedidos</DialogTitle>
+            <DialogDescription>Pedidos realizados</DialogDescription>
 
-              <CustomerOrdersHistoryContent orders={orders} />
+            <CustomerOrdersHistoryContent orders={orders} />
 
-              <DialogFooter className='flex flex-col'>
-                <DialogClose asChild>
-                  <Button variant='outline'>
-                    <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-      </div>
+            <DialogFooter className='flex flex-col'>
+              <DialogClose asChild>
+                <Button variant='outline'>
+                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     )
   }
 
   return (
-    <div className='relative flex items-center'>
-      <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerContent className='min-h-[40vh]'>
-          <DrawerHeader>
-            <DrawerTitle>Historial de pedidos</DrawerTitle>
-            <DrawerDescription>Pedidos realizados</DrawerDescription>
-          </DrawerHeader>
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerContent className='min-h-[40vh]'>
+        <DrawerHeader>
+          <DrawerTitle>Historial de pedidos</DrawerTitle>
+          <DrawerDescription>Pedidos realizados</DrawerDescription>
+        </DrawerHeader>
 
-          <CustomerOrdersHistoryContent orders={orders} />
+        <CustomerOrdersHistoryContent orders={orders} />
 
-          <DrawerFooter className='border-t-2 lg:border-t-0'>
-            <DrawerClose asChild>
-              <Button variant='outline'>
-                <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
-              </Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </div>
+        <DrawerFooter className='border-t-2 lg:border-t-0'>
+          <DrawerClose asChild>
+            <Button variant='outline'>
+              <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   )
 }
 

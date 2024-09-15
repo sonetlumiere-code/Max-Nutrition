@@ -113,7 +113,7 @@ enum Measurement {
   GRAM
   MILLILITER
 
-  @@map("Measurement")
+  @@map("measurement")
 }
 
 model Ingredient {

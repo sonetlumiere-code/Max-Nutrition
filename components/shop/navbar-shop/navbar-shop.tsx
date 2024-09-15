@@ -59,32 +59,21 @@ export default async function NavbarShop({ customer }: NavbarShopProps) {
             className='w-full rounded-full bg-muted pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
           />
         </div>
-        <div className='flex items-center gap-4'>
-          {/* <Link href='#' className='relative' prefetch={false}>
-            <MapPin className='w-6 h-6 text-muted-foreground' />
-          </Link> */}
-          {/* <Link href='#' className='relative' prefetch={false}>
-          <Bell className='w-6 h-6 text-muted-foreground' />
-          <div className='absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium'>
-            2
+
+        {session?.user ? (
+          <div className='flex space-x-3'>
+            <CartNavButton />
+
+            <ProfileDropdown session={session} customer={customer} />
           </div>
-        </Link> */}
-
-          {session?.user ? (
-            <>
-              <CartNavButton />
-
-              <ProfileDropdown session={session} customer={customer} />
-            </>
-          ) : (
-            <Link
-              href='/login'
-              className={cn(buttonVariants({ variant: "outline" }), "")}
-            >
-              <User className='w-5 h-5 mr-2 ' /> Ingresar
-            </Link>
-          )}
-        </div>
+        ) : (
+          <Link
+            href='/login'
+            className={cn(buttonVariants({ variant: "outline" }), "")}
+          >
+            <User className='w-5 h-5 mr-2 ' /> Ingresar
+          </Link>
+        )}
       </header>
     </>
   )

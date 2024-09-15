@@ -34,50 +34,46 @@ const CustomerInfo = ({ open, setOpen, customer }: CustomerInfoProps) => {
 
   if (isDesktop) {
     return (
-      <div className='relative flex items-center'>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className='sm:max-w-[600px]'>
-            <DialogHeader>
-              <DialogTitle>Mis datos</DialogTitle>
-              <DialogDescription>Mis datos</DialogDescription>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className='sm:max-w-[600px]'>
+          <DialogHeader>
+            <DialogTitle>Mis datos</DialogTitle>
+            <DialogDescription>Mis datos</DialogDescription>
 
-              <CustomerInfoContent customer={customer} />
+            <CustomerInfoContent customer={customer} />
 
-              <DialogFooter className='flex flex-col'>
-                <DialogClose asChild>
-                  <Button variant='outline'>
-                    <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
-      </div>
+            <DialogFooter className='flex flex-col'>
+              <DialogClose asChild>
+                <Button variant='outline'>
+                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     )
   }
 
   return (
-    <div className='relative flex items-center'>
-      <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerContent className='min-h-[40vh]'>
-          <DrawerHeader>
-            <DrawerTitle>Mis datos</DrawerTitle>
-            <DrawerDescription>Mis datos</DrawerDescription>
-          </DrawerHeader>
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerContent className='min-h-[40vh]'>
+        <DrawerHeader>
+          <DrawerTitle>Mis datos</DrawerTitle>
+          <DrawerDescription>Mis datos</DrawerDescription>
+        </DrawerHeader>
 
-          <CustomerInfoContent customer={customer} />
+        <CustomerInfoContent customer={customer} />
 
-          <DrawerFooter className='border-t-2 lg:border-t-0'>
-            <DrawerClose asChild>
-              <Button variant='outline'>
-                <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
-              </Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </div>
+        <DrawerFooter className='border-t-2 lg:border-t-0'>
+          <DrawerClose asChild>
+            <Button variant='outline'>
+              <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   )
 }
 
