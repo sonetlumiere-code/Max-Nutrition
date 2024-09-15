@@ -31,12 +31,12 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getShippingZones } from "@/data/shipping-zones"
 import { getShippingSettings } from "@/data/shipping-settings"
-import DeleteShippingZone from "@/components/dashboard/shipping-zones/delete-shipping-zone/delete-shipping-zone"
+import DeleteShippingZone from "@/components/dashboard/shippings/shipping-zones/delete-shipping-zone/delete-shipping-zone"
 import Link from "next/link"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
-import EditShippingSettings from "@/components/dashboard/shipping-settings/edit-shipping-settings/edit-shipping-settings"
+import EditShippingSettings from "@/components/dashboard/shippings/shipping-settings/edit-shipping-settings/edit-shipping-settings"
 import { ShippingSettings } from "@prisma/client"
 
 const Shippings = async () => {
@@ -77,7 +77,7 @@ const Shippings = async () => {
                   </div>
                   <div className='ml-auto'>
                     <Link
-                      href='shipping-zones/create-shipping-zone'
+                      href='shippings/create-shipping-zone'
                       className={cn(buttonVariants({ variant: "default" }))}
                     >
                       <>
@@ -106,7 +106,7 @@ const Shippings = async () => {
                       <TableRow key={shippingZone.id}>
                         <TableCell>{shippingZone.zone}</TableCell>
                         <TableCell className='max-w-28 hidden md:table-cell'>
-                          <p className='truncate'>{shippingZone.cost}</p>
+                          <p className='truncate'>$ {shippingZone.cost}</p>
                         </TableCell>
                         <TableCell>
                           <DropdownMenu modal={false}>
@@ -123,7 +123,7 @@ const Shippings = async () => {
                             <DropdownMenuContent align='end'>
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                               <Link
-                                href={`shipping-zones/edit-shipping-zone/${shippingZone.id}`}
+                                href={`shippings/edit-shipping-zone/${shippingZone.id}`}
                               >
                                 <DropdownMenuItem>
                                   <Icons.pencil className='w-4 h-4 mr-2' />
@@ -163,7 +163,7 @@ const Shippings = async () => {
                 </p>
 
                 <Button className='mt-4' asChild>
-                  <Link href='/shipping-zones/create-shipping-zone'>
+                  <Link href='/shippings/create-shipping-zone'>
                     <Icons.circlePlus className='mr-2 h-4 w-4' />
                     Agregar Zona de envío
                   </Link>

@@ -45,7 +45,7 @@ const EditShippingZone = ({ shippingZone }: EditShippingZoneProps) => {
     const res = await editShippingZone({ id: shippingZone.id, values: data })
 
     if (res.success) {
-      router.push("/shipping-zones")
+      router.push("/shippings")
       toast({
         title: "Zona de envío actualizada",
         description: "La zona de envío se actualizó correctamente.",

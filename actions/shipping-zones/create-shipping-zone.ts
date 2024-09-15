@@ -24,7 +24,7 @@ export async function createShippingZone(values: ShippingZoneSchema) {
       },
     })
 
-    revalidatePath("/shipping-zones")
+    revalidatePath("/shippings")
 
     return { success: shippingZone }
   } catch (error) {

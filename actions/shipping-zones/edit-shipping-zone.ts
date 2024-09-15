@@ -31,7 +31,7 @@ export async function editShippingZone({
       },
     })
 
-    revalidatePath("/shipping-zones")
+    revalidatePath("/shippings")
 
     return { success: updatedShippingZone }
   } catch (error) {

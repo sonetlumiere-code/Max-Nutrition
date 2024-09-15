@@ -1,4 +1,4 @@
-import CreateShippingZone from "@/components/dashboard/shipping-zones/create-shipping-zone/create-shipping-zone"
+import CreateShippingZone from "@/components/dashboard/shippings/shipping-zones/create-shipping-zone/create-shipping-zone"
 import {
   Breadcrumb,
   BreadcrumbItem,

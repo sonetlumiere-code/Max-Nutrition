@@ -9,7 +9,7 @@ export async function deleteShippingZone({ id }: { id: string }) {
       where: { id },
     })
 
-    revalidatePath("/shipping-zones")
+    revalidatePath("/shippings")
 
     return { success: shippingZone }
   } catch (error) {
