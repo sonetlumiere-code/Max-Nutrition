@@ -1,5 +1,5 @@
-import EditShopSettings from "@/components/dashboard/shop-settings/edit-shop-settings/edit-shop-settings"
-import { getShopSettings } from "@/data/shop-settings"
+import EditSettings from "@/components/dashboard/settings/edit-settings/edit-settings"
+import { getSettings } from "@/data/settings"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,8 +9,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 
-const ShopSettings = async () => {
-  const shopSettings = await getShopSettings()
+const Settings = async () => {
+  const settings = await getSettings()
 
   return (
     <div className='space-y-6'>
@@ -21,16 +21,16 @@ const ShopSettings = async () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Configuración de tienda</BreadcrumbPage>
+            <BreadcrumbPage>Configuración</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h2 className='font-semibold text-lg'>Configuración de tienda</h2>
+      <h2 className='font-semibold text-lg'>Configuración</h2>
 
-      {shopSettings && <EditShopSettings shopSettings={shopSettings} />}
+      {settings && <EditSettings settings={settings} />}
     </div>
   )
 }
 
-export default ShopSettings
+export default Settings

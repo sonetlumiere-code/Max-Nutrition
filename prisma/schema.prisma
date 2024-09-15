@@ -262,16 +262,24 @@ model Category {
   @@map("categories")
 }
 
-model ShopSettings {
+model Settings {
+  id               String   @id @default("1")
+  operationalHours String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model ShippingSettings {
   id                             String   @id @default("1")
-  operationalHours               String
   takeAway                       Boolean  @default(true)
   shipping                       Boolean  @default(true)
   minProductsQuantityForShipping Int
   createdAt                      DateTime @default(now())
   updatedAt                      DateTime @updatedAt
 
-  @@map("shop_settings")
+  @@map("shipping_settings")
 }
 
 model ShippingZone {

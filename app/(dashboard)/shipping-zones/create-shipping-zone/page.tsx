@@ -18,9 +18,7 @@ const CreateShippingZonesPage = () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href='/shipping-zones'>
-              Zonas de envío
-            </BreadcrumbLink>
+            <BreadcrumbLink href='/shippings'>Envíos</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

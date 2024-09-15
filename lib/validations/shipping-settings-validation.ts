@@ -1,7 +1,6 @@
 import { z } from "zod"
 
-export const shopSettingsSchema = z.object({
-  operationalHours: z.string(),
+export const shippingSettingsSchema = z.object({
   takeAway: z.boolean(),
   shipping: z.boolean(),
   minProductsQuantityForShipping: z.coerce

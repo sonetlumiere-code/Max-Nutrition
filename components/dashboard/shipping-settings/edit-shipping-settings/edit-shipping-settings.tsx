@@ -1,9 +1,16 @@
 "use client"
 
-import { editShopSettings } from "@/actions/shop-settings/edit-shop-settings"
+import { editShippingSettings } from "@/actions/shipping-settings/edit-shipping-settings"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   Form,
   FormControl,
@@ -15,22 +22,24 @@ import {
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/use-toast"
-import { shopSettingsSchema } from "@/lib/validations/shop-settings-validation"
+import { shippingSettingsSchema } from "@/lib/validations/shipping-settings-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ShopSettings } from "@prisma/client"
+import { ShippingSettings } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-type ShopSettingsSchema = z.infer<typeof shopSettingsSchema>
+type ShippingSettingsSchema = z.infer<typeof shippingSettingsSchema>
 
-type EditShopSettingsProps = {
-  shopSettings: ShopSettings
+type EditShippingSettingsProps = {
+  shippingSettings: ShippingSettings
 }
 
-const EditShopSettings = ({ shopSettings }: EditShopSettingsProps) => {
-  const form = useForm<ShopSettingsSchema>({
-    resolver: zodResolver(shopSettingsSchema),
-    defaultValues: shopSettings,
+const EditShippingSettings = ({
+  shippingSettings,
+}: EditShippingSettingsProps) => {
+  const form = useForm<ShippingSettingsSchema>({
+    resolver: zodResolver(shippingSettingsSchema),
+    defaultValues: shippingSettings,
   })
 
   const {
@@ -39,20 +48,21 @@ const EditShopSettings = ({ shopSettings }: EditShopSettingsProps) => {
     formState: { isSubmitting },
   } = form
 
-  const onSubmit = async (data: ShopSettingsSchema) => {
-    const res = await editShopSettings({ values: data })
+  const onSubmit = async (data: ShippingSettingsSchema) => {
+    console.log(data)
+    const res = await editShippingSettings({ values: data })
 
     if (res.success) {
       toast({
-        title: "Configuración de tienda actualizada",
-        description: "La configuración de tienda se actualizó correctamente.",
+        title: "Configuración de envíos actualizada",
+        description: "La configuración de envíos se actualizó correctamente.",
       })
     }
 
     if (res.error) {
       toast({
         variant: "destructive",
-        title: "Error actualizando configuración de tienda",
+        title: "Error configurando envíos.",
         description: res.error,
       })
     }
@@ -61,10 +71,13 @@ const EditShopSettings = ({ shopSettings }: EditShopSettingsProps) => {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
-        <Card className='max-w-screen-md'>
-          <CardHeader></CardHeader>
+        <Card>
+          <CardHeader>
+            <CardTitle className='text-xl'>Configuración de envíos</CardTitle>
+            <CardDescription>Configura tus envíos</CardDescription>
+          </CardHeader>
           <CardContent>
-            <div className='space-y-3'>
+            <div className='grid gap-6'>
               <FormField
                 control={form.control}
                 name='shipping'
@@ -91,7 +104,7 @@ const EditShopSettings = ({ shopSettings }: EditShopSettingsProps) => {
                 render={({ field }) => (
                   <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                     <div className='space-y-0.5'>
-                      <FormLabel>Retiro por sucursal</FormLabel>
+                      <FormLabel>Retirar por sucursal</FormLabel>
                     </div>
                     <FormControl>
                       <Switch
@@ -111,13 +124,13 @@ const EditShopSettings = ({ shopSettings }: EditShopSettingsProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Cantidad mínima de productos para habilitar envíos
+                      Cantidad de productos requerida para habilitar envíos
                     </FormLabel>
                     <FormControl>
                       <Input
                         type='number'
                         step='1'
-                        placeholder=''
+                        placeholder='Precio en pesos'
                         disabled={isSubmitting}
                         {...field}
                       />
@@ -142,4 +155,4 @@ const EditShopSettings = ({ shopSettings }: EditShopSettingsProps) => {
   )
 }
 
-export default EditShopSettings
+export default EditShippingSettings

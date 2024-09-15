@@ -43,7 +43,7 @@ const CreateShippingZone = () => {
     const res = await createShippingZone(data)
 
     if (res.success) {
-      router.push("/shipping-zones")
+      router.push("/shippings")
       toast({
         title: "Nueva zona de envío creada",
         description: "La zona de envío ha sido creada correctamente.",

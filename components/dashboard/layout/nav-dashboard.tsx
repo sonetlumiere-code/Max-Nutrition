@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { navItems } from "../../../lib/constants/nav-items"
+import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
 
 export default function NavDashboard() {

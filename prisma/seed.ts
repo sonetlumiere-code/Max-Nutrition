@@ -857,12 +857,20 @@ async function main() {
     })
   }
 
-  await prisma.shopSettings.upsert({
+  await prisma.settings.upsert({
     where: { id: "1" },
     update: {},
     create: {
       id: "1",
       operationalHours: "",
+    },
+  })
+
+  await prisma.shippingSettings.upsert({
+    where: { id: "1" },
+    update: {},
+    create: {
+      id: "1",
       takeAway: true,
       shipping: true,
       minProductsQuantityForShipping: 10,

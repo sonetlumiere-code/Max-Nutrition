@@ -2,13 +2,13 @@
 
 import prisma from "@/lib/db/db"
 
-export const getShopSettings = async () => {
+export const getSettings = async () => {
   try {
-    const shopSettings = await prisma.shopSettings.findUnique({
+    const settings = await prisma.settings.findUnique({
       where: { id: "1" },
     })
 
-    return shopSettings
+    return settings
   } catch (error) {
     console.error(error)
     return null

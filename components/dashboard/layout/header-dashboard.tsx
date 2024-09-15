@@ -110,7 +110,7 @@ export default function HeaderDashboard() {
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <Link href={"/shop-settings"}>
+          <Link href={"/settings"}>
             <DropdownMenuItem>
               <Icons.settings className='w-4 h-4 mr-2' />
               Configuración
