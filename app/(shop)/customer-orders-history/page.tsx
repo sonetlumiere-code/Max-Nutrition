@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { Role } from "@prisma/client"
 import Link from "next/link"
 
-const CustomerOrderHistoryPage = async () => {
+const CustomerOrdersHistoryPage = async () => {
   const session = await auth()
 
   const customer =
@@ -36,4 +36,4 @@ const CustomerOrderHistoryPage = async () => {
   )
 }
 
-export default CustomerOrderHistoryPage
+export default CustomerOrdersHistoryPage

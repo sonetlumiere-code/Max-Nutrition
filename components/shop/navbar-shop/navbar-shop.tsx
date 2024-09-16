@@ -56,7 +56,7 @@ export default async function NavbarShop() {
         </div>
 
         {session?.user ? (
-          <div className='flex space-x-3'>
+          <div className='flex items-center space-x-3'>
             <CartNavButton />
             <ProfileDropdown session={session} />
           </div>

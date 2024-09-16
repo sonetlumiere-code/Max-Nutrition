@@ -43,7 +43,7 @@ const ProfileDropdown = ({ session }: ProfileDropdownProps) => {
               <User className='w-4 h-4 mr-2' /> Mis datos
             </DropdownMenuItem>
           </Link>
-          <Link href='/customer-order-history'>
+          <Link href='/customer-orders-history'>
             <DropdownMenuItem>
               <ScrollText className='w-4 h-4 mr-2' /> Mis Pedidos
             </DropdownMenuItem>
