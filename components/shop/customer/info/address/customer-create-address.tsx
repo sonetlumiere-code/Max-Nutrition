@@ -40,9 +40,9 @@ const CustomerCreateAddress = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className='sm:max-w-[600px]'>
           <DialogHeader>
-            <DialogTitle>Mis datos</DialogTitle>
-            <DialogDescription>Mis datos</DialogDescription>
-            asd
+            <DialogTitle>Crear dirección</DialogTitle>
+            <DialogDescription>Crear dirección</DialogDescription>
+            Crear dirección
             <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
                 <Button variant='outline'>
@@ -60,10 +60,10 @@ const CustomerCreateAddress = ({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent className='min-h-[40vh]'>
         <DrawerHeader>
-          <DrawerTitle>Mis datos</DrawerTitle>
-          <DrawerDescription>Mis datos</DrawerDescription>
+          <DrawerTitle>Crear dirección</DrawerTitle>
+          <DrawerDescription>Crear dirección</DrawerDescription>
         </DrawerHeader>
-        asd
+        Crear dirección
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>
             <Button variant='outline'>

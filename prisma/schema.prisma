@@ -84,7 +84,7 @@ model PasswordResetToken {
 model Customer {
   id        String            @id @default(cuid())
   userId    String            @unique
-  birthdate String?
+  birthdate DateTime?
   address   CustomerAddress[]
   orders    Order[]
   user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
