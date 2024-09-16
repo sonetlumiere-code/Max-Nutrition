@@ -29,8 +29,6 @@ const CustomerOrdersHistoryPage = async () => {
         </Link>
       </div>
 
-      <h2 className='text-xl text-center'>Historial de pedidos</h2>
-
       {customer?.orders && <CustomerOrdersHistory orders={customer?.orders} />}
     </div>
   )

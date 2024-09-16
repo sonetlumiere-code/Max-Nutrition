@@ -58,11 +58,11 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Dirección</TableHead>
-                  <TableHead>Barrio</TableHead>
+                  <TableHead className='hidden md:table-cell'>Barrio</TableHead>
                   <TableHead className='hidden md:table-cell'>
                     Código postal
                   </TableHead>
-                  <TableHead>
+                  <TableHead className='text-end'>
                     <span>Acciones</span>
                   </TableHead>
                 </TableRow>
@@ -71,11 +71,13 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
                 {customer.address.map((address) => (
                   <TableRow key={address.id}>
                     <TableCell>{address.address}</TableCell>
-                    <TableCell>{address.city}</TableCell>
+                    <TableCell className='hidden md:table-cell'>
+                      {address.city}
+                    </TableCell>
                     <TableCell className='hidden md:table-cell'>
                       {address.postCode}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className='text-end'>
                       <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                           <Button

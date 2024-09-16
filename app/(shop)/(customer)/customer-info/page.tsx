@@ -30,8 +30,6 @@ const CustomerInfoPage = async () => {
         </Link>
       </div>
 
-      <h2 className='text-xl text-center'>Mis datos</h2>
-
       {customer && (
         <>
           <CustomerPersonalInfo customer={customer} />
