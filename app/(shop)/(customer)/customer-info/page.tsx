@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons"
-import CustomerAddressList from "@/components/shop/customer/info/address/customer-address-list"
+import CustomerAddresses from "@/components/shop/customer/info/address/customer-addresses"
 import CustomerPersonalInfo from "@/components/shop/customer/info/personal-info/customer-personal-info"
 import { buttonVariants } from "@/components/ui/button"
 import { getCustomer } from "@/data/customer"
@@ -35,7 +35,7 @@ const CustomerInfoPage = async () => {
       {customer && (
         <>
           <CustomerPersonalInfo customer={customer} />
-          <CustomerAddressList customer={customer} />
+          <CustomerAddresses customer={customer} />
         </>
       )}
     </div>

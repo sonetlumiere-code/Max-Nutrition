@@ -33,7 +33,7 @@ export async function createCustomerAddress(
 
     return { success: newAddress }
   } catch (error) {
-    console.error("Error creating customer:", error)
+    console.error("Error creating customer address:", error)
     return { error: "Hubo un error al crear la dirección." }
   }
 }

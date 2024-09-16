@@ -152,7 +152,7 @@ const Shippings = async () => {
               </CardFooter>
             </Card>
           ) : (
-            <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-12'>
+            <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
               <div className='flex flex-col items-center gap-1 text-center'>
                 <h3 className='text-2xl font-bold tracking-tight'>
                   Todavía no tenés ninguna zona de envío
