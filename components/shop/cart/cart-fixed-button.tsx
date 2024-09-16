@@ -1,6 +1,6 @@
 "use client"
 
-import { useCart } from "../cart-provider"
+import { useCart } from "@/components/cart-provider"
 
 const CartFixedButton = () => {
   const { items, setOpen } = useCart()

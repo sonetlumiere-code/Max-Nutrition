@@ -1,14 +1,12 @@
-import { PopulatedCategory } from "@/types/types"
 import ProductItem from "./product-item"
+import { getCategories } from "@/data/categories"
 
-type ProductsListProps = {
-  categories: PopulatedCategory[]
-}
+const ProductsList = async () => {
+  const categories = await getCategories()
 
-const ProductsList = ({ categories }: ProductsListProps) => {
   return (
     <div className='grid gap-8'>
-      {categories.map((category) => (
+      {categories?.map((category) => (
         <div className='grid gap-4' key={category.id}>
           <h2 className='text-xl font-semibold'>{category.name}</h2>
           <div className='grid gap-6'>

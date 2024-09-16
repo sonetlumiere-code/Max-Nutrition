@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-"use client"
 
 import {
   DropdownMenu,
@@ -12,20 +11,14 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Session } from "next-auth"
 import { LogOut, ScrollText, User } from "lucide-react"
 import SignOutButton from "@/components/sign-out-button"
-import { useState } from "react"
-import CustomerOrdersHistory from "../customer/orders-history/customer-orders-history"
-import CustomerInfo from "../customer/info/customer-info"
 import { PopulatedCustomer } from "@/types/types"
+import Link from "next/link"
 
 type ProfileDropdownProps = {
   session: Session | null
-  customer: PopulatedCustomer | null
 }
 
-const ProfileDropdown = ({ session, customer }: ProfileDropdownProps) => {
-  const [openOrdersHistory, setOpenOrdersHistory] = useState(false)
-  const [openCustomerInfo, setOpenCustomerInfo] = useState(false)
-
+const ProfileDropdown = ({ session }: ProfileDropdownProps) => {
   return (
     <>
       <DropdownMenu>
@@ -45,12 +38,16 @@ const ProfileDropdown = ({ session, customer }: ProfileDropdownProps) => {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
-          <DropdownMenuItem onClick={() => setOpenCustomerInfo(true)}>
-            <User className='w-4 h-4 mr-2' /> Mis datos
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpenOrdersHistory(true)}>
-            <ScrollText className='w-4 h-4 mr-2' /> Pedidos
-          </DropdownMenuItem>
+          <Link href='/customer-info'>
+            <DropdownMenuItem>
+              <User className='w-4 h-4 mr-2' /> Mis datos
+            </DropdownMenuItem>
+          </Link>
+          <Link href='/customer-order-history'>
+            <DropdownMenuItem>
+              <ScrollText className='w-4 h-4 mr-2' /> Mis Pedidos
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSeparator />
           <SignOutButton>
             <DropdownMenuItem>
@@ -59,18 +56,6 @@ const ProfileDropdown = ({ session, customer }: ProfileDropdownProps) => {
           </SignOutButton>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <CustomerOrdersHistory
-        open={openOrdersHistory}
-        setOpen={setOpenOrdersHistory}
-        orders={customer?.orders || []}
-      />
-
-      <CustomerInfo
-        open={openCustomerInfo}
-        setOpen={setOpenCustomerInfo}
-        customer={customer}
-      />
     </>
   )
 }
