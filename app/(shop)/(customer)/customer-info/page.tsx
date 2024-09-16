@@ -1,0 +1,45 @@
+import { Icons } from "@/components/icons"
+import CustomerAddressList from "@/components/shop/customer/info/address/customer-address-list"
+import CustomerPersonalInfo from "@/components/shop/customer/info/personal-info/customer-personal-info"
+import { buttonVariants } from "@/components/ui/button"
+import { getCustomer } from "@/data/customer"
+import { auth } from "@/lib/auth/auth"
+import { cn } from "@/lib/utils"
+import { Role } from "@prisma/client"
+import Link from "next/link"
+
+const CustomerInfoPage = async () => {
+  const session = await auth()
+
+  const customer =
+    session?.user.role === Role.USER
+      ? await getCustomer(session?.user.id || "")
+      : null
+
+  return (
+    <div className='space-y-6'>
+      <div className='flex items-start'>
+        <Link
+          href='/shop'
+          className={cn(buttonVariants({ variant: "ghost" }), "")}
+        >
+          <>
+            <Icons.chevronLeft className='mr-2 h-4 w-4' />
+            Volver a tienda
+          </>
+        </Link>
+      </div>
+
+      <h1 className='text-xl text-center'>Mis datos</h1>
+
+      {customer && (
+        <>
+          <CustomerPersonalInfo customer={customer} />
+          <CustomerAddressList customer={customer} />
+        </>
+      )}
+    </div>
+  )
+}
+
+export default CustomerInfoPage

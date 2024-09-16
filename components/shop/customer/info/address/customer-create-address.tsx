@@ -20,16 +20,19 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
-import CustomerInfoContent from "./customer-info-content"
 import { PopulatedCustomer } from "@/types/types"
 
-type CustomerInfoProps = {
+type CustomerCreateAddressProps = {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   customer: PopulatedCustomer | null
 }
 
-const CustomerInfo = ({ open, setOpen, customer }: CustomerInfoProps) => {
+const CustomerCreateAddress = ({
+  open,
+  setOpen,
+  customer,
+}: CustomerCreateAddressProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {
@@ -39,9 +42,7 @@ const CustomerInfo = ({ open, setOpen, customer }: CustomerInfoProps) => {
           <DialogHeader>
             <DialogTitle>Mis datos</DialogTitle>
             <DialogDescription>Mis datos</DialogDescription>
-
-            <CustomerInfoContent customer={customer} />
-
+            asd
             <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
                 <Button variant='outline'>
@@ -62,9 +63,7 @@ const CustomerInfo = ({ open, setOpen, customer }: CustomerInfoProps) => {
           <DrawerTitle>Mis datos</DrawerTitle>
           <DrawerDescription>Mis datos</DrawerDescription>
         </DrawerHeader>
-
-        <CustomerInfoContent customer={customer} />
-
+        asd
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>
             <Button variant='outline'>
@@ -77,4 +76,4 @@ const CustomerInfo = ({ open, setOpen, customer }: CustomerInfoProps) => {
   )
 }
 
-export default CustomerInfo
+export default CustomerCreateAddress

@@ -11,7 +11,6 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Session } from "next-auth"
 import { LogOut, ScrollText, User } from "lucide-react"
 import SignOutButton from "@/components/sign-out-button"
-import { PopulatedCustomer } from "@/types/types"
 import Link from "next/link"
 
 type ProfileDropdownProps = {
