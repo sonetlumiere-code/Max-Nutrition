@@ -94,15 +94,23 @@ model Customer {
   @@map("customers")
 }
 
+enum AddressLabel {
+  Home
+  Work
+  Other
+}
+
 model CustomerAddress {
-  id         String   @id @default(cuid())
-  customerId String
-  address    String
-  city       String
-  postCode   String
-  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          String       @id @default(cuid())
+  customerId  String
+  label       AddressLabel
+  labelString String?
+  address     String
+  city        String
+  postCode    String
+  customer    Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   // Order      Order[]
 
   @@map("customer_addresses")
