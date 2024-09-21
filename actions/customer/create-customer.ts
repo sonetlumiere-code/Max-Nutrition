@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db/db"
 import { customerSchema } from "@/lib/validations/customer-validation"
+import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
 type CustomerSchema = z.infer<typeof customerSchema>
@@ -22,11 +23,13 @@ export async function createCustomer(values: CustomerSchema) {
         birthdate,
         address: address
           ? {
-              create: {
-                address: address.address,
-                city: address.city,
-                postCode: address.postCode,
-              },
+              create: address.map((addr) => ({
+                address: addr.address,
+                label: addr.label,
+                labelString: addr.labelString,
+                city: addr.city,
+                postCode: addr.postCode,
+              })),
             }
           : undefined,
       },
@@ -35,6 +38,8 @@ export async function createCustomer(values: CustomerSchema) {
         orders: true,
       },
     })
+
+    revalidatePath("customer-info")
 
     return { success: customer }
   } catch (error) {

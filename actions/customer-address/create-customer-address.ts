@@ -17,7 +17,7 @@ export async function createCustomerAddress(
     return { error: "Campos inválidos." }
   }
 
-  const { address, city, postCode } = validatedFields.data
+  const { address, city, postCode, label, labelString } = validatedFields.data
 
   try {
     const newAddress = await prisma.customerAddress.create({
@@ -26,6 +26,8 @@ export async function createCustomerAddress(
         address,
         city,
         postCode,
+        label,
+        labelString,
       },
     })
 

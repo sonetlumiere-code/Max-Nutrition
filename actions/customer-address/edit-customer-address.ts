@@ -17,7 +17,7 @@ export async function editCustomerAddress(
     return { error: "Campos inválidos." }
   }
 
-  const { address, city, postCode } = validatedFields.data
+  const { address, city, postCode, label, labelString } = validatedFields.data
 
   try {
     const updatedAddress = await prisma.customerAddress.update({
@@ -28,6 +28,8 @@ export async function editCustomerAddress(
         address,
         city,
         postCode,
+        label,
+        labelString,
       },
     })
 
