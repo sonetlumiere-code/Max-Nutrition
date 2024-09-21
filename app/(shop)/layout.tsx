@@ -1,7 +1,7 @@
 import { CartProvider } from "@/components/cart-provider"
 import { ReactNode } from "react"
 import Cart from "@/components/shop/cart/cart"
-import NavbarShop from "@/components/shop/navbar-shop/navbar-shop"
+import HeaderShop from "@/components/shop/layout/header/header-shop"
 import { getCustomer } from "@/data/customer"
 import { auth } from "@/lib/auth/auth"
 import { Role } from "@prisma/client"
@@ -21,7 +21,7 @@ export default async function ShopLayout({ children }: ShopLayoutProps) {
   return (
     <CartProvider session={session}>
       <Cart session={session} customer={customer} />
-      <NavbarShop />
+      <HeaderShop />
       <main className='flex flex-col w-full max-w-4xl mx-auto pt-8 pb-24 px-4 md:px-6'>
         {children}
       </main>
