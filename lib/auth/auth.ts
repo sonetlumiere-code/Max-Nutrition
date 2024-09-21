@@ -4,6 +4,8 @@ import prisma from "@/lib/db/db"
 import authConfig from "./auth.config"
 import { Role } from "@prisma/client"
 import { getUser } from "@/data/user"
+import { createCustomer } from "@/actions/customer/create-customer"
+import { updateUser } from "@/actions/auth/user"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
@@ -12,10 +14,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   events: {
     async linkAccount({ user }) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { emailVerified: new Date() },
-      })
+      if (user.id) {
+        await updateUser(user.id, {
+          emailVerified: new Date(),
+        })
+
+        await createCustomer({
+          userId: user.id,
+        })
+      }
     },
   },
   callbacks: {
