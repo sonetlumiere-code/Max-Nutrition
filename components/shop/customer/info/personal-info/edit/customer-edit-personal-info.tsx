@@ -45,8 +45,8 @@ const CustomerEditPersonalInfo = ({
         <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent className='sm:max-w-[600px]'>
           <DialogHeader>
-            <DialogTitle>Editar info</DialogTitle>
-            <DialogDescription>Editar info</DialogDescription>
+            <DialogTitle>Editar información</DialogTitle>
+            <DialogDescription>Editar información personal</DialogDescription>
             <CustomerEditPersonalInfoForm
               customer={customer}
               setOpen={setOpen}
