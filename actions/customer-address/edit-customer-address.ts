@@ -37,7 +37,7 @@ export async function editCustomerAddress(
 
     return { success: updatedAddress }
   } catch (error) {
-    console.error("Error creating customer:", error)
+    console.error("Error updating customer address:", error)
     return { error: "Hubo un error al editar la dirección." }
   }
 }

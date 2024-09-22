@@ -2,11 +2,12 @@
 
 import prisma from "@/lib/db/db"
 import { customerSchema } from "@/lib/validations/customer-validation"
+import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
 type CustomerSchema = z.infer<typeof customerSchema>
 
-export async function updateCustomer({
+export async function editCustomer({
   id,
   values,
 }: {
@@ -19,7 +20,7 @@ export async function updateCustomer({
     return { error: "Invalid fields." }
   }
 
-  const { birthdate, address } = validatedFields.data
+  const { name, birthdate, address } = validatedFields.data
 
   try {
     // Filter out any undefined IDs from the address array
@@ -29,6 +30,7 @@ export async function updateCustomer({
     const customer = await prisma.customer.update({
       where: { id },
       data: {
+        name,
         birthdate,
         address: {
           deleteMany: {
@@ -59,6 +61,8 @@ export async function updateCustomer({
         orders: true,
       },
     })
+
+    revalidatePath("customer-info")
 
     return { success: customer }
   } catch (error) {

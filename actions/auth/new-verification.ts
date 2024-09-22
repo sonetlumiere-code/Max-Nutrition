@@ -37,6 +37,7 @@ export const newVerification = async (token: string) => {
       }),
       createCustomer({
         userId: existingUser.id,
+        name: existingUser.name || "",
       }),
       prisma.verificationToken.delete({
         where: { id: existingToken.id },

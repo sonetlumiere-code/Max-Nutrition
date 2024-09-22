@@ -3,6 +3,7 @@ import { customerAddressSchema } from "./customer-address-validation"
 
 export const customerSchema = z.object({
   userId: z.string(),
-  birthdate: z.string().optional(),
+  name: z.string().min(1, { message: "Debes ingresar tu nombre y apellido." }),
+  birthdate: z.date().optional(),
   address: z.array(customerAddressSchema).optional(),
 })

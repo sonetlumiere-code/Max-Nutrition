@@ -13,7 +13,7 @@ export async function deleteCustomerAddress({ id }: { id: string }) {
 
     return { success: ingredient }
   } catch (error) {
-    console.error(error)
+    console.error("Error deleting customer address:", error)
     return { error: "Hubo un error al eliminar la dirección." }
   }
 }

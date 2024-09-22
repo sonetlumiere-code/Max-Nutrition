@@ -31,11 +31,13 @@ import {
   Truck,
   Settings,
   LogOut,
+  Calendar,
 } from "lucide-react"
 
 export const Icons = {
   plus: Plus,
   x: X,
+  calendar: Calendar,
   chevronLeft: ChevronLeft,
   spinner: Loader2,
   eye: Eye,

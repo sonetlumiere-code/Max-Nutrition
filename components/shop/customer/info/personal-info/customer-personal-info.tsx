@@ -1,3 +1,5 @@
+import { Icons } from "@/components/icons"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -6,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { PopulatedCustomer } from "@/types/types"
+import CustomerEditPersonalInfo from "./edit/customer-edit-personal-info"
 
 type CustomerPersonalInfoProps = {
   customer: PopulatedCustomer
@@ -15,17 +18,29 @@ const CustomerPersonalInfo = ({ customer }: CustomerPersonalInfoProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className='text-base md:text-xl'>Mis datos</CardTitle>
-        <CardDescription className='hidden md:block'>
-          Información personal
-        </CardDescription>
+        <div className='space-between flex items-center'>
+          <div className='max-w-screen-sm'>
+            <CardTitle className='text-base md:text-xl'>Mis datos</CardTitle>
+            <CardDescription className='hidden md:block'>
+              Información personal
+            </CardDescription>
+          </div>
+          <div className='ml-auto'>
+            <CustomerEditPersonalInfo customer={customer}>
+              <Button type='button'>
+                <Icons.pencil className='w-4 h-4 mr-1' />
+                Editar
+              </Button>
+            </CustomerEditPersonalInfo>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className='grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
           <div className='grid gap-1'>
             <p className='text-sm font-medium leading-none'>Nombre</p>
             <p className='text-sm text-muted-foreground'>
-              {customer.user?.name}
+              {customer.name || customer.user?.name}
             </p>
           </div>
 

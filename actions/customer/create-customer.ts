@@ -14,13 +14,14 @@ export async function createCustomer(values: CustomerSchema) {
     return { error: "Invalid fields." }
   }
 
-  const { userId, birthdate, address } = validatedFields.data
+  const { userId, birthdate, name, address } = validatedFields.data
 
   try {
     const customer = await prisma.customer.create({
       data: {
         userId,
         birthdate,
+        name,
         address: address
           ? {
               create: address.map((addr) => ({

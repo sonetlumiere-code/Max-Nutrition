@@ -21,6 +21,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         await createCustomer({
           userId: user.id,
+          name: user.name || "",
         })
       }
     },
