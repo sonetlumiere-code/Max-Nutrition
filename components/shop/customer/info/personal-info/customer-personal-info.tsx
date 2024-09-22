@@ -52,11 +52,18 @@ const CustomerPersonalInfo = ({ customer }: CustomerPersonalInfoProps) => {
           </div>
 
           <div className='grid gap-1'>
+            <p className='text-sm font-medium leading-none'>Teléfono</p>
+            <p className='text-sm text-muted-foreground'>
+              {customer.phone || "-"}
+            </p>
+          </div>
+
+          <div className='grid gap-1'>
             <p className='text-sm font-medium leading-none'>
               Fecha de cumpleaños
             </p>
             <p className='text-sm text-muted-foreground'>
-              {customer.birthdate?.toLocaleDateString()}
+              {customer.birthdate?.toLocaleDateString() || "-"}
             </p>
           </div>
 

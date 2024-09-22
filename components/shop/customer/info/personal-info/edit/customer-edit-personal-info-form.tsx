@@ -44,6 +44,7 @@ const CustomerEditPersonalInfoForm = ({
     defaultValues: {
       userId: customer.userId,
       name: customer.name || customer.user?.name || "",
+      phone: customer.phone || 0,
       birthdate: customer.birthdate || undefined,
     },
   })
@@ -86,6 +87,26 @@ const CustomerEditPersonalInfoForm = ({
               <FormLabel>Nombre y apellido</FormLabel>
               <FormControl>
                 <Input placeholder='' disabled={isSubmitting} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name='phone'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Teléfono</FormLabel>
+              <FormControl>
+                <Input
+                  type='number'
+                  step='1'
+                  placeholder='Ingresa tu número de teléfono'
+                  disabled={isSubmitting}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

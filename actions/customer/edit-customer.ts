@@ -20,7 +20,7 @@ export async function editCustomer({
     return { error: "Invalid fields." }
   }
 
-  const { name, birthdate, address } = validatedFields.data
+  const { name, birthdate, address, phone } = validatedFields.data
 
   try {
     // Filter out any undefined IDs from the address array
@@ -32,6 +32,7 @@ export async function editCustomer({
       data: {
         name,
         birthdate,
+        phone,
         address: {
           deleteMany: {
             customerId: id,
