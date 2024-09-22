@@ -59,3 +59,19 @@ export const getCustomer = async (
     return null
   }
 }
+
+export const getCustomers = async () => {
+  try {
+    const customers = await prisma.customer.findMany({
+      include: {
+        user: {
+          select: { email: true, image: true, name: true, createdAt: true },
+        },
+      },
+    })
+    return customers
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
