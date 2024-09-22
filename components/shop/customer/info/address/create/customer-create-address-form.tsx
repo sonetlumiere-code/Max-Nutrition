@@ -18,6 +18,7 @@ import { toast } from "@/components/ui/use-toast"
 import { Icons } from "@/components/icons"
 import { Dispatch, SetStateAction } from "react"
 import { Button } from "@/components/ui/button"
+import { AddressLabel } from "@prisma/client"
 
 type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
@@ -36,6 +37,8 @@ const CustomerCreateAddressForm = ({
       address: "",
       city: "",
       postCode: "",
+      label: AddressLabel.Home,
+      labelString: "",
     },
   })
 
@@ -46,6 +49,7 @@ const CustomerCreateAddressForm = ({
   } = form
 
   const onSubmit = async (data: CustomerAddressSchema) => {
+    console.log(data)
     const res = await createCustomerAddress(customerId, data)
     setOpen(false)
 
