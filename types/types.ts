@@ -10,6 +10,7 @@ import {
   PromotionCategory,
   Recipe,
   RecipeIngredient,
+  User,
 } from "@prisma/client"
 
 export type PopulatedRecipe = Recipe & {
@@ -47,6 +48,7 @@ export type PopulatedOrderItem = OrderItem & {
 export type PopulatedCustomer = Customer & {
   address?: CustomerAddress[]
   orders?: Order[]
+  user?: Partial<User>
 }
 
 export type Variation = { [key: string]: boolean }

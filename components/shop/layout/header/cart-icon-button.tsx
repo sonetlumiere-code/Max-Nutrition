@@ -3,9 +3,8 @@
 import { useCart } from "@/components/cart-provider"
 import { Button } from "@/components/ui/button"
 import { ShoppingCart } from "lucide-react"
-import React from "react"
 
-const CartNavButton = () => {
+const CartIconButton = () => {
   const { items, setOpen } = useCart()
 
   return (
@@ -23,4 +22,4 @@ const CartNavButton = () => {
   )
 }
 
-export default CartNavButton
+export default CartIconButton

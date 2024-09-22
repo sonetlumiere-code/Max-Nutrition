@@ -3,17 +3,11 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
+import OpenShopCard from "./open-shop-card"
 
-export default function NavDashboard() {
+export default function SideNavDashboard() {
   const pathname = usePathname()
 
   const isActive = (href: string) => pathname === href
@@ -53,19 +47,7 @@ export default function NavDashboard() {
           </nav>
         </div>
         <div className='mt-auto p-4'>
-          <Card>
-            <CardHeader className='p-2 pt-0 md:p-4'>
-              <CardTitle>Abrir tienda</CardTitle>
-              <CardDescription>
-                Horario activo: 7:00 hs a 23:00 hs
-              </CardDescription>
-            </CardHeader>
-            <CardContent className='p-2 pt-0 md:p-4 md:pt-0'>
-              <Button size='sm' className='w-full'>
-                Abrir tienda
-              </Button>
-            </CardContent>
-          </Card>
+          <OpenShopCard />
         </div>
       </div>
     </div>

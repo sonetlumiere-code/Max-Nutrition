@@ -1,83 +1,103 @@
+/* eslint-disable @next/next/no-img-element */
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { Dispatch, SetStateAction } from "react"
-import CustomerOrdersHistoryContent from "./customer-orders-history-content"
-import { Button } from "@/components/ui/button"
-import { MoveLeftIcon } from "lucide-react"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer"
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Badge } from "@/components/ui/badge"
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 import { PopulatedOrder } from "@/types/types"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
-type CustomerOrdersHistory = {
-  open: boolean
-  setOpen: Dispatch<SetStateAction<boolean>>
+type CustomerOrderHistoryProps = {
   orders: PopulatedOrder[]
 }
 
-const CustomerOrdersHistory = ({
-  open,
-  setOpen,
-  orders,
-}: CustomerOrdersHistory) => {
-  const isDesktop = useMediaQuery("(min-width: 768px)")
-
-  if (isDesktop) {
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className='sm:max-w-[600px]'>
-          <DialogHeader>
-            <DialogTitle>Historial de pedidos</DialogTitle>
-            <DialogDescription>Pedidos realizados</DialogDescription>
-
-            <CustomerOrdersHistoryContent orders={orders} />
-
-            <DialogFooter className='flex flex-col'>
-              <DialogClose asChild>
-                <Button variant='outline'>
-                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
-                </Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
+const CustomerOrdersHistory = ({ orders }: CustomerOrderHistoryProps) => {
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent className='min-h-[40vh]'>
-        <DrawerHeader>
-          <DrawerTitle>Historial de pedidos</DrawerTitle>
-          <DrawerDescription>Pedidos realizados</DrawerDescription>
-        </DrawerHeader>
-
-        <CustomerOrdersHistoryContent orders={orders} />
-
-        <DrawerFooter className='border-t-2 lg:border-t-0'>
-          <DrawerClose asChild>
-            <Button variant='outline'>
-              <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
-            </Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+    <Card>
+      <CardHeader>
+        <CardTitle className='text-base md:text-xl'>Mis pedidos</CardTitle>
+        <CardDescription className='hidden md:block'>
+          Historial de pedidos
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className='space-y-4 p-4'>
+          {orders.length > 0 ? (
+            <Accordion type='single' collapsible className=''>
+              {orders.map((order, i) => (
+                <AccordionItem key={order.id} value={`item-${order.id}`}>
+                  <AccordionTrigger className='hover:no-underline'>
+                    <div className='flex justify-between w-5/6'>
+                      <small>{order.createdAt.toLocaleDateString()}</small>
+                      <small>$ {order.total}</small>
+                      <Badge
+                        className={cn("", {
+                          "bg-amber-500 hover:bg-amber-500/80":
+                            order.status === "Pending",
+                          "bg-sky-500 hover:bg-sky-500/80":
+                            order.status === "Accepted",
+                          "bg-emerald-500 hover:bg-emerald-500/80":
+                            order.status === "Completed",
+                          "bg-destructive hover:bg-destructive/80":
+                            order.status === "Cancelled",
+                        })}
+                      >
+                        {order.status === "Pending" && "Pendiente"}
+                        {order.status === "Accepted" && "Aceptado"}
+                        {order.status === "Completed" && "Completado"}
+                        {order.status === "Cancelled" && "Cancelado"}
+                      </Badge>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <Table>
+                      <TableBody>
+                        {order.items?.map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell>
+                              <img
+                                src={
+                                  item.product?.image
+                                    ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${item.product.image}`
+                                    : "/img/no-image.jpg"
+                                }
+                                alt='Product image'
+                                className='w-8 h-8 rounded-md'
+                              />
+                            </TableCell>
+                            <TableCell>{item.product?.name}</TableCell>
+                            <TableCell>
+                              {item.withSalt ? (
+                                <small>Con sal</small>
+                              ) : (
+                                <small>Sin sal</small>
+                              )}
+                            </TableCell>
+                            <TableCell>x {item.quantity}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          ) : (
+            <p className='text-center'>No has realizado ningún pedido</p>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 

@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db/db"
 import { updateUser } from "./user"
+import { createCustomer } from "../customer/create-customer"
 
 export const newVerification = async (token: string) => {
   const existingToken = await prisma.verificationToken.findFirst({
@@ -28,14 +29,27 @@ export const newVerification = async (token: string) => {
     return { error: "El email no existe." }
   }
 
-  await updateUser(existingUser.id, {
-    emailVerified: new Date(),
-    email: existingToken.email,
-  })
+  try {
+    await Promise.all([
+      updateUser(existingUser.id, {
+        emailVerified: new Date(),
+        email: existingToken.email,
+      }),
+      createCustomer({
+        userId: existingUser.id,
+        name: existingUser.name || "",
+      }),
+      prisma.verificationToken.delete({
+        where: { id: existingToken.id },
+      }),
+    ])
 
-  await prisma.verificationToken.delete({
-    where: { id: existingToken.id },
-  })
-
-  return { success: "Email verificado." }
+    return { success: "Email verificado." }
+  } catch (error) {
+    console.error("Error during verification process:", error)
+    return {
+      error:
+        "Error en el proceso de verificación. Por favor, inténtelo de nuevo.",
+    }
+  }
 }

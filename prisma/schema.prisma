@@ -84,7 +84,8 @@ model PasswordResetToken {
 model Customer {
   id        String            @id @default(cuid())
   userId    String            @unique
-  birthdate String?
+  name      String
+  birthdate DateTime?
   address   CustomerAddress[]
   orders    Order[]
   user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -94,15 +95,23 @@ model Customer {
   @@map("customers")
 }
 
+enum AddressLabel {
+  Home
+  Work
+  Other
+}
+
 model CustomerAddress {
-  id         String   @id @default(cuid())
-  customerId String   @unique
-  address    String
-  city       String
-  postCode   String
-  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          String       @id @default(cuid())
+  customerId  String
+  label       AddressLabel
+  labelString String?
+  address     String
+  city        String
+  postCode    String
+  customer    Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   // Order      Order[]
 
   @@map("customer_addresses")
