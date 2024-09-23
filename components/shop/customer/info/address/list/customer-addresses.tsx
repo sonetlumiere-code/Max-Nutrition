@@ -42,7 +42,10 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
               </div>
               <div className='ml-auto'>
                 <CustomerCreateAddress customer={customer}>
-                  <Button type='button'>Agregar</Button>
+                  <Button type='button'>
+                    <Icons.plus className='w-4 h-4 mr-1' />
+                    Agregar
+                  </Button>
                 </CustomerCreateAddress>
               </div>
             </div>

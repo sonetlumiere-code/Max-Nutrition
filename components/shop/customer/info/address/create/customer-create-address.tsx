@@ -44,7 +44,9 @@ const CustomerCreateAddress = ({
         <DialogContent className='sm:max-w-[600px]'>
           <DialogHeader>
             <DialogTitle>Crear dirección</DialogTitle>
-            <DialogDescription>Crear dirección</DialogDescription>
+            <DialogDescription>
+              Agregá una dirección donde recibirás los pedidos
+            </DialogDescription>
             <div className='py-4'>
               <CustomerCreateAddressForm
                 customerId={customer?.id}
@@ -70,7 +72,9 @@ const CustomerCreateAddress = ({
       <DrawerContent className='min-h-[40vh]'>
         <DrawerHeader>
           <DrawerTitle>Crear dirección</DrawerTitle>
-          <DrawerDescription>Crear dirección</DrawerDescription>
+          <DrawerDescription>
+            Agregá una dirección donde recibirás los pedidos
+          </DrawerDescription>
         </DrawerHeader>
         <div className='p-4'>
           <CustomerCreateAddressForm
