@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,6 +20,14 @@ import { Icons } from "@/components/icons"
 import { Dispatch, SetStateAction } from "react"
 import { Button } from "@/components/ui/button"
 import { AddressLabel } from "@prisma/client"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { getAddressLabelDisplay } from "@/helpers/helpers"
 
 type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
@@ -46,10 +55,10 @@ const CustomerCreateAddressForm = ({
     control,
     handleSubmit,
     formState: { isSubmitting },
+    watch,
   } = form
 
   const onSubmit = async (data: CustomerAddressSchema) => {
-    console.log(data)
     const res = await createCustomerAddress(customerId, data)
     setOpen(false)
 
@@ -71,7 +80,7 @@ const CustomerCreateAddressForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6 p-4'>
+      <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
         <FormField
           control={control}
           name='address'
@@ -127,6 +136,55 @@ const CustomerCreateAddressForm = ({
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name='label'
+          render={({ field }) => (
+            <FormItem className='flex flex-col'>
+              <FormLabel>Etiqueta</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value?.toString() || "false"}
+                disabled={form.formState.isSubmitting}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.entries(AddressLabel).map(([key, value]) => (
+                    <SelectItem key={key} value={value}>
+                      {getAddressLabelDisplay(value)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {watch("label") === AddressLabel.Other && (
+          <FormField
+            control={control}
+            name='labelString'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Etiqueta personalizada</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='Ejemplo: Casa de un amigo.'
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <Button type='submit' disabled={isSubmitting}>
           {isSubmitting && (

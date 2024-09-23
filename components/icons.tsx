@@ -32,6 +32,8 @@ import {
   Settings,
   LogOut,
   Calendar,
+  Briefcase,
+  Globe,
 } from "lucide-react"
 
 export const Icons = {
@@ -54,6 +56,8 @@ export const Icons = {
   circlePlus: CirclePlus,
   bell: Bell,
   home: Home,
+  briefCase: Briefcase,
+  globe: Globe,
   users: Users,
   lineChart: LineChart,
   notebookText: NotebookText,

@@ -47,17 +47,19 @@ const CustomerCreateAddress = ({
           <DialogHeader>
             <DialogTitle>Crear dirección</DialogTitle>
             <DialogDescription>Crear dirección</DialogDescription>
-            <CustomerCreateAddressForm
-              customerId={customer?.id}
-              setOpen={setOpen}
-            />
-            <DialogFooter className='flex flex-col'>
+            <div className='py-4'>
+              <CustomerCreateAddressForm
+                customerId={customer?.id}
+                setOpen={setOpen}
+              />
+            </div>
+            {/* <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
                 <Button variant='outline'>
-                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
                 </Button>
               </DialogClose>
-            </DialogFooter>
+            </DialogFooter> */}
           </DialogHeader>
         </DialogContent>
       </Dialog>
@@ -72,14 +74,16 @@ const CustomerCreateAddress = ({
           <DrawerTitle>Crear dirección</DrawerTitle>
           <DrawerDescription>Crear dirección</DrawerDescription>
         </DrawerHeader>
-        <CustomerCreateAddressForm
-          customerId={customer?.id}
-          setOpen={setOpen}
-        />
+        <div className='p-4'>
+          <CustomerCreateAddressForm
+            customerId={customer?.id}
+            setOpen={setOpen}
+          />
+        </div>
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>
             <Button variant='outline'>
-              <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+              <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
             </Button>
           </DrawerClose>
         </DrawerFooter>

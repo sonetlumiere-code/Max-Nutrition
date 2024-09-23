@@ -78,7 +78,7 @@ const CustomerEditPersonalInfoForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6 p-4'>
+      <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
         <FormField
           control={control}
           name='name'

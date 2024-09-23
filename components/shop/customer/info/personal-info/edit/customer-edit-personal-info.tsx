@@ -47,17 +47,19 @@ const CustomerEditPersonalInfo = ({
           <DialogHeader>
             <DialogTitle>Editar información</DialogTitle>
             <DialogDescription>Editar información personal</DialogDescription>
-            <CustomerEditPersonalInfoForm
-              customer={customer}
-              setOpen={setOpen}
-            />
-            <DialogFooter className='flex flex-col'>
+            <div className='py-4'>
+              <CustomerEditPersonalInfoForm
+                customer={customer}
+                setOpen={setOpen}
+              />
+            </div>
+            {/* <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
                 <Button variant='outline'>
-                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
                 </Button>
               </DialogClose>
-            </DialogFooter>
+            </DialogFooter> */}
           </DialogHeader>
         </DialogContent>
       </Dialog>
@@ -69,14 +71,16 @@ const CustomerEditPersonalInfo = ({
       <DrawerTrigger asChild>{children}</DrawerTrigger>
       <DrawerContent className='min-h-[40vh]'>
         <DrawerHeader>
-          <DrawerTitle>Editar info</DrawerTitle>
-          <DrawerDescription>Editar info</DrawerDescription>
+          <DrawerTitle>Editar información</DrawerTitle>
+          <DrawerDescription>Editar información personal</DrawerDescription>
         </DrawerHeader>
-        <CustomerEditPersonalInfoForm customer={customer} setOpen={setOpen} />
+        <div className='p-4'>
+          <CustomerEditPersonalInfoForm customer={customer} setOpen={setOpen} />
+        </div>
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>
             <Button variant='outline'>
-              <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+              <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
             </Button>
           </DrawerClose>
         </DrawerFooter>

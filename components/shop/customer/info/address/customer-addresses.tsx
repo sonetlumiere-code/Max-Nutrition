@@ -26,6 +26,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Icons } from "@/components/icons"
+import { getAddressLabelDisplay } from "@/helpers/helpers"
+import { AddressLabel } from "@prisma/client"
 
 type CustomerAddressesProps = {
   customer: PopulatedCustomer
@@ -43,7 +45,7 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
                   Mis direcciones
                 </CardTitle>
                 <CardDescription className='hidden md:block'>
-                  Agrega tus direcciones
+                  Listado de mis direcciones
                 </CardDescription>
               </div>
               <div className='ml-auto'>
@@ -57,7 +59,10 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Dirección</TableHead>
+                  <TableHead>Etiqueta</TableHead>
+                  <TableHead className='hidden md:table-cell'>
+                    Dirección
+                  </TableHead>
                   <TableHead className='hidden md:table-cell'>Barrio</TableHead>
                   <TableHead className='hidden md:table-cell'>
                     Código postal
@@ -70,7 +75,15 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
               <TableBody>
                 {customer.address.map((address) => (
                   <TableRow key={address.id}>
-                    <TableCell>{address.address}</TableCell>
+                    <TableCell>
+                      {getAddressLabelWithIcon(
+                        address.label,
+                        address.labelString
+                      )}
+                    </TableCell>
+                    <TableCell className='hidden md:table-cell'>
+                      {address.address}
+                    </TableCell>
                     <TableCell className='hidden md:table-cell'>
                       {address.city}
                     </TableCell>
@@ -132,3 +145,29 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
 }
 
 export default CustomerAddresses
+
+const getAddressLabelWithIcon = (
+  label: AddressLabel,
+  labelString: string | null
+) => {
+  switch (label) {
+    case "Home":
+      return (
+        <div className='flex items-center'>
+          <Icons.home className='mr-2 h-4 w-4' /> Casa
+        </div>
+      )
+    case "Work":
+      return (
+        <div className='flex items-center'>
+          <Icons.briefCase className='mr-2 h-4 w-4' /> Trabajo
+        </div>
+      )
+    default:
+      return (
+        <div className='flex items-center'>
+          <Icons.globe className='mr-2 h-4 w-4' /> {labelString || "Otro"}
+        </div>
+      )
+  }
+}
