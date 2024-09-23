@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { PopulatedCustomer } from "@/types/types"
-import CustomerCreateAddress from "./create/customer-create-address"
+import CustomerCreateAddress from "../create/customer-create-address"
 import {
   Card,
   CardContent,
@@ -17,17 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Icons } from "@/components/icons"
-import { getAddressLabelDisplay } from "@/helpers/helpers"
 import { AddressLabel } from "@prisma/client"
+import CustomerAddressActions from "./customer-address-actions"
 
 type CustomerAddressesProps = {
   customer: PopulatedCustomer
@@ -91,24 +83,7 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
                       {address.postCode}
                     </TableCell>
                     <TableCell className='text-end'>
-                      <DropdownMenu modal={false}>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup='true'
-                            size='icon'
-                            variant='ghost'
-                          >
-                            <Icons.moreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Mostrar menú</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>edit</DropdownMenuItem>
-                          <DropdownMenuItem>delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <CustomerAddressActions address={address} />
                     </TableCell>
                   </TableRow>
                 ))}

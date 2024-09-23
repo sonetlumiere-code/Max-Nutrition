@@ -59,7 +59,10 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle
-            className={cn({ "text-destructive": variant === "destructive" })}
+            className={cn(
+              { "text-destructive": variant === "destructive" },
+              "text-start"
+            )}
           >
             {title}
           </DialogTitle>
@@ -68,7 +71,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
           </div>
         </DialogHeader>
         <DialogFooter>
-          <>
+          <div className='flex gap-2 justify-end'>
             <Button
               variant={variant === "destructive" ? "destructive" : "default"}
               disabled={seconds > 0}
@@ -80,7 +83,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             <Button variant='outline' onClick={onClose} autoFocus>
               Cancelar
             </Button>
-          </>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

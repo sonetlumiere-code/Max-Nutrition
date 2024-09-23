@@ -1,5 +1,5 @@
 import { Icons } from "@/components/icons"
-import CustomerAddresses from "@/components/shop/customer/info/address/customer-addresses"
+import CustomerAddresses from "@/components/shop/customer/info/address/list/customer-addresses"
 import CustomerPersonalInfo from "@/components/shop/customer/info/personal-info/customer-personal-info"
 import { buttonVariants } from "@/components/ui/button"
 import { getCustomer } from "@/data/customer"

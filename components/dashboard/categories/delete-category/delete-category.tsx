@@ -23,7 +23,7 @@ const DeleteCategory = ({ category }: DeleteCategoryProps) => {
 
       if (res.success) {
         toast({
-          title: `Categoría eliminada`,
+          title: "Categoría eliminada",
           description: `La categoría ${res.success.name} ha sido eliminada.`,
         })
       }

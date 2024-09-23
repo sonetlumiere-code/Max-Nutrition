@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db/db"
 import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
+import { AddressLabel } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
@@ -29,7 +30,7 @@ export async function editCustomerAddress(
         city,
         postCode,
         label,
-        labelString,
+        labelString: label === AddressLabel.Other ? labelString : "",
       },
     })
 

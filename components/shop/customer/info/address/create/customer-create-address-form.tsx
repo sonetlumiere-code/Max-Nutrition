@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -82,6 +81,35 @@ const CustomerCreateAddressForm = ({
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
         <FormField
+          control={form.control}
+          name='label'
+          render={({ field }) => (
+            <FormItem className='flex flex-col'>
+              <FormLabel>Etiqueta</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value?.toString() || "false"}
+                disabled={form.formState.isSubmitting}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.entries(AddressLabel).map(([key, value]) => (
+                    <SelectItem key={key} value={value}>
+                      {getAddressLabelDisplay(value)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
           control={control}
           name='address'
           render={({ field }) => (
@@ -132,35 +160,6 @@ const CustomerCreateAddressForm = ({
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='label'
-          render={({ field }) => (
-            <FormItem className='flex flex-col'>
-              <FormLabel>Etiqueta</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value?.toString() || "false"}
-                disabled={form.formState.isSubmitting}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder='' />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Object.entries(AddressLabel).map(([key, value]) => (
-                    <SelectItem key={key} value={value}>
-                      {getAddressLabelDisplay(value)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
               <FormMessage />
             </FormItem>
           )}

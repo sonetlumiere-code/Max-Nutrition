@@ -5,13 +5,13 @@ import { revalidatePath } from "next/cache"
 
 export async function deleteCustomerAddress({ id }: { id: string }) {
   try {
-    const ingredient = await prisma.customerAddress.delete({
+    const address = await prisma.customerAddress.delete({
       where: { id },
     })
 
     revalidatePath("/customer-info")
 
-    return { success: ingredient }
+    return { success: address }
   } catch (error) {
     console.error("Error deleting customer address:", error)
     return { error: "Hubo un error al eliminar la dirección." }
