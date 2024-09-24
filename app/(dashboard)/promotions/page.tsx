@@ -63,9 +63,7 @@ const PromotionsPage = async () => {
           <CardHeader>
             <div className='space-between flex items-center'>
               <div className='max-w-screen-sm'>
-                <CardTitle className=' text-base md:text-xl'>
-                  Promociones
-                </CardTitle>
+                <CardTitle className='text-xl'>Promociones</CardTitle>
                 <CardDescription className='hidden md:block'>
                   Gestiona y actualiza el inventario de las promociones.
                 </CardDescription>

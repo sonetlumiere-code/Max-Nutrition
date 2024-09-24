@@ -63,9 +63,7 @@ export default async function CategoriesPage() {
           <CardHeader>
             <div className='space-between flex items-center'>
               <div className='max-w-screen-sm'>
-                <CardTitle className=' text-base md:text-xl'>
-                  Categorías
-                </CardTitle>
+                <CardTitle className='text-xl'>Categorías</CardTitle>
                 <CardDescription className='hidden md:block'>
                   Gestiona y actualiza las categorías.
                 </CardDescription>

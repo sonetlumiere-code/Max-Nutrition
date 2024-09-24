@@ -49,9 +49,7 @@ export default function CheckoutPage() {
           <div className='grid gap-6'>
             <Card>
               <CardHeader>
-                <CardTitle className='text-base md:text-xl'>
-                  Resumen del pedido
-                </CardTitle>
+                <CardTitle className='text-xl'>Resumen del pedido</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -84,9 +82,7 @@ export default function CheckoutPage() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className='text-base md:text-xl'>
-                  Delivery Address
-                </CardTitle>
+                <CardTitle className='text-xl'>Delivery Address</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className='grid gap-4'>
@@ -119,9 +115,7 @@ export default function CheckoutPage() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className='text-base md:text-xl'>
-                  Metodo de Pago
-                </CardTitle>
+                <CardTitle className='text-xl'>Metodo de Pago</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className='grid gap-4'>
@@ -166,9 +160,7 @@ export default function CheckoutPage() {
         <div className='grid gap-6'>
           <Card>
             <CardHeader>
-              <CardTitle className='text-base md:text-xl'>
-                Total del pedido
-              </CardTitle>
+              <CardTitle className='text-xl'>Total del pedido</CardTitle>
             </CardHeader>
             <CardContent>
               <div className='grid gap-2'>

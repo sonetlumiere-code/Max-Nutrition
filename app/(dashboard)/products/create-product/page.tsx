@@ -38,8 +38,6 @@ const CreateProductPage = async () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h2 className='font-semibold text-lg'>Agregar Producto</h2>
-
       <CreateProduct recipes={recipes} categories={categories} />
     </div>
   )

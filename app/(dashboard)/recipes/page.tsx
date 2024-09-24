@@ -62,7 +62,7 @@ export default async function RecipesPage() {
           <CardHeader>
             <div className='space-between flex items-center'>
               <div className='max-w-screen-sm'>
-                <CardTitle className=' text-base md:text-xl'>Recetas</CardTitle>
+                <CardTitle className='text-xl'>Recetas</CardTitle>
                 <CardDescription className='hidden md:block'>
                   Gestiona y actualiza el inventario de las recetas.
                 </CardDescription>

@@ -4,7 +4,13 @@
 import { createProduct } from "@/actions/products/create-product"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   Form,
   FormControl,
@@ -97,244 +103,296 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
-        <Card className='max-w-screen-md'>
-          <CardHeader></CardHeader>
-          <CardContent>
-            <div className='space-y-3'>
-              <FormField
-                control={control}
-                name='name'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nombre</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='Nombre del producto'
+      <form onSubmit={handleSubmit(onSubmit)} className='grid gap-4'>
+        <div className='flex justify-between'>
+          <h2 className='font-semibold text-lg'>Agregar Producto</h2>
+          <Button type='submit' disabled={isSubmitting}>
+            {isSubmitting && (
+              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            )}
+            Agregar Producto
+          </Button>
+        </div>
+
+        <div className='grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8'>
+          <div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Detalle</CardTitle>
+                <CardDescription>Detalle del producto</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='space-y-3'>
+                  <FormField
+                    control={control}
+                    name='name'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder='Nombre del producto'
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={control}
+                    name='description'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descripción</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder='Describa el producto'
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Precio</CardTitle>
+                <CardDescription>Precio del producto</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='space-y-6'>
+                  <FormField
+                    control={control}
+                    name='price'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Precio (AR$)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type='number'
+                            step='0.1'
+                            placeholder='Precio en pesos'
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name='promotionalPrice'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Precio promocional (AR$)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type='number'
+                            step='0.1'
+                            placeholder='Precio promocional en pesos'
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Categorías</CardTitle>
+                <CardDescription>Categorías del producto</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name='categoriesIds'
+                  render={({ field }) => (
+                    <FormItem className='flex flex-col'>
+                      <FormLabel>Categorías</FormLabel>
+                      <MultiSelect
+                        options={
+                          categories?.map((category) => ({
+                            value: category.id,
+                            label: category.name,
+                          })) || []
+                        }
+                        selected={field.value || []}
+                        onChange={field.onChange}
                         disabled={isSubmitting}
-                        {...field}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name='description'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descripción</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='Describa el producto'
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name='price'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Precio (AR$)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        step='0.1'
-                        placeholder='Precio en pesos'
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name='promotionalPrice'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Precio promocional (AR$)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        step='0.1'
-                        placeholder='Precio promocional en pesos'
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='imageFile'
-                render={({ field: { value, onChange, ...fieldProps } }) => (
-                  <FormItem>
-                    <FormLabel>Imagen</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...fieldProps}
-                        type='file'
-                        onChange={(event) => onChange(event.target.files)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {imageFile?.length > 0 && (
-                <img
-                  src={URL.createObjectURL(imageFile[0])}
-                  alt='Image to upload'
-                  className='w-40 h-40 object-cover rounded-md'
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              )}
-
-              <FormField
-                control={form.control}
-                name='categoriesIds'
-                render={({ field }) => (
-                  <FormItem className='flex flex-col'>
-                    <FormLabel>Categorías</FormLabel>
-                    <MultiSelect
-                      options={
-                        categories?.map((category) => ({
-                          value: category.id,
-                          label: category.name,
-                        })) || []
-                      }
-                      selected={field.value || []}
-                      onChange={field.onChange}
-                      disabled={isSubmitting}
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='recipeId'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Receta</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value || ""}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder='Selecciona una receta' />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {recipes?.map((recipe) => (
-                          <SelectItem
-                            key={recipe.id}
-                            value={recipe.id}
-                            disabled={!!recipe.product}
-                          >
-                            {!!recipe.product ? (
-                              <div className='flex'>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Receta</CardTitle>
+                <CardDescription>Receta del producto</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name='recipeId'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Receta</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value || ""}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder='Selecciona una receta' />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {recipes?.map((recipe) => (
+                            <SelectItem
+                              key={recipe.id}
+                              value={recipe.id}
+                              disabled={!!recipe.product}
+                            >
+                              {!!recipe.product ? (
+                                <div className='flex'>
+                                  <p>{recipe.name}</p>
+                                  {/* <Badge>{recipe.product?.name}</Badge> */}
+                                </div>
+                              ) : (
                                 <p>{recipe.name}</p>
-                                {/* <Badge>{recipe.product?.name}</Badge> */}
-                              </div>
-                            ) : (
-                              <p>{recipe.name}</p>
-                            )}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                              )}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+          </div>
 
-              <FormField
-                control={form.control}
-                name='stock'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                    <div className='space-y-0.5'>
-                      <FormLabel>Stock</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isSubmitting}
-                        aria-readonly
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+          <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Imagen</CardTitle>
+                <CardDescription>Imagen del producto</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='space-y-6'>
+                  <FormField
+                    control={form.control}
+                    name='imageFile'
+                    render={({ field: { value, onChange, ...fieldProps } }) => (
+                      <FormItem>
+                        <FormLabel>Imagen</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...fieldProps}
+                            type='file'
+                            onChange={(event) => onChange(event.target.files)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={form.control}
-                name='show'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                    <div className='space-y-0.5'>
-                      <FormLabel>Mostrar</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isSubmitting}
-                        aria-readonly
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='featured'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                    <div className='space-y-0.5'>
-                      <FormLabel>Destacado</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isSubmitting}
-                        aria-readonly
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button type='submit' disabled={isSubmitting}>
-              {isSubmitting && (
-                <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
-              )}
-              Agregar producto
-            </Button>
-          </CardFooter>
-        </Card>
+                  {imageFile?.length > 0 && (
+                    <img
+                      src={URL.createObjectURL(imageFile[0])}
+                      alt='Image to upload'
+                      className='w-40 h-40 object-cover rounded-md'
+                    />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Disponibilidad</CardTitle>
+                <CardDescription>
+                  Configura la disponibilidad del producto
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='space-y-6'>
+                  <FormField
+                    control={form.control}
+                    name='stock'
+                    render={({ field }) => (
+                      <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                        <div className='space-y-0.5'>
+                          <FormLabel>Stock</FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            disabled={isSubmitting}
+                            aria-readonly
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name='show'
+                    render={({ field }) => (
+                      <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                        <div className='space-y-0.5'>
+                          <FormLabel>Mostrar</FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            disabled={isSubmitting}
+                            aria-readonly
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name='featured'
+                    render={({ field }) => (
+                      <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                        <div className='space-y-0.5'>
+                          <FormLabel>Destacado</FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            disabled={isSubmitting}
+                            aria-readonly
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </form>
     </Form>
   )

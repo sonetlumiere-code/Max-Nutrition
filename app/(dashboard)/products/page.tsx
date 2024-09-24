@@ -71,9 +71,7 @@ export default async function ProductsPage() {
           <CardHeader>
             <div className='space-between flex items-center'>
               <div className='max-w-screen-sm'>
-                <CardTitle className=' text-base md:text-xl'>
-                  Productos
-                </CardTitle>
+                <CardTitle className='text-xl'>Productos</CardTitle>
                 <CardDescription className='hidden md:block'>
                   Gestiona y actualiza el inventario de viandas.
                 </CardDescription>

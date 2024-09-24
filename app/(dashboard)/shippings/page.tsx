@@ -70,9 +70,7 @@ const Shippings = async () => {
               <CardHeader>
                 <div className='space-between flex items-center'>
                   <div className='max-w-screen-sm'>
-                    <CardTitle className='text-base md:text-xl'>
-                      Zonas de envío
-                    </CardTitle>
+                    <CardTitle className='text-xl'>Zonas de envío</CardTitle>
                     <CardDescription className='hidden md:block'>
                       Gestiona y actualiza tus zonas de envío.
                     </CardDescription>

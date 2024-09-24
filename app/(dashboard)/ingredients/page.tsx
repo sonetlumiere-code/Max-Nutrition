@@ -67,9 +67,7 @@ export default async function IngredientsPage() {
           <CardHeader>
             <div className='space-between flex items-center'>
               <div className='max-w-screen-sm'>
-                <CardTitle className=' text-base md:text-xl'>
-                  Ingredientes
-                </CardTitle>
+                <CardTitle className='text-xl'>Ingredientes</CardTitle>
                 <CardDescription className='hidden md:block'>
                   Gestiona y actualiza el inventario de los ingredientes.
                 </CardDescription>
