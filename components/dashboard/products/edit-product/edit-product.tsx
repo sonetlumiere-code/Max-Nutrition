@@ -39,6 +39,8 @@ import {
 import { PopulatedProduct, PopulatedRecipe } from "@/types/types"
 import { Category } from "@prisma/client"
 import { MultiSelect } from "@/components/multi-select"
+import { Upload } from "lucide-react"
+import Image from "next/image"
 
 type ProductSchema = z.infer<typeof productSchema>
 
@@ -286,49 +288,41 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
           </div>
 
           <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
-            <Card>
+            <Card className='overflow-hidden'>
               <CardHeader>
                 <CardTitle className='text-xl'>Imagen</CardTitle>
                 <CardDescription>Imagen del producto</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className='space-y-6'>
-                  <FormField
-                    control={form.control}
-                    name='imageFile'
-                    render={({ field: { value, onChange, ...fieldProps } }) => (
-                      <FormItem>
-                        <FormLabel>Imagen</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...fieldProps}
-                            type='file'
-                            onChange={(event) => onChange(event.target.files)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <div className='grid gap-2'>
                   {product.image && (!imageFile || imageFile?.length === 0) && (
                     <img
-                      src={
-                        product.image
-                          ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${product.image}`
-                          : "/img/no-image.jpg"
-                      }
                       alt='Product image'
-                      className='w-40 h-40 object-cover rounded-md'
+                      className='aspect-square w-full rounded-md object-cover'
+                      src={`${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${product.image}`}
                     />
                   )}
-
                   {imageFile?.length > 0 && (
                     <img
-                      src={URL.createObjectURL(imageFile[0])}
                       alt='Image to upload'
-                      className='w-40 h-40 object-cover rounded-md'
+                      className='aspect-square w-full rounded-md object-cover'
+                      src={URL.createObjectURL(imageFile[0])}
                     />
                   )}
+                  <div className='grid grid-cols-3 gap-2'>
+                    <label className='flex aspect-square w-full items-center justify-center rounded-md border border-dashed cursor-pointer'>
+                      <Upload className='h-4 w-4 text-muted-foreground' />
+                      <span className='sr-only'>Upload</span>
+                      <input
+                        type='file'
+                        disabled={isSubmitting}
+                        className='hidden'
+                        onChange={(event) => {
+                          form.setValue("imageFile", event.target.files)
+                        }}
+                      />
+                    </label>
+                  </div>
                 </div>
               </CardContent>
             </Card>
