@@ -67,7 +67,9 @@ export default async function IngredientsPage() {
           <CardHeader>
             <div className='space-between flex items-center'>
               <div className='max-w-screen-sm'>
-                <CardTitle className='text-xl'>Ingredientes</CardTitle>
+                <CardTitle className=' text-base md:text-xl'>
+                  Ingredientes
+                </CardTitle>
                 <CardDescription className='hidden md:block'>
                   Gestiona y actualiza el inventario de los ingredientes.
                 </CardDescription>
@@ -90,12 +92,14 @@ export default async function IngredientsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Nombre</TableHead>
-                  <TableHead>Precio</TableHead>
-                  <TableHead>Unidad de medida</TableHead>
+                  <TableHead className='hidden sm:table-cell'>Precio</TableHead>
+                  <TableHead className='hidden sm:table-cell'>
+                    Unidad de medida
+                  </TableHead>
                   <TableHead className='hidden md:table-cell'>
                     Desperdicio
                   </TableHead>
-                  <TableHead>
+                  <TableHead className='text-end'>
                     <span>Acciones</span>
                   </TableHead>
                 </TableRow>
@@ -104,12 +108,16 @@ export default async function IngredientsPage() {
                 {ingredients.map((ingredient) => (
                   <TableRow key={ingredient.id}>
                     <TableCell>{ingredient.name}</TableCell>
-                    <TableCell>$ {ingredient.price}</TableCell>
-                    <TableCell>
+                    <TableCell className='hidden sm:table-cell'>
+                      $ {ingredient.price}
+                    </TableCell>
+                    <TableCell className='hidden sm:table-cell'>
                       {unitToSpanish(ingredient.measurement)}
                     </TableCell>
-                    <TableCell>{ingredient.waste} %</TableCell>
-                    <TableCell>
+                    <TableCell className='hidden sm:table-cell'>
+                      {ingredient.waste} %
+                    </TableCell>
+                    <TableCell className='text-end'>
                       <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                           <Button

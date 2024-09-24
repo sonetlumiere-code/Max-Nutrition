@@ -63,7 +63,9 @@ export default async function CategoriesPage() {
           <CardHeader>
             <div className='space-between flex items-center'>
               <div className='max-w-screen-sm'>
-                <CardTitle className='text-xl'>Categorías</CardTitle>
+                <CardTitle className=' text-base md:text-xl'>
+                  Categorías
+                </CardTitle>
                 <CardDescription className='hidden md:block'>
                   Gestiona y actualiza las categorías.
                 </CardDescription>
@@ -86,7 +88,7 @@ export default async function CategoriesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Nombre</TableHead>
-                  <TableHead>
+                  <TableHead className='text-end'>
                     <span>Acciones</span>
                   </TableHead>
                 </TableRow>
@@ -95,7 +97,7 @@ export default async function CategoriesPage() {
                 {categories.map((category) => (
                   <TableRow key={category.id}>
                     <TableCell>{category.name}</TableCell>
-                    <TableCell>
+                    <TableCell className='text-end'>
                       <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                           <Button

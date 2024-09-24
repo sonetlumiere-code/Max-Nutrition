@@ -63,7 +63,9 @@ const PromotionsPage = async () => {
           <CardHeader>
             <div className='space-between flex items-center'>
               <div className='max-w-screen-sm'>
-                <CardTitle className='text-xl'>Promociones</CardTitle>
+                <CardTitle className=' text-base md:text-xl'>
+                  Promociones
+                </CardTitle>
                 <CardDescription className='hidden md:block'>
                   Gestiona y actualiza el inventario de las promociones.
                 </CardDescription>
@@ -89,8 +91,8 @@ const PromotionsPage = async () => {
                   <TableHead className='hidden md:table-cell'>
                     Descripción
                   </TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>
+                  <TableHead className='hidden md:table-cell'>Estado</TableHead>
+                  <TableHead className='text-end'>
                     <span>Acciones</span>
                   </TableHead>
                 </TableRow>
@@ -102,7 +104,7 @@ const PromotionsPage = async () => {
                     <TableCell className='max-w-28 hidden md:table-cell'>
                       <p className='truncate'>{promotion.description}</p>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className='hidden md:table-cell'>
                       {promotion.isActive ? (
                         <Badge className='bg-emerald-500 hover:bg-emerald-500/80'>
                           Activa
@@ -111,7 +113,7 @@ const PromotionsPage = async () => {
                         <Badge variant='destructive'>Inactiva</Badge>
                       )}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className='text-end'>
                       <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                           <Button

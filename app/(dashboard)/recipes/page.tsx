@@ -62,7 +62,7 @@ export default async function RecipesPage() {
           <CardHeader>
             <div className='space-between flex items-center'>
               <div className='max-w-screen-sm'>
-                <CardTitle className='text-xl'>Recetas</CardTitle>
+                <CardTitle className=' text-base md:text-xl'>Recetas</CardTitle>
                 <CardDescription className='hidden md:block'>
                   Gestiona y actualiza el inventario de las recetas.
                 </CardDescription>
@@ -88,7 +88,7 @@ export default async function RecipesPage() {
                   <TableHead className='hidden md:table-cell'>
                     Descripción
                   </TableHead>
-                  <TableHead>
+                  <TableHead className='text-end'>
                     <span>Acciones</span>
                   </TableHead>
                 </TableRow>
@@ -100,7 +100,7 @@ export default async function RecipesPage() {
                     <TableCell className='max-w-28 hidden md:table-cell'>
                       <p className='truncate'>{recipe.description}</p>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className='text-end'>
                       <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                           <Button

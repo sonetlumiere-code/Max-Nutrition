@@ -70,7 +70,9 @@ const Shippings = async () => {
               <CardHeader>
                 <div className='space-between flex items-center'>
                   <div className='max-w-screen-sm'>
-                    <CardTitle className='text-xl'>Zonas de envío</CardTitle>
+                    <CardTitle className='text-base md:text-xl'>
+                      Zonas de envío
+                    </CardTitle>
                     <CardDescription className='hidden md:block'>
                       Gestiona y actualiza tus zonas de envío.
                     </CardDescription>
@@ -96,7 +98,7 @@ const Shippings = async () => {
                       <TableHead className='hidden md:table-cell'>
                         Costo
                       </TableHead>
-                      <TableHead>
+                      <TableHead className='text-end'>
                         <span>Acciones</span>
                       </TableHead>
                     </TableRow>
@@ -108,7 +110,7 @@ const Shippings = async () => {
                         <TableCell className='max-w-28 hidden md:table-cell'>
                           <p className='truncate'>$ {shippingZone.cost}</p>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className='text-end'>
                           <DropdownMenu modal={false}>
                             <DropdownMenuTrigger asChild>
                               <Button

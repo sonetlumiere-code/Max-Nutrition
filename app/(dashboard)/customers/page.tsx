@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   CircleUser,
   MoreHorizontal,
@@ -31,6 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getCustomers } from "@/data/customer"
+import { format } from "date-fns"
 
 export default async function CustomersPage() {
   const customers = await getCustomers()
@@ -54,13 +56,12 @@ export default async function CustomersPage() {
                   <span className='sr-only'>Imagen</span>
                 </TableHead>
                 <TableHead>Nombre</TableHead>
-                <TableHead>Dirección</TableHead>
-                <TableHead>Email</TableHead>
+                <TableHead className='hidden sm:table-cell'>Email</TableHead>
                 <TableHead className='hidden md:table-cell'>Teléfono</TableHead>
                 <TableHead className='hidden md:table-cell'>
                   Creado el
                 </TableHead>
-                <TableHead>
+                <TableHead className='text-end'>
                   <span>Acciones</span>
                 </TableHead>
               </TableRow>
@@ -72,6 +73,7 @@ export default async function CustomersPage() {
                     {customer.user.image ? (
                       <img
                         src={customer.user.image}
+                        alt='Customer Image'
                         className='h-8 w-8 text-muted-foreground rounded-full'
                       />
                     ) : (
@@ -81,28 +83,28 @@ export default async function CustomersPage() {
                   <TableCell className='font-medium'>
                     {customer.user.name}
                   </TableCell>
-                  <TableCell>DIRECCION</TableCell>
-                  <TableCell>
+                  <TableCell className='hidden sm:table-cell'>
                     <Button
                       variant='link'
                       size='default'
-                      className='ml-2 group'
+                      className='group px-0'
                     >
                       {customer.user.email}
-                      <Clipboard className='h-4 w-4 ml-2 invisible group-hover:visible' />
+                      <Clipboard className='h-4 w-4 ml-1 invisible group-hover:visible' />
                     </Button>
                   </TableCell>
                   <TableCell className='hidden md:table-cell'>
-                    {/* {customer.user.phone} */}
-                    <Button variant='outline' size='default' className='ml-2'>
-                      +541137553624
-                      <MessageSquareMore className='h-4 w-4' />
-                    </Button>
+                    {customer.phone && (
+                      <Button variant='outline' size='default'>
+                        +54{customer.phone}
+                        <MessageSquareMore className='h-4 w-4 ml-1' />
+                      </Button>
+                    )}
                   </TableCell>
                   <TableCell className='hidden md:table-cell'>
-                    {new Date(customer.createdAt).toLocaleString()}
+                    {format(customer.createdAt, "dd/MM/yyyy")}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className='text-end'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button

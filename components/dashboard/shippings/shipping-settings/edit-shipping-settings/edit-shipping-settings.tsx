@@ -72,7 +72,9 @@ const EditShippingSettings = ({
       <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
         <Card>
           <CardHeader>
-            <CardTitle className='text-xl'>Configuración de envíos</CardTitle>
+            <CardTitle className=' text-base md:text-xl'>
+              Configuración de envíos
+            </CardTitle>
             <CardDescription>Configura tus envíos</CardDescription>
           </CardHeader>
           <CardContent>
