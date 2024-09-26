@@ -229,6 +229,13 @@ model OrderItem {
   @@map("order_items")
 }
 
+enum PaymentMethod {
+  Cash
+  MercadoPago
+  CreditCard
+  DebitCard
+}
+
 model Promotion {
   id           String                @id @default(cuid())
   name         String
