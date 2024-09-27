@@ -231,6 +231,7 @@ model OrderItem {
 
 enum PaymentMethod {
   Cash
+  BankTransfer
   MercadoPago
   CreditCard
   DebitCard
