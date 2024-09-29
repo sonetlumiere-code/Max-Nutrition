@@ -78,9 +78,9 @@ const CustomerOrdersHistory = ({ orders }: CustomerOrderHistoryProps) => {
                             <TableCell>{item.product?.name}</TableCell>
                             <TableCell>
                               {item.withSalt ? (
-                                <small>Con sal</small>
+                                <Badge variant='secondary'>Con sal</Badge>
                               ) : (
-                                <small>Sin sal</small>
+                                <Badge variant='secondary'>Sin sal</Badge>
                               )}
                             </TableCell>
                             <TableCell>x {item.quantity}</TableCell>

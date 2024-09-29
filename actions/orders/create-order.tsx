@@ -15,7 +15,13 @@ export async function createOrder(values: OrderSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { customerId, items } = validatedFields.data
+  const {
+    customerId,
+    customerAddressId,
+    shippingMethod,
+    paymentMethod,
+    items,
+  } = validatedFields.data
   const productIds = items.map((item) => item.productId)
   const uniqueProductIds = Array.from(new Set(productIds))
 
@@ -31,9 +37,27 @@ export async function createOrder(values: OrderSchema) {
       return acc + (product ? product.price * item.quantity : 0)
     }, 0)
 
+    const customerAddress = await prisma.customerAddress.findUnique({
+      where: {
+        id: customerAddressId,
+      },
+    })
+
+    if (!customerAddress) {
+      return { error: "Invalid customer address id." }
+    }
+
+    //TO DO get customer address shipping zone cost
+    const shippingCost = 0
+
     const order = await prisma.order.create({
       data: {
         customerId,
+        customerAddressId,
+        shippingMethod,
+        shippingCost,
+        paymentMethod,
+        taxCost: 0,
         total,
         items: {
           create: items.map((item) => ({
@@ -53,6 +77,7 @@ export async function createOrder(values: OrderSchema) {
     })
 
     revalidatePath("/shop")
+    revalidatePath("/orders")
 
     return { success: order }
   } catch (error) {

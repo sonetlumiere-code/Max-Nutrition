@@ -13,9 +13,15 @@ export const getOrders = async () => {
         },
         customer: {
           include: {
-            user: true,
+            user: {
+              select: {
+                email: true,
+                image: true,
+              },
+            },
           },
         },
+        address: true,
       },
     })
 

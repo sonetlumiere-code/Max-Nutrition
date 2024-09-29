@@ -26,6 +26,15 @@ import { useCreateOrder } from "@/hooks/use-create-order"
 import { PopulatedCustomer } from "@/types/types"
 import { Session } from "next-auth"
 import CartContent from "./cart-content"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { useState } from "react"
+import { Icons } from "@/components/icons"
 
 type CartProps = {
   session: Session | null
@@ -33,8 +42,10 @@ type CartProps = {
 }
 
 const Cart = ({ session, customer }: CartProps) => {
+  const [addressId, setAddressId] = useState<string>("")
+
   const { items, open, setOpen } = useCart()
-  const { isLoading, placeOrder } = useCreateOrder(session, customer)
+  const { isLoading, placeOrder } = useCreateOrder(session, customer, addressId)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {
@@ -50,6 +61,19 @@ const Cart = ({ session, customer }: CartProps) => {
                   : "No tienes productos agregados al carrito actualmente"}
               </DialogDescription>
             </DialogHeader>
+
+            <Select onValueChange={setAddressId} disabled={isLoading}>
+              <SelectTrigger>
+                <SelectValue placeholder='Dirección' />
+              </SelectTrigger>
+              <SelectContent>
+                {customer?.address?.map((a) => (
+                  <SelectItem key={a.id} value={a.id}>
+                    {a.label} ({a.address})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <CartContent items={items} isLoading={isLoading} />
 
@@ -98,6 +122,9 @@ const Cart = ({ session, customer }: CartProps) => {
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             {items.length >= 1 ? (
               <Button onClick={placeOrder} disabled={isLoading}>
+                {isLoading && (
+                  <Icons.spinner className='w-4 h-4 animate-spin' />
+                )}
                 Continuar con el pedido
               </Button>
             ) : null}

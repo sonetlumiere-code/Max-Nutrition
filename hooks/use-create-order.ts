@@ -15,7 +15,8 @@ interface UseCreateOrder {
 
 export const useCreateOrder = (
   session: Session | null,
-  customer: PopulatedCustomer | null
+  customer: PopulatedCustomer | null,
+  addressId: string
 ): UseCreateOrder => {
   const { items, setOpen, clearCart } = useCart()
   const [isLoading, setIsLoading] = useState(false)
@@ -36,6 +37,9 @@ export const useCreateOrder = (
 
     const res = await createOrder({
       customerId: customer.id,
+      customerAddressId: addressId,
+      paymentMethod: "Cash",
+      shippingMethod: "Delivery",
       items: items.map((item) => ({
         productId: item.product.id,
         quantity: item.quantity,

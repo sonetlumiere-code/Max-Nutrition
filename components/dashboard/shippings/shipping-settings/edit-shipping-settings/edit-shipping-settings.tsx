@@ -79,7 +79,7 @@ const EditShippingSettings = ({
             <div className='grid gap-6'>
               <FormField
                 control={form.control}
-                name='shipping'
+                name='delivery'
                 render={({ field }) => (
                   <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
                     <div className='space-y-0.5'>
@@ -119,7 +119,7 @@ const EditShippingSettings = ({
 
               <FormField
                 control={control}
-                name='minProductsQuantityForShipping'
+                name='minProductsQuantityForDelivery'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
