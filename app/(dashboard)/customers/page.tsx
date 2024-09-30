@@ -94,11 +94,13 @@ export default async function CustomersPage() {
                     </Button>
                   </TableCell>
                   <TableCell className='hidden md:table-cell'>
-                    {customer.phone && (
+                    {customer.phone ? (
                       <Button variant='outline' size='default'>
-                        +54{customer.phone}
+                        {customer.phone}
                         <MessageSquareMore className='h-4 w-4 ml-1' />
                       </Button>
+                    ) : (
+                      "-"
                     )}
                   </TableCell>
                   <TableCell className='hidden md:table-cell'>
