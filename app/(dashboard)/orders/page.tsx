@@ -38,7 +38,7 @@ export default function OrdersPage() {
         const orders = await getOrders()
         setOrders(orders)
       } catch (error) {
-        console.error("Error getting orders")
+        console.error("Error getting orders", error)
       } finally {
         setIsLoading(false)
       }
