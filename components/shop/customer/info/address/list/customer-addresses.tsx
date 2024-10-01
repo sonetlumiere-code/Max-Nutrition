@@ -33,9 +33,7 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
           <CardHeader>
             <div className='space-between flex items-center'>
               <div className='max-w-screen-sm'>
-                <CardTitle className='text-base md:text-xl'>
-                  Mis direcciones
-                </CardTitle>
+                <CardTitle className='text-xl'>Mis direcciones</CardTitle>
                 <CardDescription className='hidden md:block'>
                   Listado de mis direcciones
                 </CardDescription>
@@ -103,7 +101,7 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
       ) : (
         <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
           <div className='flex flex-col items-center gap-1 text-center'>
-            <h3 className='text-base md:text-2xl font-bold tracking-tight'>
+            <h3 className='text-2xl font-bold tracking-tight'>
               Todavía no tenés ninguna dirección
             </h3>
             <p className='text-sm text-muted-foreground'>

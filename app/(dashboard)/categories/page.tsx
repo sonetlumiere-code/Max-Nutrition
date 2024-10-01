@@ -86,7 +86,7 @@ export default async function CategoriesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Nombre</TableHead>
-                  <TableHead>
+                  <TableHead className='text-end'>
                     <span>Acciones</span>
                   </TableHead>
                 </TableRow>
@@ -95,7 +95,7 @@ export default async function CategoriesPage() {
                 {categories.map((category) => (
                   <TableRow key={category.id}>
                     <TableCell>{category.name}</TableCell>
-                    <TableCell>
+                    <TableCell className='text-end'>
                       <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                           <Button

@@ -93,14 +93,15 @@ export default async function ProductsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Imagen</TableHead>
+                  <TableHead className='hidden md:table-cell'>Imagen</TableHead>
                   <TableHead>Nombre</TableHead>
-                  {/* <TableHead className='hidden md:table-cell'>
-                    Descripción
-                  </TableHead> */}
-                  <TableHead>Categorías</TableHead>
-                  <TableHead>Mostrar</TableHead>
-                  <TableHead>
+                  <TableHead className='hidden md:table-cell'>
+                    Categorías
+                  </TableHead>
+                  <TableHead className='hidden md:table-cell'>
+                    Mostrar
+                  </TableHead>
+                  <TableHead className='text-end'>
                     <span>Acciones</span>
                   </TableHead>
                 </TableRow>
@@ -108,7 +109,7 @@ export default async function ProductsPage() {
               <TableBody>
                 {products.map((product) => (
                   <TableRow key={product.id}>
-                    <TableCell>
+                    <TableCell className='hidden md:table-cell'>
                       <img
                         src={
                           product.image
@@ -120,18 +121,15 @@ export default async function ProductsPage() {
                       />
                     </TableCell>
                     <TableCell>{product.name}</TableCell>
-                    {/* <TableCell className='max-w-28 hidden md:table-cell'>
-                      <p className='truncate'>{product.description}</p>
-                    </TableCell> */}
-                    <TableCell className='space-x-1'>
+                    <TableCell className='space-x-1 hidden md:table-cell'>
                       {product.categories?.map((category) => (
                         <Badge key={category.id}>{category.name}</Badge>
                       ))}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className='hidden md:table-cell'>
                       <ShowProductBadge product={product} />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className='text-end'>
                       <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                           <Button

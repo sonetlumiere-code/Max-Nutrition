@@ -25,7 +25,7 @@ const CustomerOrdersHistory = ({ orders }: CustomerOrderHistoryProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className='text-base md:text-xl'>Mis pedidos</CardTitle>
+        <CardTitle className='text-xl'>Mis pedidos</CardTitle>
         <CardDescription className='hidden md:block'>
           Historial de pedidos
         </CardDescription>
