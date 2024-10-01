@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/select"
 import { useState } from "react"
 import { Icons } from "@/components/icons"
+import Link from "next/link"
 
 type CartProps = {
   session: Session | null
@@ -78,21 +79,23 @@ const Cart = ({ session, customer }: CartProps) => {
             <CartContent items={items} isLoading={isLoading} />
 
             <DialogFooter className='flex flex-col'>
-              {items.length >= 1 ? (
-                <Button onClick={placeOrder} disabled={isLoading}>
-                  Continuar con el pedido
-                </Button>
-              ) : null}
+              <DialogClose asChild>
+                {items.length >= 1 ? (
+                  <Button type='button' asChild>
+                    <Link href='/checkout'>Continuar con el pedido</Link>
+                  </Button>
+                ) : null}
+              </DialogClose>
 
               {items.length >= 1 ? (
                 <DialogClose asChild>
-                  <Button variant='outline' disabled={isLoading}>
+                  <Button type='button' variant='outline' disabled={isLoading}>
                     Cancelar
                   </Button>
                 </DialogClose>
               ) : (
                 <DialogClose asChild>
-                  <Button variant='outline' disabled={isLoading}>
+                  <Button type='button' variant='outline' disabled={isLoading}>
                     <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
                   </Button>
                 </DialogClose>
@@ -120,24 +123,23 @@ const Cart = ({ session, customer }: CartProps) => {
           <CartContent items={items} isLoading={isLoading} />
 
           <DrawerFooter className='border-t-2 lg:border-t-0'>
-            {items.length >= 1 ? (
-              <Button onClick={placeOrder} disabled={isLoading}>
-                {isLoading && (
-                  <Icons.spinner className='w-4 h-4 animate-spin' />
-                )}
-                Continuar con el pedido
-              </Button>
-            ) : null}
+            <DrawerClose asChild>
+              {items.length >= 1 ? (
+                <Button type='button' asChild>
+                  <Link href='/checkout'>Continuar con el pedido</Link>
+                </Button>
+              ) : null}
+            </DrawerClose>
 
             {items.length >= 1 ? (
               <DrawerClose asChild>
-                <Button variant='outline' disabled={isLoading}>
+                <Button type='button' variant='outline' disabled={isLoading}>
                   Cancelar
                 </Button>
               </DrawerClose>
             ) : (
               <DrawerClose asChild>
-                <Button variant='outline' disabled={isLoading}>
+                <Button type='button' variant='outline' disabled={isLoading}>
                   <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
                 </Button>
               </DrawerClose>

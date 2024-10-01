@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Card,
   CardHeader,
@@ -22,8 +24,11 @@ import { CreditCard, DollarSign } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
+import { useState } from "react"
 
 export default function CheckoutPage() {
+  const [isLoading, setIsLoading] = useState(false)
+
   return (
     <div className='space-y-6'>
       <div className='flex items-start'>
@@ -180,7 +185,12 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className='ml-auto'>Place Order</Button>
+              <Button className='ml-auto'>
+                {isLoading && (
+                  <Icons.spinner className='w-4 h-4 animate-spin' />
+                )}
+                Place Order
+              </Button>
             </CardFooter>
           </Card>
         </div>
