@@ -7,16 +7,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import React from "react"
 import CartListItem from "./cart-list-item"
 import { ShoppingCart } from "lucide-react"
 
 type CartContentProps = {
   items: CartItem[]
-  isLoading: boolean
 }
 
-const CartContent = ({ items, isLoading }: CartContentProps) => (
+const CartContent = ({ items }: CartContentProps) => (
   <>
     {items.length > 0 ? (
       <ScrollArea className='lg:h-[30vh] h-[60vh]'>
@@ -29,11 +27,7 @@ const CartContent = ({ items, isLoading }: CartContentProps) => (
           </TableHeader>
           <TableBody>
             {items.map((item) => (
-              <CartListItem
-                key={item.id}
-                cartItem={item}
-                isLoading={isLoading}
-              />
+              <CartListItem key={item.id} cartItem={item} />
             ))}
           </TableBody>
         </Table>

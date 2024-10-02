@@ -22,31 +22,12 @@ import {
 } from "@/components/ui/dialog"
 import { MoveLeftIcon } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { useCreateOrder } from "@/hooks/use-create-order"
-import { PopulatedCustomer } from "@/types/types"
-import { Session } from "next-auth"
 import CartContent from "./cart-content"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { useState } from "react"
-import { Icons } from "@/components/icons"
 import Link from "next/link"
 
-type CartProps = {
-  session: Session | null
-  customer: PopulatedCustomer | null
-}
-
-const Cart = ({ session, customer }: CartProps) => {
-  const [addressId, setAddressId] = useState<string>("")
-
+const Cart = () => {
   const { items, open, setOpen } = useCart()
-  const { isLoading, placeOrder } = useCreateOrder(session, customer, addressId)
+
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {
@@ -63,20 +44,7 @@ const Cart = ({ session, customer }: CartProps) => {
               </DialogDescription>
             </DialogHeader>
 
-            <Select onValueChange={setAddressId} disabled={isLoading}>
-              <SelectTrigger>
-                <SelectValue placeholder='Dirección' />
-              </SelectTrigger>
-              <SelectContent>
-                {customer?.address?.map((a) => (
-                  <SelectItem key={a.id} value={a.id}>
-                    {a.label} ({a.address})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <CartContent items={items} isLoading={isLoading} />
+            <CartContent items={items} />
 
             <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
@@ -89,13 +57,13 @@ const Cart = ({ session, customer }: CartProps) => {
 
               {items.length >= 1 ? (
                 <DialogClose asChild>
-                  <Button type='button' variant='outline' disabled={isLoading}>
+                  <Button type='button' variant='outline'>
                     Cancelar
                   </Button>
                 </DialogClose>
               ) : (
                 <DialogClose asChild>
-                  <Button type='button' variant='outline' disabled={isLoading}>
+                  <Button type='button' variant='outline'>
                     <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
                   </Button>
                 </DialogClose>
@@ -120,7 +88,7 @@ const Cart = ({ session, customer }: CartProps) => {
             </DrawerDescription>
           </DrawerHeader>
 
-          <CartContent items={items} isLoading={isLoading} />
+          <CartContent items={items} />
 
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             <DrawerClose asChild>
@@ -133,13 +101,13 @@ const Cart = ({ session, customer }: CartProps) => {
 
             {items.length >= 1 ? (
               <DrawerClose asChild>
-                <Button type='button' variant='outline' disabled={isLoading}>
+                <Button type='button' variant='outline'>
                   Cancelar
                 </Button>
               </DrawerClose>
             ) : (
               <DrawerClose asChild>
-                <Button type='button' variant='outline' disabled={isLoading}>
+                <Button type='button' variant='outline'>
                   <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
                 </Button>
               </DrawerClose>
