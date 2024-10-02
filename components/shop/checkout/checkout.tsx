@@ -241,11 +241,11 @@ const Checkout = ({ session, customer }: CheckoutProps) => {
           </CardHeader>
           <CardContent>
             <div className='grid gap-2'>
-              <div className='flex items-center justify-between'>
+              <div className='flex items-center justify-between text-sm'>
                 <span>Subtotal</span>
                 <span>$31.97</span>
               </div>
-              <div className='flex items-center justify-between'>
+              <div className='flex items-center justify-between text-sm'>
                 <span>Costo de envio</span>
                 <span>$2.56</span>
               </div>
