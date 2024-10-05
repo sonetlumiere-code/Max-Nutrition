@@ -5,7 +5,7 @@ const Loading = () => {
     <div className='flex flex-col gap-4'>
       <Skeleton className='h-6 w-1/4' />
       <div className='flex justify-between'>
-        <Skeleton className='h-8 w-1/6' />
+        <Skeleton className='h-8 w-36' />
         <Skeleton className='h-10 w-1/12' />
       </div>
       <div className='grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8'>

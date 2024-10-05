@@ -52,8 +52,8 @@ export default function OrdersPage() {
         {isLoading ? (
           <div className='space-y-4'>
             <div className='flex justify-between'>
-              <Skeleton className='h-10 w-1/6' />
-              <Skeleton className='h-10 w-1/6' />
+              <Skeleton className='h-10 w-36' />
+              <Skeleton className='h-10 w-36' />
             </div>
             <Skeleton className='h-64' />
           </div>
