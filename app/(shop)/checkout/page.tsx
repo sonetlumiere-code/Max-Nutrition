@@ -2,10 +2,14 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 import { auth } from "@/lib/auth/auth"
-import Checkout from "@/components/shop/checkout/checkout"
 import { Role } from "@prisma/client"
 import { getCustomer } from "@/data/customer"
 import { buttonVariants } from "@/components/ui/button"
+import dynamic from "next/dynamic"
+
+const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
+  ssr: false,
+})
 
 export default async function CheckoutPage() {
   const session = await auth()
@@ -29,7 +33,7 @@ export default async function CheckoutPage() {
         </Link>
       </div>
 
-      <Checkout session={session} customer={customer} />
+      <Checkout customer={customer} />
     </div>
   )
 }
