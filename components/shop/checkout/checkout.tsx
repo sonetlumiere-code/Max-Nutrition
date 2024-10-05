@@ -40,6 +40,7 @@ import { orderSchema } from "@/lib/validations/order-validation"
 import { z } from "zod"
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -84,9 +85,12 @@ const Checkout = ({ customer }: CheckoutProps) => {
   const {
     handleSubmit,
     control,
-    getValues,
     formState: { isSubmitting },
+    watch,
+    setValue,
   } = form
+
+  const shippingMethod = watch("shippingMethod")
 
   const placeOrder = async (data: OrderSchema) => {
     const res = await createOrder(data)
@@ -106,6 +110,12 @@ const Checkout = ({ customer }: CheckoutProps) => {
       })
     }
   }
+
+  useEffect(() => {
+    if (shippingMethod === ShippingMethod.TakeAway) {
+      setValue("customerAddressId", "")
+    }
+  }, [shippingMethod, setValue])
 
   return (
     <Form {...form}>
@@ -185,7 +195,6 @@ const Checkout = ({ customer }: CheckoutProps) => {
                       <FormItem>
                         <FormLabel>Método de envío</FormLabel>
                         <Select
-                          // value={shippingMethod}
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                           disabled={isSubmitting}
@@ -210,7 +219,7 @@ const Checkout = ({ customer }: CheckoutProps) => {
                 </CardContent>
               </Card>
 
-              {getValues("shippingMethod") === "Delivery" && (
+              {shippingMethod === ShippingMethod.Delivery && (
                 <>
                   {customer?.address?.length === 0 ? (
                     <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm p-6'>
@@ -245,7 +254,6 @@ const Checkout = ({ customer }: CheckoutProps) => {
                             <FormItem>
                               <FormLabel>Dirección de envío</FormLabel>
                               <Select
-                                // value={shippingMethod}
                                 onValueChange={field.onChange}
                                 defaultValue=''
                                 disabled={isSubmitting}
@@ -276,41 +284,53 @@ const Checkout = ({ customer }: CheckoutProps) => {
                   <CardTitle className='text-xl'>Metodo de Pago</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className='grid gap-4'>
-                    <RadioGroup
-                      defaultValue='card'
-                      className='grid grid-cols-2 gap-4'
-                    >
-                      <div>
-                        <RadioGroupItem
-                          value='card'
-                          id='card'
-                          className='peer sr-only'
-                        />
-                        <Label
-                          htmlFor='card'
-                          className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
-                        >
-                          <CreditCard className='mb-3 h-6 w-6' />
-                          Mercado Pago
-                        </Label>
-                      </div>
-                      <div>
-                        <RadioGroupItem
-                          value='cash'
-                          id='cash'
-                          className='peer sr-only'
-                        />
-                        <Label
-                          htmlFor='cash'
-                          className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
-                        >
-                          <DollarSign className='mb-3 h-6 w-6' />
-                          Efectivo
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name='paymentMethod'
+                    render={({ field }) => (
+                      <FormItem className='space-y-3'>
+                        <FormLabel>Método de pago</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className='grid grid-cols-2 gap-4'
+                            disabled={isSubmitting}
+                          >
+                            <div>
+                              <RadioGroupItem
+                                value={PaymentMethod.MercadoPago}
+                                id={PaymentMethod.MercadoPago}
+                                className='peer sr-only'
+                              />
+                              <Label
+                                htmlFor={PaymentMethod.MercadoPago}
+                                className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
+                              >
+                                <CreditCard className='mb-3 h-6 w-6' />
+                                Mercado Pago
+                              </Label>
+                            </div>
+                            <div>
+                              <RadioGroupItem
+                                value={PaymentMethod.Cash}
+                                id={PaymentMethod.Cash}
+                                className='peer sr-only'
+                              />
+                              <Label
+                                htmlFor={PaymentMethod.Cash}
+                                className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
+                              >
+                                <DollarSign className='mb-3 h-6 w-6' />
+                                Efectivo
+                              </Label>
+                            </div>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </CardContent>
               </Card>
             </div>
@@ -338,7 +358,11 @@ const Checkout = ({ customer }: CheckoutProps) => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button type='submit' className='ml-auto'>
+                <Button
+                  type='submit'
+                  className='ml-auto'
+                  disabled={isSubmitting}
+                >
                   {isSubmitting && (
                     <Icons.spinner className='mr-2 w-4 h-4 animate-spin' />
                   )}

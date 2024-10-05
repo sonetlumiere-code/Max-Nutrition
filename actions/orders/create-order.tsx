@@ -3,6 +3,7 @@
 import { getProductsByIds } from "@/data/products"
 import prisma from "@/lib/db/db"
 import { orderSchema } from "@/lib/validations/order-validation"
+import { ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
@@ -37,25 +38,25 @@ export async function createOrder(values: OrderSchema) {
       return acc + (product ? product.price * item.quantity : 0)
     }, 0)
 
-    const customerAddress = await prisma.customerAddress.findUnique({
-      where: {
-        id: customerAddressId,
-      },
-    })
+    if (shippingMethod === ShippingMethod.Delivery) {
+      const customerAddress = await prisma.customerAddress.findUnique({
+        where: {
+          id: customerAddressId,
+        },
+      })
 
-    if (!customerAddress) {
-      return { error: "Invalid customer address id." }
+      if (!customerAddress) {
+        return { error: "Invalid customer address id." }
+      }
     }
-
-    //TO DO get customer address shipping zone cost
-    const shippingCost = 0
 
     const order = await prisma.order.create({
       data: {
         customerId,
-        customerAddressId,
+        customerAddressId: customerAddressId || null,
         shippingMethod,
-        shippingCost,
+        //TO DO get customer address shipping zone cost
+        shippingCost: 0,
         paymentMethod,
         taxCost: 0,
         total,
