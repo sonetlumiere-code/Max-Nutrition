@@ -64,7 +64,7 @@ const Cart = () => {
               ) : (
                 <DialogClose asChild>
                   <Button type='button' variant='outline'>
-                    <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+                    <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
                   </Button>
                 </DialogClose>
               )}
@@ -108,7 +108,7 @@ const Cart = () => {
             ) : (
               <DrawerClose asChild>
                 <Button type='button' variant='outline'>
-                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a la tienda
+                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
                 </Button>
               </DrawerClose>
             )}

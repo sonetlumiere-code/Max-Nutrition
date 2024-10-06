@@ -31,9 +31,9 @@ const CustomerOrdersHistory = ({ orders }: CustomerOrderHistoryProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className='space-y-4 p-4'>
+        <div className='space-y-4 md:p-4'>
           {orders.length > 0 ? (
-            <Accordion type='single' collapsible className=''>
+            <Accordion type='single' collapsible>
               {orders.map((order, i) => (
                 <AccordionItem key={order.id} value={`item-${order.id}`}>
                   <AccordionTrigger className='hover:no-underline'>
