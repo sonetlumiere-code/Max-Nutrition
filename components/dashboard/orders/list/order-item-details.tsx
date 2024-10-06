@@ -130,13 +130,21 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
               <div className='grid gap-3'>
                 <div className='font-semibold'>Información de entrega</div>
                 {selectedOrder.shippingMethod === "Delivery" && (
-                  <address className='grid gap-0.5 not-italic text-muted-foreground'>
-                    <span>{selectedOrder.address?.address}</span>
-                    <span>{selectedOrder.address?.city}</span>{" "}
-                    <span>
-                      Código postal: {selectedOrder.address?.postCode}
-                    </span>
-                  </address>
+                  <>
+                    {selectedOrder.address ? (
+                      <address className='grid gap-0.5 not-italic text-muted-foreground'>
+                        <span>{selectedOrder.address?.address}</span>
+                        <span>{selectedOrder.address?.city}</span>{" "}
+                        <span>
+                          Código postal: {selectedOrder.address?.postCode}
+                        </span>
+                      </address>
+                    ) : (
+                      <span className='text-muted-foreground'>
+                        Dirección no especificada
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
               <div className='grid auto-rows-max gap-3'>

@@ -1,6 +1,7 @@
 "use server"
 
 import prisma from "@/lib/db/db"
+import { PopulatedOrder } from "@/types/types"
 
 export const getOrders = async () => {
   try {
@@ -25,7 +26,7 @@ export const getOrders = async () => {
       },
     })
 
-    return orders
+    return orders as PopulatedOrder[]
   } catch (error) {
     console.error(error)
     return null
