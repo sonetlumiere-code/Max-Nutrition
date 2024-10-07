@@ -149,7 +149,9 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
               </div>
               <div className='grid auto-rows-max gap-3'>
                 <Badge variant='secondary'>
-                  {selectedOrder.shippingMethod}
+                  {selectedOrder.shippingMethod === "TakeAway"
+                    ? "Take Away"
+                    : "Delivery"}
                 </Badge>
               </div>
             </div>

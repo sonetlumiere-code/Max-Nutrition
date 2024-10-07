@@ -77,7 +77,7 @@ export async function createOrder(values: OrderSchema) {
       },
     })
 
-    revalidatePath("/shop")
+    revalidatePath("/customer-orders-history")
     revalidatePath("/orders")
 
     return { success: order }

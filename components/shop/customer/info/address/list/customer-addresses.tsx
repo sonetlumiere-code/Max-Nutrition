@@ -9,17 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { Icons } from "@/components/icons"
-import { AddressLabel } from "@prisma/client"
-import CustomerAddressActions from "./customer-address-actions"
+import CustomerAddressesList from "./customer-addresses-list"
 
 type CustomerAddressesProps = {
   customer: PopulatedCustomer
@@ -49,47 +40,7 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
             </div>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Etiqueta</TableHead>
-                  <TableHead className='hidden md:table-cell'>
-                    Dirección
-                  </TableHead>
-                  <TableHead className='hidden md:table-cell'>Barrio</TableHead>
-                  <TableHead className='hidden md:table-cell'>
-                    Código postal
-                  </TableHead>
-                  <TableHead className='text-end'>
-                    <span>Acciones</span>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {customer.address.map((address) => (
-                  <TableRow key={address.id}>
-                    <TableCell>
-                      {getAddressLabelWithIcon(
-                        address.label,
-                        address.labelString
-                      )}
-                    </TableCell>
-                    <TableCell className='hidden md:table-cell'>
-                      {address.address}
-                    </TableCell>
-                    <TableCell className='hidden md:table-cell'>
-                      {address.city}
-                    </TableCell>
-                    <TableCell className='hidden md:table-cell'>
-                      {address.postCode}
-                    </TableCell>
-                    <TableCell className='text-end'>
-                      <CustomerAddressActions address={address} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <CustomerAddressesList addresses={customer.address} />
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
@@ -121,29 +72,3 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
 }
 
 export default CustomerAddresses
-
-const getAddressLabelWithIcon = (
-  label: AddressLabel,
-  labelString: string | null
-) => {
-  switch (label) {
-    case "Home":
-      return (
-        <div className='flex items-center'>
-          <Icons.home className='mr-2 h-4 w-4' /> Casa
-        </div>
-      )
-    case "Work":
-      return (
-        <div className='flex items-center'>
-          <Icons.briefCase className='mr-2 h-4 w-4' /> Trabajo
-        </div>
-      )
-    default:
-      return (
-        <div className='flex items-center'>
-          <Icons.globe className='mr-2 h-4 w-4' /> {labelString || "Otro"}
-        </div>
-      )
-  }
-}

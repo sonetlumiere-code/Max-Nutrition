@@ -34,6 +34,7 @@ import {
   Calendar,
   Briefcase,
   Globe,
+  CircleX,
 } from "lucide-react"
 
 export const Icons = {
@@ -71,6 +72,7 @@ export const Icons = {
   check: Check,
   badgePercent: BadgePercent,
   truck: Truck,
+  circleX: CircleX,
   google: ({ ...props }: LucideProps) => (
     <svg
       className='mr-2 h-4 w-4'
