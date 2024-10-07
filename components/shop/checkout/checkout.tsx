@@ -142,7 +142,7 @@ const Checkout = ({ customer }: CheckoutProps) => {
                         <TableHead className='hidden md:table-cell'>
                           Precio
                         </TableHead>
-                        <TableHead className='hidden md:table-cell'>
+                        <TableHead className='whitespace-nowrap'>
                           Con/Sin sal
                         </TableHead>
                         <TableHead className='text-end'>Cantidad</TableHead>
@@ -166,7 +166,7 @@ const Checkout = ({ customer }: CheckoutProps) => {
                           <TableCell className='hidden md:table-cell'>
                             ${item.product?.price}
                           </TableCell>
-                          <TableCell className='hidden md:table-cell'>
+                          <TableCell className='whitespace-nowrap'>
                             {item.variation.withSalt ? (
                               <Badge variant='secondary'>Con sal</Badge>
                             ) : (
