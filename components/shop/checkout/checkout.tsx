@@ -361,7 +361,11 @@ const Checkout = ({ customer }: CheckoutProps) => {
                 <Button
                   type='submit'
                   className='ml-auto'
-                  disabled={isSubmitting}
+                  disabled={
+                    isSubmitting ||
+                    (shippingMethod === "Delivery" &&
+                      !customer?.address?.length)
+                  }
                 >
                   {isSubmitting && (
                     <Icons.spinner className='mr-2 w-4 h-4 animate-spin' />
