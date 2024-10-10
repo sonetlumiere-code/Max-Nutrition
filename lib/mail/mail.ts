@@ -1,3 +1,4 @@
+import VerificationEmail from "@/components/emails/verificacion-mx"
 import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -11,7 +12,9 @@ export const sendVerificacionEmail = async (email: string, token: string) => {
     from: "onboarding@resend.dev",
     to: email,
     subject: "Confirma tu Email",
-    html: `<p>Click <a href="${confirmLink}">aquí</a> para confirmar tu email.</p>`,
+    react: VerificationEmail({
+      confirmLink: `${confirmLink}`,
+    }) as React.ReactElement,
   })
 }
 
