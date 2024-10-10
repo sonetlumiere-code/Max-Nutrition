@@ -21,7 +21,7 @@ const CreateProductPage = async () => {
   ])
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -39,7 +39,7 @@ const CreateProductPage = async () => {
       </Breadcrumb>
 
       <CreateProduct recipes={recipes} categories={categories} />
-    </div>
+    </>
   )
 }
 

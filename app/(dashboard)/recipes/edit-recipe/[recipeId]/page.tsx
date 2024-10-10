@@ -37,7 +37,7 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
   }
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -57,7 +57,7 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
       <h2 className='font-semibold text-lg'>Editar Receta</h2>
 
       <EditRecipe recipe={recipe} ingredients={ingredients} />
-    </div>
+    </>
   )
 }
 

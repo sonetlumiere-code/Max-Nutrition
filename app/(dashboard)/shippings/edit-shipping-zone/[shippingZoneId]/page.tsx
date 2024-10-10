@@ -26,7 +26,7 @@ const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
   }
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -46,7 +46,7 @@ const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
       <h2 className='font-semibold text-lg'>Editar Zona de envío</h2>
 
       <EditShippingZone shippingZone={shippingZone} />
-    </div>
+    </>
   )
 }
 

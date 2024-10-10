@@ -13,7 +13,7 @@ const CreateCategoryPage = async () => {
   const products = await getProducts()
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -33,7 +33,7 @@ const CreateCategoryPage = async () => {
       <h2 className='font-semibold text-lg'>Agregar Categoría</h2>
 
       <CreateCategory products={products} />
-    </div>
+    </>
   )
 }
 

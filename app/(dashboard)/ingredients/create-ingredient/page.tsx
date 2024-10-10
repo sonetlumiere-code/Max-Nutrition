@@ -10,7 +10,7 @@ import {
 
 const CreateIngredientPage = () => {
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -30,7 +30,7 @@ const CreateIngredientPage = () => {
       <h2 className='font-semibold text-lg'>Agregar Ingrediente</h2>
 
       <CreateIngredient />
-    </div>
+    </>
   )
 }
 

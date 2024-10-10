@@ -26,7 +26,7 @@ const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
   }
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -46,7 +46,7 @@ const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
       <h2 className='font-semibold text-lg'>Editar Ingrediente</h2>
 
       <EditIngredient ingredient={ingredient} />
-    </div>
+    </>
   )
 }
 

@@ -39,7 +39,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
   }
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -61,7 +61,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
         recipes={recipes}
         categories={categories}
       />
-    </div>
+    </>
   )
 }
 

@@ -17,7 +17,7 @@ const CreateRecipePage = async () => {
   })
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -37,7 +37,7 @@ const CreateRecipePage = async () => {
       <h2 className='font-semibold text-lg'>Agregar Receta</h2>
 
       <CreateRecipe ingredients={ingredients} />
-    </div>
+    </>
   )
 }
 

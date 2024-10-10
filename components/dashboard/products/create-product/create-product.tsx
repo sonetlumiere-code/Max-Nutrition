@@ -105,7 +105,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className='grid gap-4'>
-        <div className='flex justify-between'>
+        <div className='flex justify-between items-center'>
           <h2 className='font-semibold text-lg'>Agregar Producto</h2>
           <Button type='submit' disabled={isSubmitting}>
             {isSubmitting && (
