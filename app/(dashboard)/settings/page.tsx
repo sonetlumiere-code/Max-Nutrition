@@ -13,7 +13,7 @@ const Settings = async () => {
   const settings = await getSettings()
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -29,7 +29,7 @@ const Settings = async () => {
       <h2 className='font-semibold text-lg'>Configuración</h2>
 
       {settings && <EditSettings settings={settings} />}
-    </div>
+    </>
   )
 }
 

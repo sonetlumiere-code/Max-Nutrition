@@ -43,7 +43,7 @@ const OrdersList = ({ orders, setSelectedOrder }: OrdersListProps) => {
             </TableCell>
             <TableCell className='hidden sm:table-cell'>
               <Badge className='text-xs' variant='secondary'>
-                {order.shippingMethod}
+                {order.shippingMethod === "TakeAway" ? "Take Away" : "Delivery"}
               </Badge>
             </TableCell>
             <TableCell className='hidden sm:table-cell'>

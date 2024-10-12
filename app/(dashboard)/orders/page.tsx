@@ -50,12 +50,12 @@ export default function OrdersPage() {
     <main className='grid flex-1 items-start gap-4 md:gap-8 lg:grid-cols-3 xl:grid-cols-3'>
       <div className='grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2'>
         {isLoading ? (
-          <div className='space-y-4'>
+          <div className='h-screen space-y-4'>
             <div className='flex justify-between'>
               <Skeleton className='h-10 w-36' />
               <Skeleton className='h-10 w-36' />
             </div>
-            <Skeleton className='h-64' />
+            <Skeleton className='h-1/2' />
           </div>
         ) : (
           <Tabs defaultValue='week'>

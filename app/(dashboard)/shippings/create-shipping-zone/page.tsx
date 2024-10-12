@@ -10,7 +10,7 @@ import {
 
 const CreateShippingZonesPage = () => {
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -30,7 +30,7 @@ const CreateShippingZonesPage = () => {
       <h2 className='font-semibold text-lg'>Agregar Zona de envío</h2>
 
       <CreateShippingZone />
-    </div>
+    </>
   )
 }
 

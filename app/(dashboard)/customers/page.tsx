@@ -33,15 +33,36 @@ import {
 } from "@/components/ui/table"
 import { getCustomers } from "@/data/customer"
 import { format } from "date-fns"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 
 export default async function CustomersPage() {
   const customers = await getCustomers()
   console.log(customers)
   return (
     <>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink>Inicio</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Clientes</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <div className='flex items-center'>
         <h1 className='text-lg font-semibold md:text-2xl'>Clientes</h1>
       </div>
+
       <Card>
         <CardHeader>
           <CardDescription>

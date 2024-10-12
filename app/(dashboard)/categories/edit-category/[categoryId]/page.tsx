@@ -33,7 +33,7 @@ const EditCategoryPage = async ({ params }: EditCategoryPageProps) => {
   }
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -53,7 +53,7 @@ const EditCategoryPage = async ({ params }: EditCategoryPageProps) => {
       <h2 className='font-semibold text-lg'>Editar Categoría</h2>
 
       <EditCategory category={category} products={products} />
-    </div>
+    </>
   )
 }
 

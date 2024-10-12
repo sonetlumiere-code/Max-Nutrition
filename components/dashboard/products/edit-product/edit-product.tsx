@@ -104,7 +104,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className='grid gap-4'>
-        <div className='flex justify-between'>
+        <div className='flex justify-between items-center'>
           <h2 className='font-semibold text-lg'>Editar Producto</h2>
           <Button type='submit' disabled={isSubmitting || !isValid}>
             {isSubmitting && (

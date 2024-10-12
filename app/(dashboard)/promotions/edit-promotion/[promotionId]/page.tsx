@@ -33,7 +33,7 @@ const EditPromotionPage = async ({ params }: EditPromotionPage) => {
   }
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -53,7 +53,7 @@ const EditPromotionPage = async ({ params }: EditPromotionPage) => {
       <h2 className='font-semibold text-lg'>Editar Promoción</h2>
 
       <EditPromotion promotion={promotion} categories={categories} />
-    </div>
+    </>
   )
 }
 

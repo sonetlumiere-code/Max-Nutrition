@@ -13,7 +13,7 @@ const CreatePromotionPage = async () => {
   const categories = await getCategories()
 
   return (
-    <div className='space-y-6'>
+    <>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -33,7 +33,7 @@ const CreatePromotionPage = async () => {
       <h2 className='font-semibold text-lg'>Agregar Promoción</h2>
 
       <CreatePromotion categories={categories} />
-    </div>
+    </>
   )
 }
 
