@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { getStatusBadgeClass, translateOrderStatus } from "@/helpers/helpers"
 import { cn } from "@/lib/utils"
 import { PopulatedOrder } from "@/types/types"
 import { Dispatch, SetStateAction } from "react"
@@ -47,21 +48,8 @@ const OrdersList = ({ orders, setSelectedOrder }: OrdersListProps) => {
               </Badge>
             </TableCell>
             <TableCell className='hidden sm:table-cell'>
-              <Badge
-                className={cn("", {
-                  "bg-amber-500 hover:bg-amber-500/80":
-                    order.status === "Pending",
-                  "bg-sky-500 hover:bg-sky-500/80": order.status === "Accepted",
-                  "bg-emerald-500 hover:bg-emerald-500/80":
-                    order.status === "Completed",
-                  "bg-destructive hover:bg-destructive/80":
-                    order.status === "Cancelled",
-                })}
-              >
-                {order.status === "Pending" && "Pendiente"}
-                {order.status === "Accepted" && "Aceptado"}
-                {order.status === "Completed" && "Completado"}
-                {order.status === "Cancelled" && "Cancelado"}
+              <Badge className={cn("", getStatusBadgeClass(order.status))}>
+                {translateOrderStatus(order.status)}
               </Badge>
             </TableCell>
             <TableCell className='hidden md:table-cell'>
