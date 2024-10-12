@@ -113,7 +113,7 @@ model CustomerAddress {
   customer    Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
-  // Order      Order[]
+  order       Order[]
 
   @@map("customer_addresses")
 }
@@ -201,16 +201,20 @@ enum OrderStatus {
 }
 
 model Order {
-  id         String      @id @default(cuid())
-  customerId String
-  total      Float
-  customer   Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  // address           CustomerAddress @relation(fields: [customerAddressId], references: [id])
-  items      OrderItem[]
-  status     OrderStatus @default(Pending)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  // customerAddressId String
+  id                String           @id @default(cuid())
+  customerId        String
+  total             Float
+  customer          Customer         @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerAddressId String?
+  address           CustomerAddress? @relation(fields: [customerAddressId], references: [id])
+  items             OrderItem[]
+  status            OrderStatus      @default(Pending)
+  paymentMethod     PaymentMethod
+  shippingMethod    ShippingMethod
+  shippingCost      Float
+  taxCost           Float?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 
   @@map("orders")
 }
@@ -227,6 +231,14 @@ model OrderItem {
   updatedAt DateTime @updatedAt
 
   @@map("order_items")
+}
+
+enum PaymentMethod {
+  Cash
+  BankTransfer
+  MercadoPago
+  CreditCard
+  DebitCard
 }
 
 model Promotion {
@@ -281,11 +293,16 @@ model Settings {
   @@map("settings")
 }
 
+enum ShippingMethod {
+  TakeAway
+  Delivery
+}
+
 model ShippingSettings {
   id                             String   @id @default("1")
   takeAway                       Boolean  @default(true)
-  shipping                       Boolean  @default(true)
-  minProductsQuantityForShipping Int
+  delivery                       Boolean  @default(true)
+  minProductsQuantityForDelivery Int      @default(10)
   createdAt                      DateTime @default(now())
   updatedAt                      DateTime @updatedAt
 

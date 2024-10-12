@@ -16,12 +16,12 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ user }) => {
         seed: user?.email || "User",
       }).toString()}`
 
-  const initials = user?.email?.slice(0, 2).toUpperCase() || ""
+  // const initials = user?.name?.slice(0, 1).toUpperCase() || ""
 
   return (
     <Avatar>
       <AvatarImage src={url} alt='User Avatar' />
-      <AvatarFallback className='uppercase'>{initials}</AvatarFallback>
+      <AvatarFallback className='uppercase' />
     </Avatar>
   )
 }

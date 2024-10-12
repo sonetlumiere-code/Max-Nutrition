@@ -1,8 +1,9 @@
 "use server"
 
 import prisma from "@/lib/db/db"
+import { PopulatedOrder } from "@/types/types"
 
-export const getOrders = async () => {
+export const getOrders = async (): Promise<PopulatedOrder[] | null> => {
   try {
     const orders = await prisma.order.findMany({
       include: {
@@ -13,15 +14,24 @@ export const getOrders = async () => {
         },
         customer: {
           include: {
-            user: true,
+            user: {
+              select: {
+                email: true,
+                image: true,
+              },
+            },
           },
         },
+        address: true,
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     })
 
-    return orders
+    return orders as PopulatedOrder[]
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching orders:", error)
     return null
   }
 }

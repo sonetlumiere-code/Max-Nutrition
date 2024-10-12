@@ -39,7 +39,6 @@ import { PopulatedRecipe } from "@/types/types"
 import { MultiSelect } from "@/components/multi-select"
 import { Category } from "@prisma/client"
 import { Upload } from "lucide-react"
-import Image from "next/image"
 
 type ProductSchema = z.infer<typeof productSchema>
 

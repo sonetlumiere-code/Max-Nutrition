@@ -3,6 +3,7 @@
 import { getProductsByIds } from "@/data/products"
 import prisma from "@/lib/db/db"
 import { orderSchema } from "@/lib/validations/order-validation"
+import { ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
@@ -15,7 +16,13 @@ export async function createOrder(values: OrderSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { customerId, items } = validatedFields.data
+  const {
+    customerId,
+    customerAddressId,
+    shippingMethod,
+    paymentMethod,
+    items,
+  } = validatedFields.data
   const productIds = items.map((item) => item.productId)
   const uniqueProductIds = Array.from(new Set(productIds))
 
@@ -31,9 +38,27 @@ export async function createOrder(values: OrderSchema) {
       return acc + (product ? product.price * item.quantity : 0)
     }, 0)
 
+    if (shippingMethod === ShippingMethod.Delivery) {
+      const customerAddress = await prisma.customerAddress.findUnique({
+        where: {
+          id: customerAddressId,
+        },
+      })
+
+      if (!customerAddress) {
+        return { error: "Invalid customer address id." }
+      }
+    }
+
     const order = await prisma.order.create({
       data: {
         customerId,
+        customerAddressId: customerAddressId || null,
+        shippingMethod,
+        //TO DO get customer address shipping zone cost
+        shippingCost: 0,
+        paymentMethod,
+        taxCost: 0,
         total,
         items: {
           create: items.map((item) => ({
@@ -52,7 +77,8 @@ export async function createOrder(values: OrderSchema) {
       },
     })
 
-    revalidatePath("/shop")
+    revalidatePath("/customer-orders-history")
+    revalidatePath("/orders")
 
     return { success: order }
   } catch (error) {

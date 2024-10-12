@@ -1,0 +1,74 @@
+import { PopulatedOrder } from "@/types/types"
+import { Badge } from "@/components/ui/badge"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { cn } from "@/lib/utils"
+import CustomerOrdersHistoryActions from "./customer-orders-history-actions"
+
+type CustomerOrdersHistoryListProps = {
+  orders: PopulatedOrder[]
+}
+
+const CustomerOrdersHistoryList = ({
+  orders,
+}: CustomerOrdersHistoryListProps) => {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Fecha</TableHead>
+          <TableHead className='hidden sm:table-cell'>Entrega</TableHead>
+          <TableHead>Estado</TableHead>
+          <TableHead className='hidden sm:table-cell'>Total</TableHead>
+          <TableHead className='text-right'>Acciones</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {orders?.map((order) => (
+          <TableRow key={order.id}>
+            <TableCell className='text-xs md:text-sm'>
+              {order.createdAt.toLocaleDateString()}
+            </TableCell>
+            <TableCell className='hidden sm:table-cell'>
+              <Badge className='text-xs' variant='secondary'>
+                {order.shippingMethod}
+              </Badge>
+            </TableCell>
+            <TableCell>
+              <Badge
+                className={cn("", {
+                  "bg-amber-500 hover:bg-amber-500/80":
+                    order.status === "Pending",
+                  "bg-sky-500 hover:bg-sky-500/80": order.status === "Accepted",
+                  "bg-emerald-500 hover:bg-emerald-500/80":
+                    order.status === "Completed",
+                  "bg-destructive hover:bg-destructive/80":
+                    order.status === "Cancelled",
+                })}
+              >
+                {order.status === "Pending" && "Pendiente"}
+                {order.status === "Accepted" && "Aceptado"}
+                {order.status === "Completed" && "Completado"}
+                {order.status === "Cancelled" && "Cancelado"}
+              </Badge>
+            </TableCell>
+            <TableCell className='hidden sm:table-cell'>
+              ${order.total}
+            </TableCell>
+            <TableCell className='text-right'>
+              <CustomerOrdersHistoryActions order={order} />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  )
+}
+
+export default CustomerOrdersHistoryList

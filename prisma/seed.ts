@@ -872,8 +872,8 @@ async function main() {
     create: {
       id: "1",
       takeAway: true,
-      shipping: true,
-      minProductsQuantityForShipping: 10,
+      delivery: true,
+      minProductsQuantityForDelivery: 10,
     },
   })
 }

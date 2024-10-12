@@ -25,6 +25,7 @@ export const getCustomer = async (
             createdAt: "desc",
           },
           include: {
+            address: true,
             items: {
               include: {
                 product: true,

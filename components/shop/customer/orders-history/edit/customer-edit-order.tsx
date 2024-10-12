@@ -1,7 +1,5 @@
 "use client"
 
-import { CustomerAddress } from "@prisma/client"
-import CustomerEditAddressForm from "./customer-edit-address-form"
 import { Dispatch, SetStateAction } from "react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import {
@@ -22,18 +20,20 @@ import {
 } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
 import { MoveLeftIcon } from "lucide-react"
+import { PopulatedOrder } from "@/types/types"
+import CustomerEditOrderForm from "./customer-edit-order-form"
 
-type CustomerEditAddressProps = {
-  address: CustomerAddress
+type CustomerEditOrderProps = {
+  order: PopulatedOrder
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const CustomerEditAddress = ({
-  address,
+const CustomerEditOrder = ({
+  order,
   open,
   setOpen,
-}: CustomerEditAddressProps) => {
+}: CustomerEditOrderProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {
@@ -41,10 +41,10 @@ const CustomerEditAddress = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className='sm:max-w-[600px]'>
           <DialogHeader>
-            <DialogTitle>Editar dirección</DialogTitle>
-            <DialogDescription>Editar dirección</DialogDescription>
+            <DialogTitle>Editar pedido</DialogTitle>
+            <DialogDescription>Editar pedido</DialogDescription>
             <div className='py-4'>
-              <CustomerEditAddressForm address={address} setOpen={setOpen} />
+              <CustomerEditOrderForm order={order} setOpen={setOpen} />
             </div>
           </DialogHeader>
         </DialogContent>
@@ -56,11 +56,11 @@ const CustomerEditAddress = ({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent className='min-h-[40vh]'>
         <DrawerHeader>
-          <DrawerTitle>Editar dirección</DrawerTitle>
-          <DrawerDescription>Editar dirección</DrawerDescription>
+          <DrawerTitle>Editar pedido</DrawerTitle>
+          <DrawerDescription>Editar pedido</DrawerDescription>
         </DrawerHeader>
         <div className='p-4'>
-          <CustomerEditAddressForm address={address} setOpen={setOpen} />
+          <CustomerEditOrderForm order={order} setOpen={setOpen} />
         </div>
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>
@@ -74,4 +74,4 @@ const CustomerEditAddress = ({
   )
 }
 
-export default CustomerEditAddress
+export default CustomerEditOrder

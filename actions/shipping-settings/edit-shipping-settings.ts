@@ -18,16 +18,16 @@ export async function editShippingSettings({
     return { error: "Campos inválidos." }
   }
 
-  const { shipping, takeAway, minProductsQuantityForShipping } =
+  const { delivery, takeAway, minProductsQuantityForDelivery } =
     validatedFields.data
 
   try {
     const updatedShippingSettings = await prisma.shippingSettings.update({
       where: { id: "1" },
       data: {
-        shipping,
+        delivery,
         takeAway,
-        minProductsQuantityForShipping,
+        minProductsQuantityForDelivery,
       },
     })
 
@@ -35,7 +35,7 @@ export async function editShippingSettings({
 
     return { success: updatedShippingSettings }
   } catch (error) {
-    console.error("Error updating shipping zone:", error)
+    console.error("Error updating shipping settings:", error)
     return { error: "Hubo un error al actualizar la configuración de envíos." }
   }
 }

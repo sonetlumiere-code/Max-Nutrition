@@ -12,7 +12,7 @@ export const sendVerificacionEmail = async (email: string, token: string) => {
     from: "onboarding@resend.dev",
     to: email,
     subject: "Confirma tu Email",
-    react: VerificationEmail({
+    react: VerificationEmail({+
       confirmLink: `${confirmLink}`,
     }) as React.ReactElement,
   })

@@ -1,16 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { CartItem, useCart } from "@/components/cart-provider"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { Minus, Plus, Trash2 } from "lucide-react"
 
-const CartListItem = ({
-  cartItem,
-  isLoading,
-}: {
-  cartItem: CartItem
-  isLoading: boolean
-}) => {
+const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
   const { decrementQuantity, incrementQuantity, removeItem } = useCart()
 
   return (
@@ -27,10 +22,12 @@ const CartListItem = ({
         />
         <div className='space-y-2'>
           <h3>{cartItem.product.name}</h3>
-          <p className='text-muted-foreground'>
-            {cartItem.variation.withSalt ? "Con sal" : "Sin sal"} - $
-            {cartItem.product.price}
-          </p>
+          <div className='flex gap-2'>
+            <p className='text-muted-foreground'>${cartItem.product.price}</p>
+            <Badge variant='secondary'>
+              {cartItem.variation.withSalt ? "Con sal" : "Sin sal"}
+            </Badge>
+          </div>
         </div>
       </TableCell>
       <TableCell className='font-medium space-x-2 justify-end w-1/12'>
@@ -44,7 +41,6 @@ const CartListItem = ({
                 ? () => removeItem(cartItem.id)
                 : () => decrementQuantity(cartItem.id)
             }
-            disabled={isLoading}
           >
             {cartItem.quantity === 1 ? (
               <Trash2 className='w-4 h-4 text-destructive' />
@@ -60,7 +56,6 @@ const CartListItem = ({
             size='icon'
             className='rounded-full p-1 hover:bg-muted transition-colors'
             onClick={() => incrementQuantity(cartItem.id)}
-            disabled={isLoading}
           >
             <Plus className='w-4 h-4' />
           </Button>
