@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
 import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
 import OpenShopCard from "./open-shop-card"
@@ -19,10 +18,10 @@ export default function SideNavDashboard() {
           <Link href='/' className='flex items-center gap-2 font-semibold'>
             <span>Máxima Nutrición </span>
           </Link>
-          <Button variant='outline' size='icon' className='ml-auto h-8 w-8'>
+          {/* <Button variant='outline' size='icon' className='ml-auto h-8 w-8'>
             <Icons.bell className='h-4 w-4' />
             <span className='sr-only'>Toggle notifications</span>
-          </Button>
+          </Button> */}
         </div>
         <div className='flex-1'>
           <nav className='grid items-start px-2 font-medium lg:px-4'>

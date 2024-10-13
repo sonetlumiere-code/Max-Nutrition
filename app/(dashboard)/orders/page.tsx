@@ -26,6 +26,7 @@ import useSWR from "swr"
 import { PopulatedOrder } from "@/types/types"
 import { Skeleton } from "@/components/ui/skeleton"
 import { isWithinInterval, subMonths, subWeeks, subYears } from "date-fns"
+import OrdersDataTable from "@/components/dashboard/orders/list/orders-data-table/orders-data-table"
 
 type TimePeriod = "week" | "month" | "year" | "all"
 
@@ -39,8 +40,8 @@ export default function OrdersPage() {
   const [filters, setFilters] = useState({
     Pending: true,
     Accepted: true,
-    Completed: false,
-    Cancelled: false,
+    Completed: true,
+    Cancelled: true,
   })
   const [selectedTab, setSelectedTab] = useState<TimePeriod>("week")
   const [selectedOrder, setSelectedOrder] = useState<PopulatedOrder | null>(
@@ -118,11 +119,11 @@ export default function OrdersPage() {
                       className='h-7 gap-1 text-sm'
                     >
                       <ListFilter className='h-3.5 w-3.5' />
-                      <span className='sr-only sm:not-sr-only'>Filter</span>
+                      <span className='sr-only sm:not-sr-only'>Filtros</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='end'>
-                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                    <DropdownMenuLabel>Estado</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuCheckboxItem
                       checked={filters.Pending}
@@ -156,7 +157,7 @@ export default function OrdersPage() {
                   className='h-7 gap-1 text-sm'
                 >
                   <File className='h-3.5 w-3.5' />
-                  <span className='sr-only sm:not-sr-only'>Export</span>
+                  <span className='sr-only sm:not-sr-only'>Exportar</span>
                 </Button>
               </div>
             </div>
@@ -170,15 +171,20 @@ export default function OrdersPage() {
                 </CardHeader>
                 <CardContent>
                   {filteredOrders && filteredOrders.length > 0 ? (
-                    <OrdersList
+                    // <OrdersList
+                    //   orders={filteredOrders}
+                    //   setSelectedOrder={setSelectedOrder}
+                    // />
+                    <OrdersDataTable
                       orders={filteredOrders}
+                      selectedOrder={selectedOrder}
                       setSelectedOrder={setSelectedOrder}
                     />
                   ) : (
                     <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
                       <div className='flex flex-col items-center gap-1 text-center'>
                         <h3 className='text-2xl font-bold tracking-tight'>
-                          Todavía no tenés ningún pedido
+                          No hay resultados.
                         </h3>
                       </div>
                     </div>

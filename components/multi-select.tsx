@@ -102,7 +102,7 @@ function MultiSelect({
               }}
             />
           </div>
-          <Icons.chevronsUpDown className='h-4 w-4 shrink-0 opacity-50' />
+          <Icons.caretSortIcon className='h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
       <PopoverContent className='p-0'>

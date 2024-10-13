@@ -40,7 +40,7 @@ const DeleteIngredient = ({ ingredient }: DeleteIngredientProps) => {
 
   return (
     <span onClick={onDelete} className='flex'>
-      <Icons.thrash2 className='w-4 h-4 text-destructive' />
+      <Icons.trash2 className='w-4 h-4 text-destructive' />
       <p className='ml-2 text-destructive'>Eliminar</p>
     </span>
   )

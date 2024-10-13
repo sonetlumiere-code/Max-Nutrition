@@ -25,7 +25,6 @@ import {
   Menu,
   Search,
   Box,
-  ChevronsUpDown,
   Check,
   BadgePercent,
   Truck,
@@ -36,9 +35,21 @@ import {
   Globe,
   CircleX,
 } from "lucide-react"
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon,
+  CaretSortIcon,
+} from "@radix-ui/react-icons"
 
 export const Icons = {
   plus: Plus,
+  caretSortIcon: CaretSortIcon,
+  chevronLeftIcon: ChevronLeftIcon,
+  chevronRightIcon: ChevronRightIcon,
+  doubleArrowLeftIcon: DoubleArrowLeftIcon,
+  doubleArrowRightIcon: DoubleArrowRightIcon,
   x: X,
   calendar: Calendar,
   chevronLeft: ChevronLeft,
@@ -51,7 +62,7 @@ export const Icons = {
   circleAlert: CircleAlert,
   moreHorizontal: MoreHorizontal,
   pencil: Pencil,
-  thrash2: Trash2,
+  trash2: Trash2,
   settings: Settings,
   logOut: LogOut,
   circlePlus: CirclePlus,
@@ -68,7 +79,6 @@ export const Icons = {
   menu: Menu,
   search: Search,
   box: Box,
-  chevronsUpDown: ChevronsUpDown,
   check: Check,
   badgePercent: BadgePercent,
   truck: Truck,
