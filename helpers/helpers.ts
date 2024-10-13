@@ -38,14 +38,3 @@ export function translateOrderStatus(status: string): string {
       return "Desconocido"
   }
 }
-
-export function getStatusBadgeClass(status: OrderStatus): string {
-  const statusClasses: Record<OrderStatus, string> = {
-    Pending: "bg-amber-500 hover:bg-amber-500/80",
-    Accepted: "bg-sky-500 hover:bg-sky-500/80",
-    Completed: "bg-emerald-500 hover:bg-emerald-500/80",
-    Cancelled: "bg-destructive hover:bg-destructive/80",
-  }
-
-  return statusClasses[status]
-}

@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PopulatedCustomer, PopulatedOrder } from "@/types/types"
 import { ColumnDef } from "@tanstack/react-table"
-import { translateOrderStatus, getStatusBadgeClass } from "@/helpers/helpers"
+import { translateOrderStatus } from "@/helpers/helpers"
 import { Icons } from "@/components/icons"
 import { OrderStatus } from "@prisma/client"
 import { cn } from "@/lib/utils"
@@ -78,9 +78,15 @@ export const columns: ColumnDef<PopulatedOrder>[] = [
     },
     cell: ({ row }) => {
       const status = row.original.status as OrderStatus
-      const statusClass = getStatusBadgeClass(status)
       return (
-        <Badge className={cn("ml-4", statusClass)}>
+        <Badge
+          className={cn("ml-4", {
+            "bg-amber-500 hover:bg-amber-500/80": status === "Pending",
+            "bg-sky-500 hover:bg-sky-500/80": status === "Accepted",
+            "bg-emerald-500 hover:bg-emerald-500/80": status === "Completed",
+            "bg-destructive hover:bg-destructive/80": status === "Cancelled",
+          })}
+        >
           {translateOrderStatus(status)}
         </Badge>
       )

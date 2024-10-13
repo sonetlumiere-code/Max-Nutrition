@@ -22,7 +22,7 @@ import { PopulatedOrder } from "@/types/types"
 import React from "react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { getStatusBadgeClass, translateOrderStatus } from "@/helpers/helpers"
+import { translateOrderStatus } from "@/helpers/helpers"
 
 type OrderItemDetails = {
   selectedOrder: PopulatedOrder | null
@@ -160,7 +160,16 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
             <div className='flex justify-between'>
               <div className='font-semibold'>Estado de la orden</div>
               <Badge
-                className={cn("", getStatusBadgeClass(selectedOrder.status))}
+                className={cn({
+                  "bg-amber-500 hover:bg-amber-500/80":
+                    selectedOrder.status === "Pending",
+                  "bg-sky-500 hover:bg-sky-500/80":
+                    selectedOrder.status === "Accepted",
+                  "bg-emerald-500 hover:bg-emerald-500/80":
+                    selectedOrder.status === "Completed",
+                  "bg-destructive hover:bg-destructive/80":
+                    selectedOrder.status === "Cancelled",
+                })}
               >
                 {translateOrderStatus(selectedOrder.status)}
               </Badge>

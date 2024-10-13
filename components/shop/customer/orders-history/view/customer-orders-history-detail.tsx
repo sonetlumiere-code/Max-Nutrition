@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
-import { getStatusBadgeClass, translateOrderStatus } from "@/helpers/helpers"
+import { translateOrderStatus } from "@/helpers/helpers"
 import { cn } from "@/lib/utils"
 import { PopulatedOrder } from "@/types/types"
 
@@ -90,7 +90,16 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
       <Separator className='my-4' />
       <div className='flex justify-between text-sm'>
         <div className='font-semibold'>Estado de la orden</div>
-        <Badge className={cn("", getStatusBadgeClass(order.status))}>
+        <Badge
+          className={cn("", {
+            "bg-amber-500 hover:bg-amber-500/80": order.status === "Pending",
+            "bg-sky-500 hover:bg-sky-500/80": order.status === "Accepted",
+            "bg-emerald-500 hover:bg-emerald-500/80":
+              order.status === "Completed",
+            "bg-destructive hover:bg-destructive/80":
+              order.status === "Cancelled",
+          })}
+        >
           {translateOrderStatus(order.status)}
         </Badge>
       </div>

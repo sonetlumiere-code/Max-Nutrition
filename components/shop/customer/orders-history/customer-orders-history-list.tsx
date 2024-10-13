@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 import CustomerOrdersHistoryActions from "./list/customer-orders-history-actions"
-import { getStatusBadgeClass, translateOrderStatus } from "@/helpers/helpers"
+import { translateOrderStatus } from "@/helpers/helpers"
 
 type CustomerOrdersHistoryListProps = {
   orders: PopulatedOrder[]
@@ -40,7 +40,17 @@ const CustomerOrdersHistoryList = ({
               </Badge>
             </TableCell>
             <TableCell>
-              <Badge className={cn("", getStatusBadgeClass(order.status))}>
+              <Badge
+                className={cn("", {
+                  "bg-amber-500 hover:bg-amber-500/80":
+                    order.status === "Pending",
+                  "bg-sky-500 hover:bg-sky-500/80": order.status === "Accepted",
+                  "bg-emerald-500 hover:bg-emerald-500/80":
+                    order.status === "Completed",
+                  "bg-destructive hover:bg-destructive/80":
+                    order.status === "Cancelled",
+                })}
+              >
                 {translateOrderStatus(order.status)}
               </Badge>
             </TableCell>
