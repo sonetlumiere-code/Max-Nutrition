@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import CustomerOrdersHistoryList from "./list/customer-orders-history-list"
+import CustomerOrdersHistoryTable from "./list/customer-orders-history-table"
 
 type CustomerOrderHistoryProps = {
   orders: PopulatedOrder[]
@@ -24,7 +24,7 @@ const CustomerOrdersHistory = ({ orders }: CustomerOrderHistoryProps) => {
       <CardContent>
         <div className='space-y-4 md:p-4'>
           {orders.length > 0 ? (
-            <CustomerOrdersHistoryList orders={orders} />
+            <CustomerOrdersHistoryTable orders={orders} />
           ) : (
             <p className='text-center'>No has realizado ningún pedido</p>
           )}

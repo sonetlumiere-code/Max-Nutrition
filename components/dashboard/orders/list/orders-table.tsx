@@ -12,12 +12,12 @@
 // import { PopulatedOrder } from "@/types/types"
 // import { Dispatch, SetStateAction } from "react"
 
-// type OrdersListProps = {
+// type OrdersTableProps = {
 //   orders: PopulatedOrder[]
 //   setSelectedOrder: Dispatch<SetStateAction<PopulatedOrder | null>>
 // }
 
-// const OrdersList = ({ orders, setSelectedOrder }: OrdersListProps) => {
+// const OrdersTable = ({ orders, setSelectedOrder }: OrdersTableProps) => {
 //   return (
 //     <Table>
 //       <TableHeader>
@@ -73,4 +73,4 @@
 //   )
 // }
 
-// export default OrdersList
+// export default OrdersTable

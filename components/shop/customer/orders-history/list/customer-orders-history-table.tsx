@@ -12,13 +12,13 @@ import { cn } from "@/lib/utils"
 import CustomerOrdersHistoryActions from "./customer-orders-history-actions"
 import { translateOrderStatus } from "@/helpers/helpers"
 
-type CustomerOrdersHistoryListProps = {
+type CustomerOrdersHistoryTableProps = {
   orders: PopulatedOrder[]
 }
 
-const CustomerOrdersHistoryList = ({
+const CustomerOrdersHistoryTable = ({
   orders,
-}: CustomerOrdersHistoryListProps) => {
+}: CustomerOrdersHistoryTableProps) => {
   return (
     <Table>
       <TableHeader>
@@ -69,4 +69,4 @@ const CustomerOrdersHistoryList = ({
   )
 }
 
-export default CustomerOrdersHistoryList
+export default CustomerOrdersHistoryTable
