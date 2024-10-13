@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import {
   Card,
   CardContent,
@@ -8,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import OrdersList from "@/components/dashboard/orders/list/orders-list"
 import { getOrders } from "@/data/orders"
 import OrderItemDetails from "@/components/dashboard/orders/list/order-item-details"
 import {
@@ -53,24 +53,26 @@ export default function OrdersPage() {
     if (tab === "week") return subWeeks(now, 1)
     if (tab === "month") return subMonths(now, 1)
     if (tab === "year") return subYears(now, 1)
-    return null // "all" tab has no date filtering
+    return null
   }
 
-  const filteredOrders = orders?.filter((order) => {
-    const orderDate = new Date(order.createdAt)
-    const startDate = getStartDate(selectedTab)
+  const filteredOrders = useMemo(() => {
+    return orders?.filter((order) => {
+      const orderDate = new Date(order.createdAt)
+      const startDate = getStartDate(selectedTab)
 
-    const isInDateRange =
-      !startDate ||
-      isWithinInterval(orderDate, { start: startDate, end: new Date() })
-    const isInStatusFilter =
-      (filters.Pending && order.status === "Pending") ||
-      (filters.Accepted && order.status === "Accepted") ||
-      (filters.Completed && order.status === "Completed") ||
-      (filters.Cancelled && order.status === "Cancelled")
+      const isInDateRange =
+        !startDate ||
+        isWithinInterval(orderDate, { start: startDate, end: new Date() })
+      const isInStatusFilter =
+        (filters.Pending && order.status === "Pending") ||
+        (filters.Accepted && order.status === "Accepted") ||
+        (filters.Completed && order.status === "Completed") ||
+        (filters.Cancelled && order.status === "Cancelled")
 
-    return isInDateRange && isInStatusFilter
-  })
+      return isInDateRange && isInStatusFilter
+    })
+  }, [orders, selectedTab, filters])
 
   const toggleFilter = (filter: keyof typeof filters) => {
     setFilters((prevFilters) => ({
@@ -171,10 +173,6 @@ export default function OrdersPage() {
                 </CardHeader>
                 <CardContent>
                   {filteredOrders && filteredOrders.length > 0 ? (
-                    // <OrdersList
-                    //   orders={filteredOrders}
-                    //   setSelectedOrder={setSelectedOrder}
-                    // />
                     <OrdersDataTable
                       orders={filteredOrders}
                       selectedOrder={selectedOrder}
