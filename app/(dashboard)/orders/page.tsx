@@ -95,7 +95,7 @@ export default function OrdersPage() {
   }
 
   if (error) {
-    return <div>Error fetching orders</div>
+    return <div>Error buscando pedidos.</div>
   }
 
   return (
