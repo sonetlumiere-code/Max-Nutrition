@@ -28,7 +28,7 @@ export function DataTableViewOptions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[150px]'>
-        <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+        <DropdownMenuLabel>Columnas</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()

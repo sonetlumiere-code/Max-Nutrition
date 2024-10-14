@@ -42,6 +42,7 @@ export const columns: ColumnDef<PopulatedOrder>[] = [
     },
   },
   {
+    id: "shippingMethod",
     accessorKey: "shippingMethod",
     meta: "Entrega",
     header: ({ column }) => (
@@ -93,6 +94,7 @@ export const columns: ColumnDef<PopulatedOrder>[] = [
     },
   },
   {
+    id: "createdAt",
     accessorKey: "createdAt",
     meta: "Fecha",
     header: ({ column }) => {
@@ -112,6 +114,7 @@ export const columns: ColumnDef<PopulatedOrder>[] = [
     },
   },
   {
+    id: "total",
     accessorKey: "total",
     meta: "Total",
     header: ({ column }) => (

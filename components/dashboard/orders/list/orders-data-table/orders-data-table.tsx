@@ -1,3 +1,5 @@
+"use client"
+
 import {
   flexRender,
   getCoreRowModel,
@@ -7,7 +9,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import {
   Table,
   TableBody,
@@ -23,6 +25,7 @@ import OrdersBulkActions from "./bulk-actions/orders-bulk-actions"
 import { DataTablePagination } from "@/components/ui/data-table-pagination"
 import { cn } from "@/lib/utils"
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 interface OrdersDataTableProps {
   orders: PopulatedOrder[]
@@ -37,6 +40,8 @@ const OrdersDataTable = ({
 }: OrdersDataTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([])
   const [filtering, setFiltering] = useState<string>("")
+
+  const isDesktop = useMediaQuery("(min-width: 768px)")
 
   const table = useReactTable({
     data: orders,
@@ -53,9 +58,16 @@ const OrdersDataTable = ({
     onGlobalFilterChange: setFiltering,
   })
 
+  useEffect(() => {
+    table.setColumnVisibility({
+      shippingMethod: isDesktop,
+      createdAt: isDesktop,
+    })
+  }, [isDesktop, table])
+
   return (
     <div className='grid gap-4'>
-      <div className='flex items-center'>
+      <div className='flex items-center gap-2'>
         <Input
           placeholder='Filtrar'
           onChange={(e) => setFiltering(e.target.value)}
@@ -64,7 +76,7 @@ const OrdersDataTable = ({
         <DataTableViewOptions table={table} />
       </div>
       <div className='rounded-md border'>
-        <Table>
+        <Table className='relative'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
