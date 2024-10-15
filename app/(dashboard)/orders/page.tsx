@@ -125,7 +125,9 @@ export default function OrdersPage() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='end'>
-                    <DropdownMenuLabel>Estado</DropdownMenuLabel>
+                    <DropdownMenuLabel className='text-center'>
+                      Estado
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuCheckboxItem
                       checked={filters.Pending}
