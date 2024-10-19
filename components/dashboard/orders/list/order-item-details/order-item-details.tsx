@@ -16,7 +16,7 @@ import React from "react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { translateOrderStatus } from "@/helpers/helpers"
-import OrderItemActions from "./order-item-actions"
+import OrderItemActions from "../../actions/order-item-actions"
 
 type OrderItemDetails = {
   order: PopulatedOrder

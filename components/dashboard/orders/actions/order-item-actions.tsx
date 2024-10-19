@@ -10,9 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import EditOrder from "../../edit-order/edit-order"
+import EditOrder from "./edit-order/edit-order"
 import { useState } from "react"
 import { PopulatedOrder } from "@/types/types"
+import ExportOrder from "./export-order/export-order"
 
 type OrderItemActionsProps = {
   order: PopulatedOrder
@@ -20,6 +21,7 @@ type OrderItemActionsProps = {
 
 const OrderItemActions = ({ order }: OrderItemActionsProps) => {
   const [openEditDialog, setOpenEditDialog] = useState(false)
+  const [openExportDialog, setOpenExportDialog] = useState(false)
 
   return (
     <>
@@ -36,15 +38,15 @@ const OrderItemActions = ({ order }: OrderItemActionsProps) => {
             <Icons.pencil className='w-4 h-4 mr-2' />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenExportDialog(true)}>
             <Icons.file className='w-4 h-4 mr-2' />
             Exportar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          {/* <DropdownMenuItem>
             <Icons.trash2 className='w-4 h-4 mr-2' />
             Eliminar
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -52,6 +54,12 @@ const OrderItemActions = ({ order }: OrderItemActionsProps) => {
         order={order}
         open={openEditDialog}
         setOpen={setOpenEditDialog}
+      />
+
+      <ExportOrder
+        order={order}
+        open={openExportDialog}
+        setOpen={setOpenExportDialog}
       />
     </>
   )
