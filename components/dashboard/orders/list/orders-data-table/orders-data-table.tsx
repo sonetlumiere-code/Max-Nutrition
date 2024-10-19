@@ -21,7 +21,6 @@ import {
 import { columns } from "./columns"
 import { PopulatedOrder } from "@/types/types"
 import { Input } from "@/components/ui/input"
-import OrdersBulkActions from "./bulk-actions/orders-bulk-actions"
 import { DataTablePagination } from "@/components/ui/data-table-pagination"
 import { cn } from "@/lib/utils"
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options"
@@ -127,9 +126,7 @@ const OrdersDataTable = ({
         </Table>
       </div>
       <div className='flex items-center justify-between px-2 h-9'>
-        <div className='flex items-center'>
-          <OrdersBulkActions table={table} />
-        </div>
+        <div className='flex items-center'>{/* Bulk Actions */}</div>
         <DataTablePagination table={table} setPageSize />
       </div>
     </div>

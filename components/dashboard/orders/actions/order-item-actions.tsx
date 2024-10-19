@@ -7,13 +7,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import EditOrder from "./edit-order/edit-order"
 import { useState } from "react"
 import { PopulatedOrder } from "@/types/types"
-import ExportOrder from "./export-order/export-order"
 
 type OrderItemActionsProps = {
   order: PopulatedOrder
@@ -21,7 +19,7 @@ type OrderItemActionsProps = {
 
 const OrderItemActions = ({ order }: OrderItemActionsProps) => {
   const [openEditDialog, setOpenEditDialog] = useState(false)
-  const [openExportDialog, setOpenExportDialog] = useState(false)
+  // const [openExportDialog, setOpenExportDialog] = useState(false)
 
   return (
     <>
@@ -38,11 +36,11 @@ const OrderItemActions = ({ order }: OrderItemActionsProps) => {
             <Icons.pencil className='w-4 h-4 mr-2' />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpenExportDialog(true)}>
+          {/* <DropdownMenuItem onClick={() => setOpenExportDialog(true)}>
             <Icons.file className='w-4 h-4 mr-2' />
             Exportar
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator /> */}
           {/* <DropdownMenuItem>
             <Icons.trash2 className='w-4 h-4 mr-2' />
             Eliminar
@@ -56,11 +54,11 @@ const OrderItemActions = ({ order }: OrderItemActionsProps) => {
         setOpen={setOpenEditDialog}
       />
 
-      <ExportOrder
+      {/* <ExportOrder
         order={order}
         open={openExportDialog}
         setOpen={setOpenExportDialog}
-      />
+      /> */}
     </>
   )
 }

@@ -1,6 +1,3 @@
-"use client"
-
-import { Dispatch, SetStateAction } from "react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import {
   Dialog,
@@ -20,28 +17,28 @@ import {
 } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
 import { PopulatedOrder } from "@/types/types"
-import EditOrderForm from "./edit-order-form"
+import { Dispatch, SetStateAction } from "react"
 import { Icons } from "@/components/icons"
 
-type EditOrderProps = {
-  order: PopulatedOrder
+type OrdersBulkExportProps = {
+  orders: PopulatedOrder[]
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const EditOrder = ({ order, open, setOpen }: EditOrderProps) => {
+const OrdersBulkExport = ({ orders, open, setOpen }: OrdersBulkExportProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
+
+  console.log(orders)
 
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className='sm:max-w-[600px]'>
           <DialogHeader>
-            <DialogTitle>Editar pedido</DialogTitle>
-            <DialogDescription>Editar pedido</DialogDescription>
-            <div className='py-4'>
-              <EditOrderForm order={order} setOpen={setOpen} />
-            </div>
+            <DialogTitle>Exportar pedidos</DialogTitle>
+            <DialogDescription>Exportar pedidos</DialogDescription>
+            <div className='py-4'>bulk export</div>
           </DialogHeader>
         </DialogContent>
       </Dialog>
@@ -52,12 +49,10 @@ const EditOrder = ({ order, open, setOpen }: EditOrderProps) => {
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent className='min-h-[40vh]'>
         <DrawerHeader>
-          <DrawerTitle>Editar pedido</DrawerTitle>
-          <DrawerDescription>Editar pedido</DrawerDescription>
+          <DrawerTitle>Exportar pedidos</DrawerTitle>
+          <DrawerDescription>Exportar pedidos</DrawerDescription>
         </DrawerHeader>
-        <div className='p-4'>
-          <EditOrderForm order={order} setOpen={setOpen} />
-        </div>
+        <div className='p-4'>bulk export</div>
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>
             <Button variant='outline'>
@@ -70,4 +65,4 @@ const EditOrder = ({ order, open, setOpen }: EditOrderProps) => {
   )
 }
 
-export default EditOrder
+export default OrdersBulkExport

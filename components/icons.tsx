@@ -36,6 +36,7 @@ import {
   CircleX,
   MoreVertical,
   File,
+  MoveLeftIcon,
 } from "lucide-react"
 import {
   ChevronLeftIcon,
@@ -70,6 +71,7 @@ export const Icons = {
   settings: Settings,
   logOut: LogOut,
   circlePlus: CirclePlus,
+  moveLeftIcon: MoveLeftIcon,
   bell: Bell,
   home: Home,
   briefCase: Briefcase,
