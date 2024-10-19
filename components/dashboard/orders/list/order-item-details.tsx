@@ -25,18 +25,18 @@ import { cn } from "@/lib/utils"
 import { translateOrderStatus } from "@/helpers/helpers"
 
 type OrderItemDetails = {
-  selectedOrder: PopulatedOrder | null
+  order: PopulatedOrder | null
 }
 
-const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
+const OrderItemDetails = ({ order }: OrderItemDetails) => {
   return (
     <>
-      {selectedOrder ? (
+      {order ? (
         <Card className='overflow-hidden'>
           <CardHeader className='flex flex-row items-start bg-muted/50'>
             <div className='grid gap-0.5'>
               <CardTitle className='group flex items-center gap-2 text-lg'>
-                <small>Orden {selectedOrder.id}</small>
+                <small>Orden {order.id}</small>
                 <Button
                   size='icon'
                   variant='outline'
@@ -47,7 +47,7 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
                 </Button>
               </CardTitle>
               <CardDescription>
-                Fecha: {selectedOrder.createdAt.toLocaleDateString()}
+                Fecha: {order.createdAt.toLocaleDateString()}
               </CardDescription>
             </div>
             <div className='ml-auto flex items-center gap-1'>
@@ -77,7 +77,7 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
             <div className='grid gap-3'>
               <div className='font-semibold'>Detalles de la orden</div>
               <ul className='grid gap-3'>
-                {selectedOrder.items?.map((item) => (
+                {order.items?.map((item) => (
                   <li
                     key={item.id}
                     className='flex items-center justify-between'
@@ -102,7 +102,7 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
                   <span className='text-muted-foreground'>Subtotal</span>
                   <span>
                     $
-                    {selectedOrder.items?.reduce(
+                    {order.items?.reduce(
                       (acc, curr) => acc + curr.product?.price * curr.quantity,
                       0
                     )}
@@ -111,8 +111,8 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
                 {/* <li className='flex items-center justify-between'>
                   <span className='text-muted-foreground'>Costo de envío</span>
                   <span>
-                    {selectedOrder.shippingCost
-                      ? `${selectedOrder.shippingCost}`
+                    {order.shippingCost
+                      ? `${order.shippingCost}`
                       : "Gratis"}
                   </span>
                 </li> */}
@@ -122,7 +122,7 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
                 </li> */}
                 <li className='flex items-center justify-between font-semibold'>
                   <span className='text-muted-foreground'>Total</span>
-                  <span>${selectedOrder.total}</span>
+                  <span>${order.total}</span>
                 </li>
               </ul>
             </div>
@@ -130,15 +130,13 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
             <div className='flex justify-between'>
               <div className='grid gap-3'>
                 <div className='font-semibold'>Información de entrega</div>
-                {selectedOrder.shippingMethod === "Delivery" && (
+                {order.shippingMethod === "Delivery" && (
                   <>
-                    {selectedOrder.address ? (
+                    {order.address ? (
                       <address className='grid gap-0.5 not-italic text-muted-foreground'>
-                        <span>{selectedOrder.address?.address}</span>
-                        <span>{selectedOrder.address?.city}</span>{" "}
-                        <span>
-                          Código postal: {selectedOrder.address?.postCode}
-                        </span>
+                        <span>{order.address?.address}</span>
+                        <span>{order.address?.city}</span>{" "}
+                        <span>Código postal: {order.address?.postCode}</span>
                       </address>
                     ) : (
                       <span className='text-muted-foreground'>
@@ -150,7 +148,7 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
               </div>
               <div className='grid auto-rows-max gap-3'>
                 <Badge variant='secondary'>
-                  {selectedOrder.shippingMethod === "TakeAway"
+                  {order.shippingMethod === "TakeAway"
                     ? "Take Away"
                     : "Delivery"}
                 </Badge>
@@ -162,16 +160,15 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
               <Badge
                 className={cn({
                   "bg-amber-500 hover:bg-amber-500/80":
-                    selectedOrder.status === "Pending",
-                  "bg-sky-500 hover:bg-sky-500/80":
-                    selectedOrder.status === "Accepted",
+                    order.status === "Pending",
+                  "bg-sky-500 hover:bg-sky-500/80": order.status === "Accepted",
                   "bg-emerald-500 hover:bg-emerald-500/80":
-                    selectedOrder.status === "Completed",
+                    order.status === "Completed",
                   "bg-destructive hover:bg-destructive/80":
-                    selectedOrder.status === "Cancelled",
+                    order.status === "Cancelled",
                 })}
               >
-                {translateOrderStatus(selectedOrder.status)}
+                {translateOrderStatus(order.status)}
               </Badge>
             </div>
             <Separator className='my-4' />
@@ -180,18 +177,18 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
               <dl className='grid gap-3'>
                 <div className='flex items-center justify-between'>
                   <dt className='text-muted-foreground'>Cliente</dt>
-                  <dd>{selectedOrder.customer?.name}</dd>
+                  <dd>{order.customer?.name}</dd>
                 </div>
                 <div className='flex items-center justify-between'>
                   <dt className='text-muted-foreground'>Email</dt>
                   <dd>
-                    <a href='mailto:'>{selectedOrder.customer?.user?.email}</a>
+                    <a href='mailto:'>{order.customer?.user?.email}</a>
                   </dd>
                 </div>
                 <div className='flex items-center justify-between'>
                   <dt className='text-muted-foreground'>Teléfono</dt>
                   <dd>
-                    <a href='tel:'>{selectedOrder.customer?.phone || "-"}</a>
+                    <a href='tel:'>{order.customer?.phone || "-"}</a>
                   </dd>
                 </div>
               </dl>
@@ -202,15 +199,15 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
               <dl className='grid gap-3'>
                 <div className='flex items-center justify-between'>
                   <dt className='flex items-center gap-1 text-muted-foreground'>
-                    {selectedOrder.paymentMethod === "Cash"
+                    {order.paymentMethod === "Cash"
                       ? "Efectivo"
-                      : selectedOrder.paymentMethod === "BankTransfer"
+                      : order.paymentMethod === "BankTransfer"
                       ? "Transferencia bancaria"
-                      : selectedOrder.paymentMethod === "MercadoPago"
+                      : order.paymentMethod === "MercadoPago"
                       ? "Mercado Pago"
-                      : selectedOrder.paymentMethod === "CreditCard"
+                      : order.paymentMethod === "CreditCard"
                       ? "Tarjeta de crédito"
-                      : selectedOrder.paymentMethod === "DebitCard"
+                      : order.paymentMethod === "DebitCard"
                       ? "Tarjeta de débito"
                       : ""}
                   </dt>
@@ -223,7 +220,7 @@ const OrderItemDetails = ({ selectedOrder }: OrderItemDetails) => {
             <div className='text-xs text-muted-foreground'>
               Actualizado el{" "}
               <time>
-                {selectedOrder.updatedAt.toLocaleDateString("es-AR", {
+                {order.updatedAt.toLocaleDateString("es-AR", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",

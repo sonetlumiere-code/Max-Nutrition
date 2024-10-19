@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import {
   Card,
   CardContent,
@@ -21,11 +21,18 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { File, ListFilter } from "lucide-react"
-import { useState } from "react"
 import useSWR from "swr"
 import { PopulatedOrder } from "@/types/types"
 import { Skeleton } from "@/components/ui/skeleton"
-import { isWithinInterval, subMonths, subWeeks, subYears } from "date-fns"
+import {
+  isWithinInterval,
+  subMonths,
+  subWeeks,
+  subYears,
+  startOfWeek,
+  getMonth,
+  getYear,
+} from "date-fns"
 import OrdersDataTable from "@/components/dashboard/orders/list/orders-data-table/orders-data-table"
 
 type TimePeriod = "week" | "month" | "year" | "all"
@@ -57,13 +64,16 @@ export default function OrdersPage() {
   }
 
   const filteredOrders = useMemo(() => {
-    return orders?.filter((order) => {
+    if (!orders) return undefined
+
+    const startDate = getStartDate(selectedTab)
+    return orders.filter((order: PopulatedOrder) => {
       const orderDate = new Date(order.createdAt)
-      const startDate = getStartDate(selectedTab)
 
       const isInDateRange =
         !startDate ||
         isWithinInterval(orderDate, { start: startDate, end: new Date() })
+
       const isInStatusFilter =
         (filters.Pending && order.status === "Pending") ||
         (filters.Accepted && order.status === "Accepted") ||
@@ -73,6 +83,48 @@ export default function OrdersPage() {
       return isInDateRange && isInStatusFilter
     })
   }, [orders, selectedTab, filters])
+
+  const groupedOrders = useMemo(() => {
+    if (!filteredOrders) return undefined
+
+    const grouped: { [key: string]: PopulatedOrder[] } = {}
+
+    filteredOrders.forEach((order) => {
+      const orderDate = new Date(order.createdAt)
+
+      let groupKey = ""
+      if (selectedTab === "week") {
+        const weekStart = startOfWeek(orderDate, { weekStartsOn: 1 })
+        groupKey = weekStart.toISOString()
+      } else if (selectedTab === "month") {
+        const month = getMonth(orderDate) + 1
+        const year = getYear(orderDate)
+        groupKey = `${year}-${month.toString().padStart(2, "0")}`
+      } else if (selectedTab === "year") {
+        groupKey = getYear(orderDate).toString()
+      } else {
+        groupKey = "all"
+      }
+
+      if (!grouped[groupKey]) {
+        grouped[groupKey] = []
+      }
+      grouped[groupKey].push(order)
+    })
+
+    if (
+      selectedTab === "week" ||
+      selectedTab === "month" ||
+      selectedTab === "year"
+    ) {
+      const sortedGroupKeys = Object.keys(grouped).sort(
+        (a, b) => new Date(b).getTime() - new Date(a).getTime()
+      )
+      return { [sortedGroupKeys[0]]: grouped[sortedGroupKeys[0]] }
+    }
+
+    return grouped
+  }, [filteredOrders, selectedTab])
 
   const toggleFilter = (filter: keyof typeof filters) => {
     setFilters((prevFilters) => ({
@@ -174,18 +226,25 @@ export default function OrdersPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {filteredOrders && filteredOrders.length > 0 ? (
-                    <OrdersDataTable
-                      orders={filteredOrders}
-                      selectedOrder={selectedOrder}
-                      setSelectedOrder={setSelectedOrder}
-                    />
+                  {groupedOrders && Object.keys(groupedOrders).length > 0 ? (
+                    Object.entries(groupedOrders).map(
+                      ([groupKey, groupOrders]) => (
+                        <div key={groupKey}>
+                          <OrdersDataTable
+                            orders={groupOrders}
+                            selectedOrder={selectedOrder}
+                            setSelectedOrder={setSelectedOrder}
+                          />
+                        </div>
+                      )
+                    )
                   ) : (
                     <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
-                      <div className='flex flex-col items-center gap-1 text-center'>
-                        <h3 className='text-2xl font-bold tracking-tight'>
-                          No hay resultados.
-                        </h3>
+                      <div className='flex flex-col items-center justify-center'>
+                        <File className='h-12 w-12 text-muted-foreground' />
+                        <p className='mt-2 text-sm text-muted-foreground'>
+                          No se encontraron pedidos recientes.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -195,8 +254,8 @@ export default function OrdersPage() {
           </Tabs>
         )}
       </div>
-      <div>
-        <OrderItemDetails selectedOrder={selectedOrder} />
+      <div className='hidden h-screen overflow-hidden lg:block'>
+        {selectedOrder && <OrderItemDetails order={selectedOrder} />}
       </div>
     </main>
   )
