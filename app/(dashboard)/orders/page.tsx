@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getOrders } from "@/data/orders"
-import OrderItemDetails from "@/components/dashboard/orders/list/order-item-details"
+import OrderItemDetails from "@/components/dashboard/orders/list/order-item-details/order-item-details"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -34,6 +34,7 @@ import {
   getYear,
 } from "date-fns"
 import OrdersDataTable from "@/components/dashboard/orders/list/orders-data-table/orders-data-table"
+import { Icons } from "@/components/icons"
 
 type TimePeriod = "week" | "month" | "year" | "all"
 
@@ -212,7 +213,7 @@ export default function OrdersPage() {
                   variant='outline'
                   className='h-7 gap-1 text-sm'
                 >
-                  <File className='h-3.5 w-3.5' />
+                  <Icons.file className='h-3.5 w-3.5' />
                   <span className='sr-only sm:not-sr-only'>Exportar</span>
                 </Button>
               </div>
@@ -254,9 +255,7 @@ export default function OrdersPage() {
           </Tabs>
         )}
       </div>
-      <div className='hidden h-screen overflow-hidden lg:block'>
-        {selectedOrder && <OrderItemDetails order={selectedOrder} />}
-      </div>
+      <div>{selectedOrder && <OrderItemDetails order={selectedOrder} />}</div>
     </main>
   )
 }

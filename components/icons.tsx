@@ -34,6 +34,8 @@ import {
   Briefcase,
   Globe,
   CircleX,
+  MoreVertical,
+  File,
 } from "lucide-react"
 import {
   ChevronLeftIcon,
@@ -61,7 +63,9 @@ export const Icons = {
   circleCheck: CircleCheck,
   circleAlert: CircleAlert,
   moreHorizontal: MoreHorizontal,
+  moreVertical: MoreVertical,
   pencil: Pencil,
+  file: File,
   trash2: Trash2,
   settings: Settings,
   logOut: LogOut,
