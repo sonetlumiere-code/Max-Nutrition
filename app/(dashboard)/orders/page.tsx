@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   Card,
   CardContent,
@@ -84,6 +84,14 @@ export default function OrdersPage() {
       return isInDateRange && isInStatusFilter
     })
   }, [orders, selectedTab, filters])
+
+  useEffect(() => {
+    if (selectedOrder) {
+      setSelectedOrder((prev) => {
+        return orders?.find((order) => selectedOrder.id === order.id) || prev
+      })
+    }
+  }, [orders, selectedOrder])
 
   const groupedOrders = useMemo(() => {
     if (!filteredOrders || filteredOrders.length === 0) return {}
