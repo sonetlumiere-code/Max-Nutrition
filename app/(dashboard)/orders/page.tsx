@@ -86,7 +86,7 @@ export default function OrdersPage() {
   }, [orders, selectedTab, filters])
 
   const groupedOrders = useMemo(() => {
-    if (!filteredOrders) return undefined
+    if (!filteredOrders || filteredOrders.length === 0) return {}
 
     const grouped: { [key: string]: PopulatedOrder[] } = {}
 
@@ -121,7 +121,14 @@ export default function OrdersPage() {
       const sortedGroupKeys = Object.keys(grouped).sort(
         (a, b) => new Date(b).getTime() - new Date(a).getTime()
       )
-      return { [sortedGroupKeys[0]]: grouped[sortedGroupKeys[0]] }
+
+      const mostRecentGroupKey = sortedGroupKeys[0]
+
+      if (mostRecentGroupKey && grouped[mostRecentGroupKey]) {
+        return { [mostRecentGroupKey]: grouped[mostRecentGroupKey] }
+      }
+
+      return {}
     }
 
     return grouped
