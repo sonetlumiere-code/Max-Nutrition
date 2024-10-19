@@ -11,14 +11,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getOrders } from "@/data/orders"
 import OrderItemDetails from "@/components/dashboard/orders/list/order-item-details/order-item-details"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+// import {
+//   DropdownMenu,
+//   DropdownMenuCheckboxItem,
+//   DropdownMenuContent,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { File, ListFilter } from "lucide-react"
 import useSWR from "swr"
@@ -45,12 +45,12 @@ const fetchOrders = async () => {
 
 export default function OrdersPage() {
   const { data: orders, error, isLoading } = useSWR("/api/orders", fetchOrders)
-  const [filters, setFilters] = useState({
-    Pending: true,
-    Accepted: true,
-    Completed: true,
-    Cancelled: true,
-  })
+  // const [filters, setFilters] = useState({
+  //   Pending: true,
+  //   Accepted: true,
+  //   Completed: true,
+  //   Cancelled: true,
+  // })
   const [selectedTab, setSelectedTab] = useState<TimePeriod>("week")
   const [selectedOrder, setSelectedOrder] = useState<PopulatedOrder | null>(
     null
@@ -75,15 +75,16 @@ export default function OrdersPage() {
         !startDate ||
         isWithinInterval(orderDate, { start: startDate, end: new Date() })
 
-      const isInStatusFilter =
-        (filters.Pending && order.status === "Pending") ||
-        (filters.Accepted && order.status === "Accepted") ||
-        (filters.Completed && order.status === "Completed") ||
-        (filters.Cancelled && order.status === "Cancelled")
+      // const isInStatusFilter =
+      //   (filters.Pending && order.status === "Pending") ||
+      //   (filters.Accepted && order.status === "Accepted") ||
+      //   (filters.Completed && order.status === "Completed") ||
+      //   (filters.Cancelled && order.status === "Cancelled")
 
-      return isInDateRange && isInStatusFilter
+      return isInDateRange
+      //&& isInStatusFilter
     })
-  }, [orders, selectedTab, filters])
+  }, [orders, selectedTab])
 
   useEffect(() => {
     if (selectedOrder) {
@@ -142,12 +143,12 @@ export default function OrdersPage() {
     return grouped
   }, [filteredOrders, selectedTab])
 
-  const toggleFilter = (filter: keyof typeof filters) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [filter]: !prevFilters[filter],
-    }))
-  }
+  // const toggleFilter = (filter: keyof typeof filters) => {
+  //   setFilters((prevFilters) => ({
+  //     ...prevFilters,
+  //     [filter]: !prevFilters[filter],
+  //   }))
+  // }
 
   const handleTabChange = (tab: TimePeriod) => {
     setSelectedTab(tab)
@@ -181,7 +182,7 @@ export default function OrdersPage() {
                 <TabsTrigger value='all'>Todos</TabsTrigger>
               </TabsList>
               <div className='ml-auto flex items-center gap-2'>
-                <DropdownMenu>
+                {/* <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant='outline'
@@ -222,7 +223,7 @@ export default function OrdersPage() {
                       Cancelado
                     </DropdownMenuCheckboxItem>
                   </DropdownMenuContent>
-                </DropdownMenu>
+                </DropdownMenu> */}
                 <Button
                   size='sm'
                   variant='outline'
