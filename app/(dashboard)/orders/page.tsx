@@ -46,43 +46,34 @@ export default function OrdersPage() {
 
   const getStartDate = (tab: TimePeriod) => {
     const now = new Date()
-    if (tab === "week") return subWeeks(now, 1)
-    if (tab === "month") return subMonths(now, 1)
-    if (tab === "year") return subYears(now, 1)
-    return null
+    switch (tab) {
+      case "week":
+        return subWeeks(now, 1)
+      case "month":
+        return subMonths(now, 1)
+      case "year":
+        return subYears(now, 1)
+      default:
+        return null
+    }
   }
 
-  const filteredOrders = useMemo(() => {
-    if (!orders) return undefined
+  const groupedAndFilteredOrders = useMemo(() => {
+    if (!orders) return {}
 
     const startDate = getStartDate(selectedTab)
-    return orders.filter((order: PopulatedOrder) => {
+    const groupedOrders: { [key: string]: PopulatedOrder[] } = {}
+
+    orders.forEach((order) => {
       const orderDate = new Date(order.createdAt)
 
+      // Filter by selected tab date range
       const isInDateRange =
         !startDate ||
         isWithinInterval(orderDate, { start: startDate, end: new Date() })
+      if (!isInDateRange) return
 
-      return isInDateRange
-    })
-  }, [orders, selectedTab])
-
-  useEffect(() => {
-    if (selectedOrder) {
-      setSelectedOrder((prev) => {
-        return orders?.find((order) => selectedOrder.id === order.id) || prev
-      })
-    }
-  }, [orders, selectedOrder])
-
-  const groupedOrders = useMemo(() => {
-    if (!filteredOrders || filteredOrders.length === 0) return {}
-
-    const grouped: { [key: string]: PopulatedOrder[] } = {}
-
-    filteredOrders.forEach((order) => {
-      const orderDate = new Date(order.createdAt)
-
+      // Group by week, month, or year
       let groupKey = ""
       if (selectedTab === "week") {
         const weekStart = startOfWeek(orderDate, { weekStartsOn: 1 })
@@ -97,32 +88,39 @@ export default function OrdersPage() {
         groupKey = "all"
       }
 
-      if (!grouped[groupKey]) {
-        grouped[groupKey] = []
+      // Add order to the appropriate group
+      if (!groupedOrders[groupKey]) {
+        groupedOrders[groupKey] = []
       }
-      grouped[groupKey].push(order)
+      groupedOrders[groupKey].push(order)
     })
 
+    // For week, month, and year, return the most recent group
     if (
       selectedTab === "week" ||
       selectedTab === "month" ||
       selectedTab === "year"
     ) {
-      const sortedGroupKeys = Object.keys(grouped).sort(
+      const sortedGroupKeys = Object.keys(groupedOrders).sort(
         (a, b) => new Date(b).getTime() - new Date(a).getTime()
       )
-
       const mostRecentGroupKey = sortedGroupKeys[0]
-
-      if (mostRecentGroupKey && grouped[mostRecentGroupKey]) {
-        return { [mostRecentGroupKey]: grouped[mostRecentGroupKey] }
+      if (mostRecentGroupKey && groupedOrders[mostRecentGroupKey]) {
+        return { [mostRecentGroupKey]: groupedOrders[mostRecentGroupKey] }
       }
-
       return {}
     }
 
-    return grouped
-  }, [filteredOrders, selectedTab])
+    return groupedOrders
+  }, [orders, selectedTab])
+
+  useEffect(() => {
+    if (selectedOrder) {
+      setSelectedOrder((prev) => {
+        return orders?.find((order) => selectedOrder.id === order.id) || prev
+      })
+    }
+  }, [orders, selectedOrder])
 
   const handleTabChange = (tab: TimePeriod) => {
     setSelectedTab(tab)
@@ -177,8 +175,9 @@ export default function OrdersPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {groupedOrders && Object.keys(groupedOrders).length > 0 ? (
-                      Object.entries(groupedOrders).map(
+                    {groupedAndFilteredOrders &&
+                    Object.keys(groupedAndFilteredOrders).length > 0 ? (
+                      Object.entries(groupedAndFilteredOrders).map(
                         ([groupKey, groupOrders]) => (
                           <div key={groupKey}>
                             <OrdersDataTable
@@ -208,9 +207,9 @@ export default function OrdersPage() {
         <div>{selectedOrder && <OrderItemDetails order={selectedOrder} />}</div>
       </main>
 
-      {groupedOrders && (
+      {groupedAndFilteredOrders && (
         <OrdersBulkExport
-          orders={Object.values(groupedOrders).flat()}
+          orders={Object.values(groupedAndFilteredOrders).flat()}
           open={openBulkExportDialog}
           setOpen={setOpenBulkExportDialog}
         />
