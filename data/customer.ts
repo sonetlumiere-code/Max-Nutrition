@@ -50,6 +50,7 @@ export const getCustomers = async () => {
         user: {
           select: { email: true, image: true, name: true, createdAt: true },
         },
+        address: true,
       },
     })
     return customers
