@@ -24,10 +24,13 @@ import {
   startOfWeek,
   getMonth,
   getYear,
+  format,
+  parseISO,
 } from "date-fns"
 import OrdersDataTable from "@/components/dashboard/orders/list/orders-data-table/orders-data-table"
 import { Icons } from "@/components/icons"
-import OrdersBulkExport from "@/components/dashboard/orders/list/orders-data-table/bulk-actions/orders-bulk-export"
+import OrdersBulkExportDialog from "@/components/dashboard/orders/list/orders-data-table/bulk-actions/orders-bulk-export-dialog"
+import { es } from "date-fns/locale"
 
 type TimePeriod = "week" | "month" | "year" | "all"
 
@@ -207,8 +210,27 @@ export default function OrdersPage() {
         <div>{selectedOrder && <OrderItemDetails order={selectedOrder} />}</div>
       </main>
 
-      {groupedAndFilteredOrders && (
-        <OrdersBulkExport
+      {Object.keys(groupedAndFilteredOrders).length > 0 && (
+        <OrdersBulkExportDialog
+          label={`${
+            selectedTab === "week"
+              ? `Pedidos de la semana del ${format(
+                  new Date(Object.keys(groupedAndFilteredOrders)[0]),
+                  "dd/MM/yyyy"
+                )}`
+              : selectedTab === "month"
+              ? `Pedidos del mes de ${format(
+                  parseISO(`${Object.keys(groupedAndFilteredOrders)[0]}-01`),
+                  "LLLL",
+                  { locale: es }
+                ).replace(/^./, (str) => str.toUpperCase())}`
+              : selectedTab === "year"
+              ? `Pedidos del año ${format(
+                  new Date(Object.keys(groupedAndFilteredOrders)[0]),
+                  "yyyy"
+                )}`
+              : "Todos los pedidos"
+          }`}
           orders={Object.values(groupedAndFilteredOrders).flat()}
           open={openBulkExportDialog}
           setOpen={setOpenBulkExportDialog}

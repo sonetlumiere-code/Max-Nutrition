@@ -65,7 +65,7 @@ const OrderItemDetails = ({ order }: OrderItemDetails) => {
                   ) : (
                     <Badge variant='secondary'>Sin sal</Badge>
                   )}{" "}
-                  x <span>2</span>
+                  x <span>{item.quantity}</span>
                 </span>
                 <span>${item.product?.price * item.quantity}</span>
               </li>

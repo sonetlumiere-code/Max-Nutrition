@@ -3,6 +3,7 @@ import {
   Customer,
   CustomerAddress,
   Ingredient,
+  Measurement,
   Order,
   OrderItem,
   Product,
@@ -14,12 +15,12 @@ import {
 } from "@prisma/client"
 
 export type PopulatedRecipe = Recipe & {
-  ingredients?: RecipeIngredient[]
+  ingredients?: PopulatedRecipeIngredient[]
   product?: Product
 }
 
 export type PopulatedProduct = Product & {
-  recipe?: Recipe
+  recipe?: PopulatedRecipe
   categories?: Category[]
 }
 
@@ -43,7 +44,7 @@ export type PopulatedOrder = Order & {
 }
 
 export type PopulatedOrderItem = OrderItem & {
-  product: Product
+  product: PopulatedProduct
 }
 
 export type PopulatedCustomer = Customer & {
@@ -52,4 +53,15 @@ export type PopulatedCustomer = Customer & {
   user?: Partial<User>
 }
 
+export type PopulatedRecipeIngredient = RecipeIngredient & {
+  ingredient?: Ingredient
+}
+
 export type Variation = { [key: string]: boolean }
+
+export interface IngredientTotal {
+  ingredientId: string
+  name: string
+  measurement: Measurement
+  total: number
+}

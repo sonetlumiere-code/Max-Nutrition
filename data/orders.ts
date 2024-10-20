@@ -9,7 +9,19 @@ export const getOrders = async (): Promise<PopulatedOrder[] | null> => {
       include: {
         items: {
           include: {
-            product: true,
+            product: {
+              include: {
+                recipe: {
+                  include: {
+                    ingredients: {
+                      include: {
+                        ingredient: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
         customer: {
