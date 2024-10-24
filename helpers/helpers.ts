@@ -1,6 +1,11 @@
-import { AddressLabel, Measurement, OrderStatus } from "@prisma/client"
+import {
+  AddressLabel,
+  Measurement,
+  OrderStatus,
+  PaymentMethod,
+} from "@prisma/client"
 
-export const unitToSpanish = (measurement: Measurement): string => {
+export const translateUnit = (measurement: Measurement): string => {
   switch (measurement) {
     case Measurement.GRAM:
       return "Gramo"
@@ -13,7 +18,7 @@ export const unitToSpanish = (measurement: Measurement): string => {
   }
 }
 
-export const getAddressLabelDisplay = (value: AddressLabel) => {
+export const translateAddressLabel = (value: AddressLabel) => {
   switch (value) {
     case AddressLabel.Home:
       return "Casa"
@@ -24,7 +29,7 @@ export const getAddressLabelDisplay = (value: AddressLabel) => {
   }
 }
 
-export function translateOrderStatus(status: string): string {
+export function translateOrderStatus(status: OrderStatus): string {
   switch (status) {
     case "Pending":
       return "Pendiente"
@@ -36,5 +41,22 @@ export function translateOrderStatus(status: string): string {
       return "Cancelado"
     default:
       return "Desconocido"
+  }
+}
+
+export function translatePaymentMethod(paymentMethod: PaymentMethod): string {
+  switch (paymentMethod) {
+    case PaymentMethod.BankTransfer:
+      return "Transferencia bancaria"
+    case PaymentMethod.Cash:
+      return "Efectivo"
+    case PaymentMethod.CreditCard:
+      return "Tarjeta de crédito"
+    case PaymentMethod.DebitCard:
+      return "Tarjeta de débito"
+    case PaymentMethod.MercadoPago:
+      return "Mercado Pago"
+    default:
+      return "Otro"
   }
 }

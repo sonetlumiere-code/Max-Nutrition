@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { getAddressLabelDisplay } from "@/helpers/helpers"
+import { translateAddressLabel } from "@/helpers/helpers"
 
 type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
@@ -99,7 +99,7 @@ const CustomerCreateAddressForm = ({
                 <SelectContent>
                   {Object.entries(AddressLabel).map(([key, value]) => (
                     <SelectItem key={key} value={value}>
-                      {getAddressLabelDisplay(value)}
+                      {translateAddressLabel(value)}
                     </SelectItem>
                   ))}
                 </SelectContent>

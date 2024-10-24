@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { getAddressLabelDisplay } from "@/helpers/helpers"
+import { translateAddressLabel } from "@/helpers/helpers"
 
 type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
@@ -96,7 +96,7 @@ const CustomerEditAddressForm = ({
                 <SelectContent>
                   {Object.entries(AddressLabel).map(([key, value]) => (
                     <SelectItem key={key} value={value}>
-                      {getAddressLabelDisplay(value)}
+                      {translateAddressLabel(value)}
                     </SelectItem>
                   ))}
                 </SelectContent>

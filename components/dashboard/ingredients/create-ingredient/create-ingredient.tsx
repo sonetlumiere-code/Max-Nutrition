@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
-import { unitToSpanish } from "@/helpers/helpers"
+import { translateUnit } from "@/helpers/helpers"
 import { ingredientSchema } from "@/lib/validations/ingredient-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Measurement } from "@prisma/client"
@@ -141,7 +141,7 @@ const CreateIngredient = () => {
                             value={measurement}
                             className='capitalize'
                           >
-                            {unitToSpanish(measurement)}
+                            {translateUnit(measurement)}
                           </SelectItem>
                         ))}
                       </SelectContent>

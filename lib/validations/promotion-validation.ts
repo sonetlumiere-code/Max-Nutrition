@@ -1,4 +1,4 @@
-import { PromotionDiscountType } from "@prisma/client"
+import { PaymentMethod, PromotionDiscountType } from "@prisma/client"
 import { z } from "zod"
 
 export const promotionSchema = z
@@ -19,6 +19,9 @@ export const promotionSchema = z
         quantity: z.coerce.number().min(1, { message: "Ingresa la cantidad." }),
       })
     ),
+    allowedPaymentMethods: z
+      .array(z.nativeEnum(PaymentMethod))
+      .nonempty({ message: "Debes seleccionar al menos un método de pago." }),
   })
   .superRefine((data, ctx) => {
     if (data.discountType === PromotionDiscountType.Percentage) {

@@ -4,6 +4,7 @@ import { createPromotion } from "@/actions/promotions/create-promotion"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Form,
   FormControl,
@@ -24,9 +25,10 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/use-toast"
+import { translatePaymentMethod } from "@/helpers/helpers"
 import { promotionSchema } from "@/lib/validations/promotion-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Category, PromotionDiscountType } from "@prisma/client"
+import { Category, PaymentMethod, PromotionDiscountType } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -45,6 +47,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
       discountType: PromotionDiscountType.Fixed,
       discount: 0,
       categories: [{ categoryId: "", quantity: 0 }],
+      allowedPaymentMethods: [PaymentMethod.Cash],
     },
   })
 
@@ -147,7 +150,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                 <legend>
                   <Label className='mx-2'>Descuento</Label>
                 </legend>
-                <div className='grid grid-cols-2 gap-3'>
+                <div className='grid md:grid-cols-2 gap-3'>
                   <FormField
                     control={form.control}
                     name='discountType'
@@ -167,9 +170,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                                   value={PromotionDiscountType.Fixed}
                                 />
                               </FormControl>
-                              <FormLabel className='font-normal'>
-                                Descuento fijo
-                              </FormLabel>
+                              <FormLabel>Descuento fijo</FormLabel>
                             </FormItem>
                             <FormItem className='flex items-center space-x-3 space-y-0'>
                               <FormControl>
@@ -177,9 +178,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                                   value={PromotionDiscountType.Percentage}
                                 />
                               </FormControl>
-                              <FormLabel className='font-normal'>
-                                Descuento porcentual
-                              </FormLabel>
+                              <FormLabel>Descuento porcentual</FormLabel>
                             </FormItem>
                           </RadioGroup>
                         </FormControl>
@@ -302,6 +301,53 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                   </Button>
                 </div>
               </fieldset>
+
+              <FormField
+                control={form.control}
+                name='allowedPaymentMethods'
+                render={() => (
+                  <FormItem>
+                    <div className='mb-4'>
+                      <FormLabel>Métodos de pago permitidos</FormLabel>
+                    </div>
+                    {Object.values(PaymentMethod).map((method) => (
+                      <FormField
+                        key={method}
+                        control={form.control}
+                        name='allowedPaymentMethods'
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={method}
+                              className='flex flex-row items-start space-x-3 space-y-0'
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(method)}
+                                  disabled={isSubmitting}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([...field.value, method])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== method
+                                          )
+                                        )
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className='font-normal'>
+                                {translatePaymentMethod(method)}
+                              </FormLabel>
+                            </FormItem>
+                          )
+                        }}
+                      />
+                    ))}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </CardContent>
           <CardFooter>

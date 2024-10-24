@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { unitToSpanish } from "@/helpers/helpers"
+import { translateUnit } from "@/helpers/helpers"
 
 type OrdersBulkExportProps = {
   orders: PopulatedOrder[]
@@ -57,7 +57,7 @@ const OrdersBulkExport = ({ orders, setOpen }: OrdersBulkExportProps) => {
             <TableCell>{ingredient.name}</TableCell>
             <TableCell>{ingredient.total}</TableCell>
             <TableCell className='text-end'>
-              {unitToSpanish(ingredient.measurement)}
+              {translateUnit(ingredient.measurement)}
             </TableCell>
           </TableRow>
         ))}

@@ -2,7 +2,7 @@ import { deleteCustomerAddress } from "@/actions/customer-address/delete-custome
 import { useConfirmation } from "@/components/confirmation-provider"
 import { Icons } from "@/components/icons"
 import { toast } from "@/components/ui/use-toast"
-import { getAddressLabelDisplay } from "@/helpers/helpers"
+import { translateAddressLabel } from "@/helpers/helpers"
 import { AddressLabel, CustomerAddress } from "@prisma/client"
 
 type DeleteCustomerAddressProps = {
@@ -15,7 +15,7 @@ const DeleteCustomerAddress = ({ address }: DeleteCustomerAddressProps) => {
   const onDelete = async () => {
     const label =
       address.label !== AddressLabel.Other
-        ? getAddressLabelDisplay(address.label)
+        ? translateAddressLabel(address.label)
         : address.labelString
 
     confirm({

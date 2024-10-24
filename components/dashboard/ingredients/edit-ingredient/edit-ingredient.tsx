@@ -27,7 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { unitToSpanish } from "@/helpers/helpers"
+import { translateUnit } from "@/helpers/helpers"
 
 type IngredientSchema = z.infer<typeof ingredientSchema>
 
@@ -136,7 +136,7 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
                             value={measurement}
                             className='capitalize'
                           >
-                            {unitToSpanish(measurement)}
+                            {translateUnit(measurement)}
                           </SelectItem>
                         ))}
                       </SelectContent>

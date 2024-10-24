@@ -27,10 +27,12 @@ import {
 } from "@/components/ui/select"
 import { PopulatedPromotion } from "@/types/types"
 import { promotionSchema } from "@/lib/validations/promotion-validation"
-import { Category, PromotionDiscountType } from "@prisma/client"
+import { Category, PaymentMethod, PromotionDiscountType } from "@prisma/client"
 import { editPromotion } from "@/actions/promotions/edit-promotion"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
+import { Checkbox } from "@/components/ui/checkbox"
+import { translatePaymentMethod } from "@/helpers/helpers"
 
 type PromotionSchema = z.infer<typeof promotionSchema>
 
@@ -51,6 +53,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
       discountType: promotion.discountType,
       discount: promotion.discount,
       categories: promotion.categories,
+      allowedPaymentMethods: promotion.allowedPaymentMethods,
     },
   })
 
@@ -153,7 +156,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                 <legend>
                   <Label className='mx-2'>Descuento</Label>
                 </legend>
-                <div className='grid grid-cols-2 gap-3'>
+                <div className='grid md:grid-cols-2 gap-3'>
                   <FormField
                     control={form.control}
                     name='discountType'
@@ -308,6 +311,55 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                   </Button>
                 </div>
               </fieldset>
+
+              <FormField
+                control={form.control}
+                name='allowedPaymentMethods'
+                render={() => (
+                  <FormItem>
+                    <div className='mb-4'>
+                      <FormLabel className='text-base'>
+                        Métodos de pago permitidos
+                      </FormLabel>
+                    </div>
+                    {Object.values(PaymentMethod).map((method) => (
+                      <FormField
+                        key={method}
+                        control={form.control}
+                        name='allowedPaymentMethods'
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={method}
+                              className='flex flex-row items-start space-x-3 space-y-0'
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(method)}
+                                  disabled={isSubmitting}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([...field.value, method])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== method
+                                          )
+                                        )
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className='font-normal'>
+                                {translatePaymentMethod(method)}
+                              </FormLabel>
+                            </FormItem>
+                          )
+                        }}
+                      />
+                    ))}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </CardContent>
           <CardFooter>

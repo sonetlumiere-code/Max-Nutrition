@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { cn } from "@/lib/utils"
 import DeleteIngredient from "@/components/dashboard/ingredients/delete-ingredient/delete-ingredient"
-import { unitToSpanish } from "@/helpers/helpers"
+import { translateUnit } from "@/helpers/helpers"
 
 export default async function IngredientsPage() {
   const ingredients = await getIngredients({
@@ -110,7 +110,7 @@ export default async function IngredientsPage() {
                       $ {ingredient.price}
                     </TableCell>
                     <TableCell className='hidden sm:table-cell'>
-                      {unitToSpanish(ingredient.measurement)}
+                      {translateUnit(ingredient.measurement)}
                     </TableCell>
                     <TableCell className='hidden sm:table-cell'>
                       {ingredient.waste} %
