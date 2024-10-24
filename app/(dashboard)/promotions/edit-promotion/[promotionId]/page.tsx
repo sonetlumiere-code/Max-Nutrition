@@ -50,8 +50,6 @@ const EditPromotionPage = async ({ params }: EditPromotionPage) => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h2 className='font-semibold text-lg'>Editar Promoción</h2>
-
       <EditPromotion promotion={promotion} categories={categories} />
     </>
   )

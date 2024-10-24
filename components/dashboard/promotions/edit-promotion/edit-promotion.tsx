@@ -8,7 +8,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { useFieldArray, useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -92,70 +99,69 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
-        <Card className='max-w-screen-md'>
-          <CardHeader></CardHeader>
-          <CardContent>
-            <div className='space-y-3'>
-              <FormField
-                control={control}
-                name='name'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nombre</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='Editar promoción'
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <div className='flex justify-between items-center'>
+          <h2 className='font-semibold text-lg'>Editar Promoción</h2>
+          <Button type='submit' disabled={isSubmitting}>
+            {isSubmitting && (
+              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            )}
+            Editar Promoción
+          </Button>
+        </div>
 
-              <FormField
-                control={control}
-                name='description'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descripción</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='Descripción de la promoción'
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <div className='grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8'>
+          <div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Detalle</CardTitle>
+                <CardDescription>Detalle de la promoción</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='space-y-3'>
+                  <FormField
+                    control={control}
+                    name='name'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nombre</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder='Editar promoción'
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                control={form.control}
-                name='isActive'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                    <div className='space-y-0.5'>
-                      <FormLabel>Promoción activa</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isSubmitting}
-                        aria-readonly
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <fieldset className='border p-5 rounded-md'>
-                <legend>
-                  <Label className='mx-2'>Descuento</Label>
-                </legend>
+                  <FormField
+                    control={control}
+                    name='description'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descripción</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder='Descripción de la promoción'
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Descuento promocional</CardTitle>
+                <CardDescription>Tipo de descuento</CardDescription>
+              </CardHeader>
+              <CardContent>
                 <div className='grid md:grid-cols-2 gap-3'>
                   <FormField
                     control={form.control}
@@ -222,12 +228,16 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                     )}
                   />
                 </div>
-              </fieldset>
-
-              <fieldset className='border p-5 rounded-md'>
-                <legend>
-                  <Label className='mx-2'>Categorías</Label>
-                </legend>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Condiciones</CardTitle>
+                <CardDescription>
+                  Cantidad de cada categoría para aplicar promoción
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
                 <div className='space-y-3'>
                   {fields.map((field, index) => (
                     <div key={field.id} className='flex justify-between gap-2'>
@@ -310,67 +320,101 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                     <small>Agregar categoría</small>
                   </Button>
                 </div>
-              </fieldset>
+              </CardContent>
+            </Card>
+          </div>
 
-              <FormField
-                control={form.control}
-                name='allowedPaymentMethods'
-                render={() => (
-                  <FormItem>
-                    <div className='mb-4'>
-                      <FormLabel className='text-base'>
-                        Métodos de pago permitidos
-                      </FormLabel>
-                    </div>
-                    {Object.values(PaymentMethod).map((method) => (
-                      <FormField
-                        key={method}
-                        control={form.control}
-                        name='allowedPaymentMethods'
-                        render={({ field }) => {
-                          return (
-                            <FormItem
-                              key={method}
-                              className='flex flex-row items-start space-x-3 space-y-0'
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(method)}
-                                  disabled={isSubmitting}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([...field.value, method])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== method
+          <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Estado</CardTitle>
+                <CardDescription>Estado de la promoción</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name='isActive'
+                  render={({ field }) => (
+                    <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                      <div className='space-y-0.5'>
+                        <FormLabel>Promoción activa</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={isSubmitting}
+                          aria-readonly
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Métodos de pago</CardTitle>
+                <CardDescription>
+                  Métodos de pago habilitados para la promoción
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name='allowedPaymentMethods'
+                  render={() => (
+                    <FormItem>
+                      <div className='mb-4'>
+                        <FormLabel className='text-base'>
+                          Métodos de pago habilitados
+                        </FormLabel>
+                      </div>
+                      {Object.values(PaymentMethod).map((method) => (
+                        <FormField
+                          key={method}
+                          control={form.control}
+                          name='allowedPaymentMethods'
+                          render={({ field }) => {
+                            return (
+                              <FormItem
+                                key={method}
+                                className='flex flex-row items-start space-x-3 space-y-0'
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value?.includes(method)}
+                                    disabled={isSubmitting}
+                                    onCheckedChange={(checked) => {
+                                      return checked
+                                        ? field.onChange([
+                                            ...field.value,
+                                            method,
+                                          ])
+                                        : field.onChange(
+                                            field.value?.filter(
+                                              (value) => value !== method
+                                            )
                                           )
-                                        )
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className='font-normal'>
-                                {translatePaymentMethod(method)}
-                              </FormLabel>
-                            </FormItem>
-                          )
-                        }}
-                      />
-                    ))}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button type='submit' disabled={isSubmitting}>
-              {isSubmitting && (
-                <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
-              )}
-              Editar Promoción
-            </Button>
-          </CardFooter>
-        </Card>
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormLabel className='font-normal'>
+                                  {translatePaymentMethod(method)}
+                                </FormLabel>
+                              </FormItem>
+                            )
+                          }}
+                        />
+                      ))}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </form>
     </Form>
   )

@@ -2,10 +2,23 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 const Loading = () => {
   return (
-    <div className='h-screen flex flex-col gap-4 lg:gap-6'>
+    <div className='flex flex-col gap-4 lg:gap-6'>
       <Skeleton className='h-5 w-48' />
-      <Skeleton className='h-7 w-32' />
-      <Skeleton className='h-1/3 max-w-screen-md' />
+      <div className='flex justify-between'>
+        <Skeleton className='h-7 w-32' />
+        <Skeleton className='h-8 w-32' />
+      </div>
+      <div className='grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8'>
+        <div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
+          <Skeleton className='h-64' />
+          <Skeleton className='h-64' />
+          <Skeleton className='h-44' />
+        </div>
+        <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
+          <Skeleton className='h-52' />
+          <Skeleton className='h-96' />
+        </div>
+      </div>
     </div>
   )
 }

@@ -30,8 +30,6 @@ const CreatePromotionPage = async () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h2 className='font-semibold text-lg'>Agregar Promoción</h2>
-
       <CreatePromotion categories={categories} />
     </>
   )
