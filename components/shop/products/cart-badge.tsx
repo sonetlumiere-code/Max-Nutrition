@@ -13,14 +13,16 @@ type CartBadgeProps = {
 const CartBadge = ({ product, className }: CartBadgeProps) => {
   const cart = useCart()
 
-  const cartItem = cart.items.find((item) => item.product.id === product.id)
+  const cartItem = cart.items.filter((item) => item.product.id === product.id)
 
-  return cartItem ? (
+  const quantity = cartItem.reduce((acc, curr) => acc + curr.quantity, 0)
+
+  return quantity > 0 ? (
     <Badge
       variant='destructive'
       className={cn("absolute end-0 m-1 z-20", className)}
     >
-      {cartItem.quantity}
+      {quantity}
     </Badge>
   ) : null
 }
