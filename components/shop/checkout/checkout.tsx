@@ -133,7 +133,7 @@ const Checkout = ({ customer }: CheckoutProps) => {
                 <CardHeader>
                   <CardTitle className='text-xl'>Resumen del pedido</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className='p-3 md:p-6 md:pt-0'>
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -143,7 +143,7 @@ const Checkout = ({ customer }: CheckoutProps) => {
                           Precio
                         </TableHead>
                         <TableHead className='whitespace-nowrap'>
-                          Con/Sin sal
+                          {/* Con/Sin sal */}
                         </TableHead>
                         <TableHead className='text-end'>Cantidad</TableHead>
                       </TableRow>
