@@ -21,7 +21,7 @@ export type PopulatedRecipe = Recipe & {
 
 export type PopulatedProduct = Product & {
   recipe?: PopulatedRecipe
-  categories?: Category[]
+  categories?: PopulatedCategory[]
 }
 
 export type PopulatedIngredient = Ingredient & {

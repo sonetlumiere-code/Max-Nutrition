@@ -40,12 +40,17 @@ const fetchOrders = async () => {
 }
 
 export default function OrdersPage() {
-  const { data: orders, error, isLoading } = useSWR("/api/orders", fetchOrders)
   const [selectedTab, setSelectedTab] = useState<TimePeriod>("week")
   const [selectedOrder, setSelectedOrder] = useState<PopulatedOrder | null>(
     null
   )
   const [openBulkExportDialog, setOpenBulkExportDialog] = useState(false)
+
+  const {
+    data: orders,
+    error,
+    isLoading,
+  } = useSWR<PopulatedOrder[] | null>("/api/orders", fetchOrders)
 
   const getStartDate = (tab: TimePeriod) => {
     const now = new Date()

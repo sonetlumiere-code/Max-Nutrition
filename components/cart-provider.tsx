@@ -1,6 +1,5 @@
 "use client"
 
-import { Product } from "@prisma/client"
 import { Session } from "next-auth"
 import { v4 as uuidv4 } from "uuid"
 import {
@@ -10,18 +9,22 @@ import {
   ReactNode,
   useEffect,
 } from "react"
-import { Variation } from "@/types/types"
+import { PopulatedProduct, Variation } from "@/types/types"
 
 export type CartItem = {
   id: string
-  product: Product
+  product: PopulatedProduct
   quantity: number
   variation: Variation
 }
 
 type CartProviderState = {
   items: CartItem[]
-  addItem: (product: Product, quantity: number, variation: Variation) => void
+  addItem: (
+    product: PopulatedProduct,
+    quantity: number,
+    variation: Variation
+  ) => void
   removeItem: (id: string) => void
   clearCart: () => void
   incrementQuantity: (id: string) => void
@@ -66,7 +69,7 @@ export function CartProvider({ children, session }: CartProviderProps) {
   }, [items, session?.user.id])
 
   const addItem = (
-    product: Product,
+    product: PopulatedProduct,
     quantity: number,
     variation: { [key: string]: boolean }
   ) => {

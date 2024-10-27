@@ -37,6 +37,7 @@ import {
   MoreVertical,
   File,
   MoveLeftIcon,
+  Info,
 } from "lucide-react"
 import {
   ChevronLeftIcon,
@@ -54,6 +55,7 @@ export const Icons = {
   doubleArrowLeftIcon: DoubleArrowLeftIcon,
   doubleArrowRightIcon: DoubleArrowRightIcon,
   x: X,
+  info: Info,
   calendar: Calendar,
   chevronLeft: ChevronLeft,
   spinner: Loader2,

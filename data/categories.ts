@@ -7,7 +7,11 @@ export const getCategories = async () => {
   try {
     const categories = await prisma.category.findMany({
       include: {
-        products: true,
+        products: {
+          include: {
+            categories: true,
+          },
+        },
         promotions: true,
       },
     })
