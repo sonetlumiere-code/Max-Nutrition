@@ -55,19 +55,11 @@ const Cart = () => {
                 ) : null}
               </DialogClose>
 
-              {items.length >= 1 ? (
-                <DialogClose asChild>
-                  <Button type='button' variant='outline'>
-                    Cancelar
-                  </Button>
-                </DialogClose>
-              ) : (
-                <DialogClose asChild>
-                  <Button type='button' variant='outline'>
-                    <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
-                  </Button>
-                </DialogClose>
-              )}
+              <DialogClose asChild>
+                <Button type='button' variant='outline'>
+                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
+                </Button>
+              </DialogClose>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -99,19 +91,11 @@ const Cart = () => {
               ) : null}
             </DrawerClose>
 
-            {items.length >= 1 ? (
-              <DrawerClose asChild>
-                <Button type='button' variant='outline'>
-                  Cancelar
-                </Button>
-              </DrawerClose>
-            ) : (
-              <DrawerClose asChild>
-                <Button type='button' variant='outline'>
-                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
-                </Button>
-              </DrawerClose>
-            )}
+            <DrawerClose asChild>
+              <Button type='button' variant='outline'>
+                <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
+              </Button>
+            </DrawerClose>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
