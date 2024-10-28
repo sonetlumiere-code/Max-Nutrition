@@ -21,7 +21,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { CreditCard, DollarSign } from "lucide-react"
+import { CreditCard, DollarSign, ShoppingCart } from "lucide-react"
 import { Icons } from "@/components/icons"
 import {
   Select,
@@ -64,7 +64,8 @@ type CheckoutProps = {
 }
 
 const Checkout = ({ customer }: CheckoutProps) => {
-  const { items, clearCart } = useCart()
+  const { items, setOpen, clearCart } = useCart()
+
   const { appliedPromotion, isLoading, subtotalPrice, finalPrice } =
     usePromotion()
   const router = useRouter()
@@ -100,7 +101,7 @@ const Checkout = ({ customer }: CheckoutProps) => {
 
   const shippingMethod = watch("shippingMethod")
 
-  const shippingCost = 0
+  const shippingCost = 0 // TO DO
 
   const placeOrder = async (data: OrderSchema) => {
     const res = await createOrder(data)
@@ -141,7 +142,21 @@ const Checkout = ({ customer }: CheckoutProps) => {
             <div className='grid gap-6'>
               <Card>
                 <CardHeader>
-                  <CardTitle className='text-xl'>Resumen del pedido</CardTitle>
+                  <div className='space-between flex items-center'>
+                    <div className='max-w-screen-sm'>
+                      <CardTitle className='text-xl'>
+                        Resumen del pedido
+                      </CardTitle>
+                    </div>
+                    <div className='ml-auto'>
+                      <Button
+                        onClick={() => setOpen(true)}
+                        className='relative'
+                      >
+                        <Icons.pencil className='mr-2 w-4 h-4' /> Editar
+                      </Button>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent className='p-3 md:p-6 md:pt-0'>
                   <Table>
