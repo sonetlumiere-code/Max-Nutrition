@@ -3,12 +3,11 @@
 import { usePromotion } from "@/hooks/use-promotion"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Icons } from "@/components/icons"
+import { cn } from "@/lib/utils"
 
 const CartCostPreview = () => {
   const { appliedPromotion, isLoading, subtotalPrice, finalPrice } =
     usePromotion()
-
-  if (isLoading) return <p>Loading...</p>
 
   return (
     <>
@@ -36,7 +35,7 @@ const CartCostPreview = () => {
           </AlertDescription>
         </Alert>
       ) : (
-        <Alert>
+        <Alert className={cn({ invisible: isLoading })}>
           <Icons.info className='h-4 w-4' />
           <AlertTitle>Sin promoción aplicada</AlertTitle>
           <AlertDescription>
