@@ -27,6 +27,7 @@ type CartProviderState = {
   ) => void
   removeItem: (id: string) => void
   clearCart: () => void
+  getSubtotalPrice: () => number
   incrementQuantity: (id: string) => void
   decrementQuantity: (id: string) => void
   open: boolean
@@ -38,6 +39,7 @@ const initialState: CartProviderState = {
   addItem: () => null,
   removeItem: () => null,
   clearCart: () => null,
+  getSubtotalPrice: () => 0,
   incrementQuantity: () => null,
   decrementQuantity: () => null,
   open: false,
@@ -118,11 +120,15 @@ export function CartProvider({ children, session }: CartProviderProps) {
     setItems([])
   }
 
+  const getSubtotalPrice = () =>
+    items.reduce((total, item) => total + item.product.price * item.quantity, 0)
+
   const value = {
     items,
     addItem,
     removeItem,
     clearCart,
+    getSubtotalPrice,
     incrementQuantity,
     decrementQuantity,
     open,

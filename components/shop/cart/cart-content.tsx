@@ -36,7 +36,7 @@ const CartContent = ({ items }: CartContentProps) => {
             </Table>
           </ScrollArea>
 
-          <CartCostPreview items={items} />
+          <CartCostPreview />
         </div>
       ) : (
         <div className='flex items-center justify-center h-44'>

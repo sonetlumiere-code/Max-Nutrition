@@ -13,21 +13,25 @@ const fetcher = async () => {
 }
 
 export function usePromotion() {
-  const { items } = useCart()
+  const { items, getSubtotalPrice } = useCart()
 
-  const { data: promotions = [], error } = useSWR<PopulatedPromotion[] | null>(
-    "/api/promotions",
-    fetcher
-  )
+  const {
+    data: promotions = [],
+    error,
+    isLoading,
+  } = useSWR<PopulatedPromotion[] | null>("/api/promotions", fetcher)
 
   if (error) {
     console.error("Failed to fetch promotions:", error)
   }
 
-  const appliedPromotion = useMemo(() => {
-    const initialPromotion = { discount: 0, discountType: null }
+  const { appliedPromotion, subtotalPrice, finalPrice } = useMemo(() => {
+    const initialPromotion = null
+    const subtotalPrice = getSubtotalPrice()
+    let finalPrice = subtotalPrice
 
-    if (!promotions?.length) return initialPromotion
+    if (!promotions?.length)
+      return { appliedPromotion: initialPromotion, subtotalPrice, finalPrice }
 
     const categoryCount: Record<string, number> = {}
 
@@ -47,15 +51,24 @@ export function usePromotion() {
       })
 
       if (isEligible) {
+        const discountAmount =
+          promotion.discountType === "Fixed"
+            ? promotion.discount
+            : promotion.discountType === "Percentage"
+            ? (subtotalPrice * promotion.discount) / 100
+            : 0
+        finalPrice = subtotalPrice - discountAmount
+
         return {
-          discount: promotion.discount,
-          discountType: promotion.discountType,
+          appliedPromotion: promotion,
+          subtotalPrice,
+          finalPrice,
         }
       }
     }
 
-    return initialPromotion
-  }, [items, promotions])
+    return { appliedPromotion: initialPromotion, subtotalPrice, finalPrice }
+  }, [items, promotions, getSubtotalPrice])
 
-  return { appliedPromotion }
+  return { appliedPromotion, isLoading, subtotalPrice, finalPrice }
 }
