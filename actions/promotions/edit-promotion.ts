@@ -28,6 +28,7 @@ export async function editPromotion({
     isActive,
     categories,
     allowedPaymentMethods,
+    allowedShippingMethods,
   } = validatedFields.data
 
   try {
@@ -40,6 +41,7 @@ export async function editPromotion({
         discount,
         isActive,
         allowedPaymentMethods,
+        allowedShippingMethods,
         categories: {
           deleteMany: {},
           create: categories.map((category) => ({

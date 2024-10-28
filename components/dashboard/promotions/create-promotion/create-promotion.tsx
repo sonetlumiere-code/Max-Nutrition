@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -21,7 +20,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
@@ -32,10 +30,18 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/use-toast"
-import { translatePaymentMethod } from "@/helpers/helpers"
+import {
+  translatePaymentMethod,
+  translateShippingMethod,
+} from "@/helpers/helpers"
 import { promotionSchema } from "@/lib/validations/promotion-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Category, PaymentMethod, PromotionDiscountType } from "@prisma/client"
+import {
+  Category,
+  PaymentMethod,
+  PromotionDiscountType,
+  ShippingMethod,
+} from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -55,6 +61,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
       discount: 0,
       categories: [{ categoryId: "", quantity: 0 }],
       allowedPaymentMethods: [PaymentMethod.Cash],
+      allowedShippingMethods: [ShippingMethod.Delivery],
     },
   })
 
@@ -395,6 +402,67 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                                 </FormControl>
                                 <FormLabel className='font-normal'>
                                   {translatePaymentMethod(method)}
+                                </FormLabel>
+                              </FormItem>
+                            )
+                          }}
+                        />
+                      ))}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Métodos de envío</CardTitle>
+                <CardDescription>
+                  Métodos de envío habilitados para la promoción
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name='allowedShippingMethods'
+                  render={() => (
+                    <FormItem>
+                      <div className='mb-4'>
+                        <FormLabel className='text-base'>
+                          Métodos de envío habilitados
+                        </FormLabel>
+                      </div>
+                      {Object.values(ShippingMethod).map((method) => (
+                        <FormField
+                          key={method}
+                          control={form.control}
+                          name='allowedShippingMethods'
+                          render={({ field }) => {
+                            return (
+                              <FormItem
+                                key={method}
+                                className='flex flex-row items-start space-x-3 space-y-0'
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value?.includes(method)}
+                                    disabled={isSubmitting}
+                                    onCheckedChange={(checked) => {
+                                      return checked
+                                        ? field.onChange([
+                                            ...field.value,
+                                            method,
+                                          ])
+                                        : field.onChange(
+                                            field.value?.filter(
+                                              (value) => value !== method
+                                            )
+                                          )
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormLabel className='font-normal'>
+                                  {translateShippingMethod(method)}
                                 </FormLabel>
                               </FormItem>
                             )

@@ -3,6 +3,7 @@ import {
   Measurement,
   OrderStatus,
   PaymentMethod,
+  ShippingMethod,
 } from "@prisma/client"
 
 export const translateUnit = (measurement: Measurement): string => {
@@ -56,6 +57,19 @@ export function translatePaymentMethod(paymentMethod: PaymentMethod): string {
       return "Tarjeta de débito"
     case PaymentMethod.MercadoPago:
       return "Mercado Pago"
+    default:
+      return "Otro"
+  }
+}
+
+export function translateShippingMethod(
+  shippingMethod: ShippingMethod
+): string {
+  switch (shippingMethod) {
+    case ShippingMethod.Delivery:
+      return "Delivery"
+    case ShippingMethod.TakeAway:
+      return "Retiro por sucursal"
     default:
       return "Otro"
   }

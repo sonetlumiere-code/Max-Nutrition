@@ -16,7 +16,8 @@ const Loading = () => {
         </div>
         <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
           <Skeleton className='h-52' />
-          <Skeleton className='h-96' />
+          <Skeleton className='h-64' />
+          <Skeleton className='h-52' />
         </div>
       </div>
     </div>

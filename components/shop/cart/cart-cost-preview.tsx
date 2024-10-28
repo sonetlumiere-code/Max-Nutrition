@@ -38,7 +38,7 @@ const CartCostPreview = ({ items }: CartCostPreviewProps) => {
               <span>$ {subtotalPrice}</span>
               {appliedPromotion.discountType === "Fixed" ? (
                 <span className='text-destructive'>
-                  -${appliedPromotion.discount}
+                  -$ {appliedPromotion.discount}
                 </span>
               ) : (
                 <span>-{appliedPromotion.discount}%</span>

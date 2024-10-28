@@ -34,12 +34,20 @@ import {
 } from "@/components/ui/select"
 import { PopulatedPromotion } from "@/types/types"
 import { promotionSchema } from "@/lib/validations/promotion-validation"
-import { Category, PaymentMethod, PromotionDiscountType } from "@prisma/client"
+import {
+  Category,
+  PaymentMethod,
+  PromotionDiscountType,
+  ShippingMethod,
+} from "@prisma/client"
 import { editPromotion } from "@/actions/promotions/edit-promotion"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
 import { Checkbox } from "@/components/ui/checkbox"
-import { translatePaymentMethod } from "@/helpers/helpers"
+import {
+  translatePaymentMethod,
+  translateShippingMethod,
+} from "@/helpers/helpers"
 
 type PromotionSchema = z.infer<typeof promotionSchema>
 
@@ -61,6 +69,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
       discount: promotion.discount,
       categories: promotion.categories,
       allowedPaymentMethods: promotion.allowedPaymentMethods,
+      allowedShippingMethods: promotion.allowedShippingMethods,
     },
   })
 
@@ -401,6 +410,67 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                                 </FormControl>
                                 <FormLabel className='font-normal'>
                                   {translatePaymentMethod(method)}
+                                </FormLabel>
+                              </FormItem>
+                            )
+                          }}
+                        />
+                      ))}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Métodos de envío</CardTitle>
+                <CardDescription>
+                  Métodos de envío habilitados para la promoción
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name='allowedShippingMethods'
+                  render={() => (
+                    <FormItem>
+                      <div className='mb-4'>
+                        <FormLabel className='text-base'>
+                          Métodos de envío habilitados
+                        </FormLabel>
+                      </div>
+                      {Object.values(ShippingMethod).map((method) => (
+                        <FormField
+                          key={method}
+                          control={form.control}
+                          name='allowedShippingMethods'
+                          render={({ field }) => {
+                            return (
+                              <FormItem
+                                key={method}
+                                className='flex flex-row items-start space-x-3 space-y-0'
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value?.includes(method)}
+                                    disabled={isSubmitting}
+                                    onCheckedChange={(checked) => {
+                                      return checked
+                                        ? field.onChange([
+                                            ...field.value,
+                                            method,
+                                          ])
+                                        : field.onChange(
+                                            field.value?.filter(
+                                              (value) => value !== method
+                                            )
+                                          )
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormLabel className='font-normal'>
+                                  {translateShippingMethod(method)}
                                 </FormLabel>
                               </FormItem>
                             )
