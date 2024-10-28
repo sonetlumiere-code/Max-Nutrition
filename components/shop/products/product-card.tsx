@@ -43,7 +43,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {product.description} asd asdqd qwdad qwdq qwq dqwdq wqdqwd
         </CardDescription>
       </CardHeader>
-      <CardFooter className='absolute bottom-2 right-2 p-0'>
+      <CardFooter className='absolute bottom-2 right-3 p-0'>
         <span className='text-base md:text-lg font-semibold md:font-bold'>
           ${product.price}
         </span>
