@@ -14,16 +14,12 @@ import {
 import { Tailwind } from "@react-email/tailwind"
 import * as React from "react"
 
-const WelcomeClient = ({
-  userName,
-}: {
-  userName?: string
-  hotelName?: string
-  hotelId?: string
-  hotelImageSrc?: string
-  verificationCode?: string
-}) => {
-  const previewText = `Te damos la bienvenida a Máxima Nutrición!`
+interface WelcomeClientProps {
+  userName: string
+}
+
+const WelcomeClient: React.FC<WelcomeClientProps> = ({ userName }) => {
+  const previewText = `¡Te damos la bienvenida a Máxima Nutrición!`
 
   return (
     <Html>
@@ -34,7 +30,7 @@ const WelcomeClient = ({
           <Container className='mx-auto my-[40px] max-w-[465px] p-[20px] border border-solid border-[#eaeaea] rounded'>
             <Section className='mt-[32px] text-center'>
               <Img
-                src='/static/mxm-logo.png'
+                src='https://dominio.com/static/mxm-logo.png'
                 alt='Logo'
                 className='mx-auto'
                 width='120'
@@ -56,7 +52,7 @@ const WelcomeClient = ({
               ¡Buen provecho!
             </Text>
             <Text className='leading-[24px] mx-0 my-[20px] p-0 text-[14px] text-black text-center'>
-              <strong>Hace tu pedido Online:</strong>
+              <strong>Haz tu pedido Online:</strong>
             </Text>
             <Section className='mb-[32px] mt-[20px] text-center'>
               <Button
@@ -68,8 +64,8 @@ const WelcomeClient = ({
             </Section>
             <Hr className='border border-solid border-[#eaeaea] mx-0 my-[26px] w-full' />
             <Text className='leading-[24px] mx-0 my-[10px] p-0 text-[12px] text-[#666]'>
-              Si tiene problemas con el botón, copie y pegue la siguiente URL en
-              su navegador: https://maximanutricion.com.ar/
+              Si tienes problemas con el botón, copia y pega la siguiente URL en
+              tu navegador: https://maximanutricion.com.ar/
             </Text>
           </Container>
         </Body>
