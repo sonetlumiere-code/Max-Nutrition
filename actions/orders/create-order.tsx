@@ -6,6 +6,8 @@ import { orderSchema } from "@/lib/validations/order-validation"
 import { ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
+import { checkPromotion } from "../promotions/check-promotion"
+import { PopulatedProduct } from "@/types/types"
 
 type OrderSchema = z.infer<typeof orderSchema>
 
@@ -33,33 +35,69 @@ export async function createOrder(values: OrderSchema) {
       return { error: "Invalid product id." }
     }
 
-    const total = items.reduce((acc, item) => {
-      const product = products.find((p) => p.id === item.productId)
-      return acc + (product ? product.price * item.quantity : 0)
+    const populatedItems = items
+      .map((item) => {
+        const product = products.find((p) => p.id === item.productId)
+        return product ? { product, quantity: item.quantity } : null
+      })
+      .filter(Boolean) as { product: PopulatedProduct; quantity: number }[]
+
+    const subtotal = populatedItems.reduce((acc, item) => {
+      return acc + item.product.price * item.quantity
     }, 0)
+
+    const { appliedPromotion, finalPrice } = await checkPromotion({
+      items: populatedItems,
+      subtotal,
+    })
+
+    if (appliedPromotion) {
+      const allowedShippingMethods =
+        appliedPromotion.allowedShippingMethods || []
+      const allowedPaymentMethods = appliedPromotion.allowedPaymentMethods || []
+
+      if (!allowedShippingMethods.includes(shippingMethod)) {
+        return {
+          error: "Selected shipping method is not eligible for the promotion.",
+        }
+      }
+
+      if (!allowedPaymentMethods.includes(paymentMethod)) {
+        return {
+          error: "Selected payment method is not eligible for the promotion.",
+        }
+      }
+    }
+
+    const promotionName = appliedPromotion?.name ?? null
+
+    let shippingCost = 0
 
     if (shippingMethod === ShippingMethod.Delivery) {
       const customerAddress = await prisma.customerAddress.findUnique({
-        where: {
-          id: customerAddressId,
-        },
+        where: { id: customerAddressId },
       })
 
       if (!customerAddress) {
         return { error: "Invalid customer address id." }
       }
+
+      shippingCost = 0 // Replace with actual calculation based on address zone
     }
+
+    const total = finalPrice + shippingCost
 
     const order = await prisma.order.create({
       data: {
         customerId,
         customerAddressId: customerAddressId || null,
         shippingMethod,
-        //TO DO get customer address shipping zone cost
-        shippingCost: 0,
+        shippingCost,
         paymentMethod,
         taxCost: 0,
+        subtotal,
         total,
+        appliedPromotionName: promotionName,
         items: {
           create: items.map((item) => ({
             productId: item.productId,
@@ -78,7 +116,6 @@ export async function createOrder(values: OrderSchema) {
     })
 
     revalidatePath("/customer-orders-history")
-    // revalidatePath("/orders")
 
     return { success: order }
   } catch (error) {

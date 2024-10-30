@@ -50,9 +50,12 @@ export const getProductsByIds = async (ids: string[]) => {
           in: ids,
         },
       },
+      include: {
+        categories: true,
+      },
     })
 
-    return products
+    return products as PopulatedProduct[]
   } catch (error) {
     console.error("Error fetching products by IDs:", error)
     return null

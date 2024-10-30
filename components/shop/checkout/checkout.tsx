@@ -152,6 +152,7 @@ const Checkout = ({ customer }: CheckoutProps) => {
                       <Button
                         onClick={() => setOpen(true)}
                         className='relative'
+                        disabled={isSubmitting}
                       >
                         <Icons.pencil className='mr-2 w-4 h-4' /> Editar
                       </Button>

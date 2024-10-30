@@ -1,11 +1,14 @@
 "use server"
 
-import { CartItem } from "@/components/cart-provider"
 import { getPromotions } from "@/data/promotions"
+import { PopulatedProduct } from "@/types/types"
 import { Category } from "@prisma/client"
 
 type CheckPromotionProps = {
-  items: CartItem[]
+  items: {
+    product: PopulatedProduct
+    quantity: number
+  }[]
   subtotal: number
 }
 
