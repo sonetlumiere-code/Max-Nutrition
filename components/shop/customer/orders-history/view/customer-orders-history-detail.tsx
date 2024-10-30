@@ -48,14 +48,18 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
       <ul className='grid gap-3 text-sm'>
         <li className='flex items-center justify-between'>
           <span className='text-muted-foreground'>Subtotal</span>
-          <span>
-            $
-            {order.items?.reduce(
-              (acc, curr) => acc + curr.product?.price * curr.quantity,
-              0
-            )}
-          </span>
+          <span>${order.subtotal || order.total}</span>
         </li>
+        {order.appliedPromotionName && order.subtotal && (
+          <li className='flex items-center justify-between'>
+            <span className='text-muted-foreground'>
+              Descuento promocional ({order.appliedPromotionName})
+            </span>
+            <span className='text-destructive'>
+              - ${order.subtotal - order.total}
+            </span>
+          </li>
+        )}
         <li className='flex items-center justify-between font-semibold'>
           <span className='text-muted-foreground'>Total</span>
           <span>${order.total}</span>

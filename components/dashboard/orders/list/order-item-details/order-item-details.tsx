@@ -15,7 +15,10 @@ import { PopulatedOrder } from "@/types/types"
 import React from "react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { translateOrderStatus } from "@/helpers/helpers"
+import {
+  translateOrderStatus,
+  translateShippingMethod,
+} from "@/helpers/helpers"
 import OrderItemActions from "../../actions/order-item-actions"
 
 type OrderItemDetails = {
@@ -76,13 +79,7 @@ const OrderItemDetails = ({ order }: OrderItemDetails) => {
           <ul className='grid gap-3'>
             <li className='flex items-center justify-between'>
               <span className='text-muted-foreground'>Subtotal</span>
-              <span>
-                $
-                {order.items?.reduce(
-                  (acc, curr) => acc + curr.product?.price * curr.quantity,
-                  0
-                )}
-              </span>
+              <span>${order.subtotal || order.total}</span>
             </li>
             {/* <li className='flex items-center justify-between'>
                   <span className='text-muted-foreground'>Costo de envío</span>
@@ -92,10 +89,16 @@ const OrderItemDetails = ({ order }: OrderItemDetails) => {
                       : "Gratis"}
                   </span>
                 </li> */}
-            {/* <li className='flex items-center justify-between'>
-                  <span className='text-muted-foreground'>Impuestos</span>
-                  <span>$25.00</span>
-                </li> */}
+            {order.appliedPromotionName && order.subtotal && (
+              <li className='flex items-center justify-between'>
+                <span className='text-muted-foreground'>
+                  Descuento promocional ({order.appliedPromotionName})
+                </span>
+                <span className='text-destructive'>
+                  - ${order.subtotal - order.total}
+                </span>
+              </li>
+            )}
             <li className='flex items-center justify-between font-semibold'>
               <span className='text-muted-foreground'>Total</span>
               <span>${order.total}</span>
@@ -124,7 +127,7 @@ const OrderItemDetails = ({ order }: OrderItemDetails) => {
           </div>
           <div className='grid auto-rows-max gap-3'>
             <Badge variant='secondary'>
-              {order.shippingMethod === "TakeAway" ? "Take Away" : "Delivery"}
+              {translateShippingMethod(order.shippingMethod)}
             </Badge>
           </div>
         </div>
