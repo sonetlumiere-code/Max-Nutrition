@@ -1,4 +1,4 @@
-import { Ingredient, PrismaClient } from "@prisma/client"
+import { Ingredient, PrismaClient, ShippingMethod } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
@@ -871,8 +871,10 @@ async function main() {
     update: {},
     create: {
       id: "1",
-      takeAway: true,
-      delivery: true,
+      allowedShippingMethods: [
+        ShippingMethod.Delivery,
+        ShippingMethod.TakeAway,
+      ],
       minProductsQuantityForDelivery: 10,
     },
   })

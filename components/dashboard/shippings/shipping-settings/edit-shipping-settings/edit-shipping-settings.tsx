@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Form,
   FormControl,
@@ -20,11 +21,11 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/use-toast"
+import { translateShippingMethod } from "@/helpers/helpers"
 import { shippingSettingsSchema } from "@/lib/validations/shipping-settings-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ShippingSettings } from "@prisma/client"
+import { ShippingMethod, ShippingSettings } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -79,40 +80,49 @@ const EditShippingSettings = ({
             <div className='grid gap-6'>
               <FormField
                 control={form.control}
-                name='delivery'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                    <div className='space-y-0.5'>
-                      <FormLabel>Envíos</FormLabel>
+                name='allowedShippingMethods'
+                render={() => (
+                  <FormItem>
+                    <div className='mb-4'>
+                      <FormLabel className='text-base'>
+                        Métodos de envío habilitados
+                      </FormLabel>
                     </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isSubmitting}
-                        aria-readonly
+                    {Object.values(ShippingMethod).map((method) => (
+                      <FormField
+                        key={method}
+                        control={form.control}
+                        name='allowedShippingMethods'
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={method}
+                              className='flex flex-row items-start space-x-3 space-y-0'
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(method)}
+                                  disabled={isSubmitting}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([...field.value, method])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== method
+                                          )
+                                        )
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className='font-normal'>
+                                {translateShippingMethod(method)}
+                              </FormLabel>
+                            </FormItem>
+                          )
+                        }}
                       />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='takeAway'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                    <div className='space-y-0.5'>
-                      <FormLabel>Retirar por sucursal</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        disabled={isSubmitting}
-                        aria-readonly
-                      />
-                    </FormControl>
+                    ))}
+                    <FormMessage />
                   </FormItem>
                 )}
               />

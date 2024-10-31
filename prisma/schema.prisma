@@ -303,12 +303,11 @@ enum ShippingMethod {
 }
 
 model ShippingSettings {
-  id                             String   @id @default("1")
-  takeAway                       Boolean  @default(true)
-  delivery                       Boolean  @default(true)
-  minProductsQuantityForDelivery Int      @default(10)
-  createdAt                      DateTime @default(now())
-  updatedAt                      DateTime @updatedAt
+  id                             String           @id @default("1")
+  allowedShippingMethods         ShippingMethod[]
+  minProductsQuantityForDelivery Int              @default(10)
+  createdAt                      DateTime         @default(now())
+  updatedAt                      DateTime         @updatedAt
 
   @@map("shipping_settings")
 }

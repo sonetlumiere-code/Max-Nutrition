@@ -6,7 +6,7 @@ import { getCustomer } from "@/data/customer"
 import { buttonVariants } from "@/components/ui/button"
 import dynamic from "next/dynamic"
 import { redirect } from "next/navigation"
-// import { Role } from "@prisma/client"
+import { getShippingSettings } from "@/data/shipping-settings"
 
 const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
   ssr: false,
@@ -15,16 +15,13 @@ const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
 export default async function CheckoutPage() {
   const session = await auth()
 
-  // const customer =
-  //   session?.user.role === Role.USER
-  //     ? await getCustomer(session?.user.id || "")
-  //     : null
-
   const customer = await getCustomer(session?.user.id || "")
 
   if (!customer) {
     redirect("/shop")
   }
+
+  const shippingSettings = await getShippingSettings()
 
   return (
     <div className='space-y-6'>
@@ -40,7 +37,7 @@ export default async function CheckoutPage() {
         </Link>
       </div>
 
-      <Checkout customer={customer} />
+      <Checkout customer={customer} shippingSettings={shippingSettings} />
     </div>
   )
 }

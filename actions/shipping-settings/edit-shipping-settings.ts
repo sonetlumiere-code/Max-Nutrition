@@ -18,15 +18,14 @@ export async function editShippingSettings({
     return { error: "Campos inválidos." }
   }
 
-  const { delivery, takeAway, minProductsQuantityForDelivery } =
+  const { allowedShippingMethods, minProductsQuantityForDelivery } =
     validatedFields.data
 
   try {
     const updatedShippingSettings = await prisma.shippingSettings.update({
       where: { id: "1" },
       data: {
-        delivery,
-        takeAway,
+        allowedShippingMethods,
         minProductsQuantityForDelivery,
       },
     })

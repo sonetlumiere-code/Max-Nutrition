@@ -33,7 +33,7 @@ import {
 import { useCart } from "@/components/cart-provider"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { PaymentMethod, ShippingMethod } from "@prisma/client"
+import { PaymentMethod, ShippingMethod, ShippingSettings } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { orderSchema } from "@/lib/validations/order-validation"
@@ -61,9 +61,10 @@ type OrderSchema = z.infer<typeof orderSchema>
 
 type CheckoutProps = {
   customer: PopulatedCustomer | null
+  shippingSettings: ShippingSettings | null
 }
 
-const Checkout = ({ customer }: CheckoutProps) => {
+const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
   const { items, setOpen, clearCart } = useCart()
 
   const { appliedPromotion, isLoading, subtotalPrice, finalPrice } =
@@ -249,51 +250,53 @@ const Checkout = ({ customer }: CheckoutProps) => {
                 </Card>
               )}
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className='text-xl'>Método de envío</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <FormField
-                    control={control}
-                    name={"shippingMethod"}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Método de envío</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          disabled={isSubmitting}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder='' />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Object.values(ShippingMethod).map((method) => (
-                              <SelectItem
-                                key={method}
-                                value={method}
-                                disabled={
-                                  appliedPromotion
-                                    ? !appliedPromotion?.allowedShippingMethods.includes(
-                                        method
-                                      )
-                                    : false
-                                }
-                              >
-                                {method === "TakeAway"
-                                  ? "Retiro por sucursal"
-                                  : "Delivery"}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-              </Card>
+              {shippingSettings && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className='text-xl'>Método de envío</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <FormField
+                      control={control}
+                      name={"shippingMethod"}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Método de envío</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            disabled={isSubmitting}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder='' />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {shippingSettings?.allowedShippingMethods.map(
+                                (method) => (
+                                  <SelectItem
+                                    key={method}
+                                    value={method}
+                                    disabled={
+                                      appliedPromotion
+                                        ? !appliedPromotion?.allowedShippingMethods.includes(
+                                            method
+                                          )
+                                        : false
+                                    }
+                                  >
+                                    {translateShippingMethod(method)}
+                                  </SelectItem>
+                                )
+                              )}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+              )}
 
               {shippingMethod === ShippingMethod.Delivery && (
                 <>
@@ -357,7 +360,7 @@ const Checkout = ({ customer }: CheckoutProps) => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className='text-xl'>Metodo de Pago</CardTitle>
+                  <CardTitle className='text-xl'>Método de Pago</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <FormField
