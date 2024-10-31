@@ -57,8 +57,8 @@ const EditOrderForm = ({ order, setOpen }: EditOrderFormProps) => {
     if (res.success) {
       mutate("/api/orders")
       toast({
-        title: "Pedido cancelado.",
-        description: "La orden ha sido cancelada.",
+        title: "Pedido actualizado.",
+        description: "La orden ha sido actualizada.",
       })
     }
     if (res.error) {
