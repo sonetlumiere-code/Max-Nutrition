@@ -1,4 +1,3 @@
-// emails/VerificationEmail.tsx
 import {
   Body,
   Button,
@@ -35,7 +34,7 @@ const VerificationEmail: React.FC<VerificationEmailProps> = ({
           <Container className='mx-auto my-[40px] max-w-[465px] p-[20px] border border-solid border-[#eaeaea] rounded'>
             <Section className='mt-[32px] text-center'>
               <Img
-                src='https://tu-dominio.com/static/mxm-logo.png' // Asegúrate de usar una URL absoluta
+                src='https://dominio.com/static/mxm-logo.png'
                 alt='Logo'
                 className='mx-auto'
                 width='120'
@@ -59,7 +58,7 @@ const VerificationEmail: React.FC<VerificationEmailProps> = ({
             <Section className='mb-[32px] mt-[20px] text-center'>
               <Button
                 className='bg-red-200 font-semibold no-underline px-5 py-3 rounded-full text-center text-[14px] text-orange-950'
-                href={confirmLink} // Usamos el enlace dinámico
+                href={confirmLink}
               >
                 Confirmar mi e-mail
               </Button>

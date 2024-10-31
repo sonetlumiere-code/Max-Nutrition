@@ -1,3 +1,6 @@
+import WelcomeClient from "@/components/emails/bienvenida-mx"
+import OrderDetails from "@/components/emails/pedido-realizado-mx"
+import PasswordReset from "@/components/emails/recuperar-password-mx"
 import VerificationEmail from "@/components/emails/verificacion-mx"
 import { Resend } from "resend"
 
@@ -25,6 +28,49 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     from: "onboarding@resend.dev",
     to: email,
     subject: "Cambia tu contraseña",
-    html: `<p>Click <a href="${resetLink}">aquí</a> para cambiar tu contraseña.</p>`,
+    react: PasswordReset({
+      userName: email,
+      resetLink: resetLink,
+    }) as React.ReactElement,
+  })
+}
+
+export const sendWelcomeEmail = async (email: string, userName: string) => {
+  await resend.emails.send({
+    from: "onboarding@resend.dev",
+    to: email,
+    subject: "¡Te damos la Bienvenida a Máxima Nutrición!",
+    react: WelcomeClient({
+      userName: userName,
+    }) as React.ReactElement,
+  })
+}
+
+export const sendOrderDetailsEmail = async (
+  email: string,
+  userName: string,
+  orderLink: string,
+  products: {
+    name: string
+    quantity: number
+    price: string
+    imageUrl: string
+  }[],
+  totalPrice: string,
+  shippingCost: string,
+  deliveryAddress: string
+) => {
+  await resend.emails.send({
+    from: "onboarding@resend.dev",
+    to: email,
+    subject: "Detalles de tu pedido en Máxima Nutrición",
+    react: OrderDetails({
+      userName,
+      orderLink,
+      products,
+      totalPrice,
+      shippingCost,
+      deliveryAddress,
+    }) as React.ReactElement,
   })
 }
