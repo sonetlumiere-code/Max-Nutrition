@@ -49,7 +49,7 @@ import {
 import { createOrder } from "@/actions/orders/create-order"
 import { toast } from "@/components/ui/use-toast"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { usePromotion } from "@/hooks/use-promotion"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -131,11 +131,14 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     }
   }, [shippingMethod, setValue])
 
-  const isValidMinQuantity =
-    shippingMethod === ShippingMethod.Delivery &&
-    shippingSettings &&
-    shippingSettings?.minProductsQuantityForDelivery >
-      items.reduce((acc, curr) => acc + curr.quantity, 0)
+  const isValidMinQuantity = useMemo(
+    () =>
+      shippingMethod === ShippingMethod.Delivery &&
+      shippingSettings &&
+      shippingSettings.minProductsQuantityForDelivery >
+        items.reduce((acc, curr) => acc + curr.quantity, 0),
+    [shippingMethod, shippingSettings, items]
+  )
 
   return (
     <Form {...form}>
