@@ -56,6 +56,8 @@ import {
   translatePaymentMethod,
   translateShippingMethod,
 } from "@/helpers/helpers"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
 
 type OrderSchema = z.infer<typeof orderSchema>
 
@@ -129,6 +131,12 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     }
   }, [shippingMethod, setValue])
 
+  const isValidMinQuantity =
+    shippingMethod === ShippingMethod.Delivery &&
+    shippingSettings &&
+    shippingSettings?.minProductsQuantityForDelivery >
+      items.reduce((acc, curr) => acc + curr.quantity, 0)
+
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(placeOrder)}>
@@ -151,6 +159,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                     </div>
                     <div className='ml-auto'>
                       <Button
+                        type='button'
                         onClick={() => setOpen(true)}
                         className='relative'
                         disabled={isSubmitting}
@@ -253,9 +262,9 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
               {shippingSettings && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className='text-xl'>Método de envío</CardTitle>
+                    <CardTitle className='text-xl'>Envío</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className='space-y-3'>
                     <FormField
                       control={control}
                       name={"shippingMethod"}
@@ -294,6 +303,20 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                         </FormItem>
                       )}
                     />
+
+                    {isValidMinQuantity && (
+                      <Alert variant='destructive'>
+                        <Icons.circleAlert className='h-4 w-4' />
+                        <AlertTitle className='leading-5'>
+                          Agrega más productos para habilitar envío a domicilio.{" "}
+                        </AlertTitle>
+                        <AlertDescription className='leading-4'>
+                          La cantidad mínima de productos para habilitar envío a
+                          domicilio es{" "}
+                          {shippingSettings?.minProductsQuantityForDelivery}.
+                        </AlertDescription>
+                      </Alert>
+                    )}
                   </CardContent>
                 </Card>
               )}
@@ -310,12 +333,11 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                           Registrá tu dirección a continuación.
                         </p>
 
-                        <Button className='mt-4' asChild>
-                          <Link href='/customer-info'>
-                            <Icons.circlePlus className='mr-2 h-4 w-4' />
-                            Actualizar mis datos
-                          </Link>
-                        </Button>
+                        <CustomerCreateAddress customer={customer}>
+                          <Button type='button' className='mt-4'>
+                            Agregar dirección
+                          </Button>
+                        </CustomerCreateAddress>
                       </div>
                     </div>
                   ) : (
@@ -486,6 +508,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                   className='ml-auto'
                   disabled={
                     isSubmitting ||
+                    isValidMinQuantity ||
                     (shippingMethod === "Delivery" &&
                       !customer?.address?.length)
                   }

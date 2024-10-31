@@ -38,6 +38,7 @@ import {
   File,
   MoveLeftIcon,
   Info,
+  MapPin,
 } from "lucide-react"
 import {
   ChevronLeftIcon,
@@ -54,6 +55,7 @@ export const Icons = {
   chevronRightIcon: ChevronRightIcon,
   doubleArrowLeftIcon: DoubleArrowLeftIcon,
   doubleArrowRightIcon: DoubleArrowRightIcon,
+  mapPin: MapPin,
   x: X,
   info: Info,
   calendar: Calendar,

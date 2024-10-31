@@ -63,19 +63,19 @@ const getAddressLabelWithIcon = (
     case "Home":
       return (
         <div className='flex items-center'>
-          <Icons.home className='mr-2 h-4 w-4' /> Casa
+          <Icons.mapPin className='mr-2 h-4 w-4' /> Casa
         </div>
       )
     case "Work":
       return (
         <div className='flex items-center'>
-          <Icons.briefCase className='mr-2 h-4 w-4' /> Trabajo
+          <Icons.mapPin className='mr-2 h-4 w-4' /> Trabajo
         </div>
       )
     default:
       return (
         <div className='flex items-center'>
-          <Icons.globe className='mr-2 h-4 w-4' /> {labelString || "Otro"}
+          <Icons.mapPin className='mr-2 h-4 w-4' /> {labelString || "Otro"}
         </div>
       )
   }
