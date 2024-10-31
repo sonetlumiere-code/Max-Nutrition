@@ -131,14 +131,18 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     }
   }, [shippingMethod, setValue])
 
-  const isValidMinQuantity = useMemo(
-    () =>
+  const isValidMinQuantity = useMemo(() => {
+    const totalProductsQuantity = items.reduce(
+      (acc, curr) => acc + curr.quantity,
+      0
+    )
+
+    return (
       shippingMethod === ShippingMethod.Delivery &&
       shippingSettings &&
-      shippingSettings.minProductsQuantityForDelivery >
-        items.reduce((acc, curr) => acc + curr.quantity, 0),
-    [shippingMethod, shippingSettings, items]
-  )
+      shippingSettings.minProductsQuantityForDelivery > totalProductsQuantity
+    )
+  }, [shippingMethod, shippingSettings, items])
 
   return (
     <Form {...form}>
@@ -222,45 +226,61 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                 </CardContent>
               </Card>
 
-              {appliedPromotion && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className='text-xl'>
-                      Promoción aplicada
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className='grid gap-2 text-sm'>
-                      <span>{appliedPromotion.name}</span>
-                      <span>{appliedPromotion.description}</span>
-                      <span>
-                        Métodos de pago habilitados:{" "}
-                        {new Intl.ListFormat("es", {
-                          style: "long",
-                          type: "conjunction",
-                        }).format(
-                          appliedPromotion.allowedPaymentMethods.map(
-                            translatePaymentMethod
-                          )
-                        )}
-                        {"."}
-                      </span>
-                      <span>
-                        Métodos de envío habilitados:{" "}
-                        {new Intl.ListFormat("es", {
-                          style: "long",
-                          type: "conjunction",
-                        }).format(
-                          appliedPromotion.allowedShippingMethods.map(
-                            translateShippingMethod
-                          )
-                        )}
-                        {"."}
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+              <Card>
+                <CardHeader>
+                  <CardTitle className='text-xl'>Promoción</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {appliedPromotion ? (
+                    <Alert>
+                      <Icons.badgePercent className='h-4 w-4' />
+                      <AlertTitle>¡Promoción aplicada!</AlertTitle>
+                      <AlertDescription>
+                        <div className='flex flex-col text-sm'>
+                          <span>{appliedPromotion.name}</span>
+                          <span>{appliedPromotion.description}</span>
+                          <span>
+                            Métodos de pago habilitados:{" "}
+                            {new Intl.ListFormat("es", {
+                              style: "long",
+                              type: "conjunction",
+                            }).format(
+                              appliedPromotion.allowedPaymentMethods.map(
+                                translatePaymentMethod
+                              )
+                            )}
+                            {"."}
+                          </span>
+                          <span>
+                            Métodos de envío habilitados:{" "}
+                            {new Intl.ListFormat("es", {
+                              style: "long",
+                              type: "conjunction",
+                            }).format(
+                              appliedPromotion.allowedShippingMethods.map(
+                                translateShippingMethod
+                              )
+                            )}
+                            {"."}
+                          </span>
+                        </div>
+                      </AlertDescription>
+                    </Alert>
+                  ) : (
+                    <Alert>
+                      <Icons.circleAlert className='h-4 w-4' />
+                      <AlertTitle>Sin promoción aplicada</AlertTitle>
+                      <AlertDescription>
+                        <AlertDescription>
+                          Actualmente no hay promociones disponibles para tu
+                          carrito. ¡Explora nuestras promociones para ahorrar en
+                          tu próxima compra!
+                        </AlertDescription>
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                </CardContent>
+              </Card>
 
               {shippingSettings && (
                 <Card>
@@ -310,10 +330,10 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                     {isValidMinQuantity && (
                       <Alert variant='destructive'>
                         <Icons.circleAlert className='h-4 w-4' />
-                        <AlertTitle className='leading-5'>
+                        <AlertTitle>
                           Agrega más productos para habilitar envío a domicilio.{" "}
                         </AlertTitle>
-                        <AlertDescription className='leading-4'>
+                        <AlertDescription>
                           La cantidad mínima de productos para habilitar envío a
                           domicilio es{" "}
                           {shippingSettings?.minProductsQuantityForDelivery}.

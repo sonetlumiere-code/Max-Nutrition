@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache"
 import { z } from "zod"
 import { checkPromotion } from "../promotions/check-promotion"
 import { PopulatedProduct } from "@/types/types"
+import { getShippingSettings } from "@/data/shipping-settings"
 
 type OrderSchema = z.infer<typeof orderSchema>
 
@@ -74,6 +75,21 @@ export async function createOrder(values: OrderSchema) {
     let shippingCost = 0
 
     if (shippingMethod === ShippingMethod.Delivery) {
+      const shippingSettings = await getShippingSettings()
+      const totalProductsQuantity = items.reduce(
+        (acc, curr) => acc + curr.quantity,
+        0
+      )
+
+      if (
+        shippingSettings &&
+        shippingSettings.minProductsQuantityForDelivery > totalProductsQuantity
+      ) {
+        return {
+          error: `Products quantity must be greater or equal to ${shippingSettings.minProductsQuantityForDelivery} to allow delivery.`,
+        }
+      }
+
       const customerAddress = await prisma.customerAddress.findUnique({
         where: { id: customerAddressId },
       })
