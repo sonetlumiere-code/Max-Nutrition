@@ -84,9 +84,7 @@ const EditShippingSettings = ({
                 render={() => (
                   <FormItem>
                     <div className='mb-4'>
-                      <FormLabel className='text-base'>
-                        Métodos de envío habilitados
-                      </FormLabel>
+                      <FormLabel>Métodos de envío habilitados</FormLabel>
                     </div>
                     {Object.values(ShippingMethod).map((method) => (
                       <FormField
