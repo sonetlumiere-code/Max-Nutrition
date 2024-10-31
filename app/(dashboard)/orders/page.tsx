@@ -14,7 +14,7 @@ import OrderItemDetails from "@/components/dashboard/orders/list/order-item-deta
 import { Button } from "@/components/ui/button"
 import { File } from "lucide-react"
 import useSWR from "swr"
-import { PopulatedOrder } from "@/types/types"
+import { PopulatedOrder, TimePeriod } from "@/types/types"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   isWithinInterval,
@@ -31,8 +31,6 @@ import OrdersDataTable from "@/components/dashboard/orders/list/orders-data-tabl
 import { Icons } from "@/components/icons"
 import OrdersBulkExportDialog from "@/components/dashboard/orders/list/orders-data-table/bulk-actions/orders-bulk-export-dialog"
 import { es } from "date-fns/locale"
-
-type TimePeriod = "week" | "month" | "year" | "all"
 
 const fetchOrders = async () => {
   const orders = await getOrders()

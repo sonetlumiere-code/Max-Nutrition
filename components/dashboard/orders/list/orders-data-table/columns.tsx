@@ -2,9 +2,12 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PopulatedCustomer, PopulatedOrder } from "@/types/types"
 import { ColumnDef } from "@tanstack/react-table"
-import { translateOrderStatus } from "@/helpers/helpers"
+import {
+  translateOrderStatus,
+  translateShippingMethod,
+} from "@/helpers/helpers"
 import { Icons } from "@/components/icons"
-import { OrderStatus } from "@prisma/client"
+import { OrderStatus, ShippingMethod } from "@prisma/client"
 import { cn } from "@/lib/utils"
 
 const getCustomerInfo = (order: PopulatedOrder) => {
@@ -54,13 +57,14 @@ export const columns: ColumnDef<PopulatedOrder>[] = [
         <Icons.caretSortIcon className='ml-2 h-4 w-4' />
       </Button>
     ),
-    cell: ({ row }) => (
-      <Badge className='text-xs ml-4' variant='secondary'>
-        {row.getValue("shippingMethod") === "TakeAway"
-          ? "Take Away"
-          : "Delivery"}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const shippingMethod = row.getValue("shippingMethod") as ShippingMethod
+      return (
+        <Badge className='text-xs ml-4' variant='secondary'>
+          {translateShippingMethod(shippingMethod)}
+        </Badge>
+      )
+    },
   },
   {
     id: "status",

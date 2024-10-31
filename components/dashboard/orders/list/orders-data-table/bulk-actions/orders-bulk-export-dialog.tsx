@@ -1,3 +1,5 @@
+"use client"
+
 import { useMediaQuery } from "@/hooks/use-media-query"
 import {
   Dialog,
@@ -10,7 +12,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,

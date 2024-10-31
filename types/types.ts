@@ -65,3 +65,5 @@ export interface IngredientTotal {
   measurement: Measurement
   total: number
 }
+
+export type TimePeriod = "week" | "month" | "year" | "all"
