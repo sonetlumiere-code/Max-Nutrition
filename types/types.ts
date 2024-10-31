@@ -57,8 +57,9 @@ export type PopulatedRecipeIngredient = RecipeIngredient & {
   ingredient?: Ingredient
 }
 
-export type Variation = { [key: string]: boolean }
-
+export type Variation = {
+  withSalt: boolean
+}
 export interface IngredientTotal {
   ingredientId: string
   name: string

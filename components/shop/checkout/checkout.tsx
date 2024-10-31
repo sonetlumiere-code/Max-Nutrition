@@ -58,6 +58,7 @@ import {
 } from "@/helpers/helpers"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
+import { ToastAction } from "@/components/ui/toast"
 
 type OrderSchema = z.infer<typeof orderSchema>
 
@@ -80,6 +81,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
   }, [items, router])
 
   const form = useForm<OrderSchema>({
+    resolver: zodResolver(orderSchema),
     defaultValues: {
       customerId: customer?.id,
       customerAddressId: "",
@@ -91,7 +93,6 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
         variation: item.variation,
       })),
     },
-    resolver: zodResolver(orderSchema),
   })
 
   const {
@@ -101,6 +102,17 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     watch,
     setValue,
   } = form
+
+  useEffect(() => {
+    setValue(
+      "items",
+      items.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        variation: item.variation,
+      }))
+    )
+  }, [items, setValue])
 
   const shippingMethod = watch("shippingMethod")
 
@@ -114,6 +126,11 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
       toast({
         title: "Pedido creado",
         description: "Tu pedido se ha creado correctamente.",
+        action: (
+          <ToastAction altText='Ver pedidos'>
+            <Link href='/customer-orders-history'>Ver</Link>
+          </ToastAction>
+        ),
       })
       router.replace("/shop")
     } else if (res.error) {
@@ -236,7 +253,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                       <Icons.badgePercent className='h-4 w-4' />
                       <AlertTitle>¡Promoción aplicada!</AlertTitle>
                       <AlertDescription>
-                        <div className='flex flex-col text-sm'>
+                        <div className='flex flex-col text-sm text-muted-foreground'>
                           <span>{appliedPromotion.name}</span>
                           <span>{appliedPromotion.description}</span>
                           <span>
@@ -330,10 +347,10 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                     {isValidMinQuantity && (
                       <Alert variant='destructive'>
                         <Icons.circleAlert className='h-4 w-4' />
-                        <AlertTitle>
+                        <AlertTitle className='leading-5'>
                           Agrega más productos para habilitar envío a domicilio.{" "}
                         </AlertTitle>
-                        <AlertDescription>
+                        <AlertDescription className='leading-4'>
                           La cantidad mínima de productos para habilitar envío a
                           domicilio es{" "}
                           {shippingSettings?.minProductsQuantityForDelivery}.

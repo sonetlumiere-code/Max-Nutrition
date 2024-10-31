@@ -73,7 +73,7 @@ export function CartProvider({ children, session }: CartProviderProps) {
   const addItem = (
     product: PopulatedProduct,
     quantity: number,
-    variation: { [key: string]: boolean }
+    variation: { withSalt: boolean }
   ) => {
     const itemId = uuidv4()
 
