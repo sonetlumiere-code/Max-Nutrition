@@ -92,7 +92,9 @@ const Shippings = async () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Zona</TableHead>
+                      <TableHead>Provincia</TableHead>
+                      <TableHead>Municipalidad</TableHead>
+                      <TableHead>Localidad</TableHead>
                       <TableHead className='hidden md:table-cell'>
                         Costo
                       </TableHead>
@@ -104,7 +106,9 @@ const Shippings = async () => {
                   <TableBody>
                     {shippingZones.map((shippingZone) => (
                       <TableRow key={shippingZone.id}>
-                        <TableCell>{shippingZone.zone}</TableCell>
+                        <TableCell>{shippingZone.province}</TableCell>
+                        <TableCell>{shippingZone.municipality}</TableCell>
+                        <TableCell>{shippingZone.locality}</TableCell>
                         <TableCell className='max-w-28 hidden md:table-cell'>
                           <p className='truncate'>$ {shippingZone.cost}</p>
                         </TableCell>

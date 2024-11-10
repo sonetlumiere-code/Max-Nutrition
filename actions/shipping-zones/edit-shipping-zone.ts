@@ -20,14 +20,16 @@ export async function editShippingZone({
     return { error: "Campos inválidos." }
   }
 
-  const { cost, zone } = validatedFields.data
+  const { province, municipality, locality, cost } = validatedFields.data
 
   try {
     const updatedShippingZone = await prisma.shippingZone.update({
       where: { id },
       data: {
+        province,
+        municipality,
+        locality,
         cost,
-        zone,
       },
     })
 

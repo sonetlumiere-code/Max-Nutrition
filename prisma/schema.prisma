@@ -313,11 +313,13 @@ model ShippingSettings {
 }
 
 model ShippingZone {
-  id        String   @id @default(cuid())
-  zone      String
-  cost      Float    @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  province     String
+  municipality String
+  locality     String
+  cost         Float    @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("shipping_zones")
 }
