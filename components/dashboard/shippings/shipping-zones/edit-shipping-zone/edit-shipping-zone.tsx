@@ -53,6 +53,7 @@ const EditShippingZone = ({ shippingZone }: EditShippingZoneProps) => {
       municipality: shippingZone.municipality,
       locality: shippingZone.locality,
       cost: shippingZone.cost,
+      isActive: shippingZone.isActive,
     },
   })
 

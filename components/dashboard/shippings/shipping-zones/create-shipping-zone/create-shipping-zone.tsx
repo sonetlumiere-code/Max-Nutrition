@@ -47,6 +47,7 @@ const CreateShippingZone = () => {
       municipality: "",
       locality: "",
       cost: 0,
+      isActive: true,
     },
   })
 

@@ -317,6 +317,7 @@ model ShippingZone {
   province     String
   municipality String
   locality     String
+  isActive     Boolean  @default(true)
   cost         Float    @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

@@ -14,7 +14,8 @@ export async function createShippingZone(values: ShippingZoneSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { province, municipality, locality, cost } = validatedFields.data
+  const { province, municipality, locality, cost, isActive } =
+    validatedFields.data
 
   try {
     const shippingZone = await prisma.shippingZone.create({
@@ -23,6 +24,7 @@ export async function createShippingZone(values: ShippingZoneSchema) {
         municipality,
         locality,
         cost,
+        isActive,
       },
     })
 
