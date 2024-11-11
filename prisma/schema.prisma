@@ -103,17 +103,23 @@ enum AddressLabel {
 }
 
 model CustomerAddress {
-  id          String       @id @default(cuid())
-  customerId  String
-  label       AddressLabel
-  labelString String?
-  address     String
-  city        String
-  postCode    String
-  customer    Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  order       Order[]
+  id                String       @id @default(cuid())
+  customerId        String
+  label             AddressLabel
+  labelString       String?
+  province          String
+  municipality      String
+  locality          String
+  addressStreet     String
+  addressNumber     Int
+  addressFloor      Int?
+  addressApartament String?
+  // city        String
+  postCode          String
+  customer          Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  order             Order[]
 
   @@map("customer_addresses")
 }

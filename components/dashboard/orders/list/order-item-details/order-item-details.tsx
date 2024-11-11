@@ -113,8 +113,16 @@ const OrderItemDetails = ({ order }: OrderItemDetails) => {
               <>
                 {order.address ? (
                   <address className='grid gap-0.5 not-italic text-muted-foreground'>
-                    <span>{order.address?.address}</span>
-                    <span>{order.address?.city}</span>{" "}
+                    <span>
+                      {order.address?.addressStreet}{" "}
+                      {order.address?.addressNumber}{" "}
+                      {order.address?.addressFloor}{" "}
+                      {order.address?.addressApartament}
+                    </span>
+                    <span>
+                      {order.address?.province}, {order.address?.municipality},
+                      {order.address?.locality}
+                    </span>{" "}
                     <span>Código postal: {order.address?.postCode}</span>
                   </address>
                 ) : (

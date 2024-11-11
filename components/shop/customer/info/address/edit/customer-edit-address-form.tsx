@@ -43,6 +43,8 @@ const CustomerEditAddressForm = ({
     resolver: zodResolver(customerAddressSchema),
     defaultValues: {
       ...address,
+      addressFloor: address.addressFloor || 0,
+      addressApartament: address.addressApartament,
       labelString: address.labelString || "",
     },
   })
@@ -108,7 +110,7 @@ const CustomerEditAddressForm = ({
 
         <FormField
           control={control}
-          name='address'
+          name='addressStreet'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Dirección</FormLabel>
@@ -126,13 +128,13 @@ const CustomerEditAddressForm = ({
 
         <FormField
           control={control}
-          name='city'
+          name='addressNumber'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ciudad</FormLabel>
+              <FormLabel>Numeración</FormLabel>
               <FormControl>
                 <Input
-                  placeholder='Ciudad'
+                  placeholder='Numeración'
                   disabled={isSubmitting}
                   {...field}
                 />

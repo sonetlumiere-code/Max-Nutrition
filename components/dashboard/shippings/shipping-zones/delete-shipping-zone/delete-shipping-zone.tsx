@@ -16,7 +16,7 @@ const DeleteShippingZone = ({ shippingZone }: DeleteShippingZoneProps) => {
   const onDelete = async () => {
     confirm({
       variant: "destructive",
-      title: `¿Eliminar zona de envío ${shippingZone.zone}?`,
+      title: "¿Eliminar zona de envío?",
       description: "Esta acción es irreversible.",
     }).then(async () => {
       const res = await deleteShippingZone({ id: shippingZone.id })
@@ -24,7 +24,7 @@ const DeleteShippingZone = ({ shippingZone }: DeleteShippingZoneProps) => {
       if (res.success) {
         toast({
           title: "Zona de envío eliminada",
-          description: `La zona de envío ${res.success.zone} ha sido eliminada.`,
+          description: "La zona de envío ha sido eliminada.",
         })
       }
 

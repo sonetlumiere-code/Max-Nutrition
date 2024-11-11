@@ -405,7 +405,9 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                                 <SelectContent>
                                   {customer?.address?.map((a) => (
                                     <SelectItem key={a.id} value={a.id}>
-                                      {a.label} ({a.address})
+                                      {a.label} ({a.addressStreet}{" "}
+                                      {a.addressNumber} {a.addressFloor}{" "}
+                                      {a.addressApartament})
                                     </SelectItem>
                                   ))}
                                 </SelectContent>

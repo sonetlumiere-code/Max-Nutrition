@@ -36,22 +36,32 @@ export async function editCustomer({
         address: {
           deleteMany: {
             customerId: id,
-            id: { notIn: addressIds }, // This now ensures only string IDs are used
+            id: { notIn: addressIds }, // Keeps only specified address IDs
           },
           upsert: address?.map((addr) => ({
             where: { id: addr.id || undefined },
             create: {
-              address: addr.address,
               label: addr.label,
               labelString: addr.labelString,
-              city: addr.city,
+              province: addr.province,
+              municipality: addr.municipality,
+              locality: addr.locality,
+              addressStreet: addr.addressStreet,
+              addressNumber: addr.addressNumber,
+              addressFloor: addr.addressFloor,
+              addressApartament: addr.addressApartament,
               postCode: addr.postCode,
             },
             update: {
-              address: addr.address,
               label: addr.label,
               labelString: addr.labelString,
-              city: addr.city,
+              province: addr.province,
+              municipality: addr.municipality,
+              locality: addr.locality,
+              addressStreet: addr.addressStreet,
+              addressNumber: addr.addressNumber,
+              addressFloor: addr.addressFloor,
+              addressApartament: addr.addressApartament,
               postCode: addr.postCode,
             },
           })),

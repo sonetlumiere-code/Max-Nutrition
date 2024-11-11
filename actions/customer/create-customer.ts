@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db/db"
 import { customerSchema } from "@/lib/validations/customer-validation"
+import { AddressLabel } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
@@ -26,10 +27,16 @@ export async function createCustomer(values: CustomerSchema) {
         address: address
           ? {
               create: address.map((addr) => ({
-                address: addr.address,
                 label: addr.label,
-                labelString: addr.labelString,
-                city: addr.city,
+                labelString:
+                  addr.label === AddressLabel.Other ? addr.label : "",
+                province: addr.province,
+                municipality: addr.municipality,
+                locality: addr.locality,
+                addressStreet: addr.addressStreet,
+                addressNumber: addr.addressNumber,
+                addressFloor: addr.addressFloor,
+                addressApartament: addr.addressApartament,
                 postCode: addr.postCode,
               })),
             }

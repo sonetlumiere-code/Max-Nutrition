@@ -35,10 +35,11 @@ const CustomerAddressesList = ({ addresses }: CustomerAddressesListProps) => {
               {getAddressLabelWithIcon(address.label, address.labelString)}
             </TableCell>
             <TableCell className='hidden md:table-cell'>
-              {address.address}
+              {address.addressStreet} {address.addressNumber}{" "}
+              {address.addressFloor} {address.addressApartament}
             </TableCell>
             <TableCell className='hidden md:table-cell'>
-              {address.city}
+              {address.province}, {address.municipality}, {address.locality}
             </TableCell>
             <TableCell className='hidden md:table-cell'>
               {address.postCode}

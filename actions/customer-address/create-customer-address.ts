@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db/db"
 import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
+import { AddressLabel } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
@@ -17,17 +18,33 @@ export async function createCustomerAddress(
     return { error: "Campos inválidos." }
   }
 
-  const { address, city, postCode, label, labelString } = validatedFields.data
+  const {
+    province,
+    municipality,
+    locality,
+    addressStreet,
+    addressNumber,
+    addressFloor,
+    addressApartament,
+    postCode,
+    label,
+    labelString,
+  } = validatedFields.data
 
   try {
     const newAddress = await prisma.customerAddress.create({
       data: {
         customerId,
-        address,
-        city,
+        province,
+        municipality,
+        locality,
+        addressStreet,
+        addressNumber,
+        addressFloor,
+        addressApartament,
         postCode,
         label,
-        labelString,
+        labelString: label === AddressLabel.Other ? labelString : "",
       },
     })
 

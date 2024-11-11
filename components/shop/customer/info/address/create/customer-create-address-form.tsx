@@ -42,8 +42,13 @@ const CustomerCreateAddressForm = ({
   const form = useForm<CustomerAddressSchema>({
     resolver: zodResolver(customerAddressSchema),
     defaultValues: {
-      address: "",
-      city: "",
+      province: "",
+      municipality: "",
+      locality: "",
+      addressStreet: "",
+      addressNumber: 0,
+      addressFloor: 0,
+      addressApartament: "",
       postCode: "",
       label: AddressLabel.Home,
       labelString: "",
@@ -111,7 +116,7 @@ const CustomerCreateAddressForm = ({
 
         <FormField
           control={control}
-          name='address'
+          name='addressStreet'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Dirección</FormLabel>
@@ -129,13 +134,13 @@ const CustomerCreateAddressForm = ({
 
         <FormField
           control={control}
-          name='city'
+          name='addressNumber'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ciudad</FormLabel>
+              <FormLabel>Numeración</FormLabel>
               <FormControl>
                 <Input
-                  placeholder='Ciudad'
+                  placeholder='Numeración'
                   disabled={isSubmitting}
                   {...field}
                 />
