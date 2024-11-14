@@ -68,26 +68,3 @@ export interface IngredientTotal {
 }
 
 export type TimePeriod = "week" | "month" | "year" | "all"
-
-export interface Province {
-  id: string
-  nombre: string
-}
-
-export interface Municipality {
-  id: string
-  nombre: string
-}
-
-export interface Locality {
-  id: string
-  nombre: string
-}
-
-export interface Address {
-  calle: { nombre: string; id: string }
-  provincia: { nombre: string }
-  departamento: { nombre: string }
-  altura: { valor: number }
-  nomenclatura: string
-}

@@ -1,6 +1,30 @@
 import { AddressLabel } from "@prisma/client"
 import { z } from "zod"
 
+const addressGeoRefSchema = z.object(
+  {
+    altura: z.object({
+      unidad: z.string().nullable(),
+      valor: z.coerce.number(),
+    }),
+    calle: z.object({
+      categoria: z.enum(["CALLE", "AV"]),
+      id: z.string(),
+      nombre: z.string(),
+    }),
+    departamento: z.object({
+      id: z.string(),
+      nombre: z.string(),
+    }),
+    nomenclatura: z.string(),
+    provincia: z.object({
+      id: z.string(),
+      nombre: z.string(),
+    }),
+  },
+  { message: "Ingresa tu calle." }
+)
+
 export const customerAddressSchema = z
   .object({
     id: z.string().optional(),
@@ -9,12 +33,12 @@ export const customerAddressSchema = z
     province: z.string().min(1, { message: "Ingresa tu provincia." }),
     municipality: z.string().min(1, { message: "Ingresa tu municipio." }),
     locality: z.string().min(1, { message: "Ingresa tu localidad." }),
-    addressStreet: z.string().min(1, { message: "Ingresa tu calle." }),
-    addressNumber: z
-      .number()
-      .min(1, { message: "Ingresa el número de calle." }),
-    addressFloor: z.number().optional().nullable(),
-    addressApartament: z.string().optional().nullable(),
+    addressGeoRef: addressGeoRefSchema,
+    addressNumber: z.coerce.number().positive({
+      message: "Ingresa un número de calle válido.",
+    }),
+    addressFloor: z.coerce.number().optional(),
+    addressApartament: z.string().optional(),
     postCode: z.string().min(1, { message: "Ingresa tu código postal." }),
   })
   .refine(

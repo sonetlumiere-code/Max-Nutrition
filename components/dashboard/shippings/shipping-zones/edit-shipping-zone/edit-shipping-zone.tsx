@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Locality, Municipality, Province } from "@/types/types"
+import { Locality, Municipality, Province } from "@/types/georef-types"
 import { useMemo } from "react"
 
 type ShippingZoneSchema = z.infer<typeof shippingZoneSchema>

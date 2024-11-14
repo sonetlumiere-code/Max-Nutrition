@@ -22,11 +22,13 @@ import { AddressLabel } from "@prisma/client"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
 import { translateAddressLabel } from "@/helpers/helpers"
+import AsyncSelectAddress from "@/components/async-search-address"
 
 type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
@@ -34,6 +36,8 @@ type CustomerCreateAddressFormProps = {
   customerId: string
   setOpen: Dispatch<SetStateAction<boolean>>
 }
+
+const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
 
 const CustomerCreateAddressForm = ({
   customerId,
@@ -43,9 +47,9 @@ const CustomerCreateAddressForm = ({
     resolver: zodResolver(customerAddressSchema),
     defaultValues: {
       province: "",
-      municipality: "",
-      locality: "",
-      addressStreet: "",
+      municipality: "qwe",
+      locality: "asdasd",
+      addressGeoRef: undefined,
       addressNumber: 0,
       addressFloor: 0,
       addressApartament: "",
@@ -58,28 +62,33 @@ const CustomerCreateAddressForm = ({
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isSubmitted, isValid },
     watch,
+    setValue,
+    reset,
   } = form
 
+  const province = watch("province")
+
   const onSubmit = async (data: CustomerAddressSchema) => {
-    const res = await createCustomerAddress(customerId, data)
-    setOpen(false)
+    console.log(data)
+    // const res = await createCustomerAddress(customerId, data)
+    // setOpen(false)
 
-    if (res.success) {
-      toast({
-        title: "Dirección agregada",
-        description: "La dirección ha sido agregada correctamente.",
-      })
-    }
+    // if (res.success) {
+    //   toast({
+    //     title: "Dirección agregada",
+    //     description: "La dirección ha sido agregada correctamente.",
+    //   })
+    // }
 
-    if (res.error) {
-      toast({
-        variant: "destructive",
-        title: "Error agregando dirección",
-        description: res.error,
-      })
-    }
+    // if (res.error) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Error agregando dirección",
+    //     description: res.error,
+    //   })
+    // }
   }
 
   return (
@@ -114,19 +123,55 @@ const CustomerCreateAddressForm = ({
           )}
         />
 
+        {watch("label") === AddressLabel.Other && (
+          <FormField
+            control={control}
+            name='labelString'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Etiqueta personalizada</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='Ejemplo: Casa de un amigo.'
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <FormField
           control={control}
-          name='addressStreet'
+          name='province'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Dirección</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder='Dirección'
-                  disabled={isSubmitting}
-                  {...field}
-                />
-              </FormControl>
+              <FormLabel>Provincia</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value)
+                }}
+                defaultValue={field.value || ""}
+                disabled={isSubmitting}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='Selecciona una provincia' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    {/* <SelectLabel>Provincia</SelectLabel> */}
+                    {provinces?.map((province) => (
+                      <SelectItem key={province} value={province}>
+                        {province}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -134,21 +179,80 @@ const CustomerCreateAddressForm = ({
 
         <FormField
           control={control}
-          name='addressNumber'
+          name='addressGeoRef'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Numeración</FormLabel>
+              <FormLabel>Calle/Avenida</FormLabel>
               <FormControl>
-                <Input
-                  placeholder='Numeración'
+                <AsyncSelectAddress
+                  selected={field.value}
+                  onChange={field.onChange}
                   disabled={isSubmitting}
-                  {...field}
+                  province={province}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        <div className='grid grid-cols-3 gap-2'>
+          <FormField
+            control={control}
+            name='addressNumber'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Numeración/Altura</FormLabel>
+                <FormControl>
+                  <Input
+                    type='number'
+                    placeholder='Numeración'
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name='addressFloor'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Piso</FormLabel>
+                <FormControl>
+                  <Input
+                    type='number'
+                    placeholder='Numeración'
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name='addressApartament'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Departamento</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='Departamento'
+                    disabled={isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={control}
@@ -170,27 +274,10 @@ const CustomerCreateAddressForm = ({
           )}
         />
 
-        {watch("label") === AddressLabel.Other && (
-          <FormField
-            control={control}
-            name='labelString'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Etiqueta personalizada</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder='Ejemplo: Casa de un amigo.'
-                    disabled={isSubmitting}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-
-        <Button type='submit' disabled={isSubmitting}>
+        <Button
+          type='submit'
+          disabled={isSubmitting || (isSubmitted && !isValid)}
+        >
           {isSubmitting && (
             <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
           )}

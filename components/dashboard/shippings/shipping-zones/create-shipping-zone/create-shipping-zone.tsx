@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Locality, Municipality, Province } from "@/types/types"
+import { Locality, Municipality, Province } from "@/types/georef-types"
 import { toast } from "@/components/ui/use-toast"
 import { useMemo } from "react"
 
