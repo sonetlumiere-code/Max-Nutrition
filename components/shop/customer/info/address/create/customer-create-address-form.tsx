@@ -70,24 +70,23 @@ const CustomerCreateAddressForm = ({
   } = form
 
   const onSubmit = async (data: CustomerAddressSchema) => {
-    console.log(data)
-    // const res = await createCustomerAddress(customerId, data)
-    // setOpen(false)
+    const res = await createCustomerAddress(customerId, data)
+    setOpen(false)
 
-    // if (res.success) {
-    //   toast({
-    //     title: "Dirección agregada",
-    //     description: "La dirección ha sido agregada correctamente.",
-    //   })
-    // }
+    if (res.success) {
+      toast({
+        title: "Dirección agregada",
+        description: "La dirección ha sido agregada correctamente.",
+      })
+    }
 
-    // if (res.error) {
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Error agregando dirección",
-    //     description: res.error,
-    //   })
-    // }
+    if (res.error) {
+      toast({
+        variant: "destructive",
+        title: "Error agregando dirección",
+        description: res.error,
+      })
+    }
   }
 
   return (
