@@ -31,6 +31,7 @@ interface AsyncSelectAddressProps {
   disabled?: boolean
   className?: string
   province?: string
+  municipality?: string
 }
 
 const apiGeoRef = process.env.NEXT_PUBLIC_API_GEOREF
@@ -43,6 +44,7 @@ function AsyncSelectAddress({
   disabled,
   className,
   province,
+  municipality,
 }: AsyncSelectAddressProps) {
   const [open, setOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -56,6 +58,10 @@ function AsyncSelectAddress({
 
   if (province) {
     params.append("provincia", province)
+  }
+
+  if (municipality) {
+    params.append("departamento", municipality)
   }
 
   const apiUrl = `${apiGeoRef}/direcciones?${params.toString()}`

@@ -31,6 +31,16 @@ export interface AddressGeoRef {
   ubicacion: Ubicacion
 }
 
+export interface MunicipalitiesGeoRef {
+  cantidad: number
+  municipios: Municipality[]
+}
+
+export interface LocalitiesGeoRef {
+  cantidad: number
+  localidades: Locality[]
+}
+
 interface Ubicacion {
   lat: number
   lon: number

@@ -29,6 +29,8 @@ import {
 } from "@/components/ui/select"
 import { translateAddressLabel } from "@/helpers/helpers"
 import AsyncSelectAddress from "@/components/async-search-address"
+import LocalitySelect from "@/components/locality-select"
+import MunicipalitySelect from "@/components/municipality-select"
 
 type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
@@ -48,7 +50,7 @@ const CustomerCreateAddressForm = ({
     defaultValues: {
       province: "",
       municipality: "qwe",
-      locality: "asdasd",
+      locality: "asd",
       addressGeoRef: undefined,
       addressNumber: 0,
       addressFloor: 0,
@@ -67,8 +69,6 @@ const CustomerCreateAddressForm = ({
     setValue,
     reset,
   } = form
-
-  const province = watch("province")
 
   const onSubmit = async (data: CustomerAddressSchema) => {
     console.log(data)
@@ -152,6 +152,9 @@ const CustomerCreateAddressForm = ({
               <Select
                 onValueChange={(value) => {
                   field.onChange(value)
+                  setValue("municipality", "")
+                  setValue("locality", "")
+                  // setValue("addressGeoRef", null)
                 }}
                 defaultValue={field.value || ""}
                 disabled={isSubmitting}
@@ -163,7 +166,6 @@ const CustomerCreateAddressForm = ({
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    {/* <SelectLabel>Provincia</SelectLabel> */}
                     {provinces?.map((province) => (
                       <SelectItem key={province} value={province}>
                         {province}
@@ -179,6 +181,36 @@ const CustomerCreateAddressForm = ({
 
         <FormField
           control={control}
+          name='municipality'
+          render={({ field }) => (
+            <MunicipalitySelect
+              province={watch("province")}
+              value={field.value}
+              onChange={(value) => {
+                field.onChange(value)
+                setValue("locality", "")
+              }}
+              isSubmitting={isSubmitting}
+            />
+          )}
+        />
+
+        <FormField
+          control={control}
+          name='locality'
+          render={({ field }) => (
+            <LocalitySelect
+              province={watch("province")}
+              municipality={watch("municipality")}
+              value={field.value}
+              onChange={field.onChange}
+              isSubmitting={isSubmitting}
+            />
+          )}
+        />
+
+        <FormField
+          control={control}
           name='addressGeoRef'
           render={({ field }) => (
             <FormItem>
@@ -187,8 +219,9 @@ const CustomerCreateAddressForm = ({
                 <AsyncSelectAddress
                   selected={field.value}
                   onChange={field.onChange}
-                  disabled={isSubmitting}
-                  province={province}
+                  disabled={isSubmitting || !watch("municipality")}
+                  province={watch("province")}
+                  municipality={watch("municipality")}
                 />
               </FormControl>
               <FormMessage />
@@ -202,7 +235,7 @@ const CustomerCreateAddressForm = ({
             name='addressNumber'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Numeración/Altura</FormLabel>
+                <FormLabel>Altura</FormLabel>
                 <FormControl>
                   <Input
                     type='number'
