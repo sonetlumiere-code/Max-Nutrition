@@ -1,12 +1,6 @@
 "use client"
 
 import {
-  FormControl,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -20,27 +14,21 @@ import { LocalitiesGeoRef } from "@/types/georef-types"
 type LocalitySelectProps = {
   province?: string
   municipality?: string
-  value: string | undefined
-  onChange: (value: string) => void
-  isSubmitting: boolean
+  value?: string
+  onChange?: (value: string) => void
+  isDisabled: boolean
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
-
-const LocalitySelect = ({
-  province,
-  municipality,
-  value,
-  onChange,
-  isSubmitting,
-}: LocalitySelectProps) => {
-  const apiGeoRef = process.env.NEXT_PUBLIC_API_GEOREF
+const fetchLocalities = async (
+  province: string,
+  municipality: string | undefined,
+  apiGeoRef: string
+) => {
   const params = new URLSearchParams()
 
   if (province) {
     params.append("provincia", province)
   }
-
   if (municipality) {
     params.append("municipio", municipality)
   }
@@ -49,43 +37,48 @@ const LocalitySelect = ({
   params.append("max", "895")
 
   const apiUrl = `${apiGeoRef}/localidades?${params.toString()}`
+  const response = await fetch(apiUrl)
+  const data: LocalitiesGeoRef = await response.json()
 
-  const { data, error, isValidating } = useSWR<LocalitiesGeoRef>(
-    province ? apiUrl : null,
-    fetcher
+  return Array.from(
+    new Map(data.localidades.map((item) => [item.nombre, item])).values()
+  )
+}
+
+const LocalitySelect = ({
+  province,
+  municipality,
+  value,
+  onChange,
+  isDisabled,
+}: LocalitySelectProps) => {
+  const apiGeoRef = process.env.NEXT_PUBLIC_API_GEOREF || ""
+
+  const { data: uniqueLocalities = [], isValidating } = useSWR(
+    province ? [province, municipality, apiGeoRef] : null,
+    ([province, municipality, apiGeoRef]) =>
+      fetchLocalities(province, municipality, apiGeoRef)
   )
 
-  const uniqueLocalities = data?.localidades
-    ? Array.from(
-        new Map(data.localidades.map((item) => [item.nombre, item])).values()
-      )
-    : []
-
   return (
-    <FormItem>
-      <FormLabel>Localidad/Barrio</FormLabel>
-      <Select
-        onValueChange={onChange}
-        defaultValue={value}
-        disabled={isSubmitting || !province || isValidating}
-      >
-        <FormControl>
-          <SelectTrigger>
-            <SelectValue placeholder='Selecciona una localidad' />
-          </SelectTrigger>
-        </FormControl>
-        <SelectContent>
-          <SelectGroup>
-            {uniqueLocalities?.map((locality) => (
-              <SelectItem key={locality.id} value={locality.nombre}>
-                {locality.nombre}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <FormMessage />
-    </FormItem>
+    <Select
+      onValueChange={onChange}
+      value={value}
+      disabled={isDisabled || !province || isValidating}
+    >
+      <SelectTrigger>
+        <SelectValue placeholder='Selecciona una localidad/barrio' />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {uniqueLocalities.map((locality) => (
+            <SelectItem key={locality.id} value={locality.nombre}>
+              {locality.nombre}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   )
 }
 

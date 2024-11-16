@@ -49,8 +49,8 @@ const CustomerCreateAddressForm = ({
     resolver: zodResolver(customerAddressSchema),
     defaultValues: {
       province: "",
-      municipality: "qwe",
-      locality: "asd",
+      municipality: "",
+      locality: "",
       addressGeoRef: undefined,
       addressNumber: 0,
       addressFloor: 0,
@@ -67,7 +67,6 @@ const CustomerCreateAddressForm = ({
     formState: { isSubmitting, isSubmitted, isValid },
     watch,
     setValue,
-    reset,
   } = form
 
   const onSubmit = async (data: CustomerAddressSchema) => {
@@ -154,7 +153,6 @@ const CustomerCreateAddressForm = ({
                   field.onChange(value)
                   setValue("municipality", "")
                   setValue("locality", "")
-                  // setValue("addressGeoRef", null)
                 }}
                 defaultValue={field.value || ""}
                 disabled={isSubmitting}
@@ -183,15 +181,25 @@ const CustomerCreateAddressForm = ({
           control={control}
           name='municipality'
           render={({ field }) => (
-            <MunicipalitySelect
-              province={watch("province")}
-              value={field.value}
-              onChange={(value) => {
-                field.onChange(value)
-                setValue("locality", "")
-              }}
-              isSubmitting={isSubmitting}
-            />
+            <FormItem>
+              <FormLabel>
+                {watch("province") === "Ciudad Autónoma de Buenos Aires"
+                  ? "Comuna"
+                  : "Municipalidad"}
+              </FormLabel>
+              <FormControl>
+                <MunicipalitySelect
+                  province={watch("province")}
+                  value={field.value}
+                  onChange={(value) => {
+                    field.onChange(value)
+                    setValue("locality", "")
+                  }}
+                  isDisabled={isSubmitting}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
         />
 
@@ -199,13 +207,23 @@ const CustomerCreateAddressForm = ({
           control={control}
           name='locality'
           render={({ field }) => (
-            <LocalitySelect
-              province={watch("province")}
-              municipality={watch("municipality")}
-              value={field.value}
-              onChange={field.onChange}
-              isSubmitting={isSubmitting}
-            />
+            <FormItem>
+              <FormLabel>
+                {watch("province") === "Ciudad Autónoma de Buenos Aires"
+                  ? "Barrio"
+                  : "Localidad"}
+              </FormLabel>
+              <FormControl>
+                <LocalitySelect
+                  province={watch("province")}
+                  municipality={watch("municipality")}
+                  value={field.value}
+                  onChange={field.onChange}
+                  isDisabled={isSubmitting}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
         />
 

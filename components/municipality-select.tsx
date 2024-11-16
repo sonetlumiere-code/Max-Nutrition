@@ -1,12 +1,6 @@
 "use client"
 
 import {
-  FormControl,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -19,67 +13,60 @@ import { MunicipalitiesGeoRef } from "@/types/georef-types"
 
 type MunicipalitySelectProps = {
   province: string
-  value: string | undefined
-  onChange: (value: string) => void
-  isSubmitting: boolean
+  value?: string
+  onChange?: (value: string) => void
+  isDisabled: boolean
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
+const fetchMunicipalities = async (province: string, apiGeoRef: string) => {
+  const params = new URLSearchParams()
+  if (province) {
+    params.append("provincia", province)
+  }
+  params.append("campos", "id, nombre")
+  params.append("max", "135")
+
+  const apiUrl = `${apiGeoRef}/municipios?${params.toString()}`
+  const response = await fetch(apiUrl)
+  const data: MunicipalitiesGeoRef = await response.json()
+
+  return Array.from(
+    new Map(data.municipios.map((item) => [item.nombre, item])).values()
+  )
+}
 
 const MunicipalitySelect = ({
   province,
   value,
   onChange,
-  isSubmitting,
+  isDisabled,
 }: MunicipalitySelectProps) => {
-  const apiGeoRef = process.env.NEXT_PUBLIC_API_GEOREF
-  const params = new URLSearchParams()
+  const apiGeoRef = process.env.NEXT_PUBLIC_API_GEOREF || ""
 
-  if (province) {
-    params.append("provincia", province)
-  }
-
-  params.append("campos", "id, nombre")
-  params.append("max", "135")
-
-  const apiUrl = `${apiGeoRef}/municipios?${params.toString()}`
-
-  const { data, error, isValidating } = useSWR<MunicipalitiesGeoRef>(
-    province ? apiUrl : null,
-    fetcher
+  const { data: uniqueMunicipalities = [], isValidating } = useSWR(
+    province ? [province, apiGeoRef] : null,
+    ([province, apiGeoRef]) => fetchMunicipalities(province, apiGeoRef)
   )
 
-  const uniqueMunicipalities = data?.municipios
-    ? Array.from(
-        new Map(data.municipios.map((item) => [item.nombre, item])).values()
-      )
-    : []
-
   return (
-    <FormItem>
-      <FormLabel>Municipio/Comuna</FormLabel>
-      <Select
-        onValueChange={onChange}
-        defaultValue={value}
-        disabled={isSubmitting || !province || isValidating}
-      >
-        <FormControl>
-          <SelectTrigger>
-            <SelectValue placeholder='Selecciona el municipio/comuna' />
-          </SelectTrigger>
-        </FormControl>
-        <SelectContent>
-          <SelectGroup>
-            {uniqueMunicipalities?.map((municipality) => (
-              <SelectItem key={municipality.id} value={municipality.nombre}>
-                {municipality.nombre}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <FormMessage />
-    </FormItem>
+    <Select
+      onValueChange={onChange}
+      value={value}
+      disabled={isDisabled || !province || isValidating}
+    >
+      <SelectTrigger>
+        <SelectValue placeholder='Selecciona el municipio/comuna' />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {uniqueMunicipalities.map((municipality) => (
+            <SelectItem key={municipality.id} value={municipality.nombre}>
+              {municipality.nombre}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   )
 }
 
