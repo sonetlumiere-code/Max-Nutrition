@@ -41,7 +41,11 @@ const fetchLocalities = async (
   const data: LocalitiesGeoRef = await response.json()
 
   return Array.from(
-    new Map(data.localidades.map((item) => [item.nombre, item])).values()
+    new Map(
+      data.localidades
+        .sort((a, b) => a.nombre.localeCompare(b.nombre))
+        .map((item) => [item.nombre, item])
+    ).values()
   )
 }
 

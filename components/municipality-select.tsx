@@ -31,7 +31,16 @@ const fetchMunicipalities = async (province: string, apiGeoRef: string) => {
   const data: MunicipalitiesGeoRef = await response.json()
 
   return Array.from(
-    new Map(data.municipios.map((item) => [item.nombre, item])).values()
+    new Map(
+      data.municipios
+        .sort((a, b) =>
+          a.nombre.localeCompare(b.nombre, undefined, {
+            numeric: true,
+            sensitivity: "base",
+          })
+        )
+        .map((item) => [item.nombre, item])
+    ).values()
   )
 }
 
