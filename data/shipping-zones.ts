@@ -2,9 +2,15 @@
 
 import prisma from "@/lib/db/db"
 
-export const getShippingZones = async () => {
+export const getShippingZones = async (params?: {
+  where: {
+    isActive?: boolean
+  }
+}) => {
   try {
-    const shippingZones = await prisma.shippingZone.findMany()
+    const shippingZones = await prisma.shippingZone.findMany({
+      ...params,
+    })
 
     return shippingZones
   } catch (error) {
