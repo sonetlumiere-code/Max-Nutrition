@@ -94,7 +94,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
                       {order.address?.addressStreet}{" "}
                       {order.address?.addressNumber}{" "}
                       {order.address.addressFloor}{" "}
-                      {order.address.addressApartament}
+                      {order.address.addressApartment}
                     </span>
                     <span>
                       {order.address?.province}, {order.address?.municipality},{" "}

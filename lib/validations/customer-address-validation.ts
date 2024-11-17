@@ -38,7 +38,7 @@ export const customerAddressSchema = z
       message: "Ingresa un número de calle válido.",
     }),
     addressFloor: z.coerce.number().optional(),
-    addressApartament: z
+    addressApartment: z
       .string()
       .optional()
       .transform((value) => value?.toUpperCase() || ""),

@@ -36,7 +36,7 @@ export async function createCustomer(values: CustomerSchema) {
                 addressStreet: addr.addressGeoRef.calle.nombre,
                 addressNumber: addr.addressNumber,
                 addressFloor: addr.addressFloor,
-                addressApartament: addr.addressApartament,
+                addressApartment: addr.addressApartment,
                 postCode: addr.postCode,
               })),
             }

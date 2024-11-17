@@ -55,7 +55,7 @@ const CustomerCreateAddressForm = ({
       addressGeoRef: undefined,
       addressNumber: 0,
       addressFloor: 0,
-      addressApartament: "",
+      addressApartment: "",
       postCode: "",
       label: AddressLabel.Home,
       labelString: "",
@@ -290,7 +290,7 @@ const CustomerCreateAddressForm = ({
 
               <FormField
                 control={control}
-                name='addressApartament'
+                name='addressApartment'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Departamento</FormLabel>

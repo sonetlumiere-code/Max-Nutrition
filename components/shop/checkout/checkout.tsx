@@ -466,7 +466,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                                           {translateAddressLabel(a.label)}
                                           {/* ({a.addressStreet}{" "}
                                           {a.addressNumber} {a.addressFloor}{" "}
-                                          {a.addressApartament}) */}
+                                          {a.addressApartment}) */}
                                         </SelectItem>
                                       ))}
                                     </SelectContent>
@@ -484,7 +484,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                                     {selectedAddress?.addressStreet}{" "}
                                     {selectedAddress?.addressNumber}{" "}
                                     {selectedAddress?.addressFloor}{" "}
-                                    {selectedAddress?.addressApartament}
+                                    {selectedAddress?.addressApartment}
                                   </span>
                                   <span>
                                     {selectedAddress?.province},{" "}

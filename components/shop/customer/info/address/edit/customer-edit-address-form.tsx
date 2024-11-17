@@ -76,7 +76,7 @@ const CustomerEditAddressForm = ({
       },
       addressNumber: address.addressNumber,
       addressFloor: address.addressFloor || 0,
-      addressApartament: address.addressApartament || "",
+      addressApartment: address.addressApartment || "",
       postCode: address.postCode,
       label: address.label,
       labelString: address.labelString || "",
@@ -311,7 +311,7 @@ const CustomerEditAddressForm = ({
 
               <FormField
                 control={control}
-                name='addressApartament'
+                name='addressApartment'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Departamento</FormLabel>
