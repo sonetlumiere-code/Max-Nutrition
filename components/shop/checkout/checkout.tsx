@@ -125,8 +125,8 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     [customer?.address, customerAddressId]
   )
 
-  const { data: shippingZone, isValidating: isShippingZoneLoading } = useSWR(
-    selectedAddress?.locality
+  const { data: shippingZone } = useSWR(
+    shippingMethod === ShippingMethod.Delivery && selectedAddress?.locality
       ? [
           "/api/shipping-zone",
           { locality: selectedAddress.locality, isActive: true },
@@ -138,6 +138,15 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
   const shippingCost = shippingZone?.cost || 0
 
   const placeOrder = async (data: OrderSchema) => {
+    if (selectedAddress && !shippingZone) {
+      toast({
+        variant: "destructive",
+        title: "Zona de envío no válida",
+        description: `Actualmente no realizamos envíos a ${selectedAddress?.locality}`,
+      })
+      return
+    }
+
     const res = await createOrder(data)
 
     if (res.success) {
@@ -599,6 +608,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                         (shippingMethod === "Delivery" &&
                           !customer?.address?.length) ||
                         (isSubmitted && !isValid)
+                        // (shippingMethod === "Delivery" && !shippingZone)
                       }
                     >
                       {isSubmitting && (

@@ -9,6 +9,7 @@ import { z } from "zod"
 import { checkPromotion } from "../promotions/check-promotion"
 import { PopulatedProduct } from "@/types/types"
 import { getShippingSettings } from "@/data/shipping-settings"
+import { getShippingZone } from "@/data/shipping-zones"
 
 type OrderSchema = z.infer<typeof orderSchema>
 
@@ -98,7 +99,20 @@ export async function createOrder(values: OrderSchema) {
         return { error: "Invalid customer address id." }
       }
 
-      shippingCost = 0 // Replace with actual calculation based on address zone
+      const shippingZone = await getShippingZone({
+        where: {
+          locality: customerAddress.locality,
+          isActive: true,
+        },
+      })
+
+      if (!shippingZone) {
+        return {
+          error: `Shipping is not available for the locality: ${customerAddress.locality}.`,
+        }
+      }
+
+      shippingCost = shippingZone?.cost || 0
     }
 
     const total = finalPrice + shippingCost
