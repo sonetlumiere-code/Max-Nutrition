@@ -206,22 +206,24 @@ enum OrderStatus {
 }
 
 model Order {
-  id                   String           @id @default(cuid())
-  customerId           String
-  appliedPromotionName String?
-  subtotal             Float?
-  total                Float
-  customer             Customer         @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerAddressId    String?
-  address              CustomerAddress? @relation(fields: [customerAddressId], references: [id])
-  items                OrderItem[]
-  status               OrderStatus      @default(Pending)
-  paymentMethod        PaymentMethod
-  shippingMethod       ShippingMethod
-  shippingCost         Float
-  taxCost              Float?
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
+  id                           String                 @id @default(cuid())
+  customerId                   String
+  subtotal                     Float?
+  total                        Float
+  appliedPromotionName         String?
+  appliedPromotionDiscountType PromotionDiscountType?
+  appliedPromotionDiscount     Float?
+  customer                     Customer               @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerAddressId            String?
+  address                      CustomerAddress?       @relation(fields: [customerAddressId], references: [id])
+  items                        OrderItem[]
+  status                       OrderStatus            @default(Pending)
+  paymentMethod                PaymentMethod
+  shippingMethod               ShippingMethod
+  shippingCost                 Float
+  taxCost                      Float?
+  createdAt                    DateTime               @default(now())
+  updatedAt                    DateTime               @updatedAt
 
   @@map("orders")
 }

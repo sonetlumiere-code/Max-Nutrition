@@ -50,16 +50,31 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
           <span className='text-muted-foreground'>Subtotal</span>
           <span>${order.subtotal || order.total}</span>
         </li>
-        {order.appliedPromotionName && order.subtotal && (
-          <li className='flex items-center justify-between'>
-            <span className='text-muted-foreground'>
-              Descuento promocional ({order.appliedPromotionName})
-            </span>
-            <span className='text-destructive'>
-              - ${order.subtotal - order.total}
-            </span>
-          </li>
-        )}
+        {order.appliedPromotionName &&
+          order.appliedPromotionDiscount &&
+          order.subtotal && (
+            <li className='flex items-center justify-between'>
+              <span className='text-muted-foreground'>
+                Descuento promocional ({order.appliedPromotionName})
+              </span>
+              <span className='text-destructive'>
+                {order.appliedPromotionDiscountType === "Percentage" ? (
+                  <>
+                    -{order.appliedPromotionDiscount}% ( -$
+                    {(order.subtotal * order.appliedPromotionDiscount) / 100})
+                  </>
+                ) : (
+                  <>-${order.appliedPromotionDiscount}</>
+                )}
+              </span>
+            </li>
+          )}
+        <li className='flex items-center justify-between'>
+          <span className='text-muted-foreground'>Costo de envío</span>
+          <span>
+            {order.shippingCost ? `$${order.shippingCost}` : "Gratis"}
+          </span>
+        </li>
         <li className='flex items-center justify-between font-semibold'>
           <span className='text-muted-foreground'>Total</span>
           <span>${order.total}</span>

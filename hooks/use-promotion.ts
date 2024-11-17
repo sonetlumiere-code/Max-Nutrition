@@ -25,50 +25,64 @@ export function usePromotion() {
     console.error("Failed to fetch promotions:", error)
   }
 
-  const { appliedPromotion, subtotalPrice, finalPrice } = useMemo(() => {
-    const initialPromotion = null
-    const subtotalPrice = getSubtotalPrice()
-    let finalPrice = subtotalPrice
+  const { appliedPromotion, subtotalPrice, discountAmount, finalPrice } =
+    useMemo(() => {
+      const initialPromotion = null
+      const subtotalPrice = getSubtotalPrice()
+      let discountAmount = 0
+      let finalPrice = subtotalPrice
 
-    if (!promotions?.length)
-      return { appliedPromotion: initialPromotion, subtotalPrice, finalPrice }
+      if (!promotions?.length)
+        return { appliedPromotion: initialPromotion, subtotalPrice, finalPrice }
 
-    const categoryCount: Record<string, number> = {}
+      const categoryCount: Record<string, number> = {}
 
-    items.forEach((item) => {
-      const itemQuantity = item.quantity
-      item.product.categories?.forEach((category: Category) => {
-        const categoryId = category.id
-        categoryCount[categoryId] =
-          (categoryCount[categoryId] || 0) + itemQuantity
-      })
-    })
-
-    for (const promotion of promotions) {
-      const isEligible = promotion.categories?.every((requirement) => {
-        const { categoryId, quantity } = requirement
-        return categoryCount[categoryId] >= quantity
+      items.forEach((item) => {
+        const itemQuantity = item.quantity
+        item.product.categories?.forEach((category: Category) => {
+          const categoryId = category.id
+          categoryCount[categoryId] =
+            (categoryCount[categoryId] || 0) + itemQuantity
+        })
       })
 
-      if (isEligible) {
-        const discountAmount =
-          promotion.discountType === "Fixed"
-            ? promotion.discount
-            : promotion.discountType === "Percentage"
-            ? (subtotalPrice * promotion.discount) / 100
-            : 0
-        finalPrice = subtotalPrice - discountAmount
+      for (const promotion of promotions) {
+        const isEligible = promotion.categories?.every((requirement) => {
+          const { categoryId, quantity } = requirement
+          return categoryCount[categoryId] >= quantity
+        })
 
-        return {
-          appliedPromotion: promotion,
-          subtotalPrice,
-          finalPrice,
+        if (isEligible) {
+          discountAmount =
+            promotion.discountType === "Fixed"
+              ? promotion.discount
+              : promotion.discountType === "Percentage"
+              ? (subtotalPrice * promotion.discount) / 100
+              : 0
+          finalPrice = subtotalPrice - discountAmount
+
+          return {
+            appliedPromotion: promotion,
+            subtotalPrice,
+            discountAmount,
+            finalPrice,
+          }
         }
       }
-    }
 
-    return { appliedPromotion: initialPromotion, subtotalPrice, finalPrice }
-  }, [items, promotions, getSubtotalPrice])
+      return {
+        appliedPromotion: initialPromotion,
+        subtotalPrice,
+        discountAmount,
+        finalPrice,
+      }
+    }, [items, promotions, getSubtotalPrice])
 
-  return { appliedPromotion, isLoading, subtotalPrice, finalPrice }
+  return {
+    appliedPromotion,
+    isLoading,
+    subtotalPrice,
+    discountAmount,
+    finalPrice,
+  }
 }

@@ -72,8 +72,13 @@ type CheckoutProps = {
 const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
   const { items, setOpen, clearCart } = useCart()
 
-  const { appliedPromotion, isLoading, subtotalPrice, finalPrice } =
-    usePromotion()
+  const {
+    appliedPromotion,
+    isLoading,
+    subtotalPrice,
+    discountAmount,
+    finalPrice,
+  } = usePromotion()
 
   const router = useRouter()
 
@@ -555,7 +560,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                         {isLoading ? (
                           <Skeleton className='w-20 h-8' />
                         ) : (
-                          <span>$ {subtotalPrice.toFixed(2)}</span>
+                          <span>${subtotalPrice.toFixed(2)}</span>
                         )}
                       </div>
                       {appliedPromotion && (
@@ -565,11 +570,11 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                             <Skeleton className='w-20 h-8' />
                           ) : appliedPromotion.discountType === "Fixed" ? (
                             <span className='text-destructive'>
-                              - $ {appliedPromotion.discount.toFixed(2)}
+                              -${appliedPromotion.discount.toFixed(2)}
                             </span>
                           ) : (
                             <span className='text-destructive'>
-                              - {appliedPromotion.discount}%
+                              -{appliedPromotion.discount}% (-${discountAmount})
                             </span>
                           )}
                         </div>
@@ -579,7 +584,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                         {isLoading ? (
                           <Skeleton className='w-20 h-8' />
                         ) : (
-                          <span>$ {shippingCost.toFixed(2)}</span>
+                          <span>${shippingCost.toFixed(2)}</span>
                         )}
                       </div>
 
@@ -590,9 +595,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                         {isLoading ? (
                           <Skeleton className='w-20 h-6' />
                         ) : (
-                          <span>
-                            $ {(finalPrice + shippingCost).toFixed(2)}
-                          </span>
+                          <span>${(finalPrice + shippingCost).toFixed(2)}</span>
                         )}
                       </div>
                     </div>

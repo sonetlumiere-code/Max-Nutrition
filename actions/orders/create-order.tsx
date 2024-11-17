@@ -71,8 +71,6 @@ export async function createOrder(values: OrderSchema) {
       }
     }
 
-    const promotionName = appliedPromotion?.name ?? null
-
     let shippingCost = 0
 
     if (shippingMethod === ShippingMethod.Delivery) {
@@ -125,9 +123,11 @@ export async function createOrder(values: OrderSchema) {
         shippingCost,
         paymentMethod,
         taxCost: 0,
+        appliedPromotionName: appliedPromotion?.name ?? null,
+        appliedPromotionDiscountType: appliedPromotion?.discountType ?? null,
+        appliedPromotionDiscount: appliedPromotion?.discount ?? null,
         subtotal,
         total,
-        appliedPromotionName: promotionName,
         items: {
           create: items.map((item) => ({
             productId: item.productId,
