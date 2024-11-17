@@ -22,6 +22,8 @@ export const getShippingZones = async (params?: {
 export const getShippingZone = async (params: {
   where: {
     id?: string
+    locality?: string
+    isActive?: boolean
   }
 }) => {
   try {

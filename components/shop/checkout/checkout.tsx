@@ -59,6 +59,8 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
 import { ToastAction } from "@/components/ui/toast"
+import useSWR from "swr"
+import { getShippingZone } from "@/data/shipping-zones"
 
 type OrderSchema = z.infer<typeof orderSchema>
 
@@ -104,6 +106,9 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     setValue,
   } = form
 
+  const shippingMethod = watch("shippingMethod")
+  const customerAddressId = watch("customerAddressId")
+
   useEffect(() => {
     setValue(
       "items",
@@ -115,9 +120,22 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     )
   }, [items, setValue])
 
-  const shippingMethod = watch("shippingMethod")
+  const selectedAddress = useMemo(
+    () => customer?.address?.find((a) => a.id === customerAddressId),
+    [customer?.address, customerAddressId]
+  )
 
-  const shippingCost = 0 // TO DO
+  const { data: shippingZone, isValidating: isShippingZoneLoading } = useSWR(
+    selectedAddress?.locality
+      ? [
+          "/api/shipping-zone",
+          { locality: selectedAddress.locality, isActive: true },
+        ]
+      : null,
+    ([_, params]) => getShippingZone({ where: params })
+  )
+
+  const shippingCost = shippingZone?.cost || 0
 
   const placeOrder = async (data: OrderSchema) => {
     const res = await createOrder(data)
