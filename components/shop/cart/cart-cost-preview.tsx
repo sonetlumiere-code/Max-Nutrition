@@ -6,8 +6,13 @@ import { Icons } from "@/components/icons"
 import { cn } from "@/lib/utils"
 
 const CartCostPreview = () => {
-  const { appliedPromotion, isLoading, subtotalPrice, finalPrice } =
-    usePromotion()
+  const {
+    appliedPromotion,
+    isLoading,
+    subtotalPrice,
+    discountAmount,
+    finalPrice,
+  } = usePromotion()
 
   return (
     <>
@@ -22,15 +27,17 @@ const CartCostPreview = () => {
               <span>Precio total</span>
             </div>
             <div className='flex flex-col text-end'>
-              <span>$ {subtotalPrice}</span>
+              <span>${subtotalPrice}</span>
               {appliedPromotion.discountType === "Fixed" ? (
                 <span className='text-destructive'>
-                  -$ {appliedPromotion.discount}
+                  -${appliedPromotion.discount}
                 </span>
               ) : (
-                <span>-{appliedPromotion.discount}%</span>
+                <span className='text-destructive'>
+                  -{appliedPromotion.discount}% (-${discountAmount})
+                </span>
               )}
-              <span>$ {finalPrice}</span>
+              <span>${finalPrice}</span>
             </div>
           </AlertDescription>
         </Alert>

@@ -20,52 +20,15 @@ export async function editCustomer({
     return { error: "Invalid fields." }
   }
 
-  const { name, birthdate, address, phone } = validatedFields.data
+  const { name, birthdate, phone } = validatedFields.data
 
   try {
-    // Filter out any undefined IDs from the address array
-    const addressIds =
-      address?.map((addr) => addr.id).filter((id): id is string => !!id) || []
-
     const customer = await prisma.customer.update({
       where: { id },
       data: {
         name,
         birthdate,
         phone,
-        address: {
-          deleteMany: {
-            customerId: id,
-            id: { notIn: addressIds }, // Keeps only specified address IDs
-          },
-          upsert: address?.map((addr) => ({
-            where: { id: addr.id || undefined },
-            create: {
-              label: addr.label,
-              labelString: addr.labelString,
-              province: addr.province,
-              municipality: addr.municipality,
-              locality: addr.locality,
-              addressStreet: addr.addressGeoRef.calle.nombre,
-              addressNumber: addr.addressNumber,
-              addressFloor: addr.addressFloor,
-              addressApartament: addr.addressApartament,
-              postCode: addr.postCode,
-            },
-            update: {
-              label: addr.label,
-              labelString: addr.labelString,
-              province: addr.province,
-              municipality: addr.municipality,
-              locality: addr.locality,
-              addressStreet: addr.addressGeoRef.calle.nombre,
-              addressNumber: addr.addressNumber,
-              addressFloor: addr.addressFloor,
-              addressApartament: addr.addressApartament,
-              postCode: addr.postCode,
-            },
-          })),
-        },
       },
       include: {
         address: true,
@@ -73,7 +36,7 @@ export async function editCustomer({
       },
     })
 
-    revalidatePath("customer-info")
+    revalidatePath("/customer-info")
 
     return { success: customer }
   } catch (error) {
