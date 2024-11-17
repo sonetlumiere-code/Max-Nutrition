@@ -43,7 +43,7 @@ export async function editCustomerAddress(
         addressStreet: addressGeoRef.calle.nombre,
         addressNumber,
         addressFloor,
-        addressApartament,
+        addressApartament: addressApartament?.toUpperCase() || "",
         postCode,
         label,
         labelString: label === AddressLabel.Other ? labelString : "",

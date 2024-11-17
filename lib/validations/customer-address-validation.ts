@@ -38,7 +38,10 @@ export const customerAddressSchema = z
       message: "Ingresa un número de calle válido.",
     }),
     addressFloor: z.coerce.number().optional(),
-    addressApartament: z.string().optional(),
+    addressApartament: z
+      .string()
+      .optional()
+      .transform((value) => value?.toUpperCase() || ""),
     postCode: z.string().min(1, { message: "Ingresa tu código postal." }),
   })
   .refine(

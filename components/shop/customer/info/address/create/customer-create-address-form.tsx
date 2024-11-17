@@ -299,6 +299,9 @@ const CustomerCreateAddressForm = ({
                         placeholder='Departamento'
                         disabled={isSubmitting}
                         {...field}
+                        onChange={(e) =>
+                          field.onChange(e.target.value.toUpperCase())
+                        }
                       />
                     </FormControl>
                     <FormMessage />

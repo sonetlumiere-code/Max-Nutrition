@@ -41,7 +41,7 @@ export async function createCustomerAddress(
         addressStreet: addressGeoRef.calle.nombre,
         addressNumber,
         addressFloor,
-        addressApartament,
+        addressApartament: addressApartament?.toUpperCase() || "",
         postCode,
         label,
         labelString: label === AddressLabel.Other ? labelString : "",
