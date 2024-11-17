@@ -2,7 +2,6 @@
 
 import prisma from "@/lib/db/db"
 import { customerSchema } from "@/lib/validations/customer-validation"
-import { AddressLabel } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
@@ -15,7 +14,7 @@ export async function createCustomer(values: CustomerSchema) {
     return { error: "Invalid fields." }
   }
 
-  const { userId, birthdate, name, address, phone } = validatedFields.data
+  const { userId, birthdate, name, phone } = validatedFields.data
 
   try {
     const customer = await prisma.customer.create({
@@ -24,26 +23,8 @@ export async function createCustomer(values: CustomerSchema) {
         birthdate,
         phone,
         name,
-        address: address
-          ? {
-              create: address.map((addr) => ({
-                label: addr.label,
-                labelString:
-                  addr.label === AddressLabel.Other ? addr.label : "",
-                province: addr.province,
-                municipality: addr.municipality,
-                locality: addr.locality,
-                addressStreet: addr.addressGeoRef.calle.nombre,
-                addressNumber: addr.addressNumber,
-                addressFloor: addr.addressFloor,
-                addressApartment: addr.addressApartment,
-                postCode: addr.postCode,
-              })),
-            }
-          : undefined,
       },
       include: {
-        address: true,
         orders: true,
       },
     })

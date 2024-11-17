@@ -131,7 +131,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     [customer?.address, customerAddressId]
   )
 
-  const { data: shippingZone } = useSWR(
+  const { data: shippingZone, isValidating: isValidatingShippingZone } = useSWR(
     shippingMethod === ShippingMethod.Delivery && selectedAddress?.locality
       ? [
           "/api/shipping-zone",
@@ -402,7 +402,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                               <Alert variant='success'>
                                 <Icons.circleCheck className='h-4 w-4' />
                                 <AlertTitle className='leading-5'>
-                                  Envío a domicilio habilitado!
+                                  Envío a domicilio habilitado
                                 </AlertTitle>
                                 <AlertDescription className='leading-4'>
                                   Alcanzaste la cantidad mínima de{" "}
@@ -477,7 +477,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                             />
                           </CardContent>
                           <CardFooter>
-                            {selectedAddress && shippingZone && (
+                            {selectedAddress && (
                               <div className='w-full text-sm space-y-3'>
                                 <address className='grid gap-0.5 not-italic text-muted-foreground'>
                                   <span>
@@ -498,10 +498,19 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
 
                                 <Separator />
 
-                                <p className='text-muted-foreground'>
-                                  Costo de envío a {shippingZone.locality}:{" "}
-                                  <b>${shippingZone?.cost}</b>
-                                </p>
+                                {isValidatingShippingZone ? (
+                                  <Skeleton className='w-20 h-5' />
+                                ) : shippingZone ? (
+                                  <p className='text-muted-foreground'>
+                                    Costo de envío a {shippingZone.locality}:{" "}
+                                    <b>${shippingZone?.cost}</b>
+                                  </p>
+                                ) : (
+                                  <p className='text-destructive'>
+                                    Actualmente no realizamos envíos a{" "}
+                                    {selectedAddress?.locality}
+                                  </p>
+                                )}
                               </div>
                             )}
                           </CardFooter>
