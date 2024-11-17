@@ -33,7 +33,7 @@ export async function createCustomer(values: CustomerSchema) {
                 province: addr.province,
                 municipality: addr.municipality,
                 locality: addr.locality,
-                addressStreet: addr.addressStreet,
+                addressStreet: addr.addressGeoRef.calle.nombre,
                 addressNumber: addr.addressNumber,
                 addressFloor: addr.addressFloor,
                 addressApartament: addr.addressApartament,

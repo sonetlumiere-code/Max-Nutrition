@@ -8,7 +8,7 @@ const addressGeoRefSchema = z.object(
       valor: z.coerce.number(),
     }),
     calle: z.object({
-      categoria: z.enum(["CALLE", "AV"]),
+      categoria: z.enum(["CALLE", "AV"]).optional(),
       id: z.string(),
       nombre: z.string(),
     }),

@@ -53,7 +53,7 @@ interface Callecruce1 {
 }
 
 interface Calle {
-  categoria: "CALLE" | "AV"
+  categoria?: "CALLE" | "AV"
   id: string
   nombre: string
 }

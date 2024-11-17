@@ -21,7 +21,9 @@ const CustomerAddressesList = ({ addresses }: CustomerAddressesListProps) => {
         <TableRow>
           <TableHead>Etiqueta</TableHead>
           <TableHead className='hidden md:table-cell'>Dirección</TableHead>
-          <TableHead className='hidden md:table-cell'>Barrio</TableHead>
+          <TableHead className='hidden md:table-cell'>
+            Localidad/Barrio
+          </TableHead>
           <TableHead className='hidden md:table-cell'>Código postal</TableHead>
           <TableHead className='text-end'>
             <span>Acciones</span>
