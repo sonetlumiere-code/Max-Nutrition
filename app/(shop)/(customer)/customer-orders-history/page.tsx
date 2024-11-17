@@ -6,15 +6,9 @@ import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-// import { Role } from "@prisma/client"
 
 const CustomerOrdersHistoryPage = async () => {
   const session = await auth()
-
-  // const customer =
-  //   session?.user.role === Role.USER
-  //     ? await getCustomer(session?.user.id || "")
-  //     : null
 
   const customer = await getCustomer(session?.user.id || "")
 

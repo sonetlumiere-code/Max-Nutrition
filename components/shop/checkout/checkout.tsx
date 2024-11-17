@@ -53,6 +53,7 @@ import { useEffect, useMemo } from "react"
 import { usePromotion } from "@/hooks/use-promotion"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
+  translateAddressLabel,
   translatePaymentMethod,
   translateShippingMethod,
 } from "@/helpers/helpers"
@@ -377,7 +378,8 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                             </FormItem>
                           )}
                         />
-
+                      </CardContent>
+                      <CardFooter>
                         {shippingMethod === ShippingMethod.Delivery && (
                           <>
                             {!isValidMinQuantity ? (
@@ -413,7 +415,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                             )}
                           </>
                         )}
-                      </CardContent>
+                      </CardFooter>
                     </Card>
                   )}
 
@@ -461,9 +463,10 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                                     <SelectContent>
                                       {customer?.address?.map((a) => (
                                         <SelectItem key={a.id} value={a.id}>
-                                          {a.label} ({a.addressStreet}{" "}
+                                          {translateAddressLabel(a.label)}
+                                          {/* ({a.addressStreet}{" "}
                                           {a.addressNumber} {a.addressFloor}{" "}
-                                          {a.addressApartament})
+                                          {a.addressApartament}) */}
                                         </SelectItem>
                                       ))}
                                     </SelectContent>
@@ -473,6 +476,35 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                               )}
                             />
                           </CardContent>
+                          <CardFooter>
+                            {selectedAddress && shippingZone && (
+                              <div className='w-full text-sm space-y-3'>
+                                <address className='grid gap-0.5 not-italic text-muted-foreground'>
+                                  <span>
+                                    {selectedAddress?.addressStreet}{" "}
+                                    {selectedAddress?.addressNumber}{" "}
+                                    {selectedAddress?.addressFloor}{" "}
+                                    {selectedAddress?.addressApartament}
+                                  </span>
+                                  <span>
+                                    {selectedAddress?.province},{" "}
+                                    {selectedAddress?.municipality},
+                                    {selectedAddress?.locality}
+                                  </span>{" "}
+                                  <span>
+                                    Código postal: {selectedAddress?.postCode}
+                                  </span>
+                                </address>
+
+                                <Separator />
+
+                                <p className='text-muted-foreground'>
+                                  Costo de envío a {shippingZone.locality}:{" "}
+                                  <b>${shippingZone?.cost}</b>
+                                </p>
+                              </div>
+                            )}
+                          </CardFooter>
                         </Card>
                       )}
                     </>
@@ -560,7 +592,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                         {isLoading ? (
                           <Skeleton className='w-20 h-8' />
                         ) : (
-                          <span>${subtotalPrice.toFixed(2)}</span>
+                          <span>${subtotalPrice}</span>
                         )}
                       </div>
                       {appliedPromotion && (
