@@ -3,17 +3,22 @@
 import prisma from "@/lib/db/db"
 import { PopulatedCategory } from "@/types/types"
 
-export const getCategories = async () => {
+export const getCategories = async (params?: {
+  include?: {
+    products?: {
+      where?: {
+        show?: boolean
+      }
+      include?: {
+        categories?: boolean
+      }
+    }
+    promotions?: boolean
+  }
+}) => {
   try {
     const categories = await prisma.category.findMany({
-      include: {
-        products: {
-          include: {
-            categories: true,
-          },
-        },
-        promotions: true,
-      },
+      include: params?.include || {},
     })
 
     return categories

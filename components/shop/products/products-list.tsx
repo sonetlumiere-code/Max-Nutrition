@@ -2,7 +2,19 @@ import ProductItem from "./product-item"
 import { getCategories } from "@/data/categories"
 
 const ProductsList = async () => {
-  const categories = await getCategories()
+  const categories = await getCategories({
+    include: {
+      products: {
+        where: {
+          show: true,
+        },
+        include: {
+          categories: true,
+        },
+      },
+      promotions: true,
+    },
+  })
 
   return (
     <div className='grid gap-8'>
