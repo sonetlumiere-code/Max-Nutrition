@@ -10,19 +10,19 @@ const CartFixedButton = dynamic(() => import("./cart/cart-fixed-button"), {
 const Shop = async () => {
   const session = await auth()
 
-  // const categories = await getCategories({
-  //   include: {
-  //     products: {
-  //       where: {
-  //         show: true,
-  //       },
-  //       include: {
-  //         categories: true,
-  //       },
-  //     },
-  //     promotions: true,
-  //   },
-  // })
+  const categories = await getCategories({
+    include: {
+      products: {
+        where: {
+          show: true,
+        },
+        include: {
+          categories: true,
+        },
+      },
+      promotions: true,
+    },
+  })
 
   return (
     <>
@@ -33,9 +33,7 @@ const Shop = async () => {
         </p>
       </header>
 
-      <ProductsList
-      // initialCategories={categories}
-      />
+      <ProductsList initialCategories={categories} />
 
       {session?.user && <CartFixedButton />}
     </>

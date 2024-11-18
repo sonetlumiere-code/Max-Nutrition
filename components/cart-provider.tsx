@@ -73,6 +73,7 @@ export function CartProvider({ children, session }: CartProviderProps) {
       getProducts({
         where: {
           id: { in: items.map((item: CartItem) => item.product.id) },
+          show: true,
         },
       }),
     {
