@@ -31,6 +31,7 @@ import OrdersDataTable from "@/components/dashboard/orders/list/orders-data-tabl
 import { Icons } from "@/components/icons"
 import OrdersBulkExportDialog from "@/components/dashboard/orders/list/orders-data-table/bulk-actions/orders-bulk-export-dialog"
 import { es } from "date-fns/locale"
+import { OrderStatus } from "@prisma/client"
 
 const fetchOrders = async () => {
   const orders = await getOrders({
@@ -71,6 +72,20 @@ const fetchOrders = async () => {
   return orders
 }
 
+const getStartDate = (tab: TimePeriod) => {
+  const now = new Date()
+  switch (tab) {
+    case "week":
+      return subWeeks(now, 1)
+    case "month":
+      return subMonths(now, 1)
+    case "year":
+      return subYears(now, 1)
+    default:
+      return null
+  }
+}
+
 export default function OrdersPage() {
   const [selectedTab, setSelectedTab] = useState<TimePeriod>("week")
   const [selectedOrder, setSelectedOrder] = useState<PopulatedOrder | null>(
@@ -84,20 +99,6 @@ export default function OrdersPage() {
     isLoading,
   } = useSWR<PopulatedOrder[] | null>("/api/orders", fetchOrders)
 
-  const getStartDate = (tab: TimePeriod) => {
-    const now = new Date()
-    switch (tab) {
-      case "week":
-        return subWeeks(now, 1)
-      case "month":
-        return subMonths(now, 1)
-      case "year":
-        return subYears(now, 1)
-      default:
-        return null
-    }
-  }
-
   const groupedAndFilteredOrders = useMemo(() => {
     if (!orders) return {}
 
@@ -106,14 +107,12 @@ export default function OrdersPage() {
 
     orders.forEach((order) => {
       const orderDate = new Date(order.createdAt)
-
-      // Filter by selected tab date range
       const isInDateRange =
         !startDate ||
         isWithinInterval(orderDate, { start: startDate, end: new Date() })
+
       if (!isInDateRange) return
 
-      // Group by week, month, or year
       let groupKey = ""
       if (selectedTab === "week") {
         const weekStart = startOfWeek(orderDate, { weekStartsOn: 1 })
@@ -128,19 +127,13 @@ export default function OrdersPage() {
         groupKey = "all"
       }
 
-      // Add order to the appropriate group
       if (!groupedOrders[groupKey]) {
         groupedOrders[groupKey] = []
       }
       groupedOrders[groupKey].push(order)
     })
 
-    // For week, month, and year, return the most recent group
-    if (
-      selectedTab === "week" ||
-      selectedTab === "month" ||
-      selectedTab === "year"
-    ) {
+    if (["week", "month", "year"].includes(selectedTab)) {
       const sortedGroupKeys = Object.keys(groupedOrders).sort(
         (a, b) => new Date(b).getTime() - new Date(a).getTime()
       )
@@ -165,6 +158,10 @@ export default function OrdersPage() {
   const handleTabChange = (tab: TimePeriod) => {
     setSelectedTab(tab)
   }
+
+  const ordersToExport = Object.values(groupedAndFilteredOrders)
+    .flat()
+    .filter((order) => order.status !== OrderStatus.Cancelled)
 
   if (error) {
     return <div>Error buscando pedidos.</div>
@@ -215,8 +212,7 @@ export default function OrdersPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {groupedAndFilteredOrders &&
-                    Object.keys(groupedAndFilteredOrders).length > 0 ? (
+                    {Object.keys(groupedAndFilteredOrders).length > 0 ? (
                       Object.entries(groupedAndFilteredOrders).map(
                         ([groupKey, groupOrders]) => (
                           <div key={groupKey}>
@@ -244,7 +240,7 @@ export default function OrdersPage() {
             </Tabs>
           )}
         </div>
-        <div>{selectedOrder && <OrderItemDetails order={selectedOrder} />}</div>
+        {selectedOrder && <OrderItemDetails order={selectedOrder} />}
       </main>
 
       {Object.keys(groupedAndFilteredOrders).length > 0 && (
@@ -268,9 +264,9 @@ export default function OrdersPage() {
                 )}`
               : "Todos los pedidos"
           }`}
-          orders={Object.values(groupedAndFilteredOrders).flat()}
           open={openBulkExportDialog}
           setOpen={setOpenBulkExportDialog}
+          orders={ordersToExport}
         />
       )}
     </>

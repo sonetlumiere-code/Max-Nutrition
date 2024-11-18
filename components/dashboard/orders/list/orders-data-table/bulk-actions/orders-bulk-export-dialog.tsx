@@ -48,7 +48,7 @@ const OrdersBulkExportDialog = ({
               <span>Cantidad de pedidos: {orders.length}</span>
             </DialogDescription>
             <div className='py-4'>
-              <OrdersBulkExport orders={orders} setOpen={setOpen} />
+              <OrdersBulkExport orders={orders} />
             </div>
           </DialogHeader>
         </DialogContent>
@@ -67,7 +67,7 @@ const OrdersBulkExportDialog = ({
           </DialogDescription>
         </DrawerHeader>
         <div className='p-4'>
-          <OrdersBulkExport orders={orders} setOpen={setOpen} />
+          <OrdersBulkExport orders={orders} />
         </div>
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>

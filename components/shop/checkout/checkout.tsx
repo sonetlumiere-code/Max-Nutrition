@@ -318,11 +318,9 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                           <Icons.circleAlert className='h-4 w-4' />
                           <AlertTitle>Sin promoción aplicada</AlertTitle>
                           <AlertDescription>
-                            <AlertDescription>
-                              Actualmente no hay promociones disponibles para tu
-                              carrito. ¡Explora nuestras promociones para
-                              ahorrar en tu próxima compra!
-                            </AlertDescription>
+                            Actualmente no hay promociones disponibles para tu
+                            carrito. ¡Explora nuestras promociones para ahorrar
+                            en tu próxima compra!
                           </AlertDescription>
                         </Alert>
                       )}

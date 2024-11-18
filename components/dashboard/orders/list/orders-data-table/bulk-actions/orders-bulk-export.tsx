@@ -1,6 +1,4 @@
 import { IngredientTotal, PopulatedOrder } from "@/types/types"
-import { Ingredient } from "@prisma/client"
-import { Dispatch, SetStateAction } from "react"
 import {
   Table,
   TableBody,
@@ -10,39 +8,42 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { translateUnit } from "@/helpers/helpers"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Icons } from "@/components/icons"
 
 type OrdersBulkExportProps = {
   orders: PopulatedOrder[]
-  setOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const OrdersBulkExport = ({ orders, setOpen }: OrdersBulkExportProps) => {
+const OrdersBulkExport = ({ orders }: OrdersBulkExportProps) => {
   const ingredientTotals: Record<string, IngredientTotal> = {}
 
   orders.forEach((order) => {
-    order.items?.forEach((item: any) => {
+    order.items?.forEach((item) => {
       const product = item.product
       const recipe = product.recipe
 
-      recipe?.ingredients?.forEach((ingredientEntry: any) => {
-        const ingredient: Ingredient = ingredientEntry.ingredient
+      recipe?.ingredients?.forEach((ingredientEntry) => {
+        const ingredient = ingredientEntry.ingredient
         const totalQuantity = ingredientEntry.quantity * item.quantity
 
-        if (ingredientTotals[ingredient.id]) {
-          ingredientTotals[ingredient.id].total += totalQuantity
-        } else {
-          ingredientTotals[ingredient.id] = {
-            ingredientId: ingredient.id,
-            name: ingredient.name,
-            measurement: ingredient.measurement,
-            total: totalQuantity,
+        if (ingredient) {
+          if (ingredientTotals[ingredient.id]) {
+            ingredientTotals[ingredient.id].total += totalQuantity
+          } else {
+            ingredientTotals[ingredient.id] = {
+              ingredientId: ingredient.id,
+              name: ingredient.name,
+              measurement: ingredient.measurement,
+              total: totalQuantity,
+            }
           }
         }
       })
     })
   })
 
-  return (
+  return orders.length > 0 ? (
     <Table>
       <TableHeader>
         <TableRow>
@@ -63,6 +64,14 @@ const OrdersBulkExport = ({ orders, setOpen }: OrdersBulkExportProps) => {
         ))}
       </TableBody>
     </Table>
+  ) : (
+    <Alert>
+      <Icons.circleAlert className='h-4 w-4' />
+      <AlertTitle>Sin pedidos para exportar</AlertTitle>
+      <AlertDescription>
+        No hay pedidos para exportar en este período.
+      </AlertDescription>
+    </Alert>
   )
 }
 
