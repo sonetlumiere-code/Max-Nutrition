@@ -104,14 +104,12 @@ function AsyncSelectAddress({
         >
           <div className='flex gap-1 flex-wrap align-middle'>
             {selected && (
-              <Badge
-                variant='outline'
-                className='mr-1 capitalize'
-                onClick={(e) => e.stopPropagation()}
-              >
-                {renderItem(selected).toLowerCase()}
+              <Badge variant='outline' onClick={(e) => e.stopPropagation()}>
+                <span className='capitalize max-w-[70vw] overflow-hidden text-ellipsis'>
+                  {renderItem(selected).toLowerCase()}
+                </span>
                 <span
-                  className='ml-1 ring-offset-background rounded-full outline-none focus:ring-1 focus:ring-ring focus:ring-offset-2'
+                  className='ring-offset-background rounded-full outline-none focus:ring-1 focus:ring-ring focus:ring-offset-2'
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       onChange(null)
