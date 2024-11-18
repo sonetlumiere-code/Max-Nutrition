@@ -24,15 +24,23 @@ const fetchCategories = async () => {
 
 export const useGetCategories = ({
   fallbackData,
+  onSuccess,
 }: {
   fallbackData?: PopulatedCategory[] | null
+  onSuccess?: (categories: PopulatedCategory[]) => void
 }) => {
   const { data: categories = fallbackData, error } = useSWR(
     "categories",
     fetchCategories,
     {
       fallbackData,
+      revalidateIfStale: false,
       revalidateOnFocus: true,
+      onSuccess: (data) => {
+        if (onSuccess && data) {
+          onSuccess(data)
+        }
+      },
     }
   )
 

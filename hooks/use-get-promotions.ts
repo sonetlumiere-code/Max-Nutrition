@@ -14,7 +14,9 @@ export const useGetPromotions = () => {
     data: promotions = [],
     error,
     isLoading: isLoadingPromotions,
-  } = useSWR<PopulatedPromotion[] | null>("promotions", fetcher)
+  } = useSWR<PopulatedPromotion[] | null>("promotions", fetcher, {
+    revalidateIfStale: false,
+  })
 
   if (error) {
     console.error("Failed to fetch promotions:", error)

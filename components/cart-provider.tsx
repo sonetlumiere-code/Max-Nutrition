@@ -10,9 +10,8 @@ import {
   useEffect,
 } from "react"
 import { PopulatedProduct, Variation } from "@/types/types"
-import useSWR from "swr"
-import { getProducts } from "@/data/products"
 import { toast } from "./ui/use-toast"
+import { useGetCategories } from "@/hooks/use-get-categories"
 
 export type CartItem = {
   id: string
@@ -58,7 +57,9 @@ type CartProviderProps = {
 
 export function CartProvider({ children, session }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>(() => {
-    if (typeof window !== "undefined" && session?.user.id) {
+    if (typeof window === "undefined") return initialState.items
+
+    if (session?.user.id) {
       const storedCart = localStorage.getItem(`cart_${session.user.id}`)
       return storedCart ? JSON.parse(storedCart) : initialState.items
     }
@@ -67,52 +68,37 @@ export function CartProvider({ children, session }: CartProviderProps) {
 
   const [open, setOpen] = useState(false)
 
-  // useSWR(
-  //   open ? ["products", items] : null,
-  //   async ([, items]) =>
-  //     getProducts({
-  //       where: {
-  //         id: { in: items.map((item: CartItem) => item.product.id) },
-  //         show: true,
-  //       },
-  //       include: {
-  //         categories: true,
-  //       },
-  //     }),
-  //   {
-  //     onSuccess: (latestProducts) => {
-  //       const updatedItems = items.map((item) => {
-  //         const updatedProduct = latestProducts?.find(
-  //           (product) => product.id === item.product.id
-  //         )
+  useGetCategories({
+    onSuccess: (categories) => {
+      if (!categories) return
 
-  //         if (updatedProduct) {
-  //           if (
-  //             new Date(updatedProduct.updatedAt) >
-  //             new Date(item.product.updatedAt)
-  //           ) {
-  //             toast({
-  //               title: `El producto "${item.product.name}" fue actualizado.`,
-  //             })
+      const allProducts = categories.flatMap((category) => category.products)
 
-  //             return {
-  //               ...item,
-  //               product: updatedProduct,
-  //             }
-  //           }
-  //         }
-  //         return item
-  //       })
+      const updatedItems = items.map((item) => {
+        const updatedProduct = allProducts.find(
+          (product) => product?.id === item.product.id
+        )
+        if (
+          updatedProduct &&
+          new Date(updatedProduct.updatedAt) > new Date(item.product.updatedAt)
+        ) {
+          return { ...item, product: updatedProduct }
+        }
+        return item
+      })
 
-  //       // Remove items that are no longer available (e.g., `show` is false)
-  //       const filteredItems = updatedItems.filter((item) =>
-  //         latestProducts?.some((product) => product.id === item.product.id)
-  //       )
+      const filteredItems = updatedItems.filter((item) =>
+        allProducts.some((product) => product?.id === item.product.id)
+      )
 
-  //       setItems(filteredItems)
-  //     },
-  //   }
-  // )
+      if (JSON.stringify(filteredItems) !== JSON.stringify(items)) {
+        setItems(filteredItems)
+        toast({
+          title: "Algunos productos del carrito fueron actualizados.",
+        })
+      }
+    },
+  })
 
   useEffect(() => {
     if (session?.user.id) {
