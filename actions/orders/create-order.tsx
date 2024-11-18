@@ -1,6 +1,5 @@
 "use server"
 
-import { getProductsByIds } from "@/data/products"
 import prisma from "@/lib/db/db"
 import { orderSchema } from "@/lib/validations/order-validation"
 import { ShippingMethod } from "@prisma/client"
@@ -10,6 +9,7 @@ import { checkPromotion } from "../promotions/check-promotion"
 import { PopulatedProduct } from "@/types/types"
 import { getShippingSettings } from "@/data/shipping-settings"
 import { getShippingZone } from "@/data/shipping-zones"
+import { getProducts } from "@/data/products"
 
 type OrderSchema = z.infer<typeof orderSchema>
 
@@ -31,7 +31,14 @@ export async function createOrder(values: OrderSchema) {
   const uniqueProductIds = Array.from(new Set(productIds))
 
   try {
-    const products = await getProductsByIds(uniqueProductIds)
+    const products = await getProducts({
+      where: {
+        id: {
+          in: uniqueProductIds,
+        },
+        show: true,
+      },
+    })
 
     if (!products || products.length !== uniqueProductIds.length) {
       return { error: "Invalid product id." }

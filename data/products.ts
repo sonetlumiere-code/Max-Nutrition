@@ -4,18 +4,25 @@ import prisma from "@/lib/db/db"
 import { PopulatedProduct } from "@/types/types"
 
 export const getProducts = async (params?: {
+  where?: {
+    id?: {
+      in?: string[]
+    }
+    show?: boolean
+  }
   include?: {
     categories?: boolean
   }
-}) => {
+}): Promise<PopulatedProduct[] | null> => {
   try {
     const products = await prisma.product.findMany({
-      ...params,
+      where: params?.where || {},
+      include: params?.include || {},
     })
 
     return products as PopulatedProduct[]
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching products:", error)
     return null
   }
 }
@@ -38,26 +45,6 @@ export const getProduct = async (params: {
     return product as PopulatedProduct
   } catch (error) {
     console.error(error)
-    return null
-  }
-}
-
-export const getProductsByIds = async (ids: string[]) => {
-  try {
-    const products = await prisma.product.findMany({
-      where: {
-        id: {
-          in: ids,
-        },
-      },
-      include: {
-        categories: true,
-      },
-    })
-
-    return products as PopulatedProduct[]
-  } catch (error) {
-    console.error("Error fetching products by IDs:", error)
     return null
   }
 }
