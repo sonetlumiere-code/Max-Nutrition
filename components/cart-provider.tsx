@@ -10,6 +10,9 @@ import {
   useEffect,
 } from "react"
 import { PopulatedProduct, Variation } from "@/types/types"
+import useSWR from "swr"
+import { getProducts } from "@/data/products"
+import { toast } from "./ui/use-toast"
 
 export type CartItem = {
   id: string
@@ -63,6 +66,51 @@ export function CartProvider({ children, session }: CartProviderProps) {
   })
 
   const [open, setOpen] = useState(false)
+
+  useSWR(
+    items.length > 0 ? ["products", items] : null,
+    async ([, items]) =>
+      getProducts({
+        where: {
+          id: { in: items.map((item: CartItem) => item.product.id) },
+        },
+      }),
+    {
+      onSuccess: (latestProducts) => {
+        const updatedItems = items.map((item) => {
+          const updatedProduct = latestProducts?.find(
+            (product) => product.id === item.product.id
+          )
+
+          if (updatedProduct) {
+            if (
+              new Date(updatedProduct.updatedAt) >
+              new Date(item.product.updatedAt)
+            ) {
+              // Show notification for updates
+              toast({
+                title: `El producto "${item.product.name}" fue actualizado.`,
+              })
+
+              // Replace the product with the latest version
+              return {
+                ...item,
+                product: updatedProduct,
+              }
+            }
+          }
+          return item
+        })
+
+        // Remove items that are no longer available (e.g., `show` is false)
+        const filteredItems = updatedItems.filter((item) =>
+          latestProducts?.some((product) => product.id === item.product.id)
+        )
+
+        setItems(filteredItems)
+      },
+    }
+  )
 
   useEffect(() => {
     if (session?.user.id) {
