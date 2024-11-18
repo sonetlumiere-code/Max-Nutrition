@@ -18,6 +18,7 @@ import { toast } from "@/components/ui/use-toast"
 import ProductCard from "./product-card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
+import { Icons } from "@/components/icons"
 
 interface DialogProductDetailProps {
   product: Product
@@ -39,7 +40,14 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
     addItem(product, quantity, variations)
     setOpen(false)
     toast({
-      title: "Item agregado al carrito",
+      description: (
+        <div className='flex items-center'>
+          <Icons.circleCheck className='mr-2 h-5 w-5' />
+          <span className='first-letter:capitalize'>
+            Item{quantity > 1 && "s"} agregado{quantity > 1 && "s"} al carrito
+          </span>
+        </div>
+      ),
     })
   }
 
