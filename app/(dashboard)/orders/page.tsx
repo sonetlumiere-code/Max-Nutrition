@@ -33,7 +33,41 @@ import OrdersBulkExportDialog from "@/components/dashboard/orders/list/orders-da
 import { es } from "date-fns/locale"
 
 const fetchOrders = async () => {
-  const orders = await getOrders()
+  const orders = await getOrders({
+    include: {
+      items: {
+        include: {
+          product: {
+            include: {
+              recipe: {
+                include: {
+                  ingredients: {
+                    include: {
+                      ingredient: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      customer: {
+        include: {
+          user: {
+            select: {
+              email: true,
+              image: true,
+            },
+          },
+        },
+      },
+      address: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  })
   return orders
 }
 

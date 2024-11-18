@@ -2,49 +2,26 @@
 
 import prisma from "@/lib/db/db"
 import { PopulatedCategory } from "@/types/types"
+import { Prisma } from "@prisma/client"
 
-export const getCategories = async (params?: {
-  include?: {
-    products?: {
-      where?: {
-        show?: boolean
-      }
-      include?: {
-        categories?: boolean
-      }
-    }
-    promotions?: boolean
-  }
-}) => {
+export const getCategories = async (args?: Prisma.CategoryFindManyArgs) => {
   try {
-    const categories = await prisma.category.findMany({
-      include: params?.include || {},
-    })
+    const categories = await prisma.category.findMany(args)
 
-    return categories
+    return categories as PopulatedCategory[]
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching categories:", error)
     return null
   }
 }
 
-export const getCategory = async (params: {
-  where: {
-    id?: string
-  }
-  include?: {
-    products?: true
-    promotions?: true
-  }
-}) => {
+export const getCategory = async (args: Prisma.CategoryFindFirstArgs) => {
   try {
-    const category = await prisma.category.findFirst({
-      ...params,
-    })
+    const category = await prisma.category.findFirst(args)
 
     return category as PopulatedCategory
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching category:", error)
     return null
   }
 }

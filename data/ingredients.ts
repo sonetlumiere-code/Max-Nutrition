@@ -2,19 +2,11 @@
 
 import prisma from "@/lib/db/db"
 import { PopulatedIngredient } from "@/types/types"
+import { Prisma } from "@prisma/client"
 
-export const getIngredients = async (params?: {
-  orderBy?: {
-    name: "asc" | "desc"
-  }
-  include?: {
-    recipes?: boolean
-  }
-}) => {
+export const getIngredients = async (args?: Prisma.IngredientFindManyArgs) => {
   try {
-    const ingredients = await prisma.ingredient.findMany({
-      ...params,
-    })
+    const ingredients = await prisma.ingredient.findMany(args)
 
     return ingredients as PopulatedIngredient[]
   } catch (error) {
@@ -23,19 +15,9 @@ export const getIngredients = async (params?: {
   }
 }
 
-export const getIngredient = async (params: {
-  where: {
-    id?: string
-    name?: string
-  }
-  include?: {
-    recipes?: boolean
-  }
-}) => {
+export const getIngredient = async (args: Prisma.IngredientFindFirstArgs) => {
   try {
-    const ingredient = await prisma.ingredient.findFirst({
-      ...params,
-    })
+    const ingredient = await prisma.ingredient.findFirst(args)
 
     return ingredient as PopulatedIngredient
   } catch (error) {

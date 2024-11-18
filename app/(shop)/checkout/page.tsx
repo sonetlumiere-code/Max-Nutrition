@@ -15,7 +15,33 @@ const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
 export default async function CheckoutPage() {
   const session = await auth()
 
-  const customer = await getCustomer(session?.user.id || "")
+  const customer = await getCustomer({
+    where: {
+      userId: session?.user.id,
+    },
+    include: {
+      address: true,
+      user: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
+      orders: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          address: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      },
+    },
+  })
 
   if (!customer) {
     redirect("/shop")

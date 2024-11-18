@@ -7,17 +7,37 @@ import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-// import { Role } from "@prisma/client"
 
 const CustomerInfoPage = async () => {
   const session = await auth()
 
-  // const customer =
-  //   session?.user.role === Role.USER
-  //     ? await getCustomer(session?.user.id || "")
-  //     : null
-
-  const customer = await getCustomer(session?.user.id || "")
+  const customer = await getCustomer({
+    where: {
+      userId: session?.user.id,
+    },
+    include: {
+      address: true,
+      user: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
+      orders: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          address: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      },
+    },
+  })
 
   if (!customer) {
     redirect("/shop")

@@ -2,60 +2,26 @@
 
 import prisma from "@/lib/db/db"
 import { PopulatedCustomer } from "@/types/types"
+import { Prisma } from "@prisma/client"
 
-export const getCustomer = async (
-  userId: string
-): Promise<PopulatedCustomer | null> => {
+export const getCustomers = async (args?: Prisma.CustomerFindManyArgs) => {
   try {
-    const customer = await prisma.customer.findFirst({
-      where: {
-        userId,
-      },
-      include: {
-        address: true,
-        user: {
-          select: {
-            email: true,
-            name: true,
-          },
-        },
-        orders: {
-          // take: 5,
-          orderBy: {
-            createdAt: "desc",
-          },
-          include: {
-            address: true,
-            items: {
-              include: {
-                product: true,
-              },
-            },
-          },
-        },
-      },
-    })
+    const customers = await prisma.customer.findMany(args)
 
-    return customer
+    return customers as PopulatedCustomer[]
   } catch (error) {
-    console.error("Error fetching or creating customer:", error)
+    console.error("Error fetching customers:", error)
     return null
   }
 }
 
-export const getCustomers = async () => {
+export const getCustomer = async (args: Prisma.CustomerFindFirstArgs) => {
   try {
-    const customers = await prisma.customer.findMany({
-      include: {
-        user: {
-          select: { email: true, image: true, name: true, createdAt: true },
-        },
-        address: true,
-      },
-    })
-    return customers
+    const customer = await prisma.customer.findFirst(args)
+
+    return customer as PopulatedCustomer
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching customer:", error)
     return null
   }
 }

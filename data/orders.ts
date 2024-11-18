@@ -2,44 +2,11 @@
 
 import prisma from "@/lib/db/db"
 import { PopulatedOrder } from "@/types/types"
+import { Prisma } from "@prisma/client"
 
-export const getOrders = async (): Promise<PopulatedOrder[] | null> => {
+export const getOrders = async (args?: Prisma.OrderFindManyArgs) => {
   try {
-    const orders = await prisma.order.findMany({
-      include: {
-        items: {
-          include: {
-            product: {
-              include: {
-                recipe: {
-                  include: {
-                    ingredients: {
-                      include: {
-                        ingredient: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        customer: {
-          include: {
-            user: {
-              select: {
-                email: true,
-                image: true,
-              },
-            },
-          },
-        },
-        address: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    })
+    const orders = await prisma.order.findMany(args)
 
     return orders as PopulatedOrder[]
   } catch (error) {

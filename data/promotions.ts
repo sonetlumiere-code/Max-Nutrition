@@ -2,40 +2,26 @@
 
 import prisma from "@/lib/db/db"
 import { PopulatedPromotion } from "@/types/types"
+import { Prisma } from "@prisma/client"
 
-export const getPromotions = async (params?: {
-  include?: {
-    categories?: boolean
-  }
-}) => {
+export const getPromotions = async (args?: Prisma.PromotionFindManyArgs) => {
   try {
-    const promotions = await prisma.promotion.findMany({
-      ...params,
-    })
+    const promotions = await prisma.promotion.findMany(args)
 
     return promotions as PopulatedPromotion[]
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching promotions:", error)
     return null
   }
 }
 
-export const getPromotion = async (params: {
-  where: {
-    id?: string
-  }
-  include?: {
-    categories?: boolean
-  }
-}) => {
+export const getPromotion = async (args: Prisma.PromotionFindFirstArgs) => {
   try {
-    const promotion = await prisma.promotion.findFirst({
-      ...params,
-    })
+    const promotion = await prisma.promotion.findFirst(args)
 
     return promotion as PopulatedPromotion
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching promotion:", error)
     return null
   }
 }

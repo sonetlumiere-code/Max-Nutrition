@@ -1,15 +1,13 @@
 "use server"
 
 import prisma from "@/lib/db/db"
-import { VerificationToken } from "@prisma/client"
+import { Prisma, VerificationToken } from "@prisma/client"
 
-export const getVerificationToken = async (params: {
-  where: {
-    email?: string
-  }
-}): Promise<VerificationToken | null> => {
+export const getVerificationToken = async (
+  args: Prisma.VerificationTokenFindFirstArgs
+): Promise<VerificationToken | null> => {
   try {
-    const verificationToken = prisma.verificationToken.findFirst(params)
+    const verificationToken = prisma.verificationToken.findFirst(args)
 
     return verificationToken
   } catch (error) {

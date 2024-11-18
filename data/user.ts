@@ -1,20 +1,15 @@
 "use server"
 
 import prisma from "@/lib/db/db"
-import { User } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 
-export const getUser = async (params: {
-  where: {
-    id?: string
-    email?: string
-  }
-}): Promise<User | null> => {
+export const getUser = async (args: Prisma.UserFindFirstArgs) => {
   try {
-    const user = await prisma.user.findFirst(params)
+    const user = await prisma.user.findFirst(args)
 
     return user
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching user:", error)
     return null
   }
 }

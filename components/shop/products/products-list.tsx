@@ -20,7 +20,7 @@ const ProductsList = async () => {
     <div className='grid gap-8'>
       {categories?.map((category) => (
         <div className='grid gap-4' key={category.id}>
-          {category.products.length > 0 && (
+          {category.products && category.products.length > 0 && (
             <>
               <h2 className='text-xl font-semibold'>{category.name}</h2>
               <div className='grid gap-6'>

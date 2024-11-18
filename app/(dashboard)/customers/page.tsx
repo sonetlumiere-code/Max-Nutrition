@@ -43,8 +43,15 @@ import {
 } from "@/components/ui/breadcrumb"
 
 export default async function CustomersPage() {
-  const customers = await getCustomers()
-  console.log(customers)
+  const customers = await getCustomers({
+    include: {
+      user: {
+        select: { email: true, image: true, name: true, createdAt: true },
+      },
+      address: true,
+    },
+  })
+
   return (
     <>
       <Breadcrumb>
@@ -91,7 +98,7 @@ export default async function CustomersPage() {
               {customers?.map((customer) => (
                 <TableRow key={customer.id}>
                   <TableCell className='hidden sm:table-cell'>
-                    {customer.user.image ? (
+                    {customer.user?.image ? (
                       <img
                         src={customer.user.image}
                         alt='Customer Image'
@@ -102,7 +109,7 @@ export default async function CustomersPage() {
                     )}
                   </TableCell>
                   <TableCell className='font-medium'>
-                    {customer.user.name}
+                    {customer.user?.name}
                   </TableCell>
                   <TableCell className='hidden sm:table-cell'>
                     <Button
@@ -110,7 +117,7 @@ export default async function CustomersPage() {
                       size='default'
                       className='group px-0'
                     >
-                      {customer.user.email}
+                      {customer.user?.email}
                       <Clipboard className='h-4 w-4 ml-1 invisible group-hover:visible' />
                     </Button>
                   </TableCell>

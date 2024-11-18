@@ -2,23 +2,11 @@
 
 import prisma from "@/lib/db/db"
 import { PopulatedProduct } from "@/types/types"
+import { Prisma } from "@prisma/client"
 
-export const getProducts = async (params?: {
-  where?: {
-    id?: {
-      in?: string[]
-    }
-    show?: boolean
-  }
-  include?: {
-    categories?: boolean
-  }
-}): Promise<PopulatedProduct[] | null> => {
+export const getProducts = async (args?: Prisma.ProductFindManyArgs) => {
   try {
-    const products = await prisma.product.findMany({
-      where: params?.where || {},
-      include: params?.include || {},
-    })
+    const products = await prisma.product.findMany(args)
 
     return products as PopulatedProduct[]
   } catch (error) {
@@ -27,24 +15,13 @@ export const getProducts = async (params?: {
   }
 }
 
-export const getProduct = async (params: {
-  where: {
-    id?: string
-    description?: string
-  }
-  include?: {
-    recipe?: boolean
-    categories?: boolean
-  }
-}) => {
+export const getProduct = async (args: Prisma.ProductFindFirstArgs) => {
   try {
-    const product = await prisma.product.findFirst({
-      ...params,
-    })
+    const product = await prisma.product.findFirst(args)
 
     return product as PopulatedProduct
   } catch (error) {
-    console.error(error)
+    console.error("Error fetching product:", error)
     return null
   }
 }
