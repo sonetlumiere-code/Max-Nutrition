@@ -1,41 +1,15 @@
 "use client"
 
-import useSWR from "swr"
 import ProductItem from "./product-item"
-import { getCategories } from "@/data/categories"
 import { PopulatedCategory } from "@/types/types"
-
-const fetchCategories = async () => {
-  const categories = await getCategories({
-    include: {
-      products: {
-        where: {
-          show: true,
-        },
-        include: {
-          categories: true,
-        },
-      },
-      promotions: true,
-    },
-  })
-
-  return categories
-}
+import { useGetCategories } from "@/hooks/use-get-categories"
 
 const ProductsList = ({
   initialCategories,
 }: {
   initialCategories: PopulatedCategory[] | null
 }) => {
-  const { data: categories = initialCategories } = useSWR(
-    "categories",
-    fetchCategories,
-    {
-      fallbackData: initialCategories,
-      revalidateOnFocus: true,
-    }
-  )
+  const { categories } = useGetCategories({ fallbackData: initialCategories })
 
   return (
     <div className='grid gap-8'>

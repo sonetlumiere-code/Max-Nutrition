@@ -75,7 +75,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
 
   const {
     appliedPromotion,
-    isLoading,
+    isLoadingPromotions,
     subtotalPrice,
     discountAmount,
     finalPrice,
@@ -596,7 +596,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                     <div className='grid gap-2'>
                       <div className='flex items-center justify-between text-sm'>
                         <span>Subtotal</span>
-                        {isLoading ? (
+                        {isLoadingPromotions ? (
                           <Skeleton className='w-20 h-8' />
                         ) : (
                           <span>${subtotalPrice}</span>
@@ -605,7 +605,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                       {appliedPromotion && (
                         <div className='flex items-center justify-between text-sm'>
                           <span>Descuento ({appliedPromotion.name})</span>
-                          {isLoading ? (
+                          {isLoadingPromotions ? (
                             <Skeleton className='w-20 h-8' />
                           ) : appliedPromotion.discountType === "Fixed" ? (
                             <span className='text-destructive'>
@@ -620,7 +620,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                       )}
                       <div className='flex items-center justify-between text-sm'>
                         <span>Costo de envío</span>
-                        {isLoading ? (
+                        {isLoadingPromotions ? (
                           <Skeleton className='w-20 h-8' />
                         ) : (
                           <span>${shippingCost}</span>
@@ -631,7 +631,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
 
                       <div className='flex items-center justify-between font-bold'>
                         <span>Total</span>
-                        {isLoading ? (
+                        {isLoadingPromotions ? (
                           <Skeleton className='w-20 h-6' />
                         ) : (
                           <span>${(finalPrice + shippingCost).toFixed(2)}</span>

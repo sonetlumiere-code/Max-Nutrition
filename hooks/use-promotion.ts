@@ -1,29 +1,14 @@
 "use client"
 
 import { useCart } from "@/components/cart-provider"
-import useSWR from "swr"
-import { PopulatedPromotion } from "@/types/types"
 import { Category } from "@prisma/client"
-import { getPromotions } from "@/data/promotions"
 import { useMemo } from "react"
-
-const fetcher = async () => {
-  const promotions = await getPromotions({ include: { categories: true } })
-  return promotions
-}
+import { useGetPromotions } from "./use-get-promotions"
 
 export function usePromotion() {
   const { items, getSubtotalPrice } = useCart()
 
-  const {
-    data: promotions = [],
-    error,
-    isLoading,
-  } = useSWR<PopulatedPromotion[] | null>("/api/promotions", fetcher)
-
-  if (error) {
-    console.error("Failed to fetch promotions:", error)
-  }
+  const { promotions, isLoadingPromotions } = useGetPromotions()
 
   const { appliedPromotion, subtotalPrice, discountAmount, finalPrice } =
     useMemo(() => {
@@ -80,7 +65,7 @@ export function usePromotion() {
 
   return {
     appliedPromotion,
-    isLoading,
+    isLoadingPromotions,
     subtotalPrice,
     discountAmount,
     finalPrice,

@@ -67,51 +67,52 @@ export function CartProvider({ children, session }: CartProviderProps) {
 
   const [open, setOpen] = useState(false)
 
-  useSWR(
-    items.length > 0 ? ["products", items] : null,
-    async ([, items]) =>
-      getProducts({
-        where: {
-          id: { in: items.map((item: CartItem) => item.product.id) },
-          show: true,
-        },
-      }),
-    {
-      onSuccess: (latestProducts) => {
-        const updatedItems = items.map((item) => {
-          const updatedProduct = latestProducts?.find(
-            (product) => product.id === item.product.id
-          )
+  // useSWR(
+  //   open ? ["products", items] : null,
+  //   async ([, items]) =>
+  //     getProducts({
+  //       where: {
+  //         id: { in: items.map((item: CartItem) => item.product.id) },
+  //         show: true,
+  //       },
+  //       include: {
+  //         categories: true,
+  //       },
+  //     }),
+  //   {
+  //     onSuccess: (latestProducts) => {
+  //       const updatedItems = items.map((item) => {
+  //         const updatedProduct = latestProducts?.find(
+  //           (product) => product.id === item.product.id
+  //         )
 
-          if (updatedProduct) {
-            if (
-              new Date(updatedProduct.updatedAt) >
-              new Date(item.product.updatedAt)
-            ) {
-              // Show notification for updates
-              toast({
-                title: `El producto "${item.product.name}" fue actualizado.`,
-              })
+  //         if (updatedProduct) {
+  //           if (
+  //             new Date(updatedProduct.updatedAt) >
+  //             new Date(item.product.updatedAt)
+  //           ) {
+  //             toast({
+  //               title: `El producto "${item.product.name}" fue actualizado.`,
+  //             })
 
-              // Replace the product with the latest version
-              return {
-                ...item,
-                product: updatedProduct,
-              }
-            }
-          }
-          return item
-        })
+  //             return {
+  //               ...item,
+  //               product: updatedProduct,
+  //             }
+  //           }
+  //         }
+  //         return item
+  //       })
 
-        // Remove items that are no longer available (e.g., `show` is false)
-        const filteredItems = updatedItems.filter((item) =>
-          latestProducts?.some((product) => product.id === item.product.id)
-        )
+  //       // Remove items that are no longer available (e.g., `show` is false)
+  //       const filteredItems = updatedItems.filter((item) =>
+  //         latestProducts?.some((product) => product.id === item.product.id)
+  //       )
 
-        setItems(filteredItems)
-      },
-    }
-  )
+  //       setItems(filteredItems)
+  //     },
+  //   }
+  // )
 
   useEffect(() => {
     if (session?.user.id) {
