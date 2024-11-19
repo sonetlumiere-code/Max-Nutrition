@@ -7,8 +7,9 @@ import { cn } from "@/lib/utils"
 
 const CartCostPreview = () => {
   const {
-    appliedPromotion,
+    promotions,
     isLoadingPromotions,
+    appliedPromotion,
     subtotalPrice,
     discountAmount,
     finalPrice,
@@ -42,7 +43,11 @@ const CartCostPreview = () => {
           </AlertDescription>
         </Alert>
       ) : (
-        <Alert className={cn({ invisible: isLoadingPromotions })}>
+        <Alert
+          className={cn({
+            invisible: isLoadingPromotions || !promotions?.length,
+          })}
+        >
           <Icons.info className='h-4 w-4' />
           <AlertTitle>Sin promoción aplicada</AlertTitle>
           <AlertDescription>

@@ -17,8 +17,9 @@ export function usePromotion() {
       let discountAmount = 0
       let finalPrice = subtotalPrice
 
-      if (!promotions?.length)
+      if (!promotions?.length) {
         return { appliedPromotion: initialPromotion, subtotalPrice, finalPrice }
+      }
 
       const categoryCount: Record<string, number> = {}
 
@@ -56,6 +57,7 @@ export function usePromotion() {
       }
 
       return {
+        promotions,
         appliedPromotion: initialPromotion,
         subtotalPrice,
         discountAmount,
@@ -64,8 +66,9 @@ export function usePromotion() {
     }, [items, promotions, getSubtotalPrice])
 
   return {
-    appliedPromotion,
+    promotions,
     isLoadingPromotions,
+    appliedPromotion,
     subtotalPrice,
     discountAmount,
     finalPrice,

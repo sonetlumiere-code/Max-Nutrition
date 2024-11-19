@@ -5,7 +5,10 @@ import { PopulatedPromotion } from "@/types/types"
 import useSWR from "swr"
 
 const fetcher = async () => {
-  const promotions = await getPromotions({ include: { categories: true } })
+  const promotions = await getPromotions({
+    where: { isActive: true },
+    include: { categories: true },
+  })
   return promotions
 }
 
