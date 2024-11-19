@@ -24,43 +24,12 @@ import { MoveLeftIcon } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import CartContent from "./cart-content"
 import Link from "next/link"
-import { useGetCategories } from "@/hooks/use-get-categories"
-import { toast } from "@/components/ui/use-toast"
+import useSyncCart from "@/hooks/use-sync-cart"
 
 const Cart = () => {
-  const { items, setItems, open, setOpen } = useCart()
+  const { items, open, setOpen } = useCart()
 
-  useGetCategories({
-    onSuccess: (categories) => {
-      if (!categories) return
-
-      const allProducts = categories.flatMap((category) => category.products)
-
-      const updatedItems = items.map((item) => {
-        const updatedProduct = allProducts.find(
-          (product) => product?.id === item.product.id
-        )
-        if (
-          updatedProduct &&
-          new Date(updatedProduct.updatedAt) > new Date(item.product.updatedAt)
-        ) {
-          return { ...item, product: updatedProduct }
-        }
-        return item
-      })
-
-      const filteredItems = updatedItems.filter((item) =>
-        allProducts.some((product) => product?.id === item.product.id)
-      )
-
-      if (JSON.stringify(filteredItems) !== JSON.stringify(items)) {
-        setItems(filteredItems)
-        toast({
-          title: "Algunos productos del carrito fueron actualizados.",
-        })
-      }
-    },
-  })
+  useSyncCart()
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
