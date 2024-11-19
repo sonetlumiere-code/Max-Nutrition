@@ -9,7 +9,9 @@ const ProductsList = ({
 }: {
   initialCategories: PopulatedCategory[] | null
 }) => {
-  const { categories } = useGetCategories({ fallbackData: initialCategories })
+  const { categories } = useGetCategories({
+    fallbackData: initialCategories,
+  })
 
   return (
     <div className='grid gap-8'>

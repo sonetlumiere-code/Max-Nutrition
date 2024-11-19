@@ -8,10 +8,10 @@ import {
   useState,
   ReactNode,
   useEffect,
+  Dispatch,
+  SetStateAction,
 } from "react"
 import { PopulatedProduct, Variation } from "@/types/types"
-import { toast } from "./ui/use-toast"
-import { useGetCategories } from "@/hooks/use-get-categories"
 
 export type CartItem = {
   id: string
@@ -22,6 +22,7 @@ export type CartItem = {
 
 type CartProviderState = {
   items: CartItem[]
+  setItems: Dispatch<SetStateAction<CartItem[]>>
   addItem: (
     product: PopulatedProduct,
     quantity: number,
@@ -38,6 +39,7 @@ type CartProviderState = {
 
 const initialState: CartProviderState = {
   items: [],
+  setItems: () => null,
   addItem: () => null,
   removeItem: () => null,
   clearCart: () => null,
@@ -67,38 +69,6 @@ export function CartProvider({ children, session }: CartProviderProps) {
   })
 
   const [open, setOpen] = useState(false)
-
-  useGetCategories({
-    onSuccess: (categories) => {
-      if (!categories) return
-
-      const allProducts = categories.flatMap((category) => category.products)
-
-      const updatedItems = items.map((item) => {
-        const updatedProduct = allProducts.find(
-          (product) => product?.id === item.product.id
-        )
-        if (
-          updatedProduct &&
-          new Date(updatedProduct.updatedAt) > new Date(item.product.updatedAt)
-        ) {
-          return { ...item, product: updatedProduct }
-        }
-        return item
-      })
-
-      const filteredItems = updatedItems.filter((item) =>
-        allProducts.some((product) => product?.id === item.product.id)
-      )
-
-      if (JSON.stringify(filteredItems) !== JSON.stringify(items)) {
-        setItems(filteredItems)
-        toast({
-          title: "Algunos productos del carrito fueron actualizados.",
-        })
-      }
-    },
-  })
 
   useEffect(() => {
     if (session?.user.id) {
@@ -161,6 +131,7 @@ export function CartProvider({ children, session }: CartProviderProps) {
 
   const value = {
     items,
+    setItems,
     addItem,
     removeItem,
     clearCart,

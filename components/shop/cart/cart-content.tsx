@@ -19,7 +19,7 @@ const CartContent = ({ items }: CartContentProps) => {
   return (
     <>
       {items.length > 0 ? (
-        <div className='flex flex-col justify-between'>
+        <div className='flex flex-col gap-3 justify-between'>
           <ScrollArea className='lg:h-[30vh] h-[60vh]'>
             <Table className='border'>
               <TableHeader>
