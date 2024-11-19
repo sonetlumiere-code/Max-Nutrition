@@ -6,7 +6,7 @@ const CartFixedButton = () => {
   const { items, setOpen } = useCart()
 
   return items && items.length > 0 ? (
-    <div className='fixed bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4'>
+    <div className='fixed bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4 z-50'>
       <button
         onClick={() => setOpen(true)}
         className='w-full bg-green-500 text-white py-4 text-center rounded-lg opacity-90 hover:opacity-100 shadow-xl'
