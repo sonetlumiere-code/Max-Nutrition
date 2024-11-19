@@ -146,6 +146,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                                 <Select
                                   onValueChange={field.onChange}
                                   defaultValue={field.value}
+                                  disabled={isSubmitting}
                                 >
                                   <SelectTrigger>
                                     <SelectValue placeholder='Selecciona un ingrediente' />

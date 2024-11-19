@@ -263,6 +263,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                                 <Select
                                   onValueChange={field.onChange}
                                   defaultValue={field.value}
+                                  disabled={isSubmitting}
                                 >
                                   <SelectTrigger>
                                     <SelectValue placeholder='Selecciona una categoría' />

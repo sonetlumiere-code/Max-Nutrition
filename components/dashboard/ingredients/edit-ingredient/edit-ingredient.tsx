@@ -123,6 +123,7 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      disabled={isSubmitting}
                     >
                       <FormControl>
                         <SelectTrigger>

@@ -253,6 +253,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value || ""}
+                        disabled={isSubmitting}
                       >
                         <FormControl>
                           <SelectTrigger>

@@ -140,6 +140,7 @@ const CreateRecipe = ({
                               <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
+                                disabled={isSubmitting}
                               >
                                 <SelectTrigger>
                                   <SelectValue placeholder='Selecciona un ingrediente' />

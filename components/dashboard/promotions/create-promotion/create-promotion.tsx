@@ -255,6 +255,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                                 <Select
                                   onValueChange={field.onChange}
                                   defaultValue={field.value}
+                                  disabled={isSubmitting}
                                 >
                                   <SelectTrigger>
                                     <SelectValue placeholder='Selecciona una categoría' />
