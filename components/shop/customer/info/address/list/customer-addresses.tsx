@@ -44,8 +44,7 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>1-10</strong> de{" "}
-              <strong>{customer.address.length}</strong> direcciones
+              Mostrando <strong>{customer.address.length}</strong> direcciones
             </div>
           </CardFooter>
         </Card>

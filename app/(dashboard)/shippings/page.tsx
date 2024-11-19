@@ -150,8 +150,8 @@ const Shippings = async () => {
               </CardContent>
               <CardFooter>
                 <div className='text-xs text-muted-foreground'>
-                  Mostrando <strong>1-10</strong> de{" "}
-                  <strong>{shippingZones.length}</strong> zonas de envío
+                  Mostrando <strong>{shippingZones.length}</strong> zonas de
+                  envío
                 </div>
               </CardFooter>
             </Card>

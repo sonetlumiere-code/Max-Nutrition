@@ -167,8 +167,7 @@ export default async function CustomersPage() {
         </CardContent>
         <CardFooter>
           <div className='text-xs text-muted-foreground'>
-            Mostrando <strong>1-{customers?.length}</strong> de{" "}
-            <strong>{customers?.length}</strong> clientes
+            Mostrando <strong>{customers?.length}</strong> clientes
           </div>
         </CardFooter>
       </Card>

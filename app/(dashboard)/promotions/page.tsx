@@ -147,8 +147,7 @@ const PromotionsPage = async () => {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>1-10</strong> de{" "}
-              <strong>{promotions.length}</strong> promociones
+              Mostrando <strong>{promotions.length}</strong> promociones
             </div>
           </CardFooter>
         </Card>

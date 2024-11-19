@@ -131,8 +131,7 @@ export default async function CategoriesPage() {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>1-10</strong> de{" "}
-              <strong>{categories.length}</strong> categorías
+              Mostrando <strong>{categories.length}</strong> categorías
             </div>
           </CardFooter>
         </Card>

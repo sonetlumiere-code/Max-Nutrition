@@ -163,8 +163,7 @@ export default async function ProductsPage() {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>1-10</strong> de{" "}
-              <strong>{products.length}</strong> productos
+              Mostrando <strong>{products.length}</strong> productos
             </div>
           </CardFooter>
         </Card>

@@ -134,8 +134,7 @@ export default async function RecipesPage() {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>1-10</strong> de{" "}
-              <strong>{recipes.length}</strong> recetas
+              Mostrando <strong>{recipes.length}</strong> recetas
             </div>
           </CardFooter>
         </Card>
