@@ -114,7 +114,7 @@ const CustomerEditAddressForm = ({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
-        <ScrollArea className='h-[50vh]'>
+        <ScrollArea className='h-[42vh]'>
           <div className='grid gap-6 p-1'>
             <FormField
               control={form.control}

@@ -74,6 +74,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
   const { items, setOpen, clearCart } = useCart()
 
   const {
+    promotions,
     appliedPromotion,
     isLoadingPromotions,
     subtotalPrice,
@@ -273,59 +274,61 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                     </CardContent>
                   </Card>
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className='text-xl'>Promoción</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {appliedPromotion ? (
-                        <Alert>
-                          <Icons.badgePercent className='h-4 w-4' />
-                          <AlertTitle>¡Promoción aplicada!</AlertTitle>
-                          <AlertDescription>
-                            <div className='flex flex-col text-sm text-muted-foreground'>
-                              <span>{appliedPromotion.name}</span>
-                              <span>{appliedPromotion.description}</span>
-                              <span>
-                                Métodos de pago habilitados:{" "}
-                                {new Intl.ListFormat("es", {
-                                  style: "long",
-                                  type: "conjunction",
-                                }).format(
-                                  appliedPromotion.allowedPaymentMethods.map(
-                                    translatePaymentMethod
-                                  )
-                                )}
-                                {"."}
-                              </span>
-                              <span>
-                                Métodos de envío habilitados:{" "}
-                                {new Intl.ListFormat("es", {
-                                  style: "long",
-                                  type: "conjunction",
-                                }).format(
-                                  appliedPromotion.allowedShippingMethods.map(
-                                    translateShippingMethod
-                                  )
-                                )}
-                                {"."}
-                              </span>
-                            </div>
-                          </AlertDescription>
-                        </Alert>
-                      ) : (
-                        <Alert>
-                          <Icons.circleAlert className='h-4 w-4' />
-                          <AlertTitle>Sin promoción aplicada</AlertTitle>
-                          <AlertDescription>
-                            Actualmente no hay promociones disponibles para tu
-                            carrito. ¡Explora nuestras promociones para ahorrar
-                            en tu próxima compra!
-                          </AlertDescription>
-                        </Alert>
-                      )}
-                    </CardContent>
-                  </Card>
+                  {promotions && promotions.length > 0 && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className='text-xl'>Promoción</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {appliedPromotion ? (
+                          <Alert>
+                            <Icons.badgePercent className='h-4 w-4' />
+                            <AlertTitle>¡Promoción aplicada!</AlertTitle>
+                            <AlertDescription>
+                              <div className='flex flex-col text-sm text-muted-foreground'>
+                                <span>{appliedPromotion.name}</span>
+                                <span>{appliedPromotion.description}</span>
+                                <span>
+                                  Métodos de pago habilitados:{" "}
+                                  {new Intl.ListFormat("es", {
+                                    style: "long",
+                                    type: "conjunction",
+                                  }).format(
+                                    appliedPromotion.allowedPaymentMethods.map(
+                                      translatePaymentMethod
+                                    )
+                                  )}
+                                  {"."}
+                                </span>
+                                <span>
+                                  Métodos de envío habilitados:{" "}
+                                  {new Intl.ListFormat("es", {
+                                    style: "long",
+                                    type: "conjunction",
+                                  }).format(
+                                    appliedPromotion.allowedShippingMethods.map(
+                                      translateShippingMethod
+                                    )
+                                  )}
+                                  {"."}
+                                </span>
+                              </div>
+                            </AlertDescription>
+                          </Alert>
+                        ) : (
+                          <Alert>
+                            <Icons.circleAlert className='h-4 w-4' />
+                            <AlertTitle>Sin promoción aplicada</AlertTitle>
+                            <AlertDescription>
+                              Actualmente no hay promociones disponibles para tu
+                              carrito. ¡Explora nuestras promociones para
+                              ahorrar en tu próxima compra!
+                            </AlertDescription>
+                          </Alert>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
 
                   {shippingSettings && (
                     <Card>
