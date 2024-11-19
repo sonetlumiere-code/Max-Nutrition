@@ -23,7 +23,7 @@ export default async function HeaderShop() {
       {isAdmin ? (
         <header className='text-center bg-slate-300 px-4 sm:px-6 lg:px-8 py-4'>
           <Link
-            href='/welcome'
+            href='/orders'
             className={cn(
               buttonVariants({
                 variant: "secondary",

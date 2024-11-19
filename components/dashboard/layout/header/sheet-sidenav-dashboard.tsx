@@ -14,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
-import OpenShopCard from "./open-shop-card"
 
 const SheetSideNavDashboard = () => {
   const pathname = usePathname()
@@ -54,9 +53,9 @@ const SheetSideNavDashboard = () => {
             )
           })}
         </nav>
-        <div className='mt-auto'>
+        {/* <div className='mt-auto'>
           <OpenShopCard />
-        </div>
+        </div> */}
       </SheetContent>
     </Sheet>
   )

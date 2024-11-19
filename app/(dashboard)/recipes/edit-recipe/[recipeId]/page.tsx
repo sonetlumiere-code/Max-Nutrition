@@ -33,7 +33,7 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
   ])
 
   if (!recipe) {
-    redirect("/welcome")
+    redirect("/orders")
   }
 
   return (

@@ -22,7 +22,7 @@ const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
   })
 
   if (!ingredient) {
-    redirect("/welcome")
+    redirect("/orders")
   }
 
   return (

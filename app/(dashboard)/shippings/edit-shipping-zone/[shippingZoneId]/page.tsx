@@ -22,7 +22,7 @@ const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
   const shippingZone = await getShippingZone({ where: { id: shippingZoneId } })
 
   if (!shippingZone) {
-    redirect("/welcome")
+    redirect("/orders")
   }
 
   return (

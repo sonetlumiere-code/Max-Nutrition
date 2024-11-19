@@ -29,7 +29,7 @@ const EditCategoryPage = async ({ params }: EditCategoryPageProps) => {
   ])
 
   if (!category) {
-    redirect("/welcome")
+    redirect("/orders")
   }
 
   return (

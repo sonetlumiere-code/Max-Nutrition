@@ -29,7 +29,7 @@ const EditPromotionPage = async ({ params }: EditPromotionPage) => {
   ])
 
   if (!promotion) {
-    redirect("/welcome")
+    redirect("/orders")
   }
 
   return (

@@ -5,7 +5,7 @@ export const navItems: {
   label: string
   icon: Icon
 }[] = [
-  { href: "/welcome", label: "Inicio", icon: "home" },
+  // { href: "/welcome", label: "Inicio", icon: "home" },
   { href: "/orders", label: "Pedidos", icon: "shoppingCart" },
   { href: "/products", label: "Productos", icon: "pizza" },
   { href: "/categories", label: "Categorías", icon: "box" },
@@ -14,5 +14,5 @@ export const navItems: {
   { href: "/customers", label: "Clientes", icon: "users" },
   { href: "/promotions", label: "Promociones", icon: "badgePercent" },
   { href: "/shippings", label: "Envíos", icon: "truck" },
-  { href: "/analytics", label: "Analytics", icon: "lineChart" },
+  // { href: "/analytics", label: "Analytics", icon: "lineChart" },
 ] as const

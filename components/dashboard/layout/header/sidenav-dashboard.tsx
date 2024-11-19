@@ -4,7 +4,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
-import OpenShopCard from "./open-shop-card"
 
 export default function SideNavDashboard() {
   const pathname = usePathname()
@@ -45,9 +44,9 @@ export default function SideNavDashboard() {
             <hr />
           </nav>
         </div>
-        <div className='mt-auto p-4'>
+        {/* <div className='mt-auto p-4'>
           <OpenShopCard />
-        </div>
+        </div> */}
       </div>
     </div>
   )

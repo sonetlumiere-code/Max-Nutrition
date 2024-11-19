@@ -35,7 +35,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
   ])
 
   if (!product) {
-    redirect("/welcome")
+    redirect("/orders")
   }
 
   return (
