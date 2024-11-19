@@ -15,7 +15,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
   return (
     <div className='grid gap-3 p-4'>
       <div className='font-semibold'>Detalles de la orden</div>
-      <ScrollArea className='h-[60vh]'>
+      <ScrollArea className='h-[50vh]'>
         <Table>
           <TableBody>
             {order.items?.map((item) => (

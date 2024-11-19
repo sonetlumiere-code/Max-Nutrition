@@ -35,6 +35,8 @@ const Shop = async () => {
 
       <ProductsList initialCategories={categories} />
 
+      <footer className='h-10'></footer>
+
       {session?.user && <CartFixedButton />}
     </>
   )
