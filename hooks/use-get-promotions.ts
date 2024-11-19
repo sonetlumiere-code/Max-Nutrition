@@ -16,6 +16,7 @@ export const useGetPromotions = () => {
     isLoading: isLoadingPromotions,
   } = useSWR<PopulatedPromotion[] | null>("promotions", fetcher, {
     revalidateIfStale: false,
+    revalidateOnFocus: false,
   })
 
   if (error) {
