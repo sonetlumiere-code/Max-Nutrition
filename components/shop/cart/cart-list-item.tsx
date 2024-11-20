@@ -31,7 +31,7 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
         </div>
       </TableCell>
       <TableCell className='font-medium space-x-2 justify-end w-1/12'>
-        <div className='flex items-center border-2 rounded-md justify-between max-w-28'>
+        <div className='flex items-center border-2 rounded-md justify-between max-w-24'>
           <Button
             variant='link'
             size='icon'

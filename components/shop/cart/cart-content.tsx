@@ -1,15 +1,8 @@
 import { CartItem } from "@/components/cart-provider"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import CartListItem from "./cart-list-item"
 import { ShoppingCart } from "lucide-react"
 import CartCostPreview from "./cart-cost-preview"
+import CartList from "./cart-list"
 
 type CartContentProps = {
   items: CartItem[]
@@ -21,19 +14,7 @@ const CartContent = ({ items }: CartContentProps) => {
       {items.length > 0 ? (
         <div className='flex flex-col gap-3 justify-between'>
           <ScrollArea className='h-[42vh]'>
-            <Table className='border'>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className='text-left'>Producto</TableHead>
-                  <TableHead className='text-right'>Cantidad</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {items.map((item) => (
-                  <CartListItem key={item.id} cartItem={item} />
-                ))}
-              </TableBody>
-            </Table>
+            <CartList items={items} />
           </ScrollArea>
 
           <CartCostPreview />
