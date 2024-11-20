@@ -38,7 +38,7 @@ const CustomerAddressesList = ({ addresses }: CustomerAddressesListProps) => {
             </TableCell>
             <TableCell className='hidden md:table-cell'>
               {address.addressStreet} {address.addressNumber}{" "}
-              {address.addressFloor} {address.addressApartment}
+              {address.addressFloor || ""} {address.addressApartment}
             </TableCell>
             <TableCell className='hidden md:table-cell'>
               {address.province}, {address.municipality}, {address.locality}

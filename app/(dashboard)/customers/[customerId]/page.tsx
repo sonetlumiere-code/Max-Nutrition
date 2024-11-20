@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 
 interface ViewCustomerProps {
   params: { customerId: string }
@@ -120,7 +121,31 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
                   Direcciones del cliente para envíos
                 </CardDescription>
               </CardHeader>
-              <CardContent>addresses</CardContent>
+              <CardContent>
+                <div className='space-y-4'>
+                  {customer.address?.map((address, i) => (
+                    <>
+                      <address
+                        key={address.id}
+                        className='grid gap-0.5 not-italic text-sm text-muted-foreground'
+                      >
+                        <span>
+                          {address?.addressStreet} {address?.addressNumber}{" "}
+                          {address?.addressFloor || ""}{" "}
+                          {address?.addressApartment}
+                        </span>
+                        <span>
+                          {address?.province}, {address?.municipality},
+                          {address?.locality}
+                        </span>{" "}
+                        <span>Código postal: {address?.postCode}</span>
+                      </address>
+
+                      {i < customerAddressesLength - 1 ? <Separator /> : null}
+                    </>
+                  ))}
+                </div>
+              </CardContent>
               <CardFooter>
                 <div className='text-xs text-muted-foreground'>
                   Mostrando <strong>{customerAddressesLength}</strong> direcci

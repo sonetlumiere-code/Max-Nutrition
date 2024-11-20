@@ -93,7 +93,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
                     <span>
                       {order.address?.addressStreet}{" "}
                       {order.address?.addressNumber}{" "}
-                      {order.address.addressFloor}{" "}
+                      {order.address.addressFloor || ""}{" "}
                       {order.address.addressApartment}
                     </span>
                     <span>
