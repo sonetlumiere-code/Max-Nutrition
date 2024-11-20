@@ -39,6 +39,7 @@ import DeleteCategory from "@/components/dashboard/categories/delete-category/de
 
 export default async function CategoriesPage() {
   const categories = await getCategories()
+  const categoriesLength = categories?.length || 0
 
   return (
     <>
@@ -58,7 +59,7 @@ export default async function CategoriesPage() {
         <h1 className='text-lg font-semibold md:text-2xl'>Categorías</h1>
       </div>
 
-      {categories && categories.length > 0 ? (
+      {categoriesLength > 0 ? (
         <Card>
           <CardHeader>
             <div className='space-between flex items-center'>
@@ -92,7 +93,7 @@ export default async function CategoriesPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {categories.map((category) => (
+                {categories?.map((category) => (
                   <TableRow key={category.id}>
                     <TableCell>{category.name}</TableCell>
                     <TableCell className='text-end'>
@@ -131,7 +132,8 @@ export default async function CategoriesPage() {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>{categories.length}</strong> categorías
+              Mostrando <strong>{categoriesLength}</strong> categoría
+              {categoriesLength > 1 ? "s" : ""}
             </div>
           </CardFooter>
         </Card>

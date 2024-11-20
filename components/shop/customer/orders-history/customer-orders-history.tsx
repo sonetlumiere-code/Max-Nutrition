@@ -14,6 +14,8 @@ type CustomerOrderHistoryProps = {
 }
 
 const CustomerOrdersHistory = ({ orders }: CustomerOrderHistoryProps) => {
+  const ordersLength = orders.length || 0
+
   return (
     <Card>
       <CardHeader>
@@ -24,7 +26,7 @@ const CustomerOrdersHistory = ({ orders }: CustomerOrderHistoryProps) => {
       </CardHeader>
       <CardContent>
         <div className='space-y-4 md:p-4'>
-          {orders.length > 0 ? (
+          {ordersLength > 0 ? (
             <CustomerOrdersHistoryTable orders={orders} />
           ) : (
             <p className='text-center'>No has realizado ningún pedido</p>
@@ -33,7 +35,10 @@ const CustomerOrdersHistory = ({ orders }: CustomerOrderHistoryProps) => {
       </CardContent>
       <CardFooter>
         <div className='text-xs text-muted-foreground'>
-          Mostrando tus últimos <strong>{orders?.length}</strong> pedidos
+          Mostrando tu{ordersLength > 1 ? "s" : ""} último
+          {ordersLength > 1 ? "s" : ""}{" "}
+          <strong>{ordersLength > 1 ? ordersLength : ""}</strong> pedido
+          {ordersLength > 1 ? "s" : ""}
         </div>
       </CardFooter>
     </Card>

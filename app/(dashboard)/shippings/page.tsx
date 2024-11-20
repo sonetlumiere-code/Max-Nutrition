@@ -45,6 +45,8 @@ const Shippings = async () => {
     getShippingSettings(),
   ])
 
+  const shippingZonesLength = shippingZones?.length || 0
+
   return (
     <>
       <Breadcrumb>
@@ -65,7 +67,7 @@ const Shippings = async () => {
 
       <div className='grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8'>
         <div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
-          {shippingZones && shippingZones.length > 0 ? (
+          {shippingZonesLength > 0 ? (
             <Card>
               <CardHeader>
                 <div className='space-between flex items-center'>
@@ -104,7 +106,7 @@ const Shippings = async () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {shippingZones.map((shippingZone) => (
+                    {shippingZones?.map((shippingZone) => (
                       <TableRow key={shippingZone.id}>
                         <TableCell>{shippingZone.province}</TableCell>
                         <TableCell>{shippingZone.municipality}</TableCell>
@@ -150,8 +152,8 @@ const Shippings = async () => {
               </CardContent>
               <CardFooter>
                 <div className='text-xs text-muted-foreground'>
-                  Mostrando <strong>{shippingZones.length}</strong> zonas de
-                  envío
+                  Mostrando <strong>{shippingZonesLength}</strong> zona
+                  {shippingZonesLength > 1 ? "s" : ""} de envío
                 </div>
               </CardFooter>
             </Card>

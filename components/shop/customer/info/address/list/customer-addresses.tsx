@@ -17,9 +17,11 @@ type CustomerAddressesProps = {
 }
 
 const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
+  const customerAddressesLength = customer.address?.length || 0
+
   return (
     <>
-      {customer.address && customer.address?.length > 0 ? (
+      {customer.address && customerAddressesLength > 0 ? (
         <Card>
           <CardHeader>
             <div className='space-between flex items-center'>
@@ -44,7 +46,9 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>{customer.address.length}</strong> direcciones
+              Mostrando <strong>{customerAddressesLength}</strong> direcci
+              {customerAddressesLength > 1 ? "o" : "ó"}n
+              {customerAddressesLength > 1 ? "es" : ""}
             </div>
           </CardFooter>
         </Card>

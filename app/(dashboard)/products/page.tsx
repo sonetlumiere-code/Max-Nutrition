@@ -46,6 +46,8 @@ export default async function ProductsPage() {
     },
   })
 
+  const productsLength = products?.length || 0
+
   return (
     <>
       <Breadcrumb>
@@ -66,7 +68,7 @@ export default async function ProductsPage() {
         </h1>
       </div>
 
-      {products && products.length > 0 ? (
+      {productsLength > 0 ? (
         <Card>
           <CardHeader>
             <div className='space-between flex items-center'>
@@ -107,7 +109,7 @@ export default async function ProductsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {products.map((product) => (
+                {products?.map((product) => (
                   <TableRow key={product.id}>
                     <TableCell className='hidden md:table-cell'>
                       <img
@@ -163,7 +165,8 @@ export default async function ProductsPage() {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>{products.length}</strong> productos
+              Mostrando <strong>{productsLength}</strong> producto
+              {productsLength > 1 ? "s" : ""}
             </div>
           </CardFooter>
         </Card>

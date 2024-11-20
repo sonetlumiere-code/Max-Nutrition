@@ -38,6 +38,7 @@ import DeleteRecipe from "@/components/dashboard/recipes/delete-recipe/delete-re
 
 export default async function RecipesPage() {
   const recipes = await getRecipes()
+  const recipesLength = recipes?.length || 0
 
   return (
     <>
@@ -57,7 +58,7 @@ export default async function RecipesPage() {
         <h1 className='text-lg font-semibold md:text-2xl'>Recetas</h1>
       </div>
 
-      {recipes && recipes.length > 0 ? (
+      {recipesLength > 0 ? (
         <Card>
           <CardHeader>
             <div className='space-between flex items-center'>
@@ -94,7 +95,7 @@ export default async function RecipesPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recipes.map((recipe) => (
+                {recipes?.map((recipe) => (
                   <TableRow key={recipe.id}>
                     <TableCell>{recipe.name}</TableCell>
                     <TableCell className='max-w-28 hidden md:table-cell'>
@@ -134,7 +135,8 @@ export default async function RecipesPage() {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>{recipes.length}</strong> recetas
+              Mostrando <strong>{recipesLength}</strong> receta
+              {recipesLength > 1 ? "s" : ""}
             </div>
           </CardFooter>
         </Card>

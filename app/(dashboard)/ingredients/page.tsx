@@ -44,6 +44,8 @@ export default async function IngredientsPage() {
     },
   })
 
+  const ingredientsLength = ingredients?.length || 0
+
   return (
     <>
       <Breadcrumb>
@@ -62,7 +64,7 @@ export default async function IngredientsPage() {
         <h1 className='text-lg font-semibold md:text-2xl'>Ingredientes</h1>
       </div>
 
-      {ingredients && ingredients.length > 0 ? (
+      {ingredientsLength > 0 ? (
         <Card>
           <CardHeader>
             <div className='space-between flex items-center'>
@@ -103,7 +105,7 @@ export default async function IngredientsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {ingredients.map((ingredient) => (
+                {ingredients?.map((ingredient) => (
                   <TableRow key={ingredient.id}>
                     <TableCell>{ingredient.name}</TableCell>
                     <TableCell className='hidden sm:table-cell'>
@@ -151,7 +153,8 @@ export default async function IngredientsPage() {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>{ingredients.length}</strong> ingredientes
+              Mostrando <strong>{ingredientsLength}</strong> ingrediente
+              {ingredientsLength > 1 ? "s" : ""}
             </div>
           </CardFooter>
         </Card>

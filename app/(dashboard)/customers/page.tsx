@@ -3,8 +3,6 @@ import {
   CircleUser,
   MoreHorizontal,
   Eye,
-  Pencil,
-  Trash,
   MessageSquareMore,
   Clipboard,
 } from "lucide-react"
@@ -41,6 +39,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import Link from "next/link"
 
 export default async function CustomersPage() {
   const customers = await getCustomers({
@@ -51,6 +50,8 @@ export default async function CustomersPage() {
       address: true,
     },
   })
+
+  const customersLength = customers?.length || 0
 
   return (
     <>
@@ -148,15 +149,17 @@ export default async function CustomersPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align='end'>
                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                        <DropdownMenuItem>
-                          <Eye className='h-4 w-4 mr-2' /> Ver datos
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <Link href={`customers/${customer.id}`}>
+                          <DropdownMenuItem>
+                            <Eye className='h-4 w-4 mr-2' /> Ver
+                          </DropdownMenuItem>
+                        </Link>
+                        {/* <DropdownMenuItem>
                           <Pencil className='h-4 w-4 mr-2' /> Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Trash className='h-4 w-4 mr-2' /> Eliminar
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -167,7 +170,8 @@ export default async function CustomersPage() {
         </CardContent>
         <CardFooter>
           <div className='text-xs text-muted-foreground'>
-            Mostrando <strong>{customers?.length}</strong> clientes
+            Mostrando <strong>{customersLength}</strong> client
+            {customersLength > 1 ? "es" : "e"}
           </div>
         </CardFooter>
       </Card>

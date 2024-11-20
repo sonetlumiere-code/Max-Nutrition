@@ -39,6 +39,7 @@ import { Badge } from "@/components/ui/badge"
 
 const PromotionsPage = async () => {
   const promotions = await getPromotions()
+  const promotionsLength = promotions?.length || 0
 
   return (
     <>
@@ -58,7 +59,7 @@ const PromotionsPage = async () => {
         <h1 className='text-lg font-semibold md:text-2xl'>Promociones</h1>
       </div>
 
-      {promotions && promotions.length > 0 ? (
+      {promotionsLength > 0 ? (
         <Card>
           <CardHeader>
             <div className='space-between flex items-center'>
@@ -96,7 +97,7 @@ const PromotionsPage = async () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {promotions.map((promotion) => (
+                {promotions?.map((promotion) => (
                   <TableRow key={promotion.id}>
                     <TableCell>{promotion.name}</TableCell>
                     <TableCell className='max-w-28 hidden md:table-cell'>
@@ -147,7 +148,9 @@ const PromotionsPage = async () => {
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
-              Mostrando <strong>{promotions.length}</strong> promociones
+              Mostrando <strong>{promotionsLength}</strong> promoci
+              {promotionsLength > 1 ? "o" : "ó"}n
+              {promotionsLength > 1 ? "es" : ""}
             </div>
           </CardFooter>
         </Card>

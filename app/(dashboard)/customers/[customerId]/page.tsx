@@ -1,0 +1,151 @@
+import { getCustomer } from "@/data/customer"
+import { redirect } from "next/navigation"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+interface ViewCustomerProps {
+  params: { customerId: string }
+}
+
+const ViewCustomer = async ({ params }: ViewCustomerProps) => {
+  const { customerId } = params
+
+  const customer = await getCustomer({
+    where: { id: customerId },
+    include: {
+      address: true,
+    },
+  })
+
+  if (!customer) {
+    redirect("/customers")
+  }
+
+  const customerAddressesLength = customer?.address?.length || 0
+
+  return (
+    <>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink>Inicio</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href='/customers'>Clientes</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{customer.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      <h2 className='font-semibold text-lg'>Detalle de cliente</h2>
+
+      <div className='grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-4 lg:gap-8'>
+        <div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
+          <Card>
+            <CardHeader>
+              <CardTitle className='text-xl'>Información</CardTitle>
+              <CardDescription className='hidden md:block'>
+                Información personal
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className='grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+                <div className='grid gap-1'>
+                  <p className='text-sm font-medium leading-none'>Nombre</p>
+                  <p className='text-sm text-muted-foreground'>
+                    {customer.name || customer.user?.name}
+                  </p>
+                </div>
+
+                <div className='grid gap-1'>
+                  <p className='text-sm font-medium leading-none'>Email</p>
+                  <p className='text-sm text-muted-foreground'>
+                    {customer.user?.email}
+                  </p>
+                </div>
+
+                <div className='grid gap-1'>
+                  <p className='text-sm font-medium leading-none'>Teléfono</p>
+                  <p className='text-sm text-muted-foreground'>
+                    {customer.phone || "-"}
+                  </p>
+                </div>
+
+                <div className='grid gap-1'>
+                  <p className='text-sm font-medium leading-none'>
+                    Fecha de nacimiento
+                  </p>
+                  <p className='text-sm text-muted-foreground'>
+                    {customer.birthdate?.toLocaleDateString() || "-"}
+                  </p>
+                </div>
+
+                <div className='grid gap-1'>
+                  <p className='text-sm font-medium leading-none'>
+                    Fecha de registro
+                  </p>
+                  <p className='text-sm text-muted-foreground'>
+                    {customer.createdAt.toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
+          {customerAddressesLength > 0 ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Direcciones</CardTitle>
+                <CardDescription className='hidden md:block'>
+                  Direcciones del cliente para envíos
+                </CardDescription>
+              </CardHeader>
+              <CardContent>addresses</CardContent>
+              <CardFooter>
+                <div className='text-xs text-muted-foreground'>
+                  Mostrando <strong>{customerAddressesLength}</strong> direcci
+                  {customerAddressesLength > 1 ? "o" : "ó"}n
+                  {customerAddressesLength > 1 ? "es" : ""}
+                </div>
+              </CardFooter>
+            </Card>
+          ) : (
+            <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
+              <div className='flex flex-col items-center gap-1 text-center'>
+                <h3 className='text-2xl font-bold tracking-tight'>
+                  Sin direcciones para envíos
+                </h3>
+                <p className='text-sm text-muted-foreground'>
+                  El cliente aún no registró ninguna dirección para recibir
+                  envíos
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default ViewCustomer
