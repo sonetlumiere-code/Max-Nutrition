@@ -52,7 +52,7 @@ const CustomerOrdersHistoryTable = ({
           {orders?.map((order) => (
             <TableRow key={order.id}>
               <TableCell className='text-xs md:text-sm'>
-                {order.createdAt.toLocaleDateString()}
+                {order.createdAt.toLocaleDateString("es-AR")}
               </TableCell>
               <TableCell className='hidden sm:table-cell'>
                 <Badge className='text-xs' variant='secondary'>

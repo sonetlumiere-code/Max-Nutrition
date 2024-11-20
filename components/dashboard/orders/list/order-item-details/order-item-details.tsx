@@ -42,7 +42,7 @@ const OrderItemDetails = ({ order }: OrderItemDetails) => {
             </Button>
           </CardTitle>
           <CardDescription>
-            Fecha: {order.createdAt.toLocaleDateString()}
+            Fecha: {order.createdAt.toLocaleDateString("es-AR")}
           </CardDescription>
         </div>
         <div className='ml-auto flex items-center gap-1'>

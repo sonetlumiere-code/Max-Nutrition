@@ -63,7 +63,7 @@ const CustomerPersonalInfo = ({ customer }: CustomerPersonalInfoProps) => {
               Fecha de nacimiento
             </p>
             <p className='text-sm text-muted-foreground'>
-              {customer.birthdate?.toLocaleDateString() || "-"}
+              {customer.birthdate?.toLocaleDateString("es-AR") || "-"}
             </p>
           </div>
 
@@ -72,7 +72,7 @@ const CustomerPersonalInfo = ({ customer }: CustomerPersonalInfoProps) => {
               Fecha de registro
             </p>
             <p className='text-sm text-muted-foreground'>
-              {customer.createdAt.toLocaleDateString()}
+              {customer.createdAt.toLocaleDateString("es-AR")}
             </p>
           </div>
         </div>

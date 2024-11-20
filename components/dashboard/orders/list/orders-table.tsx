@@ -63,7 +63,7 @@
 //               </Badge>
 //             </TableCell>
 //             <TableCell className='hidden md:table-cell'>
-//               {order.createdAt.toLocaleDateString()}
+//               {order.createdAt.toLocaleDateString("es-AR")}
 //             </TableCell>
 //             <TableCell className='text-right'>${order.total}</TableCell>
 //           </TableRow>

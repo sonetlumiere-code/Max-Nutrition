@@ -114,7 +114,7 @@ export const columns: ColumnDef<PopulatedOrder>[] = [
     },
     cell: ({ row }) => {
       const createdAt = row.getValue("createdAt") as Date
-      return <div className='ml-4'>{createdAt.toLocaleDateString()}</div>
+      return <div className='ml-4'>{createdAt.toLocaleDateString("es-AR")}</div>
     },
   },
   {
