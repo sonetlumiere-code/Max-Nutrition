@@ -228,13 +228,12 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className='hidden md:table-cell'></TableHead>
                             <TableHead>Vianda</TableHead>
-                            <TableHead className='hidden md:table-cell'>
-                              Precio
-                            </TableHead>
                             <TableHead className='whitespace-nowrap'>
                               {/* Con/Sin sal */}
+                            </TableHead>
+                            <TableHead className='hidden md:table-cell'>
+                              Precio
                             </TableHead>
                             <TableHead className='text-end'>Cantidad</TableHead>
                           </TableRow>
@@ -242,20 +241,17 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                         <TableBody>
                           {items?.map((item) => (
                             <TableRow key={item.id}>
-                              <TableCell className='hidden md:table-cell'>
+                              <TableCell className='font-medium flex gap-3'>
                                 <img
                                   src={
-                                    item.product?.image
+                                    item.product.image
                                       ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${item.product.image}`
                                       : "/img/no-image.jpg"
                                   }
-                                  alt='Product image'
-                                  className='w-8 h-8 rounded-md'
+                                  className='h-10 w-10 rounded-md'
+                                  alt={item.product.name}
                                 />
-                              </TableCell>
-                              <TableCell>{item.product?.name}</TableCell>
-                              <TableCell className='hidden md:table-cell'>
-                                ${item.product?.price}
+                                <p className='text-sm'>{item.product.name}</p>
                               </TableCell>
                               <TableCell className='whitespace-nowrap'>
                                 {item.variation.withSalt ? (
@@ -263,6 +259,9 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                                 ) : (
                                   <Badge variant='secondary'>Sin sal</Badge>
                                 )}
+                              </TableCell>
+                              <TableCell className='hidden md:table-cell'>
+                                ${item.product?.price}
                               </TableCell>
                               <TableCell className='text-end'>
                                 x {item.quantity}
