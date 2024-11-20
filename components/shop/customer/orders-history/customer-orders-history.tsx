@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -30,6 +31,11 @@ const CustomerOrdersHistory = ({ orders }: CustomerOrderHistoryProps) => {
           )}
         </div>
       </CardContent>
+      <CardFooter>
+        <div className='text-xs text-muted-foreground'>
+          Mostrando tus últimos <strong>{orders?.length}</strong> pedidos
+        </div>
+      </CardFooter>
     </Card>
   )
 }

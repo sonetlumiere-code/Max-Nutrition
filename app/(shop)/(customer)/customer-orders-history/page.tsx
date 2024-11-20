@@ -23,6 +23,7 @@ const CustomerOrdersHistoryPage = async () => {
         },
       },
       orders: {
+        take: 10,
         orderBy: {
           createdAt: "desc",
         },

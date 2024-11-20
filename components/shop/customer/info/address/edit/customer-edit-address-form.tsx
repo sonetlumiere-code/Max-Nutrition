@@ -46,8 +46,6 @@ const CustomerEditAddressForm = ({
   address,
   setOpen,
 }: CustomerEditAddressFormProps) => {
-  console.log(address)
-
   const form = useForm<CustomerAddressSchema>({
     resolver: zodResolver(customerAddressSchema),
     defaultValues: {
