@@ -188,7 +188,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                       </FormItem>
                     )}
                   />
-                  <FormField
+                  {/* <FormField
                     control={control}
                     name='promotionalPrice'
                     render={({ field }) => (
@@ -206,7 +206,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
                 </div>
               </CardContent>
             </Card>

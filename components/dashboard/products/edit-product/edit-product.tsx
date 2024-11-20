@@ -187,7 +187,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
                       </FormItem>
                     )}
                   />
-                  <FormField
+                  {/* <FormField
                     control={control}
                     name='promotionalPrice'
                     render={({ field }) => (
@@ -205,7 +205,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
                 </div>
               </CardContent>
             </Card>
