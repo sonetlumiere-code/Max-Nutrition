@@ -1,6 +1,8 @@
 "use client"
 
-import { Separator } from "@/components/ui/separator"
+import { Icons } from "@/components/icons"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -9,23 +11,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { PopulatedOrder } from "@/types/types"
-import React from "react"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { Separator } from "@/components/ui/separator"
 import {
   translateOrderStatus,
   translateShippingMethod,
 } from "@/helpers/helpers"
+import { cn } from "@/lib/utils"
+import { PopulatedOrder } from "@/types/types"
 import OrderItemActions from "../../actions/order-item-actions"
-import { Icons } from "@/components/icons"
 
-type OrderItemDetails = {
+type OrderItemDetailsProps = {
   order: PopulatedOrder
 }
 
-const OrderItemDetails = ({ order }: OrderItemDetails) => {
+const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
   return (
     <Card className='overflow-hidden'>
       <CardHeader className='flex flex-row items-start bg-muted/50'>

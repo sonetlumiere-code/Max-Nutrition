@@ -1,7 +1,7 @@
 "use client"
 
-import { Dispatch, SetStateAction } from "react"
-import { useMediaQuery } from "@/hooks/use-media-query"
+import { Icons } from "@/components/icons"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -18,9 +18,9 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
-import { Button } from "@/components/ui/button"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import { PopulatedOrder } from "@/types/types"
-import { Icons } from "@/components/icons"
+import { Dispatch, SetStateAction } from "react"
 
 type ExportOrderProps = {
   order: PopulatedOrder
@@ -29,6 +29,8 @@ type ExportOrderProps = {
 }
 
 const ExportOrder = ({ order, open, setOpen }: ExportOrderProps) => {
+  console.log(order)
+
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {

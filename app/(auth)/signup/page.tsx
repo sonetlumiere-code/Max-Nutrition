@@ -1,10 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
+import SignUpForm from "@/components/auth/signup-form"
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { Metadata } from "next"
 import Link from "next/link"
-import Image from "next/image"
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import SignUpForm from "@/components/auth/signup-form"
 
 export const metadata: Metadata = {
   title: "Crear cuenta - Máxima nutrición",

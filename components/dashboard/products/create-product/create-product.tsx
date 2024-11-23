@@ -1,8 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
+import uploadImage from "@/actions/cloudinary/upload-image"
 import { createProduct } from "@/actions/products/create-product"
 import { Icons } from "@/components/icons"
+import { MultiSelect } from "@/components/multi-select"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -20,14 +22,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
-import { toast } from "@/components/ui/use-toast"
-import { productSchema } from "@/lib/validations/product-validation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import uploadImage from "@/actions/cloudinary/upload-image"
 import {
   Select,
   SelectContent,
@@ -35,9 +29,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { toast } from "@/components/ui/use-toast"
+import { productSchema } from "@/lib/validations/product-validation"
 import { PopulatedRecipe } from "@/types/types"
-import { MultiSelect } from "@/components/multi-select"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Category } from "@prisma/client"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
 type ProductSchema = z.infer<typeof productSchema>
 
@@ -267,7 +267,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                               value={recipe.id}
                               disabled={!!recipe.product}
                             >
-                              {!!recipe.product ? (
+                              {recipe.product ? (
                                 <div className='flex'>
                                   <p>{recipe.name}</p>
                                   {/* <Badge>{recipe.product?.name}</Badge> */}

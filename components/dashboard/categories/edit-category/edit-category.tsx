@@ -1,14 +1,8 @@
 "use client"
 
-import { Category } from "@prisma/client"
-import { toast } from "@/components/ui/use-toast"
-import { categorySchema } from "@/lib/validations/category-validation"
-import { PopulatedCategory, PopulatedProduct } from "@/types/types"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { editCategory } from "@/actions/categories/edit-category"
 import { Icons } from "@/components/icons"
+import { MultiSelect } from "@/components/multi-select"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import {
@@ -20,8 +14,13 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { editCategory } from "@/actions/categories/edit-category"
-import { MultiSelect } from "@/components/multi-select"
+import { toast } from "@/components/ui/use-toast"
+import { categorySchema } from "@/lib/validations/category-validation"
+import { PopulatedCategory, PopulatedProduct } from "@/types/types"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
 type CategorySchema = z.infer<typeof categorySchema>
 

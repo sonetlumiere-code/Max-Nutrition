@@ -4,7 +4,7 @@ import { z } from "zod"
 export const ingredientSchema = z.object({
   name: z.string().min(1, { message: "Ingresa el nombre del ingrediente." }),
   measurement: z.nativeEnum(Measurement, {
-    errorMap: (issue, ctx) => {
+    errorMap: () => {
       return { message: "Selecciona la unidad de medida." }
     },
   }),

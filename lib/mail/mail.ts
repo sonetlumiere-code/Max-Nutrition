@@ -2,6 +2,7 @@ import WelcomeClient from "@/components/emails/bienvenida-mx"
 import OrderDetails from "@/components/emails/pedido-realizado-mx"
 import PasswordReset from "@/components/emails/recuperar-password-mx"
 import VerificationEmail from "@/components/emails/verificacion-mx"
+import { ReactElement } from "react"
 import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -17,7 +18,7 @@ export const sendVerificacionEmail = async (email: string, token: string) => {
     subject: "Confirma tu Email",
     react: VerificationEmail({
       confirmLink: `${confirmLink}`,
-    }) as React.ReactElement,
+    }) as ReactElement,
   })
 }
 
@@ -31,7 +32,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     react: PasswordReset({
       userName: email,
       resetLink: resetLink,
-    }) as React.ReactElement,
+    }) as ReactElement,
   })
 }
 
@@ -42,7 +43,7 @@ export const sendWelcomeEmail = async (email: string, userName: string) => {
     subject: "¡Te damos la Bienvenida a Máxima Nutrición!",
     react: WelcomeClient({
       userName: userName,
-    }) as React.ReactElement,
+    }) as ReactElement,
   })
 }
 
@@ -71,6 +72,6 @@ export const sendOrderDetailsEmail = async (
       totalPrice,
       shippingCost,
       deliveryAddress,
-    }) as React.ReactElement,
+    }) as ReactElement,
   })
 }

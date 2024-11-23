@@ -1,4 +1,4 @@
-import * as React from "react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -12,8 +12,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { Dispatch, JSX, SetStateAction, useState } from "react"
 import { Icons } from "./icons"
 
 export type OptionType = {
@@ -67,14 +67,14 @@ function MultiSelect({
 }: {
   options: OptionType[]
   selected: string[]
-  onChange: React.Dispatch<React.SetStateAction<string[]>>
+  onChange: Dispatch<SetStateAction<string[]>>
   disabled?: boolean
   isLoading?: boolean
   hideSelectedOptions?: boolean
   isMulti?: boolean
   className?: string
 }) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
 
   const selectables: OptionType[] = hideSelectedOptions
     ? options.filter((option) => !selected.includes(option.value))

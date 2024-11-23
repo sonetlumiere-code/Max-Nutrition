@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { cn } from "@/lib/utils"
+import { FC, useEffect, useState } from "react"
 import { Button } from "./ui/button"
 import {
   Dialog,
@@ -10,7 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog"
-import { cn } from "@/lib/utils"
 
 export interface ConfirmationOptions {
   catchOnCancel?: boolean
@@ -26,7 +26,7 @@ interface ConfirmationDialogProps extends ConfirmationOptions {
   onClose: () => void
 }
 
-export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
+export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
   open,
   title,
   variant,

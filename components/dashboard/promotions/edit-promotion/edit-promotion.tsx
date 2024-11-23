@@ -1,5 +1,16 @@
 "use client"
 
+import { editPromotion } from "@/actions/promotions/edit-promotion"
+import { Icons } from "@/components/icons"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Form,
   FormControl,
@@ -8,23 +19,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { useFieldArray, useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
-import { useRouter } from "next/navigation"
-import { toast } from "@/components/ui/use-toast"
-import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -32,22 +28,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { PopulatedPromotion } from "@/types/types"
+import { Switch } from "@/components/ui/switch"
+import { toast } from "@/components/ui/use-toast"
+import {
+  translatePaymentMethod,
+  translateShippingMethod,
+} from "@/helpers/helpers"
 import { promotionSchema } from "@/lib/validations/promotion-validation"
+import { PopulatedPromotion } from "@/types/types"
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Category,
   PaymentMethod,
   PromotionDiscountType,
   ShippingMethod,
 } from "@prisma/client"
-import { editPromotion } from "@/actions/promotions/edit-promotion"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Switch } from "@/components/ui/switch"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  translatePaymentMethod,
-  translateShippingMethod,
-} from "@/helpers/helpers"
+import { useRouter } from "next/navigation"
+import { useFieldArray, useForm } from "react-hook-form"
+import { z } from "zod"
 
 type PromotionSchema = z.infer<typeof promotionSchema>
 

@@ -1,6 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
+import deleteImage from "@/actions/cloudinary/delete-image"
+import uploadImage from "@/actions/cloudinary/upload-image"
+import { editProduct } from "@/actions/products/edit-product"
+import { Icons } from "@/components/icons"
+import { MultiSelect } from "@/components/multi-select"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   Form,
   FormControl,
@@ -9,26 +22,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
-import { useRouter } from "next/navigation"
-import { toast } from "@/components/ui/use-toast"
-import { productSchema } from "@/lib/validations/product-validation"
-import { editProduct } from "@/actions/products/edit-product"
-import { Switch } from "@/components/ui/switch"
-import uploadImage from "@/actions/cloudinary/upload-image"
-import deleteImage from "@/actions/cloudinary/delete-image"
 import {
   Select,
   SelectContent,
@@ -36,9 +30,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { toast } from "@/components/ui/use-toast"
+import { productSchema } from "@/lib/validations/product-validation"
 import { PopulatedProduct, PopulatedRecipe } from "@/types/types"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Category } from "@prisma/client"
-import { MultiSelect } from "@/components/multi-select"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
 type ProductSchema = z.infer<typeof productSchema>
 
@@ -266,7 +266,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
                               value={recipe.id}
                               disabled={!!recipe.product}
                             >
-                              {!!recipe.product ? (
+                              {recipe.product ? (
                                 <div className='flex'>
                                   <p>{recipe.name}</p>
                                   {/* <Badge>{recipe.product?.name}</Badge> */}

@@ -11,13 +11,13 @@ import { getCategories } from "@/data/categories"
 import { getPromotion } from "@/data/promotions"
 import { redirect } from "next/navigation"
 
-interface EditPromotionPage {
+interface EditPromotionPageProps {
   params: {
     promotionId: string
   }
 }
 
-const EditPromotionPage = async ({ params }: EditPromotionPage) => {
+const EditPromotionPage = async ({ params }: EditPromotionPageProps) => {
   const { promotionId } = params
 
   const [promotion, categories] = await Promise.all([

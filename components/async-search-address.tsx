@@ -1,24 +1,24 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { useCallback, useState } from "react"
-import useSWR from "swr"
-import { useDebounce } from "use-debounce"
+import { Button } from "@/components/ui/button"
 import {
   Command,
   CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { Icons } from "./icons"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 import { AddressesGeoRef, AddressGeoRef } from "@/types/georef-types"
+import { useCallback, useState } from "react"
+import useSWR from "swr"
+import { useDebounce } from "use-debounce"
+import { Icons } from "./icons"
 
 type SelectedAddress = Pick<
   AddressGeoRef,
@@ -66,7 +66,7 @@ function AsyncSelectAddress({
 
   const apiUrl = `${apiGeoRef}/direcciones?${params.toString()}`
 
-  const { data, error, isValidating } = useSWR<AddressesGeoRef>(
+  const { data, isValidating } = useSWR<AddressesGeoRef>(
     debouncedSearchQuery ? apiUrl : null,
     fetcher
   )
