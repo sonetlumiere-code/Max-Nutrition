@@ -39,23 +39,18 @@ export async function editProduct({
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
-        ...(name !== undefined && { name }), // Conditionally include fields
-        ...(description !== undefined && { description }),
-        ...(price !== undefined && { price }),
-        ...(promotionalPrice !== undefined && { promotionalPrice }),
-        ...(image !== undefined && { image }),
-        ...(featured !== undefined && { featured }),
-        ...(stock !== undefined && { stock }),
-        ...(show !== undefined && { show }),
-        ...(recipeId !== undefined &&
-          (recipeId
-            ? { recipe: { connect: { id: recipeId } } }
-            : { recipe: { disconnect: true } })),
-        ...(categoriesIds !== undefined && {
-          categories: {
-            set: categoriesIds.map((categoryId) => ({ id: categoryId })),
-          },
-        }),
+        name,
+        description,
+        price,
+        promotionalPrice,
+        featured,
+        stock,
+        show,
+        image,
+        recipeId,
+        categories: {
+          set: categoriesIds?.map((id) => ({ id })) || [],
+        },
       },
     })
 
