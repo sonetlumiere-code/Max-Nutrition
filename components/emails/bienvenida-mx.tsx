@@ -59,7 +59,7 @@ const WelcomeClient: React.FC<WelcomeClientProps> = ({ userName }) => {
             <Section className='mb-[32px] mt-[20px] text-center'>
               <Button
                 className='bg-red-200 font-semibold no-underline px-5 py-3 rounded-full text-center text-[14px] text-orange-950'
-                href='https://maximanutricion.com.ar'
+                href={baseUrl}
               >
                 Ir a nuestro sitio web
               </Button>
