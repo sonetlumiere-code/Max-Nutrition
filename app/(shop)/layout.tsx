@@ -1,8 +1,8 @@
 import { CartProvider } from "@/components/cart-provider"
-import { ReactNode } from "react"
 import Cart from "@/components/shop/cart/cart"
 import HeaderShop from "@/components/shop/layout/header/header-shop"
 import { auth } from "@/lib/auth/auth"
+import { ReactNode } from "react"
 
 interface ShopLayoutProps {
   children: ReactNode

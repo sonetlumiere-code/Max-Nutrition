@@ -1,10 +1,4 @@
-import { auth } from "@/lib/auth/auth"
-
 export default async function WelcomePage() {
-  const session = await auth()
-
-  console.log(session)
-
   return (
     <>
       <div className='flex items-center'>
