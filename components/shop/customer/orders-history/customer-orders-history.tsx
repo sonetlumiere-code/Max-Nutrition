@@ -34,12 +34,14 @@ const CustomerOrdersHistory = ({ orders }: CustomerOrderHistoryProps) => {
         </div>
       </CardContent>
       <CardFooter>
-        <div className='text-xs text-muted-foreground'>
-          Mostrando tu{ordersLength > 1 ? "s" : ""} último
-          {ordersLength > 1 ? "s" : ""}{" "}
-          <strong>{ordersLength > 1 ? ordersLength : ""}</strong> pedido
-          {ordersLength > 1 ? "s" : ""}
-        </div>
+        {ordersLength > 0 && (
+          <div className='text-xs text-muted-foreground'>
+            Mostrando tu{ordersLength > 1 ? "s" : ""} último
+            {ordersLength > 1 ? "s" : ""}{" "}
+            <strong>{ordersLength > 1 ? ordersLength : ""}</strong> pedido
+            {ordersLength > 1 ? "s" : ""}
+          </div>
+        )}
       </CardFooter>
     </Card>
   )
