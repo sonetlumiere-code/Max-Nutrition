@@ -11,7 +11,6 @@ import {
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { ReactNode, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { MoveLeftIcon } from "lucide-react"
 import {
   Drawer,
   DrawerClose,
@@ -24,6 +23,7 @@ import {
 } from "@/components/ui/drawer"
 import { PopulatedCustomer } from "@/types/types"
 import CustomerCreateAddressForm from "./customer-create-address-form"
+import { Icons } from "@/components/icons"
 
 type CustomerCreateAddressProps = {
   customer: PopulatedCustomer
@@ -85,7 +85,7 @@ const CustomerCreateAddress = ({
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>
             <Button variant='outline'>
-              <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
+              <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver
             </Button>
           </DrawerClose>
         </DrawerFooter>

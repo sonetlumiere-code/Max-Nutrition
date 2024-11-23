@@ -1,11 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import {
-  CircleUser,
-  MoreHorizontal,
-  Eye,
-  MessageSquareMore,
-  Clipboard,
-} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -40,6 +33,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import Link from "next/link"
+import { Icons } from "@/components/icons"
 
 export default async function CustomersPage() {
   const customers = await getCustomers({
@@ -106,7 +100,7 @@ export default async function CustomersPage() {
                         className='h-8 w-8 text-muted-foreground rounded-full'
                       />
                     ) : (
-                      <CircleUser className='h-8 w-8 text-muted-foreground' />
+                      <Icons.circleUser className='h-8 w-8 text-muted-foreground' />
                     )}
                   </TableCell>
                   <TableCell className='font-medium'>
@@ -119,14 +113,14 @@ export default async function CustomersPage() {
                       className='group px-0'
                     >
                       {customer.user?.email}
-                      <Clipboard className='h-4 w-4 ml-1 invisible group-hover:visible' />
+                      <Icons.clipboard className='h-4 w-4 ml-1 invisible group-hover:visible' />
                     </Button>
                   </TableCell>
                   <TableCell className='hidden md:table-cell'>
                     {customer.phone ? (
                       <Button variant='outline' size='default'>
                         {customer.phone}
-                        <MessageSquareMore className='h-4 w-4 ml-1' />
+                        <Icons.messageSquareMore className='h-4 w-4 ml-1' />
                       </Button>
                     ) : (
                       "-"
@@ -143,7 +137,7 @@ export default async function CustomersPage() {
                           size='icon'
                           variant='ghost'
                         >
-                          <MoreHorizontal className='h-4 w-4' />
+                          <Icons.moreHorizontal className='h-4 w-4' />
                           <span className='sr-only'>Mostrar menú</span>
                         </Button>
                       </DropdownMenuTrigger>
@@ -151,7 +145,7 @@ export default async function CustomersPage() {
                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                         <Link href={`customers/${customer.id}`}>
                           <DropdownMenuItem>
-                            <Eye className='h-4 w-4 mr-2' /> Ver
+                            <Icons.eye className='h-4 w-4 mr-2' /> Ver
                           </DropdownMenuItem>
                         </Link>
                         {/* <DropdownMenuItem>

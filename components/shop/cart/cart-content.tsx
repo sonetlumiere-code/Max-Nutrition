@@ -1,8 +1,8 @@
 import { CartItem } from "@/components/cart-provider"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { ShoppingCart } from "lucide-react"
 import CartCostPreview from "./cart-cost-preview"
 import CartList from "./cart-list"
+import { Icons } from "@/components/icons"
 
 type CartContentProps = {
   items: CartItem[]
@@ -21,7 +21,7 @@ const CartContent = ({ items }: CartContentProps) => {
         </div>
       ) : (
         <div className='flex items-center justify-center h-44'>
-          <ShoppingCart className='w-16 h-16 text-muted-foreground' />
+          <Icons.shoppingCart className='w-16 h-16 text-muted-foreground' />
         </div>
       )}
     </>

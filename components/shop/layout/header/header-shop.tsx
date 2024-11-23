@@ -1,9 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link"
-import { Input } from "@/components/ui/input"
-import { Search, User } from "lucide-react"
 import dynamic from "next/dynamic"
-import { Role } from "@prisma/client"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -16,26 +13,9 @@ const CartNavButton = dynamic(() => import("./cart-icon-button"), {
 
 export default async function HeaderShop() {
   const session = await auth()
-  const isAdmin = session?.user.role === Role.ADMIN
 
   return (
     <>
-      {isAdmin ? (
-        <header className='text-center bg-slate-300 px-4 sm:px-6 lg:px-8 py-4'>
-          <Link
-            href='/orders'
-            className={cn(
-              buttonVariants({
-                variant: "secondary",
-              }),
-              ""
-            )}
-          >
-            <Icons.layoutDashboard className='w-4 h-4 mr-2' />
-            Admin panel
-          </Link>
-        </header>
-      ) : null}
       <header className='flex items-center justify-between bg-white shadow-sm px-4 sm:px-6 lg:px-8 py-4'>
         <Link href='/' className='flex items-center gap-2' prefetch={false}>
           <img
@@ -65,7 +45,7 @@ export default async function HeaderShop() {
             href='/login'
             className={cn(buttonVariants({ variant: "outline" }), "")}
           >
-            <User className='w-5 h-5 mr-2 ' /> Ingresar
+            <Icons.user className='w-5 h-5 mr-2 ' /> Ingresar
           </Link>
         )}
       </header>

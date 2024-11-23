@@ -20,11 +20,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { MoveLeftIcon } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import CartContent from "./cart-content"
 import Link from "next/link"
 import useSyncCart from "@/hooks/use-sync-cart"
+import { Icons } from "@/components/icons"
 
 const Cart = () => {
   const { items, open, setOpen } = useCart()
@@ -61,7 +61,8 @@ const Cart = () => {
               <DialogClose asChild>
                 <Button type='button' variant='outline' asChild>
                   <Link href='/shop'>
-                    <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a tienda
+                    <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver a
+                    tienda
                   </Link>
                 </Button>
               </DialogClose>
@@ -99,7 +100,8 @@ const Cart = () => {
             <DrawerClose asChild>
               <Button type='button' variant='outline' asChild>
                 <Link href='/shop'>
-                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver a tienda
+                  <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver a
+                  tienda
                 </Link>
               </Button>
             </DrawerClose>

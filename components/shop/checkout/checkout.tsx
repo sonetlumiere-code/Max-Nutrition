@@ -21,7 +21,6 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { CreditCard, DollarSign, ShoppingCart } from "lucide-react"
 import { Icons } from "@/components/icons"
 import {
   Select,
@@ -554,7 +553,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                                     htmlFor={PaymentMethod.MercadoPago}
                                     className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
                                   >
-                                    <CreditCard className='mb-3 h-6 w-6' />
+                                    <Icons.creditCard className='mb-3 h-6 w-6' />
                                     Mercado Pago
                                   </Label>
                                 </div>
@@ -575,7 +574,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                                     htmlFor={PaymentMethod.Cash}
                                     className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
                                   >
-                                    <DollarSign className='mb-3 h-6 w-6' />
+                                    <Icons.dollarSign className='mb-3 h-6 w-6' />
                                     Efectivo
                                   </Label>
                                 </div>

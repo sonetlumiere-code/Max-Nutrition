@@ -12,7 +12,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getOrders } from "@/data/orders"
 import OrderItemDetails from "@/components/dashboard/orders/list/order-item-details/order-item-details"
 import { Button } from "@/components/ui/button"
-import { File } from "lucide-react"
 import useSWR from "swr"
 import { PopulatedOrder, TimePeriod } from "@/types/types"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -227,7 +226,7 @@ export default function OrdersPage() {
                     ) : (
                       <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
                         <div className='flex flex-col items-center justify-center'>
-                          <File className='h-12 w-12 text-muted-foreground' />
+                          <Icons.file className='h-12 w-12 text-muted-foreground' />
                           <p className='mt-2 text-sm text-muted-foreground'>
                             No se encontraron pedidos recientes.
                           </p>

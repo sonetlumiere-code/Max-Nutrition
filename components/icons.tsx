@@ -40,6 +40,15 @@ import {
   Info,
   MapPin,
   ChevronsUpDown,
+  User,
+  ScrollText,
+  MessageSquareMore,
+  Clipboard,
+  Copy,
+  Upload,
+  Minus,
+  CreditCard,
+  DollarSign,
 } from "lucide-react"
 import {
   ChevronLeftIcon,
@@ -50,7 +59,16 @@ import {
 } from "@radix-ui/react-icons"
 
 export const Icons = {
+  user: User,
+  scrollText: ScrollText,
+  minus: Minus,
+  dollarSign: DollarSign,
   plus: Plus,
+  messageSquareMore: MessageSquareMore,
+  copy: Copy,
+  creditCard: CreditCard,
+  upload: Upload,
+  clipboard: Clipboard,
   caretSortIcon: CaretSortIcon,
   chevronLeftIcon: ChevronLeftIcon,
   chevronRightIcon: ChevronRightIcon,

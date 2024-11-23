@@ -10,7 +10,6 @@ import {
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Dispatch, SetStateAction } from "react"
 import { Button } from "@/components/ui/button"
-import { MoveLeftIcon } from "lucide-react"
 import {
   Drawer,
   DrawerClose,
@@ -22,6 +21,7 @@ import {
 } from "@/components/ui/drawer"
 import CustomerViewOrderDetail from "./customer-orders-history-detail"
 import { PopulatedOrder } from "@/types/types"
+import { Icons } from "@/components/icons"
 
 type CustomerViewOrderProps = {
   order: PopulatedOrder
@@ -49,7 +49,7 @@ const CustomerViewOrder = ({
             <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
                 <Button variant='outline'>
-                  <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
+                  <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver
                 </Button>
               </DialogClose>
             </DialogFooter>
@@ -72,7 +72,7 @@ const CustomerViewOrder = ({
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>
             <Button variant='outline'>
-              <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
+              <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver
             </Button>
           </DrawerClose>
         </DrawerFooter>

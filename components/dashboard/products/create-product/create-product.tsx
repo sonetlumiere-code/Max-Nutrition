@@ -38,7 +38,6 @@ import {
 import { PopulatedRecipe } from "@/types/types"
 import { MultiSelect } from "@/components/multi-select"
 import { Category } from "@prisma/client"
-import { Upload } from "lucide-react"
 
 type ProductSchema = z.infer<typeof productSchema>
 
@@ -307,7 +306,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                   />
                   <div className='grid grid-cols-3 gap-2'>
                     <label className='flex aspect-square w-full items-center justify-center rounded-md border border-dashed cursor-pointer'>
-                      <Upload className='h-4 w-4 text-muted-foreground' />
+                      <Icons.upload className='h-4 w-4 text-muted-foreground' />
                       <span className='sr-only'>Upload</span>
                       <input
                         type='file'

@@ -6,31 +6,43 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { Session } from "next-auth"
-import { ScrollText, User } from "lucide-react"
 import SignOutButton from "@/components/sign-out-button"
 import Link from "next/link"
 import UserAvatar from "@/components/user-avatar"
 import { Icons } from "@/components/icons"
+import { Role } from "@prisma/client"
 
 type ProfileDropdownProps = {
   session: Session | null
 }
 
 const CustomerProfileDropdown = ({ session }: ProfileDropdownProps) => {
+  const isAdmin = session?.user.role === Role.ADMIN
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <UserAvatar user={session?.user} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
+        {isAdmin && (
+          <>
+            <Link href='/orders'>
+              <DropdownMenuItem>
+                <Icons.layoutDashboard className='w-4 h-4 mr-2' /> Admin panel
+              </DropdownMenuItem>
+            </Link>
+            <DropdownMenuSeparator />
+          </>
+        )}
         <Link href='/customer-info'>
           <DropdownMenuItem>
-            <User className='w-4 h-4 mr-2' /> Mis datos
+            <Icons.user className='w-4 h-4 mr-2' /> Mis datos
           </DropdownMenuItem>
         </Link>
         <Link href='/customer-orders-history'>
           <DropdownMenuItem>
-            <ScrollText className='w-4 h-4 mr-2' /> Mis Pedidos
+            <Icons.scrollText className='w-4 h-4 mr-2' /> Mis Pedidos
           </DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />

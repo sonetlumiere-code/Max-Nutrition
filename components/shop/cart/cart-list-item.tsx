@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 import { CartItem, useCart } from "@/components/cart-provider"
+import { Icons } from "@/components/icons"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { TableCell, TableRow } from "@/components/ui/table"
-import { Minus, Plus, Trash2 } from "lucide-react"
 
 const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
   const { decrementQuantity, incrementQuantity, removeItem } = useCart()
@@ -43,9 +43,9 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
             }
           >
             {cartItem.quantity === 1 ? (
-              <Trash2 className='w-4 h-4 text-destructive' />
+              <Icons.trash2 className='w-4 h-4 text-destructive' />
             ) : (
-              <Minus className='w-4 h-4' />
+              <Icons.minus className='w-4 h-4' />
             )}
           </Button>
           <div className='text-sm font-bold min-w-4 text-center'>
@@ -57,7 +57,7 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
             className='rounded-full p-1 hover:bg-muted transition-colors'
             onClick={() => incrementQuantity(cartItem.id)}
           >
-            <Plus className='w-4 h-4' />
+            <Icons.plus className='w-4 h-4' />
           </Button>
         </div>
       </TableCell>

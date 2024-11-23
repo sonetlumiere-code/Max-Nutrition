@@ -12,7 +12,6 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
-import { Minus, Plus } from "lucide-react"
 import { Product } from "@prisma/client"
 import { useCart } from "@/components/cart-provider"
 import { toast } from "@/components/ui/use-toast"
@@ -107,7 +106,7 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
                 onClick={() => setQuantity((prev) => prev - 1)}
                 disabled={quantity === 1}
               >
-                <Minus className='w-4 h-4' />
+                <Icons.minus className='w-4 h-4' />
               </Button>
               <div className='text-xl font-bold'>{quantity}</div>
               <Button
@@ -116,7 +115,7 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
                 className='rounded-full p-1 hover:bg-muted transition-colors'
                 onClick={() => setQuantity((prev) => prev + 1)}
               >
-                <Plus className='w-4 h-4' />
+                <Icons.plus className='w-4 h-4' />
               </Button>
             </div>
             <Button
