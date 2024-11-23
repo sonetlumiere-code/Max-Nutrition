@@ -2,6 +2,7 @@ import WelcomeClient from "@/components/emails/bienvenida-mx"
 import OrderDetails from "@/components/emails/pedido-realizado-mx"
 import PasswordReset from "@/components/emails/recuperar-password-mx"
 import VerificationEmail from "@/components/emails/verificacion-mx"
+import { PopulatedOrder } from "@/types/types"
 import { ReactElement } from "react"
 import { Resend } from "resend"
 
@@ -47,31 +48,22 @@ export const sendWelcomeEmail = async (email: string, userName: string) => {
   })
 }
 
-export const sendOrderDetailsEmail = async (
-  email: string,
-  userName: string,
-  orderLink: string,
-  products: {
-    name: string
-    quantity: number
-    price: string
-    imageUrl: string
-  }[],
-  totalPrice: string,
-  shippingCost: string,
-  deliveryAddress: string
-) => {
+export const sendOrderDetailsEmail = async ({
+  email,
+  order,
+  orderLink,
+}: {
+  email: string
+  order: PopulatedOrder
+  orderLink: string
+}) => {
   await resend.emails.send({
     from: "onboarding@resend.dev",
     to: email,
     subject: "Detalles de tu pedido en Máxima Nutrición",
     react: OrderDetails({
-      userName,
-      orderLink,
-      products,
-      totalPrice,
-      shippingCost,
-      deliveryAddress,
+      order,
+      orderLink: `${baseUrl}/${orderLink}`,
     }) as ReactElement,
   })
 }

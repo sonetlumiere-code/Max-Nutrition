@@ -1,44 +1,30 @@
+import { PopulatedOrder } from "@/types/types"
+import { ShippingMethod } from "@prisma/client"
 import {
   Body,
   Button,
+  Column,
   Container,
   Head,
   Heading,
   Html,
   Img,
   Preview,
+  Row,
   Section,
   Text,
-  Row,
-  Column,
 } from "@react-email/components"
 import { Tailwind } from "@react-email/tailwind"
 import * as React from "react"
 
-interface Product {
-  name: string
-  quantity: number
-  price: string
-  imageUrl: string
-}
-
 interface OrderDetailsProps {
-  userName: string
+  order: PopulatedOrder
   orderLink: string
-  products: Product[]
-  totalPrice: string
-  shippingCost: string
-  deliveryAddress: string
 }
 
-const OrderDetails: React.FC<OrderDetailsProps> = ({
-  userName,
-  orderLink,
-  products,
-  totalPrice,
-  shippingCost,
-  deliveryAddress,
-}) => {
+const baseUrl = process.env.BASE_URL
+
+const OrderDetails: React.FC<OrderDetailsProps> = ({ order, orderLink }) => {
   const previewText = `Detalles de tu pedido en Máxima Nutrición`
 
   return (
@@ -50,7 +36,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
           <Container className='mx-auto my-[40px] max-w-[465px] p-[20px] border border-solid border-[#eaeaea] rounded'>
             <Section className='mt-[32px] text-center'>
               <Img
-                src='https://dominio.com/static/mxm-logo.png'
+                src={`${baseUrl}/img/mxm-logo.png`}
                 alt='Logo'
                 className='mx-auto'
                 width='120'
@@ -64,16 +50,31 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
               >
                 Detalle de tu pedido
               </Heading>
-              <Text className='leading-[24px] mx-0 my-[10px] p-0 text-[14px] text-black'>
-                Hola <strong>{userName}</strong>, tu pedido se realizó
-                correctamente y lo enviaremos a:
-              </Text>
-              <Text
-                is='h2'
-                className='leading-[24px] mx-0 my-[10px] p-0 text-[14px] text-black font-bold'
-              >
-                {deliveryAddress}
-              </Text>
+              {order.shippingMethod === ShippingMethod.Delivery && (
+                <>
+                  <Text className='leading-[24px] mx-0 my-[10px] p-0 text-[14px] text-black'>
+                    Hola <strong>{order.customer?.name}</strong>, tu pedido se
+                    realizó correctamente y lo enviaremos a:
+                  </Text>
+                  <Text
+                    is='h2'
+                    className='leading-[24px] mx-0 my-[10px] p-0 text-[14px] text-black font-bold'
+                  >
+                    {`${order.address?.addressStreet} ${
+                      order.address?.addressNumber
+                    } ${order.address?.addressFloor || ""} ${
+                      order.address?.addressApartment
+                    }`.trim()}
+                  </Text>
+                </>
+              )}
+              {order.shippingMethod === ShippingMethod.TakeAway && (
+                <Text className='leading-[24px] mx-0 my-[10px] p-0 text-[14px] text-black'>
+                  Hola <strong>{order.customer?.name}</strong>, tu pedido se
+                  realizó correctamente y podrás pasarlo a retirar por nuestra
+                  sucursal.
+                </Text>
+              )}
               <Section className='my-[16px] rounded-[8px] border border-solid border-gray-200 p-[16px] pt-0'>
                 <table className='mb-[16px]' width='100%'>
                   <thead>
@@ -103,14 +104,18 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map((product, index) => (
+                    {order.items?.map((item, index) => (
                       <tr key={index}>
                         <td className='border-0 border-b border-solid border-gray-200 py-[8px]'>
                           <Img
-                            alt={product.name}
+                            alt={item.product.name}
                             className='rounded-[8px] object-cover'
                             height={80}
-                            src={product.imageUrl}
+                            src={
+                              item.product.image
+                                ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${item.product.image}`
+                                : "/img/no-image.jpg"
+                            }
                           />
                         </td>
                         <td
@@ -118,19 +123,19 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                           className='border-0 border-b border-solid border-gray-200 py-[8px]'
                           colSpan={6}
                         >
-                          <Text>{product.name}</Text>
+                          <Text>{item.product.name}</Text>
                         </td>
                         <td
                           align='center'
                           className='border-0 border-b border-solid border-gray-200 py-[8px]'
                         >
-                          <Text>{product.quantity}</Text>
+                          <Text>{item.quantity}</Text>
                         </td>
                         <td
                           align='center'
                           className='border-0 border-b border-solid border-gray-200 py-[8px]'
                         >
-                          <Text>{product.price}</Text>
+                          <Text>{item.product.price}</Text>
                         </td>
                       </tr>
                     ))}
@@ -148,10 +153,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                 </Row>
               </Section>
               <Text className='text-right text-black text-[16px] font-normal'>
-                Envío: {shippingCost}
+                Envío: {order.shippingCost}
               </Text>
               <Text className='text-right text-black text-[16px] font-bold'>
-                Total: {totalPrice}
+                Total: {order.total}
               </Text>
             </Section>
           </Container>

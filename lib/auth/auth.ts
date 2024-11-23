@@ -1,11 +1,12 @@
-import NextAuth from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import prisma from "@/lib/db/db"
-import authConfig from "./auth.config"
-import { Role } from "@prisma/client"
-import { getUser } from "@/data/user"
-import { createCustomer } from "@/actions/customer/create-customer"
 import { updateUser } from "@/actions/auth/user"
+import { createCustomer } from "@/actions/customer/create-customer"
+import { getUser } from "@/data/user"
+import prisma from "@/lib/db/db"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { Role } from "@prisma/client"
+import NextAuth from "next-auth"
+import { sendWelcomeEmail } from "../mail/mail"
+import authConfig from "./auth.config"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
@@ -15,14 +16,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   events: {
     async linkAccount({ user }) {
       if (user.id) {
-        await updateUser(user.id, {
-          emailVerified: new Date(),
-        })
-
-        await createCustomer({
-          userId: user.id,
-          name: user.name || "",
-        })
+        await Promise.all([
+          updateUser(user.id, {
+            emailVerified: new Date(),
+          }),
+          createCustomer({
+            userId: user.id,
+            name: user.name || "",
+          }),
+          sendWelcomeEmail(user.email || "", user.name || user.email || ""),
+        ])
       }
     },
   },

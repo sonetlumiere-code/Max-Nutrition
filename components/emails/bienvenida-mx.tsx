@@ -18,6 +18,8 @@ interface WelcomeClientProps {
   userName: string
 }
 
+const baseUrl = process.env.BASE_URL
+
 const WelcomeClient: React.FC<WelcomeClientProps> = ({ userName }) => {
   const previewText = `¡Te damos la bienvenida a Máxima Nutrición!`
 
@@ -30,7 +32,7 @@ const WelcomeClient: React.FC<WelcomeClientProps> = ({ userName }) => {
           <Container className='mx-auto my-[40px] max-w-[465px] p-[20px] border border-solid border-[#eaeaea] rounded'>
             <Section className='mt-[32px] text-center'>
               <Img
-                src='https://dominio.com/static/mxm-logo.png'
+                src={`${baseUrl}/img/mxm-logo.png`}
                 alt='Logo'
                 className='mx-auto'
                 width='120'
@@ -45,7 +47,7 @@ const WelcomeClient: React.FC<WelcomeClientProps> = ({ userName }) => {
             </Heading>
             <Text className='leading-[24px] mx-0 my-[10px] p-0 text-[14px] text-black'>
               ¡Hola <strong>{userName}</strong>! Gracias por elegirnos. Desde
-              hoy, tendrás a un clic la mejor comida saludable, lista para
+              hoy, tendrás a un click la mejor comida saludable, lista para
               disfrutar.
             </Text>
             <Text className='leading-[24px] mx-0 my-[10px] p-0 text-[14px] text-black'>

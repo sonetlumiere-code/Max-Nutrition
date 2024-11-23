@@ -26,12 +26,12 @@ const NewVerificationPage = () => {
           <Link href='/' className='block'>
             <span className='sr-only'>Home</span>
             <Image
-              src='/img/auth.png'
-              alt='Auth logo'
+              src='/img/mxm-logo.png'
+              alt='Máxima Nutrición logo'
               height={36}
               width={120}
               quality={100}
-              className='mx-auto py-4'
+              className='mx-auto py-6'
             />
           </Link>
           <h1 className='text-2xl font-semibold tracking-tight'>

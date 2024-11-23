@@ -1,8 +1,9 @@
 "use server"
 
 import prisma from "@/lib/db/db"
-import { updateUser } from "./user"
+import { sendWelcomeEmail } from "@/lib/mail/mail"
 import { createCustomer } from "../customer/create-customer"
+import { updateUser } from "./user"
 
 export const newVerification = async (token: string) => {
   const existingToken = await prisma.verificationToken.findFirst({
@@ -42,6 +43,10 @@ export const newVerification = async (token: string) => {
       prisma.verificationToken.delete({
         where: { id: existingToken.id },
       }),
+      sendWelcomeEmail(
+        existingToken.email,
+        existingUser.name || existingToken.email
+      ),
     ])
 
     return { success: "Email verificado." }

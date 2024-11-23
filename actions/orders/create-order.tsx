@@ -1,15 +1,17 @@
 "use server"
 
+import { getCustomer } from "@/data/customer"
+import { getProducts } from "@/data/products"
+import { getShippingSettings } from "@/data/shipping-settings"
+import { getShippingZone } from "@/data/shipping-zones"
 import prisma from "@/lib/db/db"
+import { sendOrderDetailsEmail } from "@/lib/mail/mail"
 import { orderSchema } from "@/lib/validations/order-validation"
+import { PopulatedOrder, PopulatedProduct } from "@/types/types"
 import { ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 import { checkPromotion } from "../promotions/check-promotion"
-import { PopulatedProduct } from "@/types/types"
-import { getShippingSettings } from "@/data/shipping-settings"
-import { getShippingZone } from "@/data/shipping-zones"
-import { getProducts } from "@/data/products"
 
 type OrderSchema = z.infer<typeof orderSchema>
 
@@ -31,17 +33,32 @@ export async function createOrder(values: OrderSchema) {
   const uniqueProductIds = Array.from(new Set(productIds))
 
   try {
-    const products = await getProducts({
-      where: {
-        id: {
-          in: uniqueProductIds,
+    const [products, customer] = await Promise.all([
+      getProducts({
+        where: {
+          id: {
+            in: uniqueProductIds,
+          },
+          show: true,
         },
-        show: true,
-      },
-    })
+      }),
+      getCustomer({
+        where: {
+          id: customerId,
+        },
+        include: {
+          user: true,
+          address: true,
+        },
+      }),
+    ])
 
     if (!products || products.length !== uniqueProductIds.length) {
       return { error: "Invalid product id." }
+    }
+
+    if (!customer) {
+      return { error: "Invalid customer id." }
     }
 
     const populatedItems = items
@@ -96,9 +113,9 @@ export async function createOrder(values: OrderSchema) {
         }
       }
 
-      const customerAddress = await prisma.customerAddress.findUnique({
-        where: { id: customerAddressId },
-      })
+      const customerAddress = customer.address?.find(
+        (address) => address.id === customerAddressId
+      )
 
       if (!customerAddress) {
         return { error: "Invalid customer address id." }
@@ -144,12 +161,19 @@ export async function createOrder(values: OrderSchema) {
         },
       },
       include: {
+        address: true,
         items: {
           include: {
             product: true,
           },
         },
       },
+    })
+
+    sendOrderDetailsEmail({
+      email: customer.user?.email || "",
+      order: order as PopulatedOrder,
+      orderLink: "customer-orders-history",
     })
 
     revalidatePath("/customer-orders-history")
