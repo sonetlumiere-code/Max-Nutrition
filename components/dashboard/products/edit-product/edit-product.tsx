@@ -294,33 +294,38 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
               </CardHeader>
               <CardContent>
                 <div className='grid gap-2'>
-                  {product.image && (!imageFile || imageFile?.length === 0) && (
-                    <img
-                      alt='Product image'
-                      className='aspect-square w-full rounded-md object-cover'
-                      src={`${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${product.image}`}
-                    />
-                  )}
-                  {imageFile?.length > 0 && (
-                    <img
-                      alt='Image to upload'
-                      className='aspect-square w-full rounded-md object-cover'
-                      src={URL.createObjectURL(imageFile[0])}
-                    />
-                  )}
+                  <img
+                    alt={
+                      imageFile?.length > 0
+                        ? "Image to upload"
+                        : "Product image"
+                    }
+                    className='aspect-square w-full rounded-md object-cover'
+                    src={
+                      imageFile?.length > 0
+                        ? URL.createObjectURL(imageFile[0])
+                        : product.image
+                        ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${product.image}`
+                        : "/img/no-image.jpg"
+                    }
+                  />
                   <div className='grid grid-cols-3 gap-2'>
-                    <label className='flex aspect-square w-full items-center justify-center rounded-md border border-dashed cursor-pointer'>
+                    <label
+                      className='flex aspect-square w-full cursor-pointer items-center justify-center rounded-md border border-dashed'
+                      htmlFor='image-upload'
+                    >
                       <Icons.upload className='h-4 w-4 text-muted-foreground' />
-                      <span className='sr-only'>Upload</span>
-                      <input
-                        type='file'
-                        disabled={isSubmitting}
-                        className='hidden'
-                        onChange={(event) => {
-                          form.setValue("imageFile", event.target.files)
-                        }}
-                      />
+                      <span className='sr-only'>Upload an image</span>
                     </label>
+                    <input
+                      id='image-upload'
+                      type='file'
+                      disabled={isSubmitting}
+                      className='hidden'
+                      onChange={(event) =>
+                        form.setValue("imageFile", event.target.files)
+                      }
+                    />
                   </div>
                 </div>
               </CardContent>
