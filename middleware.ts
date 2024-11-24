@@ -20,6 +20,7 @@ export default auth(async (req) => {
   const token = await getToken({ req, secret })
   const userRole = (token?.role as Role) || "USER"
 
+  console.log(token)
   console.log(userRole)
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
