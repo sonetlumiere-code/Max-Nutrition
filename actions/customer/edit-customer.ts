@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { customerSchema } from "@/lib/validations/customer-validation"
 import { revalidatePath } from "next/cache"
@@ -7,24 +8,20 @@ import { z } from "zod"
 
 type CustomerSchema = z.infer<typeof customerSchema>
 
-export async function editCustomer({
-  id,
-  values,
-}: {
-  id: string
-  values: CustomerSchema
-}) {
+export async function editCustomer(values: CustomerSchema) {
+  const session = await auth()
+
   const validatedFields = customerSchema.safeParse(values)
 
   if (!validatedFields.success) {
-    return { error: "Invalid fields." }
+    return { error: "Campos inválidos." }
   }
 
   const { name, birthdate, phone } = validatedFields.data
 
   try {
     const customer = await prisma.customer.update({
-      where: { id },
+      where: { userId: session?.user.id },
       data: {
         name,
         birthdate,

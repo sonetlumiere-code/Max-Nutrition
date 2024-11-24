@@ -42,7 +42,6 @@ const CustomerEditPersonalInfoForm = ({
   const form = useForm<CustomerSchema>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
-      userId: customer.userId,
       name: customer.name || customer.user?.name || "",
       phone: customer.phone || 0,
       birthdate: customer.birthdate || undefined,
@@ -56,7 +55,7 @@ const CustomerEditPersonalInfoForm = ({
   } = form
 
   const onSubmit = async (data: CustomerSchema) => {
-    const res = await editCustomer({ id: customer.id, values: data })
+    const res = await editCustomer(data)
 
     setOpen(false)
 
