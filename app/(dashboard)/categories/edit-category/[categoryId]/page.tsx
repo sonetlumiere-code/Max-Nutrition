@@ -1,3 +1,4 @@
+import EditCategory from "@/components/dashboard/categories/edit-category/edit-category"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,10 +7,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { redirect } from "next/navigation"
 import { getCategory } from "@/data/categories"
-import EditCategory from "@/components/dashboard/categories/edit-category/edit-category"
 import { getProducts } from "@/data/products"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
 
 interface EditCategoryPageProps {
   params: {
@@ -18,6 +19,12 @@ interface EditCategoryPageProps {
 }
 
 const EditCategoryPage = async ({ params }: EditCategoryPageProps) => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    redirect("/")
+  }
+
   const { categoryId } = params
 
   const [category, products] = await Promise.all([
@@ -29,7 +36,7 @@ const EditCategoryPage = async ({ params }: EditCategoryPageProps) => {
   ])
 
   if (!category) {
-    redirect("/orders")
+    redirect("/categories")
   }
 
   return (

@@ -1,19 +1,14 @@
+import EditShippingSettings from "@/components/dashboard/shippings/shipping-settings/edit-shipping-settings/edit-shipping-settings"
+import DeleteShippingZone from "@/components/dashboard/shippings/shipping-zones/delete-shipping-zone/delete-shipping-zone"
+import { Icons } from "@/components/icons"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -23,23 +18,36 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { getShippingZones } from "@/data/shipping-zones"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { getShippingSettings } from "@/data/shipping-settings"
-import DeleteShippingZone from "@/components/dashboard/shippings/shipping-zones/delete-shipping-zone/delete-shipping-zone"
-import Link from "next/link"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { getShippingZones } from "@/data/shipping-zones"
+import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
-import { Icons } from "@/components/icons"
-import EditShippingSettings from "@/components/dashboard/shippings/shipping-settings/edit-shipping-settings/edit-shipping-settings"
 import { ShippingSettings } from "@prisma/client"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 
 const Shippings = async () => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const [shippingZones, shippingSettings] = await Promise.all([
     getShippingZones(),
     getShippingSettings(),

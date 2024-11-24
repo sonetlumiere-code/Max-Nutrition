@@ -1,5 +1,3 @@
-import { getCustomer } from "@/data/customer"
-import { redirect } from "next/navigation"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,12 +15,21 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { getCustomer } from "@/data/customer"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
 
 interface ViewCustomerProps {
   params: { customerId: string }
 }
 
 const ViewCustomer = async ({ params }: ViewCustomerProps) => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    redirect("/")
+  }
+
   const { customerId } = params
 
   const customer = await getCustomer({

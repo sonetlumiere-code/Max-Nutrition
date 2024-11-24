@@ -1,4 +1,4 @@
-import { getIngredient } from "@/data/ingredients"
+import EditIngredient from "@/components/dashboard/ingredients/edit-ingredient/edit-ingredient"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,7 +7,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import EditIngredient from "@/components/dashboard/ingredients/edit-ingredient/edit-ingredient"
+import { getIngredient } from "@/data/ingredients"
+import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
 interface EditIngredientPageProps {
@@ -15,6 +16,12 @@ interface EditIngredientPageProps {
 }
 
 const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const { ingredientId } = params
 
   const ingredient = await getIngredient({

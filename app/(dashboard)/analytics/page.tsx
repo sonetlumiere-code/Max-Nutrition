@@ -1,7 +1,13 @@
-import getSession from "@/lib/auth/get-session"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
 
 export default async function AnalyiticsPage() {
-  const session = await getSession()
+  // const session = await getSession()
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    redirect("/")
+  }
 
   return (
     <>

@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getShippingZone } from "@/data/shipping-zones"
+import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
 interface EditShippingZonePageProps {
@@ -17,6 +18,12 @@ interface EditShippingZonePageProps {
 }
 
 const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const { shippingZoneId } = params
 
   const shippingZone = await getShippingZone({ where: { id: shippingZoneId } })

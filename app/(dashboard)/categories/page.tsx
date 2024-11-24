@@ -1,23 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
+import DeleteCategory from "@/components/dashboard/categories/delete-category/delete-category"
 import { Icons } from "@/components/icons"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button, buttonVariants } from "@/components/ui/button"
-import Link from "next/link"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Card,
   CardContent,
@@ -27,17 +18,34 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { cn } from "@/lib/utils"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { getCategories } from "@/data/categories"
-import DeleteCategory from "@/components/dashboard/categories/delete-category/delete-category"
+import { auth } from "@/lib/auth/auth"
+import { cn } from "@/lib/utils"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 
 export default async function CategoriesPage() {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const categories = await getCategories()
   const categoriesLength = categories?.length || 0
 

@@ -9,8 +9,16 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getCategories } from "@/data/categories"
 import { getRecipes } from "@/data/recipes"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
 
 const CreateProductPage = async () => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const [recipes, categories] = await Promise.all([
     getRecipes({
       include: {

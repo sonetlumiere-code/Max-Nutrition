@@ -1,23 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
+import DeleteProduct from "@/components/dashboard/products/delete-product/delete-product"
+import ShowProductBadge from "@/components/dashboard/products/list/show-product-badge"
 import { Icons } from "@/components/icons"
+import { Badge } from "@/components/ui/badge"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button, buttonVariants } from "@/components/ui/button"
-import Link from "next/link"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Card,
   CardContent,
@@ -27,19 +20,34 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { getProducts } from "@/data/products"
+import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
-import DeleteProduct from "@/components/dashboard/products/delete-product/delete-product"
-import { Badge } from "@/components/ui/badge"
-import ShowProductBadge from "@/components/dashboard/products/list/show-product-badge"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 
 export default async function ProductsPage() {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const products = await getProducts({
     include: {
       categories: true,

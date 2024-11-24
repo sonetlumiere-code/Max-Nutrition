@@ -1,4 +1,4 @@
-import { getIngredients } from "@/data/ingredients"
+import EditRecipe from "@/components/dashboard/recipes/edit-recipe/edit-recipe"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,9 +7,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { redirect } from "next/navigation"
-import EditRecipe from "@/components/dashboard/recipes/edit-recipe/edit-recipe"
+import { getIngredients } from "@/data/ingredients"
 import { getRecipe } from "@/data/recipes"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
 
 interface EditRecipePageProps {
   params: {
@@ -18,6 +19,12 @@ interface EditRecipePageProps {
 }
 
 const EditRecipePage = async ({ params }: EditRecipePageProps) => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const { recipeId } = params
 
   const [recipe, ingredients] = await Promise.all([

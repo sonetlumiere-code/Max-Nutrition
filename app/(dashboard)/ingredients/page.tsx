@@ -1,23 +1,13 @@
-import { Button, buttonVariants } from "@/components/ui/button"
-import { getIngredients } from "@/data/ingredients"
-import Link from "next/link"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import DeleteIngredient from "@/components/dashboard/ingredients/delete-ingredient/delete-ingredient"
 import { Icons } from "@/components/icons"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -27,17 +17,35 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { cn } from "@/lib/utils"
-import DeleteIngredient from "@/components/dashboard/ingredients/delete-ingredient/delete-ingredient"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { getIngredients } from "@/data/ingredients"
 import { translateUnit } from "@/helpers/helpers"
+import { auth } from "@/lib/auth/auth"
+import { cn } from "@/lib/utils"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 
 export default async function IngredientsPage() {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const ingredients = await getIngredients({
     orderBy: {
       name: "asc",

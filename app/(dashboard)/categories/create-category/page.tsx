@@ -8,8 +8,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getProducts } from "@/data/products"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
 
 const CreateCategoryPage = async () => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    redirect("/")
+  }
+
   const products = await getProducts()
 
   return (
