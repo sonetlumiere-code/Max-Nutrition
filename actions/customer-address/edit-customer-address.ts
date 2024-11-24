@@ -1,5 +1,7 @@
 "use server"
 
+import { getCustomer } from "@/data/customer"
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
 import { AddressLabel } from "@prisma/client"
@@ -12,6 +14,18 @@ export async function editCustomerAddress(
   id: string,
   values: CustomerAddressSchema
 ) {
+  const session = await auth()
+
+  const customer = await getCustomer({
+    where: {
+      userId: session?.user.id,
+    },
+  })
+
+  if (!customer) {
+    return { error: "Cliente no encontrado." }
+  }
+
   const validatedFields = customerAddressSchema.safeParse(values)
 
   if (!validatedFields.success) {
@@ -35,6 +49,7 @@ export async function editCustomerAddress(
     const updatedAddress = await prisma.customerAddress.update({
       where: {
         id,
+        customerId: customer.id,
       },
       data: {
         province,

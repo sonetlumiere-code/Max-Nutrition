@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { categorySchema } from "@/lib/validations/category-validation"
 import { revalidatePath } from "next/cache"
@@ -14,6 +15,12 @@ export async function editCategory({
   id: string
   values: CategorySchema
 }) {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return { error: "No autorizado." }
+  }
+
   const validatedFields = categorySchema.safeParse(values)
 
   if (!validatedFields.success) {

@@ -1,5 +1,7 @@
 "use client"
 
+import { Icons } from "@/components/icons"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -8,9 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { ReactNode, useState } from "react"
-import { Button } from "@/components/ui/button"
 import {
   Drawer,
   DrawerClose,
@@ -21,9 +20,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { useMediaQuery } from "@/hooks/use-media-query"
 import { PopulatedCustomer } from "@/types/types"
+import { ReactNode, useState } from "react"
 import CustomerCreateAddressForm from "./customer-create-address-form"
-import { Icons } from "@/components/icons"
 
 type CustomerCreateAddressProps = {
   customer: PopulatedCustomer
@@ -48,10 +48,7 @@ const CustomerCreateAddress = ({
               Agregá una dirección donde recibirás los pedidos
             </DialogDescription>
             <div className='py-4'>
-              <CustomerCreateAddressForm
-                customerId={customer?.id}
-                setOpen={setOpen}
-              />
+              <CustomerCreateAddressForm setOpen={setOpen} />
             </div>
             {/* <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
@@ -77,10 +74,7 @@ const CustomerCreateAddress = ({
           </DrawerDescription>
         </DrawerHeader>
         <div className='p-4'>
-          <CustomerCreateAddressForm
-            customerId={customer?.id}
-            setOpen={setOpen}
-          />
+          <CustomerCreateAddressForm setOpen={setOpen} />
         </div>
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>

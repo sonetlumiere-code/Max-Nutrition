@@ -29,7 +29,7 @@ export async function createCustomer(values: CustomerSchema) {
       },
     })
 
-    revalidatePath("customer-info")
+    revalidatePath("/customer-info")
 
     return { success: customer }
   } catch (error) {

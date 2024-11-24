@@ -1,6 +1,11 @@
 "use client"
 
-import { useForm } from "react-hook-form"
+import { createCustomerAddress } from "@/actions/customer-address/create-customer-address"
+import AsyncSelectAddress from "@/components/async-search-address"
+import { Icons } from "@/components/icons"
+import LocalitySelect from "@/components/locality-select"
+import MunicipalitySelect from "@/components/municipality-select"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -9,16 +14,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { z } from "zod"
-import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { Input } from "@/components/ui/input"
-import { createCustomerAddress } from "@/actions/customer-address/create-customer-address"
-import { toast } from "@/components/ui/use-toast"
-import { Icons } from "@/components/icons"
-import { Dispatch, SetStateAction } from "react"
-import { Button } from "@/components/ui/button"
-import { AddressLabel } from "@prisma/client"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Select,
   SelectContent,
@@ -27,23 +24,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { toast } from "@/components/ui/use-toast"
 import { translateAddressLabel } from "@/helpers/helpers"
-import AsyncSelectAddress from "@/components/async-search-address"
-import LocalitySelect from "@/components/locality-select"
-import MunicipalitySelect from "@/components/municipality-select"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { AddressLabel } from "@prisma/client"
+import { Dispatch, SetStateAction } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
 type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
 type CustomerCreateAddressFormProps = {
-  customerId: string
   setOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
 
 const CustomerCreateAddressForm = ({
-  customerId,
   setOpen,
 }: CustomerCreateAddressFormProps) => {
   const form = useForm<CustomerAddressSchema>({
@@ -71,7 +69,7 @@ const CustomerCreateAddressForm = ({
   } = form
 
   const onSubmit = async (data: CustomerAddressSchema) => {
-    const res = await createCustomerAddress(customerId, data)
+    const res = await createCustomerAddress(data)
     setOpen(false)
 
     if (res.success) {

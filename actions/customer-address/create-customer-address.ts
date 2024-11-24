@@ -1,5 +1,7 @@
 "use server"
 
+import { getCustomer } from "@/data/customer"
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
 import { AddressLabel } from "@prisma/client"
@@ -8,10 +10,19 @@ import { z } from "zod"
 
 type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
-export async function createCustomerAddress(
-  customerId: string,
-  values: CustomerAddressSchema
-) {
+export async function createCustomerAddress(values: CustomerAddressSchema) {
+  const session = await auth()
+
+  const customer = await getCustomer({
+    where: {
+      userId: session?.user.id,
+    },
+  })
+
+  if (!customer) {
+    return { error: "Cliente no encontrado." }
+  }
+
   const validatedFields = customerAddressSchema.safeParse(values)
 
   if (!validatedFields.success) {
@@ -34,7 +45,7 @@ export async function createCustomerAddress(
   try {
     const newAddress = await prisma.customerAddress.create({
       data: {
-        customerId,
+        customerId: customer.id,
         province,
         municipality,
         locality,
