@@ -5,22 +5,18 @@ import { productSchema } from "@/lib/validations/product-validation"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
-// const partialProductSchema = productSchema.partial()
+const partialProductSchema = productSchema.partial()
 
-// type PartialProductSchema = z.infer<typeof partialProductSchema>
-
-type ProductSchema = z.infer<typeof productSchema>
+type PartialProductSchema = z.infer<typeof partialProductSchema>
 
 export async function editProduct({
   id,
   values,
 }: {
   id: string
-  // values: PartialProductSchema
-  values: ProductSchema
+  values: PartialProductSchema
 }) {
-  // const validatedFields = partialProductSchema.safeParse(values)
-  const validatedFields = productSchema.safeParse(values)
+  const validatedFields = partialProductSchema.safeParse(values)
 
   if (!validatedFields.success) {
     return { error: "Campos inválidos." }
