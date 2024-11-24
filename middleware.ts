@@ -5,22 +5,13 @@ import {
   authRoutes,
   publicRoutes,
 } from "@/routes"
-import { Role } from "@prisma/client"
 import NextAuth from "next-auth"
-import { getToken } from "next-auth/jwt"
 
 const { auth } = NextAuth(authConfig)
 
-const secret = process.env.AUTH_SECRET
-
-export default auth(async (req) => {
+export default auth((req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
-
-  const token = await getToken({ req, secret })
-  const userRole = (token?.role as Role) || "USER"
-
-  console.log(userRole)
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
@@ -35,12 +26,6 @@ export default auth(async (req) => {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
     }
     return
-  }
-
-  if (!isPublicRoute) {
-    if (userRole !== "ADMIN") {
-      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
-    }
   }
 
   if (!isLoggedIn && !isPublicRoute) {
