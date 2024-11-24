@@ -13,15 +13,22 @@ const { auth } = NextAuth(authConfig)
 
 const secret = process.env.AUTH_SECRET
 
+const baseURL = process.env.BASE_URL
+
 export default auth(async (req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
+
+  const BASEURL = process.env.BASE_URL
+  console.log(BASEURL)
 
   const token = await getToken({ req, secret })
   const userRole = (token?.role as Role) || "USER"
 
   console.log(token)
   console.log(userRole)
+
+  console.log(baseURL)
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
