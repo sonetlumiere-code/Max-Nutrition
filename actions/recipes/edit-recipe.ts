@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { recipeSchema } from "@/lib/validations/recipe-validation"
 import { revalidatePath } from "next/cache"
@@ -14,6 +15,12 @@ export async function editRecipe({
   id: string
   values: RecipeSchema
 }) {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return { error: "No autorizado." }
+  }
+
   const validatedFields = recipeSchema.safeParse(values)
 
   if (!validatedFields.success) {

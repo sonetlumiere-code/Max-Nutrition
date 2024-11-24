@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { productSchema } from "@/lib/validations/product-validation"
 import { revalidatePath } from "next/cache"
@@ -16,6 +17,12 @@ export async function editProduct({
   id: string
   values: PartialProductSchema
 }) {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return { error: "No autorizado." }
+  }
+
   const validatedFields = partialProductSchema.safeParse(values)
 
   if (!validatedFields.success) {

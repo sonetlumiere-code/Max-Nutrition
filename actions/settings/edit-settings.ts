@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { settingsSchema } from "@/lib/validations/settings-validation"
 import { revalidatePath } from "next/cache"
@@ -8,6 +9,12 @@ import { z } from "zod"
 type SettingsSchema = z.infer<typeof settingsSchema>
 
 export async function editSettings({ values }: { values: SettingsSchema }) {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return { error: "No autorizado." }
+  }
+
   const validatedFields = settingsSchema.safeParse(values)
 
   if (!validatedFields.success) {

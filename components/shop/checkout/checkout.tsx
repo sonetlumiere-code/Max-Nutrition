@@ -1,42 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { PopulatedCustomer } from "@/types/types"
+import { createOrder } from "@/actions/orders/create-order"
+import { useCart } from "@/components/cart-provider"
+import { Icons } from "@/components/icons"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
   CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card"
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { useCart } from "@/components/cart-provider"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
-import { PaymentMethod, ShippingMethod, ShippingSettings } from "@prisma/client"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { orderSchema } from "@/lib/validations/order-validation"
-import { z } from "zod"
 import {
   Form,
   FormControl,
@@ -45,22 +22,45 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { createOrder } from "@/actions/orders/create-order"
-import { toast } from "@/components/ui/use-toast"
-import { useRouter } from "next/navigation"
-import { useEffect, useMemo } from "react"
-import { usePromotion } from "@/hooks/use-promotion"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { ToastAction } from "@/components/ui/toast"
+import { toast } from "@/components/ui/use-toast"
+import { getShippingZone } from "@/data/shipping-zones"
 import {
   translateAddressLabel,
   translatePaymentMethod,
   translateShippingMethod,
 } from "@/helpers/helpers"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
-import { ToastAction } from "@/components/ui/toast"
+import { usePromotion } from "@/hooks/use-promotion"
+import { orderSchema } from "@/lib/validations/order-validation"
+import { PopulatedCustomer } from "@/types/types"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { PaymentMethod, ShippingMethod, ShippingSettings } from "@prisma/client"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useEffect, useMemo } from "react"
+import { useForm } from "react-hook-form"
 import useSWR from "swr"
-import { getShippingZone } from "@/data/shipping-zones"
+import { z } from "zod"
+import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
 
 type OrderSchema = z.infer<typeof orderSchema>
 
@@ -92,7 +92,6 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
-      customerId: customer?.id,
       customerAddressId: "",
       paymentMethod: PaymentMethod.Cash,
       shippingMethod: ShippingMethod.Delivery,

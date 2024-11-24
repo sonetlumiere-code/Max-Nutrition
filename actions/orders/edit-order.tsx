@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { partialOrderSchema } from "@/lib/validations/order-validation"
 import { ShippingMethod } from "@prisma/client"
@@ -15,6 +16,12 @@ export async function editOrder({
   id: string
   values: PartialOrderSchema
 }) {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return { error: "No autorizado." }
+  }
+
   const validatedFields = partialOrderSchema.safeParse(values)
 
   if (!validatedFields.success) {

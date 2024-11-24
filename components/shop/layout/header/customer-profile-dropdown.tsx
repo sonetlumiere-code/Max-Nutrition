@@ -1,16 +1,16 @@
+import { Icons } from "@/components/icons"
+import SignOutButton from "@/components/sign-out-button"
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Session } from "next-auth"
-import SignOutButton from "@/components/sign-out-button"
-import Link from "next/link"
 import UserAvatar from "@/components/user-avatar"
-import { Icons } from "@/components/icons"
 import { Role } from "@prisma/client"
+import { Session } from "next-auth"
+import Link from "next/link"
 
 type ProfileDropdownProps = {
   session: Session | null
@@ -37,12 +37,12 @@ const CustomerProfileDropdown = ({ session }: ProfileDropdownProps) => {
         )}
         <Link href='/customer-info'>
           <DropdownMenuItem>
-            <Icons.user className='w-4 h-4 mr-2' /> Mis datos
+            <Icons.user className='w-4 h-4 mr-2' /> Perfil
           </DropdownMenuItem>
         </Link>
         <Link href='/customer-orders-history'>
           <DropdownMenuItem>
-            <Icons.scrollText className='w-4 h-4 mr-2' /> Mis Pedidos
+            <Icons.scrollText className='w-4 h-4 mr-2' /> Pedidos
           </DropdownMenuItem>
         </Link>
         <DropdownMenuSeparator />

@@ -4,6 +4,7 @@ import { getCustomer } from "@/data/customer"
 import { getProducts } from "@/data/products"
 import { getShippingSettings } from "@/data/shipping-settings"
 import { getShippingZone } from "@/data/shipping-zones"
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { sendOrderDetailsEmail } from "@/lib/mail/mail"
 import { orderSchema } from "@/lib/validations/order-validation"
@@ -16,19 +17,16 @@ import { checkPromotion } from "../promotions/check-promotion"
 type OrderSchema = z.infer<typeof orderSchema>
 
 export async function createOrder(values: OrderSchema) {
+  const session = await auth()
+
   const validatedFields = orderSchema.safeParse(values)
 
   if (!validatedFields.success) {
     return { error: "Campos inválidos." }
   }
 
-  const {
-    customerId,
-    customerAddressId,
-    shippingMethod,
-    paymentMethod,
-    items,
-  } = validatedFields.data
+  const { customerAddressId, shippingMethod, paymentMethod, items } =
+    validatedFields.data
   const productIds = items.map((item) => item.productId)
   const uniqueProductIds = Array.from(new Set(productIds))
 
@@ -44,7 +42,7 @@ export async function createOrder(values: OrderSchema) {
       }),
       getCustomer({
         where: {
-          id: customerId,
+          userId: session?.user.id,
         },
         include: {
           user: true,
@@ -54,11 +52,11 @@ export async function createOrder(values: OrderSchema) {
     ])
 
     if (!products || products.length !== uniqueProductIds.length) {
-      return { error: "Invalid product id." }
+      return { error: "ID de producto inválido." }
     }
 
     if (!customer) {
-      return { error: "Invalid customer id." }
+      return { error: "ID de cliente inválido." }
     }
 
     const populatedItems = items
@@ -84,13 +82,15 @@ export async function createOrder(values: OrderSchema) {
 
       if (!allowedShippingMethods.includes(shippingMethod)) {
         return {
-          error: "Selected shipping method is not eligible for the promotion.",
+          error:
+            "El método de envío seleccionado no es válido para la promoción.",
         }
       }
 
       if (!allowedPaymentMethods.includes(paymentMethod)) {
         return {
-          error: "Selected payment method is not eligible for the promotion.",
+          error:
+            "El método de pago seleccionado no es válido para la promoción.",
         }
       }
     }
@@ -109,7 +109,7 @@ export async function createOrder(values: OrderSchema) {
         shippingSettings.minProductsQuantityForDelivery > totalProductsQuantity
       ) {
         return {
-          error: `Products quantity must be greater or equal to ${shippingSettings.minProductsQuantityForDelivery} to allow delivery.`,
+          error: `La cantidad de productos debe ser mayor o igual a ${shippingSettings.minProductsQuantityForDelivery} para permitir la entrega.`,
         }
       }
 
@@ -118,7 +118,7 @@ export async function createOrder(values: OrderSchema) {
       )
 
       if (!customerAddress) {
-        return { error: "Invalid customer address id." }
+        return { error: "ID de dirección de cliente inválido." }
       }
 
       const shippingZone = await getShippingZone({
@@ -130,7 +130,7 @@ export async function createOrder(values: OrderSchema) {
 
       if (!shippingZone) {
         return {
-          error: `Shipping is not available for the locality: ${customerAddress.locality}.`,
+          error: `No hay envíos disponibles para la localidad: ${customerAddress.locality}.`,
         }
       }
 
@@ -141,7 +141,7 @@ export async function createOrder(values: OrderSchema) {
 
     const order = await prisma.order.create({
       data: {
-        customerId,
+        customerId: customer.id,
         customerAddressId: customerAddressId || null,
         shippingMethod,
         shippingCost,
@@ -178,7 +178,7 @@ export async function createOrder(values: OrderSchema) {
 
     revalidatePath("/customer-orders-history")
 
-    return { success: order }
+    return { success: "La orden se creó exitosamente.", order }
   } catch (error) {
     console.error("Error creating order:", error)
     return { error: "Hubo un error al crear la orden." }

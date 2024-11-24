@@ -2,7 +2,7 @@ import { OrderStatus, PaymentMethod, ShippingMethod } from "@prisma/client"
 import { z } from "zod"
 
 const coreOrderSchema = z.object({
-  customerId: z.string(),
+  // customerId: z.string(),
   customerAddressId: z.string().optional(),
   paymentMethod: z.nativeEnum(PaymentMethod),
   shippingMethod: z.nativeEnum(ShippingMethod),

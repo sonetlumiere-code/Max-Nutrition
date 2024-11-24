@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { shippingSettingsSchema } from "@/lib/validations/shipping-settings-validation"
 import { revalidatePath } from "next/cache"
@@ -12,6 +13,12 @@ export async function editShippingSettings({
 }: {
   values: ShippingSettingsSchema
 }) {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return { error: "No autorizado." }
+  }
+
   const validatedFields = shippingSettingsSchema.safeParse(values)
 
   if (!validatedFields.success) {

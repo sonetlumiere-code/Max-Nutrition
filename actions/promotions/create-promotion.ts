@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { promotionSchema } from "@/lib/validations/promotion-validation"
 import { revalidatePath } from "next/cache"
@@ -8,6 +9,12 @@ import { z } from "zod"
 type PromotionSchema = z.infer<typeof promotionSchema>
 
 export async function createPromotion(values: PromotionSchema) {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return { error: "No autorizado." }
+  }
+
   const validatedFields = promotionSchema.safeParse(values)
 
   if (!validatedFields.success) {

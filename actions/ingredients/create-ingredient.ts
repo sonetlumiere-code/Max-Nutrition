@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { ingredientSchema } from "@/lib/validations/ingredient-validation"
 import { revalidatePath } from "next/cache"
@@ -8,6 +9,12 @@ import { z } from "zod"
 type IngredientSchema = z.infer<typeof ingredientSchema>
 
 export async function createIngredient(values: IngredientSchema) {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return { error: "No autorizado." }
+  }
+
   const validatedFields = ingredientSchema.safeParse(values)
 
   if (!validatedFields.success) {
