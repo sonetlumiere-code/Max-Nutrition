@@ -12,7 +12,13 @@ export const metadata: Metadata = {
   description: "Ingresa a tu cuenta.",
 }
 
-export default function LoginPage() {
+type LoginPageSearchParams = {
+  searchParams: { redirectTo?: string }
+}
+
+export default function LoginPage({
+  searchParams: { redirectTo },
+}: LoginPageSearchParams) {
   return (
     <div className='container flex h-screen w-screen flex-col items-center justify-center'>
       <Link
@@ -45,7 +51,7 @@ export default function LoginPage() {
           </p>
         </div>
         <Suspense>
-          <LoginForm />
+          <LoginForm redirectTo={redirectTo} />
         </Suspense>
         <p className='px-8 text-center text-sm text-muted-foreground'>
           <Link

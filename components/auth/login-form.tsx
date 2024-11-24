@@ -23,7 +23,11 @@ import { useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 
-const LoginForm = () => {
+type LoginFormProps = {
+  redirectTo?: string
+}
+
+const LoginForm = ({ redirectTo }: LoginFormProps) => {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string>("")
   const [success, setSuccess] = useState<string>("")
@@ -51,7 +55,7 @@ const LoginForm = () => {
     setError("")
     setSuccess("")
 
-    const res = await login(values)
+    const res = await login({ values, redirectTo })
 
     if (res && res.success) {
       setSuccess(res.success)
