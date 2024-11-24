@@ -7,21 +7,31 @@ import {
 } from "@/routes"
 import { Role } from "@prisma/client"
 import NextAuth from "next-auth"
-import { getToken } from "next-auth/jwt"
+import { decode } from "next-auth/jwt"
 
 const { auth } = NextAuth(authConfig)
 
-const secret = process.env.AUTH_SECRET
+const secret = process.env.AUTH_SECRET as string
 
 export default auth(async (req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
 
-  const token = await getToken({ req, secret })
-  const userRole = (token?.role as Role) || "USER"
+  const sessionToken = req.cookies.get("authjs.session-token")?.value
+
+  const token = await decode({
+    token: sessionToken,
+    secret,
+    salt: "authjs.session-token",
+  })
+
+  // const token = await getToken({ req, secret })
 
   console.log(token)
-  console.log(userRole)
+  const userRole = (token?.role as Role) || "USER"
+
+  // console.log(token)
+  // console.log(userRole)
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
