@@ -13,8 +13,9 @@ export default async function AnalyiticsPage() {
     <>
       <div className='flex items-center'>
         <h1 className='text-lg font-semibold md:text-2xl'>Proximamente..</h1>
-        {JSON.stringify(session, null, 4)}
       </div>
+
+      <pre className='text-xs'>{JSON.stringify(session, null, 4)}</pre>
     </>
   )
 }
