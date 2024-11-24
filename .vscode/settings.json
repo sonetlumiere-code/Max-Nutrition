@@ -7,8 +7,8 @@
   "typescript.preferences.quoteStyle": "double",
   "typescript.preferences.autoImportFileExcludePatterns": [
     "**/node_modules/@radix-ui"
-  ],
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": "always"
-  }
+  ]
+  // "editor.codeActionsOnSave": {
+  //   "source.organizeImports": "always"
+  // }
 }

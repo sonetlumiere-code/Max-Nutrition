@@ -1,4 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
+import { Icons } from "@/components/icons"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -23,19 +32,18 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getCustomers } from "@/data/customer"
+import { auth } from "@/lib/auth/auth"
 import { format } from "date-fns"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
 import Link from "next/link"
-import { Icons } from "@/components/icons"
+import { redirect } from "next/navigation"
 
 export default async function CustomersPage() {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const customers = await getCustomers({
     include: {
       user: {

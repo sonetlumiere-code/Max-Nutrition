@@ -1,3 +1,4 @@
+import EditProduct from "@/components/dashboard/products/edit-product/edit-product"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,11 +7,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { redirect } from "next/navigation"
-import { getProduct } from "@/data/products"
-import EditProduct from "@/components/dashboard/products/edit-product/edit-product"
-import { getRecipes } from "@/data/recipes"
 import { getCategories } from "@/data/categories"
+import { getProduct } from "@/data/products"
+import { getRecipes } from "@/data/recipes"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
 
 interface EditProductPageProps {
   params: {
@@ -19,6 +20,12 @@ interface EditProductPageProps {
 }
 
 const EditProductPage = async ({ params }: EditProductPageProps) => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const { productId } = params
 
   const [product, recipes, categories] = await Promise.all([

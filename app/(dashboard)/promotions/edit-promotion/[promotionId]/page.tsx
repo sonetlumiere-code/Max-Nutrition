@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getCategories } from "@/data/categories"
 import { getPromotion } from "@/data/promotions"
+import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
 interface EditPromotionPageProps {
@@ -18,6 +19,12 @@ interface EditPromotionPageProps {
 }
 
 const EditPromotionPage = async ({ params }: EditPromotionPageProps) => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const { promotionId } = params
 
   const [promotion, categories] = await Promise.all([

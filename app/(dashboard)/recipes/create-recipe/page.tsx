@@ -8,8 +8,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getIngredients } from "@/data/ingredients"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
 
 const CreateRecipePage = async () => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const ingredients = await getIngredients({
     orderBy: {
       name: "asc",

@@ -1,21 +1,13 @@
+import DeleteRecipe from "@/components/dashboard/recipes/delete-recipe/delete-recipe"
 import { Icons } from "@/components/icons"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button, buttonVariants } from "@/components/ui/button"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Card,
   CardContent,
@@ -25,18 +17,34 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { getRecipes } from "@/data/recipes"
+import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import DeleteRecipe from "@/components/dashboard/recipes/delete-recipe/delete-recipe"
+import { redirect } from "next/navigation"
 
 export default async function RecipesPage() {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const recipes = await getRecipes()
   const recipesLength = recipes?.length || 0
 

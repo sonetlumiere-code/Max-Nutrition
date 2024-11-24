@@ -7,8 +7,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
 
-const CreateIngredientPage = () => {
+const CreateIngredientPage = async () => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   return (
     <>
       <Breadcrumb>

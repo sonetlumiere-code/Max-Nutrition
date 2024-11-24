@@ -1,21 +1,14 @@
+import DeletePromotion from "@/components/dashboard/promotions/delete-promotion/delete-promotion"
 import { Icons } from "@/components/icons"
+import { Badge } from "@/components/ui/badge"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button, buttonVariants } from "@/components/ui/button"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Card,
   CardContent,
@@ -25,19 +18,34 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { getPromotions } from "@/data/promotions"
-import Link from "next/link"
+import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
-import DeletePromotion from "@/components/dashboard/promotions/delete-promotion/delete-promotion"
-import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 
 const PromotionsPage = async () => {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return redirect("/")
+  }
+
   const promotions = await getPromotions()
   const promotionsLength = promotions?.length || 0
 
