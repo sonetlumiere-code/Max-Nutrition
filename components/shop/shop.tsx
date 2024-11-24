@@ -1,6 +1,5 @@
 import dynamic from "next/dynamic"
 import ProductsList from "./products/products-list"
-import { auth } from "@/lib/auth/auth"
 import { getCategories } from "@/data/categories"
 
 const CartFixedButton = dynamic(() => import("./cart/cart-fixed-button"), {
@@ -8,8 +7,6 @@ const CartFixedButton = dynamic(() => import("./cart/cart-fixed-button"), {
 })
 
 const Shop = async () => {
-  const session = await auth()
-
   const categories = await getCategories({
     include: {
       products: {
@@ -37,7 +34,7 @@ const Shop = async () => {
 
       <footer className='h-8'></footer>
 
-      {session?.user && <CartFixedButton />}
+      <CartFixedButton />
     </>
   )
 }

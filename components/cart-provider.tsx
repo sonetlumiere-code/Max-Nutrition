@@ -10,6 +10,7 @@ import {
   useEffect,
   Dispatch,
   SetStateAction,
+  useMemo,
 } from "react"
 import { PopulatedProduct, Variation } from "@/types/types"
 
@@ -37,6 +38,11 @@ type CartProviderState = {
   setOpen: (value: boolean) => void
 }
 
+const LOCAL_STORAGE_KEYS = {
+  GUEST_CART: "cart_guest",
+  USER_CART: (userId: string) => `cart_${userId}`,
+}
+
 const initialState: CartProviderState = {
   items: [],
   setItems: () => null,
@@ -57,32 +63,85 @@ type CartProviderProps = {
   session: Session | null
 }
 
+const parseJSON = (value: string | null): any => {
+  try {
+    return value ? JSON.parse(value) : []
+  } catch {
+    return []
+  }
+}
+
+const mergeCarts = (
+  userCart: CartItem[],
+  guestCart: CartItem[]
+): CartItem[] => {
+  const cartMap = new Map<string, CartItem>()
+
+  ;[...userCart, ...guestCart].forEach((item) => {
+    const key = `${item.product.id}-${JSON.stringify(item.variation)}`
+    if (cartMap.has(key)) {
+      const existing = cartMap.get(key)!
+      cartMap.set(key, {
+        ...existing,
+        quantity: existing.quantity + item.quantity,
+      })
+    } else {
+      cartMap.set(key, item)
+    }
+  })
+
+  return Array.from(cartMap.values())
+}
+
 export function CartProvider({ children, session }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === "undefined") return initialState.items
 
+    const guestCart = parseJSON(
+      localStorage.getItem(LOCAL_STORAGE_KEYS.GUEST_CART)
+    )
+
     if (session?.user.id) {
-      const storedCart = localStorage.getItem(`cart_${session.user.id}`)
-      return storedCart ? JSON.parse(storedCart) : initialState.items
+      const userCart = parseJSON(
+        localStorage.getItem(LOCAL_STORAGE_KEYS.USER_CART(session.user.id))
+      )
+      return mergeCarts(userCart, guestCart)
     }
-    return initialState.items
+
+    return guestCart
   })
 
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
     if (session?.user.id) {
-      localStorage.setItem(`cart_${session.user.id}`, JSON.stringify(items))
+      localStorage.setItem(
+        LOCAL_STORAGE_KEYS.USER_CART(session.user.id),
+        JSON.stringify(items)
+      )
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.GUEST_CART)
+    } else {
+      localStorage.setItem(LOCAL_STORAGE_KEYS.GUEST_CART, JSON.stringify(items))
     }
   }, [items, session?.user.id])
+
+  useEffect(() => {
+    if (session?.user.id) {
+      const guestCart = parseJSON(
+        localStorage.getItem(LOCAL_STORAGE_KEYS.GUEST_CART)
+      )
+      if (guestCart.length) {
+        setItems((prevItems) => mergeCarts(prevItems, guestCart))
+        localStorage.removeItem(LOCAL_STORAGE_KEYS.GUEST_CART)
+      }
+    }
+  }, [session?.user.id])
 
   const addItem = (
     product: PopulatedProduct,
     quantity: number,
-    variation: { withSalt: boolean }
+    variation: Variation
   ) => {
-    const itemId = uuidv4()
-
     setItems((prevItems) => {
       const existingItem = prevItems.find(
         (i) =>
@@ -98,7 +157,7 @@ export function CartProvider({ children, session }: CartProviderProps) {
         )
       }
 
-      return [...prevItems, { id: itemId, product, quantity, variation }]
+      return [...prevItems, { id: uuidv4(), product, quantity, variation }]
     })
   }
 
@@ -126,8 +185,14 @@ export function CartProvider({ children, session }: CartProviderProps) {
     setItems([])
   }
 
-  const getSubtotalPrice = () =>
-    items.reduce((total, item) => total + item.product.price * item.quantity, 0)
+  const getSubtotalPrice = useMemo(
+    () => () =>
+      items.reduce(
+        (total, item) => total + item.product.price * item.quantity,
+        0
+      ),
+    [items]
+  )
 
   const value = {
     items,
@@ -152,7 +217,7 @@ export function CartProvider({ children, session }: CartProviderProps) {
 export const useCart = () => {
   const context = useContext(CartProviderContext)
 
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useCart must be used within a CartProvider")
   }
 

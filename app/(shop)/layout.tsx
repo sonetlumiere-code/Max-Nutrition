@@ -14,7 +14,7 @@ export default async function ShopLayout({ children }: ShopLayoutProps) {
   return (
     <CartProvider session={session}>
       <Cart />
-      <HeaderShop />
+      <HeaderShop session={session} />
       <main className='flex flex-col w-full max-w-4xl mx-auto pt-8 pb-16 px-4 md:px-6'>
         {children}
       </main>
