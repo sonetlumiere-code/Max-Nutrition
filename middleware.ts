@@ -5,9 +5,9 @@ import {
   authRoutes,
   publicRoutes,
 } from "@/routes"
+import { getToken } from "@auth/core/jwt"
 import { Role } from "@prisma/client"
 import NextAuth from "next-auth"
-import { getToken } from "next-auth/jwt"
 
 const { auth } = NextAuth(authConfig)
 
@@ -17,7 +17,10 @@ export default auth(async (req) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
 
-  const token = await getToken({ req, secret })
+  const token = await getToken({
+    req,
+    secret,
+  })
 
   const userRole = (token?.role as Role) || "USER"
 
