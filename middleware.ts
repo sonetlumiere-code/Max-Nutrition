@@ -11,7 +11,7 @@ import { getToken } from "next-auth/jwt"
 
 const { auth } = NextAuth(authConfig)
 
-const secret = process.env.AUTH_SECRET
+// const secret = process.env.AUTH_SECRET
 
 const baseURL = process.env.BASE_URL
 
@@ -22,7 +22,7 @@ export default auth(async (req) => {
   const BASEURL = process.env.BASE_URL
   console.log(BASEURL)
 
-  const token = await getToken({ req, secret })
+  const token = await getToken({ req })
   const userRole = (token?.role as Role) || "USER"
 
   console.log(token)
