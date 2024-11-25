@@ -47,7 +47,7 @@ const CustomerPersonalInfo = ({ customer }: CustomerPersonalInfoProps) => {
           <div className='grid gap-1'>
             <p className='text-sm font-medium leading-none'>Email</p>
             <p className='text-sm text-muted-foreground'>
-              {customer.user?.email}
+              {customer.user?.email || "-"}
             </p>
           </div>
 

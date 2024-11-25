@@ -36,6 +36,11 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
     where: { id: customerId },
     include: {
       address: true,
+      user: {
+        select: {
+          email: true,
+        },
+      },
     },
   })
 
@@ -86,7 +91,7 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
                 <div className='grid gap-1'>
                   <p className='text-sm font-medium leading-none'>Email</p>
                   <p className='text-sm text-muted-foreground'>
-                    {customer.user?.email}
+                    {customer.user?.email || "-"}
                   </p>
                 </div>
 
