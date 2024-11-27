@@ -54,7 +54,7 @@ export type PopulatedCustomer = Customer & {
 }
 
 export type PopulatedRecipeIngredient = RecipeIngredient & {
-  ingredient?: Ingredient
+  ingredient: Ingredient
 }
 
 export type Variation = {
@@ -64,7 +64,8 @@ export interface IngredientTotal {
   ingredientId: string
   name: string
   measurement: Measurement
-  total: number
+  quantity: number
+  cost: number
 }
 
 export type TimePeriod = "week" | "month" | "year" | "all"
