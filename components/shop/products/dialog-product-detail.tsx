@@ -4,7 +4,6 @@
 import React, { useState } from "react"
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -14,7 +13,6 @@ import { Button } from "@/components/ui/button"
 import { useCart } from "@/components/cart-provider"
 import { Product } from "@prisma/client"
 import { toast } from "@/components/ui/use-toast"
-import ProductCard from "./product-card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Icons } from "@/components/icons"
@@ -52,9 +50,6 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        <ProductCard product={product} />
-      </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <img

@@ -9,13 +9,11 @@ import {
   DrawerFooter,
   DrawerTitle,
   DrawerDescription,
-  DrawerTrigger,
 } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
 import { Product } from "@prisma/client"
 import { useCart } from "@/components/cart-provider"
 import { toast } from "@/components/ui/use-toast"
-import ProductCard from "./product-card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Icons } from "@/components/icons"
@@ -53,9 +51,6 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger>
-        <ProductCard product={product} />
-      </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <img
