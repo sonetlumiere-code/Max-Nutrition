@@ -34,6 +34,7 @@ export const useGetCategories = ({
     fetchCategories,
     {
       fallbackData,
+      revalidateOnMount: false,
       revalidateIfStale: false,
       revalidateOnFocus: true,
       onSuccess: (data) => {
