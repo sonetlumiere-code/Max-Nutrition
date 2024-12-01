@@ -4,7 +4,7 @@ import { useCart } from "@/components/cart-provider"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 
-const CartIconButton = () => {
+const CartHeaderButton = () => {
   const { items, setOpen } = useCart()
 
   return (
@@ -22,4 +22,4 @@ const CartIconButton = () => {
   )
 }
 
-export default CartIconButton
+export default CartHeaderButton

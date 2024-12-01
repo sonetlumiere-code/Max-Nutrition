@@ -29,21 +29,21 @@ export const useGetCategories = ({
   fallbackData?: PopulatedCategory[] | null
   onSuccess?: (categories: PopulatedCategory[]) => void
 }) => {
-  const { data: categories = fallbackData, error } = useSWR(
-    "categories",
-    fetchCategories,
-    {
-      fallbackData,
-      revalidateOnMount: false,
-      revalidateIfStale: false,
-      revalidateOnFocus: true,
-      onSuccess: (data) => {
-        if (onSuccess && data) {
-          onSuccess(data)
-        }
-      },
-    }
-  )
+  const {
+    data: categories = fallbackData,
+    error,
+    isLoading: isLoadingCategories,
+  } = useSWR("categories", fetchCategories, {
+    fallbackData,
+    revalidateOnMount: false,
+    revalidateIfStale: false,
+    revalidateOnFocus: true,
+    onSuccess: (data) => {
+      if (onSuccess && data) {
+        onSuccess(data)
+      }
+    },
+  })
 
-  return { categories, error }
+  return { categories, error, isLoadingCategories }
 }

@@ -2,20 +2,34 @@
 import Link from "next/link"
 import dynamic from "next/dynamic"
 import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import CustomerProfileDropdown from "./customer-profile-dropdown"
 import { Session } from "next-auth"
+import { getPromotions } from "@/data/promotions"
 
-const CartNavButton = dynamic(() => import("./cart-icon-button"), {
+const CartHeaderButton = dynamic(() => import("./cart-header-button"), {
   ssr: false,
 })
+
+const Promotions = dynamic(
+  () => import("@/components/shop/promotions/promotions"),
+  {
+    ssr: false,
+  }
+)
 
 type HeaderShopProps = {
   session: Session | null
 }
 
 export default async function HeaderShop({ session }: HeaderShopProps) {
+  const promotions = await getPromotions({
+    where: {
+      isActive: true,
+    },
+  })
+
   return (
     <header className='flex items-center justify-between bg-white shadow-sm px-4 sm:px-6 lg:px-8 py-4'>
       <Link href='/' className='flex items-center gap-2' prefetch={false}>
@@ -37,7 +51,14 @@ export default async function HeaderShop({ session }: HeaderShopProps) {
         </div> */}
 
       <div className='flex items-center space-x-4'>
-        <CartNavButton />
+        <div className='flex'>
+          <Promotions promotions={promotions}>
+            <Button variant='ghost' size='icon' className='relative'>
+              <Icons.badgePercent className='w-6 h-6 text-muted-foreground' />
+            </Button>
+          </Promotions>
+          <CartHeaderButton />
+        </div>
         {session?.user ? (
           <CustomerProfileDropdown session={session} />
         ) : (
