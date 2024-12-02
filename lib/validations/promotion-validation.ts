@@ -31,6 +31,7 @@ export const promotionSchema = z
       .nonempty({ message: "Debes seleccionar al menos un método de envío." }),
   })
   .superRefine((data, ctx) => {
+    // Validate discount range based on type
     if (data.discountType === PromotionDiscountType.Percentage) {
       if (data.discount < 1 || data.discount > 100) {
         ctx.addIssue({
@@ -47,5 +48,20 @@ export const promotionSchema = z
           message: "El descuento debe ser mayor a 0.",
         })
       }
+    }
+
+    // Check for duplicate categories
+    const categoryIds = data.categories.map((cat) => cat.categoryId)
+    const uniqueCategoryIds = new Set(categoryIds)
+
+    console.log(categoryIds)
+
+    if (categoryIds.length !== uniqueCategoryIds.size) {
+      console.log("err")
+      ctx.addIssue({
+        code: "custom",
+        path: ["categories"],
+        message: "No puedes seleccionar categorías duplicadas.",
+      })
     }
   })

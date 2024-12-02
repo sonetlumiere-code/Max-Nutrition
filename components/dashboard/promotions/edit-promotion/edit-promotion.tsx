@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -74,7 +75,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     watch,
   } = form
 
@@ -248,7 +249,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                 <div className='space-y-3'>
                   {fields.map((field, index) => (
                     <div key={field.id} className='flex justify-between gap-2'>
-                      <div className=' w-1/2'>
+                      <div className='w-1/2'>
                         <FormField
                           control={control}
                           name={`categories.${index}.categoryId`}
@@ -268,7 +269,13 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                                   </SelectTrigger>
                                   <SelectContent>
                                     {categories?.map(({ id, name }) => (
-                                      <SelectItem key={id} value={id}>
+                                      <SelectItem
+                                        key={id}
+                                        value={id}
+                                        disabled={watch("categories")
+                                          .map((c) => c.categoryId)
+                                          .includes(id)}
+                                      >
                                         {name}
                                       </SelectItem>
                                     ))}
@@ -329,6 +336,13 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                   </Button>
                 </div>
               </CardContent>
+              {errors.categories?.root?.message && (
+                <CardFooter>
+                  <div className='text-red-500 text-sm'>
+                    {errors.categories.root.message}
+                  </div>
+                </CardFooter>
+              )}
             </Card>
           </div>
 
