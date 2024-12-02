@@ -52,7 +52,7 @@ export default async function HeaderShop({ session }: HeaderShopProps) {
 
       <div className='flex items-center space-x-4'>
         <div className='flex'>
-          {promotions && (
+          {promotions && promotions.length > 0 && (
             <Promotions promotions={promotions}>
               <Button variant='ghost' size='icon' className='relative'>
                 <Icons.badgePercent className='w-6 h-6 text-muted-foreground' />
