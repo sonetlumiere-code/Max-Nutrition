@@ -40,7 +40,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           {product.name}
         </CardTitle>
         <CardDescription className='mt-1 line-clamp-2 leading-4'>
-          {product.description} asd asdqd qwdad qwdq qwq dqwdq wqdqwd
+          {product.description}
         </CardDescription>
       </CardHeader>
       <CardFooter className='absolute bottom-2 right-3 p-0'>
