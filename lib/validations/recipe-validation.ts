@@ -9,7 +9,9 @@ export const recipeSchema = z
         ingredientId: z
           .string()
           .min(1, { message: "Selecciona el ingrediente." }),
-        quantity: z.coerce.number().min(1, { message: "Ingresa la cantidad." }),
+        quantity: z.coerce
+          .number()
+          .min(0.1, { message: "Ingresa la cantidad." }),
       })
     ),
   })
