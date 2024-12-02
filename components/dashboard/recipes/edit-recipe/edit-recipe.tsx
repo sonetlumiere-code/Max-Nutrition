@@ -52,7 +52,8 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
+    watch,
   } = form
 
   const { fields, append, remove } = useFieldArray({
@@ -153,7 +154,13 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                                   </SelectTrigger>
                                   <SelectContent>
                                     {ingredients?.map(({ id, name }) => (
-                                      <SelectItem key={id} value={id}>
+                                      <SelectItem
+                                        key={id}
+                                        value={id}
+                                        disabled={watch("ingredients").some(
+                                          (i) => i.ingredientId === id
+                                        )}
+                                      >
                                         {name}
                                       </SelectItem>
                                     ))}
@@ -209,6 +216,12 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                       <Icons.plus className='w-4 h-4 mr-1' />
                       <small>Agregar Ingrediente</small>
                     </Button>
+
+                    {errors.ingredients?.root?.message && (
+                      <div className='text-destructive text-sm'>
+                        {errors.ingredients.root.message}
+                      </div>
+                    )}
                   </div>
                 </fieldset>
               )}

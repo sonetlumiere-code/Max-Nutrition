@@ -272,9 +272,9 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                                       <SelectItem
                                         key={id}
                                         value={id}
-                                        disabled={watch("categories")
-                                          .map((c) => c.categoryId)
-                                          .includes(id)}
+                                        disabled={watch("categories").some(
+                                          (c) => c.categoryId === id
+                                        )}
                                       >
                                         {name}
                                       </SelectItem>
@@ -338,7 +338,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
               </CardContent>
               {errors.categories?.root?.message && (
                 <CardFooter>
-                  <div className='text-red-500 text-sm'>
+                  <div className='text-destructive text-sm'>
                     {errors.categories.root.message}
                   </div>
                 </CardFooter>
