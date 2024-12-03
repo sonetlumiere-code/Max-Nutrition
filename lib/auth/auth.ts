@@ -17,10 +17,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async linkAccount({ user }) {
       if (user.id) {
         await Promise.all([
-          updateUser({
+          updateUser(user.id, {
             emailVerified: new Date(),
           }),
           createCustomer({
+            userId: user.id,
             name: user.name || "",
           }),
           sendWelcomeEmail(user.email || "", user.name || user.email || ""),

@@ -1,6 +1,5 @@
 "use server"
 
-import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { customerSchema } from "@/lib/validations/customer-validation"
 import { revalidatePath } from "next/cache"
@@ -8,9 +7,13 @@ import { z } from "zod"
 
 type CustomerSchema = z.infer<typeof customerSchema>
 
-export async function editCustomer(values: CustomerSchema) {
-  const session = await auth()
-
+export async function editCustomer({
+  id,
+  values,
+}: {
+  id: string
+  values: CustomerSchema
+}) {
   const validatedFields = customerSchema.safeParse(values)
 
   if (!validatedFields.success) {
@@ -21,7 +24,7 @@ export async function editCustomer(values: CustomerSchema) {
 
   try {
     const customer = await prisma.customer.update({
-      where: { userId: session?.user.id },
+      where: { id },
       data: {
         name,
         birthdate,

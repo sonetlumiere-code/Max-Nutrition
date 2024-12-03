@@ -32,11 +32,12 @@ export const newVerification = async (token: string) => {
 
   try {
     await Promise.all([
-      updateUser({
+      updateUser(existingUser.id, {
         emailVerified: new Date(),
         email: existingToken.email,
       }),
       createCustomer({
+        userId: existingUser.id,
         name: existingUser.name || "",
       }),
       prisma.verificationToken.delete({
