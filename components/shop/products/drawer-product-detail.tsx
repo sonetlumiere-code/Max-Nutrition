@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   Drawer,
   DrawerContent,
@@ -33,6 +33,13 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
   const [variations, setVariations] = useState({ withSalt: true })
 
   const { addItem } = useCart()
+
+  useEffect(() => {
+    if (open) {
+      setQuantity(1)
+      setVariations({ withSalt: true })
+    }
+  }, [open])
 
   const addToCart = () => {
     addItem(product, quantity, variations)
