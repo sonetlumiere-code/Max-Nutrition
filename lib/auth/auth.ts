@@ -24,7 +24,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             userId: user.id,
             name: user.name || "",
           }),
-          sendWelcomeEmail(user.email || "", user.name || user.email || ""),
+          sendWelcomeEmail({
+            email: user.email || "",
+            userName: user.name || user.email || "",
+          }),
         ])
       }
     },

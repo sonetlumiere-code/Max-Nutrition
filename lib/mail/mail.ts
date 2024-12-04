@@ -37,7 +37,13 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   })
 }
 
-export const sendWelcomeEmail = async (email: string, userName: string) => {
+export const sendWelcomeEmail = async ({
+  email,
+  userName,
+}: {
+  email: string
+  userName: string
+}) => {
   await resend.emails.send({
     from: "onboarding@resend.dev",
     to: email,

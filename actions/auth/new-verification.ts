@@ -43,10 +43,10 @@ export const newVerification = async (token: string) => {
       prisma.verificationToken.delete({
         where: { id: existingToken.id },
       }),
-      sendWelcomeEmail(
-        existingToken.email,
-        existingUser.name || existingToken.email
-      ),
+      sendWelcomeEmail({
+        email: existingToken.email,
+        userName: existingUser.name || existingToken.email,
+      }),
     ])
 
     return { success: "Email verificado." }

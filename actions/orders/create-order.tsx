@@ -39,6 +39,9 @@ export async function createOrder(values: OrderSchema) {
           },
           show: true,
         },
+        include: {
+          categories: true,
+        },
       }),
       getCustomer({
         where: {
@@ -162,6 +165,16 @@ export async function createOrder(values: OrderSchema) {
       },
       include: {
         address: true,
+        customer: {
+          include: {
+            user: {
+              select: {
+                email: true,
+                name: true,
+              },
+            },
+          },
+        },
         items: {
           include: {
             product: true,

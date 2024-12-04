@@ -3,7 +3,11 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
-import { translateOrderStatus } from "@/helpers/helpers"
+import {
+  translateOrderStatus,
+  translatePaymentMethod,
+  translateShippingMethod,
+} from "@/helpers/helpers"
 import { cn } from "@/lib/utils"
 import { PopulatedOrder } from "@/types/types"
 
@@ -82,7 +86,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
             <span>${order.total}</span>
           </li>
         </ul>
-        <Separator className='my-2' />
+        <Separator className='my-4' />
         <div className='flex justify-between'>
           <div className='grid gap-3 text-sm'>
             <div className='font-semibold'>Información de entrega</div>
@@ -112,7 +116,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
           </div>
           <div className='grid auto-rows-max gap-3'>
             <Badge variant='secondary'>
-              {order.shippingMethod === "TakeAway" ? "Take Away" : "Delivery"}
+              {translateShippingMethod(order.shippingMethod)}
             </Badge>
           </div>
         </div>
@@ -138,17 +142,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
           <dl className='grid gap-3'>
             <div className='flex items-center justify-between'>
               <dt className='flex items-center gap-1 text-muted-foreground'>
-                {order.paymentMethod === "Cash"
-                  ? "Efectivo"
-                  : order.paymentMethod === "BankTransfer"
-                  ? "Transferencia bancaria"
-                  : order.paymentMethod === "MercadoPago"
-                  ? "Mercado Pago"
-                  : order.paymentMethod === "CreditCard"
-                  ? "Tarjeta de crédito"
-                  : order.paymentMethod === "DebitCard"
-                  ? "Tarjeta de débito"
-                  : ""}
+                {translatePaymentMethod(order.paymentMethod)}
               </dt>
             </div>
           </dl>
