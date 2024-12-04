@@ -90,7 +90,13 @@ const CustomerCreateAddressForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className='grid gap-6'>
+      <form
+        onSubmit={(event) => {
+          event.stopPropagation()
+          handleSubmit(onSubmit)(event)
+        }}
+        className='grid gap-6'
+      >
         <ScrollArea className='h-[42vh]'>
           <div className='grid gap-6 p-1'>
             <FormField

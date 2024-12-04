@@ -26,14 +26,10 @@ import { ReactNode, useState } from "react"
 import CustomerCreateAddressForm from "./customer-create-address-form"
 
 type CustomerCreateAddressProps = {
-  customer: PopulatedCustomer
   children: ReactNode
 }
 
-const CustomerCreateAddress = ({
-  customer,
-  children,
-}: CustomerCreateAddressProps) => {
+const CustomerCreateAddress = ({ children }: CustomerCreateAddressProps) => {
   const [open, setOpen] = useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 

@@ -84,10 +84,10 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
   const router = useRouter()
 
   useEffect(() => {
-    if (!items.length) {
+    if (!items.length || !customer) {
       router.replace("/shop")
     }
-  }, [items, router])
+  }, [items, customer, router])
 
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
@@ -425,24 +425,36 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                             <h3 className='text-base md:text-xl font-bold tracking-tight'>
                               Todavía no tenés ninguna dirección registrada.
                             </h3>
-                            <p className='text-sm text-muted-foreground'>
+                            <p className='text-sm text-muted-foreground mb-4'>
                               Registrá tu dirección a continuación.
                             </p>
 
-                            <CustomerCreateAddress customer={customer}>
-                              <Button type='button' className='mt-4'>
-                                Agregar dirección
-                              </Button>
+                            <CustomerCreateAddress>
+                              <Button type='button'>Agregar dirección</Button>
                             </CustomerCreateAddress>
                           </div>
                         </div>
                       ) : (
                         <Card>
                           <CardHeader>
-                            <CardTitle className='text-xl'>
-                              Dirección de envío
-                            </CardTitle>
+                            <div className='space-between flex items-center'>
+                              <div className='max-w-screen-sm'>
+                                <CardTitle className='text-xl'>
+                                  Dirección de envío
+                                </CardTitle>
+                              </div>
+                              <div className='ml-auto'>
+                                {customer && (
+                                  <CustomerCreateAddress>
+                                    <Button type='button'>
+                                      Agregar dirección
+                                    </Button>
+                                  </CustomerCreateAddress>
+                                )}
+                              </div>
+                            </div>
                           </CardHeader>
+
                           <CardContent>
                             <FormField
                               control={control}

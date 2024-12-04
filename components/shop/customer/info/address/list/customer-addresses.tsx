@@ -32,7 +32,7 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
                 </CardDescription>
               </div>
               <div className='ml-auto'>
-                <CustomerCreateAddress customer={customer}>
+                <CustomerCreateAddress>
                   <Button type='button'>
                     <Icons.plus className='w-4 h-4 mr-1' />
                     Agregar
@@ -58,14 +58,12 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
             <h3 className='text-2xl font-bold tracking-tight'>
               Todavía no tenés ninguna dirección
             </h3>
-            <p className='text-sm text-muted-foreground'>
+            <p className='text-sm text-muted-foreground mb-4'>
               Cargá tu primera dirección haciendo click en el siguiente botón
             </p>
 
-            <CustomerCreateAddress customer={customer}>
-              <Button type='button' className='mt-4'>
-                Agregar dirección
-              </Button>
+            <CustomerCreateAddress>
+              <Button type='button'>Agregar dirección</Button>
             </CustomerCreateAddress>
           </div>
         </div>
