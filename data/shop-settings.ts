@@ -6,6 +6,13 @@ export const getShopSettings = async () => {
   try {
     const settings = await prisma.shopSettings.findUnique({
       where: { id: "1" },
+      include: {
+        branches: {
+          include: {
+            operationalHours: true,
+          },
+        },
+      },
     })
 
     return settings

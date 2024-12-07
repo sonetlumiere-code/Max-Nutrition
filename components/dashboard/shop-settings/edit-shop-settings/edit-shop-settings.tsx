@@ -12,14 +12,14 @@ import { ShopSettings } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-type SettingsSchema = z.infer<typeof shopSettingsSchema>
+type ShopSettingsSchema = z.infer<typeof shopSettingsSchema>
 
 type EditShopSettingsProps = {
   settings: ShopSettings
 }
 
 const EditShopSettings = ({ settings }: EditShopSettingsProps) => {
-  const form = useForm<SettingsSchema>({
+  const form = useForm<ShopSettingsSchema>({
     resolver: zodResolver(shopSettingsSchema),
     defaultValues: settings,
   })
@@ -29,7 +29,7 @@ const EditShopSettings = ({ settings }: EditShopSettingsProps) => {
     formState: { isSubmitting },
   } = form
 
-  const onSubmit = async (data: SettingsSchema) => {
+  const onSubmit = async (data: ShopSettingsSchema) => {
     const res = await editSettings({ values: data })
 
     if (res.success) {
