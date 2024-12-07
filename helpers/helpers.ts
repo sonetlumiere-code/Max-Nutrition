@@ -1,5 +1,5 @@
 import {
-  AddressLabel,
+  CustomerAddressLabel,
   Measurement,
   OrderStatus,
   PaymentMethod,
@@ -19,11 +19,11 @@ export const translateUnit = (measurement: Measurement): string => {
   }
 }
 
-export const translateAddressLabel = (value: AddressLabel) => {
+export const translateAddressLabel = (value: CustomerAddressLabel) => {
   switch (value) {
-    case AddressLabel.Home:
+    case CustomerAddressLabel.Home:
       return "Casa"
-    case AddressLabel.Work:
+    case CustomerAddressLabel.Work:
       return "Trabajo"
     default:
       return "Otro"

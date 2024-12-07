@@ -1,4 +1,4 @@
-import EditSettings from "@/components/dashboard/settings/edit-settings/edit-settings"
+import EditShopSettings from "@/components/dashboard/shop-settings/edit-shop-settings/edit-shop-settings"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,18 +7,18 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { getSettings } from "@/data/settings"
+import { getShopSettings } from "@/data/shop-settings"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
-const Settings = async () => {
+const ShopSettings = async () => {
   const session = await auth()
 
   if (session?.user.role !== "ADMIN") {
     return redirect("/")
   }
 
-  const settings = await getSettings()
+  const settings = await getShopSettings()
 
   return (
     <>
@@ -36,9 +36,9 @@ const Settings = async () => {
 
       <h2 className='font-semibold text-lg'>Configuración</h2>
 
-      {settings && <EditSettings settings={settings} />}
+      {settings && <EditShopSettings settings={settings} />}
     </>
   )
 }
 
-export default Settings
+export default ShopSettings

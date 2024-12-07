@@ -19,6 +19,16 @@ enum Role {
   USER
 }
 
+enum DayOfWeek {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -96,16 +106,16 @@ model Customer {
   @@map("customers")
 }
 
-enum AddressLabel {
+enum CustomerAddressLabel {
   Home
   Work
   Other
 }
 
 model CustomerAddress {
-  id               String       @id @default(cuid())
+  id               String               @id @default(cuid())
   customerId       String
-  label            AddressLabel
+  label            CustomerAddressLabel
   labelString      String?
   province         String
   municipality     String
@@ -115,9 +125,9 @@ model CustomerAddress {
   addressFloor     Int?
   addressApartment String?
   postCode         String
-  customer         Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  customer         Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
   order            Order[]
 
   @@map("customer_addresses")
@@ -295,13 +305,61 @@ model Category {
   @@map("categories")
 }
 
-model Settings {
-  id               String   @id @default("1")
-  operationalHours String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+model ShopSettings {
+  id                    String          @id @default("1")
+  branches              ShopBranch[]
+  allowedPaymentMethods PaymentMethod[]
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
 
-  @@map("settings")
+  @@map("shop_settings")
+}
+
+model ShopBranch {
+  id               String             @id @default(cuid())
+  label            String // Example: "Sucursal Agronomía"
+  branchType       BranchType         @default(RETAIL)
+  province         String
+  municipality     String
+  locality         String
+  addressStreet    String
+  addressNumber    Int
+  phoneNumber      String?
+  email            String?
+  latitude         Float?
+  longitude        Float?
+  managerName      String?
+  image            String?
+  description      String?
+  timezone         String?
+  isActive         Boolean            @default(true)
+  operationalHours OperationalHours[]
+  shopSettings     ShopSettings?      @relation(fields: [shopSettingsId], references: [id])
+  shopSettingsId   String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@map("shop_branches")
+}
+
+enum BranchType {
+  RETAIL // Open to the public, customer-facing
+  WAREHOUSE // Not open to the public, storage or distribution
+  CORPORATE // Head office, administrative functions
+  SERVICE_CENTER // Provides specialized services but not direct sales
+}
+
+model OperationalHours {
+  id           Int         @id @default(autoincrement())
+  dayOfWeek    DayOfWeek
+  startTime    DateTime    @db.Time
+  endTime      DateTime    @db.Time
+  shopBranch   ShopBranch? @relation(fields: [shopBranchId], references: [id])
+  shopBranchId String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@map("operational_hours")
 }
 
 enum ShippingMethod {
@@ -309,6 +367,7 @@ enum ShippingMethod {
   Delivery
 }
 
+// TO DO: Connect with shop settings or move to shop settings
 model ShippingSettings {
   id                             String           @id @default("1")
   allowedShippingMethods         ShippingMethod[]

@@ -1,28 +1,26 @@
 "use client"
 
-import { editSettings } from "@/actions/settings/edit-settings"
+import { editSettings } from "@/actions/shop-settings/edit-shop-settings"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
 import { toast } from "@/components/ui/use-toast"
-import { settingsSchema } from "@/lib/validations/settings-validation"
+import { shopSettingsSchema } from "@/lib/validations/shop-settings-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Settings } from "@prisma/client"
+import { ShopSettings } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-type SettingsSchema = z.infer<typeof settingsSchema>
+type SettingsSchema = z.infer<typeof shopSettingsSchema>
 
-type EditSettingsProps = {
-  settings: Settings
+type EditShopSettingsProps = {
+  settings: ShopSettings
 }
 
-const EditSettings = ({ settings }: EditSettingsProps) => {
-  console.log(settings)
-
+const EditShopSettings = ({ settings }: EditShopSettingsProps) => {
   const form = useForm<SettingsSchema>({
-    resolver: zodResolver(settingsSchema),
+    resolver: zodResolver(shopSettingsSchema),
     defaultValues: settings,
   })
 
@@ -72,4 +70,4 @@ const EditSettings = ({ settings }: EditSettingsProps) => {
   )
 }
 
-export default EditSettings
+export default EditShopSettings

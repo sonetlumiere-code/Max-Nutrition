@@ -1,4 +1,10 @@
-import { Ingredient, PrismaClient, ShippingMethod } from "@prisma/client"
+import {
+  DayOfWeek,
+  Ingredient,
+  PaymentMethod,
+  PrismaClient,
+  ShippingMethod,
+} from "@prisma/client"
 
 const prisma = new PrismaClient()
 
@@ -848,6 +854,16 @@ export const ingredientsData: Omit<
   },
 ]
 
+const operationalHours = [
+  { dayOfWeek: DayOfWeek.Monday, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.Tuesday, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.Wednesday, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.Thursday, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.Friday, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.Saturday, startTime: "10:00", endTime: "14:00" },
+  { dayOfWeek: DayOfWeek.Sunday, startTime: null, endTime: null }, // Closed
+]
+
 async function main() {
   for (const ingredient of ingredientsData) {
     await prisma.ingredient.upsert({
@@ -857,12 +873,43 @@ async function main() {
     })
   }
 
-  await prisma.settings.upsert({
+  await prisma.shopSettings.upsert({
     where: { id: "1" },
     update: {},
     create: {
       id: "1",
-      operationalHours: "",
+      allowedPaymentMethods: [PaymentMethod.Cash, PaymentMethod.BankTransfer],
+      branches: {
+        create: [
+          {
+            label: "Sucursal Agronomía",
+            branchType: "RETAIL",
+            province: "Buenos Aires",
+            municipality: "CABA",
+            locality: "Agronomía",
+            addressStreet: "Main St",
+            addressNumber: 123,
+            phoneNumber: "+54 11 1234 5678",
+            email: "agronomia@example.com",
+            latitude: null,
+            longitude: null,
+            managerName: "",
+            timezone: "America/Argentina/Buenos_Aires",
+            isActive: true,
+            description: "Retail branch located in Agronomía.",
+            image: "",
+            operationalHours: {
+              create: operationalHours
+                .filter((hours) => hours.startTime && hours.endTime)
+                .map((hours) => ({
+                  dayOfWeek: hours.dayOfWeek,
+                  startTime: new Date(`1970-01-01T${hours.startTime}:00Z`),
+                  endTime: new Date(`1970-01-01T${hours.endTime}:00Z`),
+                })),
+            },
+          },
+        ],
+      },
     },
   })
 

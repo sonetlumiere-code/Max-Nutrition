@@ -4,7 +4,7 @@ import { getCustomer } from "@/data/customer"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
-import { AddressLabel } from "@prisma/client"
+import { CustomerAddressLabel } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
@@ -55,7 +55,7 @@ export async function createCustomerAddress(values: CustomerAddressSchema) {
         addressApartment: addressApartment?.toUpperCase() || "",
         postCode,
         label,
-        labelString: label === AddressLabel.Other ? labelString : "",
+        labelString: label === CustomerAddressLabel.Other ? labelString : "",
       },
     })
 

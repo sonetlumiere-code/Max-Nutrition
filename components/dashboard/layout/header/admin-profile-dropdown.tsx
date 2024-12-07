@@ -23,7 +23,7 @@ const AdminProfileDropdown = async () => {
       <DropdownMenuContent align='end'>
         <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <Link href={"/settings"}>
+        <Link href={"/shop-settings"}>
           <DropdownMenuItem>
             <Icons.settings className='w-4 h-4 mr-2' />
             Configuración

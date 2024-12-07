@@ -2,9 +2,9 @@
 
 import prisma from "@/lib/db/db"
 
-export const getSettings = async () => {
+export const getShopSettings = async () => {
   try {
-    const settings = await prisma.settings.findUnique({
+    const settings = await prisma.shopSettings.findUnique({
       where: { id: "1" },
     })
 
