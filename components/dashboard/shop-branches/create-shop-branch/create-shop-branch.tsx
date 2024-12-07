@@ -51,8 +51,8 @@ const CreateShopBranch = () => {
     defaultValues: {
       label: "",
       branchType: BranchType.RETAIL,
-      province: "Buenos Aires",
-      municipality: "Ciudad Autónoma de Buenos Aires",
+      province: "Ciudad Autónoma de Buenos Aires",
+      municipality: "",
       locality: "",
       addressGeoRef: undefined,
       addressNumber: 0,

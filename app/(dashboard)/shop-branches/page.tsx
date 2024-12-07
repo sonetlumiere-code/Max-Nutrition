@@ -142,7 +142,7 @@ const ShopBranchesPage = async () => {
             </p>
 
             <Button className='mt-4' asChild>
-              <Link href='/products/create-product'>
+              <Link href='shop-branches/create-shop-branch'>
                 <Icons.circlePlus className='mr-2 h-4 w-4' />
                 Agregar sucursal
               </Link>
