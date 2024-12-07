@@ -12,6 +12,8 @@ import {
   Recipe,
   RecipeIngredient,
   User,
+  ShopBranch,
+  OperationalHours,
 } from "@prisma/client"
 
 export type PopulatedRecipe = Recipe & {
@@ -66,6 +68,10 @@ export interface IngredientTotal {
   measurement: Measurement
   quantity: number
   cost: number
+}
+
+export type PopulatedShopBranch = ShopBranch & {
+  operationalHours: OperationalHours[]
 }
 
 export type TimePeriod = "week" | "month" | "year" | "all"

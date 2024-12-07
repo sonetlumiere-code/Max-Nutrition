@@ -48,6 +48,7 @@ import {
   Search,
   Settings,
   ShoppingCart,
+  Store,
   Trash2,
   Truck,
   Upload,
@@ -58,6 +59,7 @@ import {
 } from "lucide-react"
 
 export const Icons = {
+  store: Store,
   badgePercent: BadgePercent,
   bell: Bell,
   box: Box,

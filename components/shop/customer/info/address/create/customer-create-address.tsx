@@ -21,7 +21,6 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { PopulatedCustomer } from "@/types/types"
 import { ReactNode, useState } from "react"
 import CustomerCreateAddressForm from "./customer-create-address-form"
 

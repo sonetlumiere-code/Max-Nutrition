@@ -1,9 +1,8 @@
+import { DayOfWeek } from "@prisma/client"
 import { z } from "zod"
 
 export const operationalHoursSchema = z.object({
-  dayOfWeek: z
-    .string()
-    .min(1, { message: "El día de la semana es obligatorio." }),
+  dayOfWeek: z.nativeEnum(DayOfWeek),
   startTime: z
     .string()
     .regex(/^\d{2}:\d{2}$/, {

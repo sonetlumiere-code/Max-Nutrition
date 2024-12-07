@@ -6,6 +6,7 @@ export const navItems: {
   icon: Icon
 }[] = [
   // { href: "/welcome", label: "Inicio", icon: "home" },
+  { href: "/shop-branches", label: "Sucursales", icon: "store" },
   { href: "/orders", label: "Pedidos", icon: "shoppingCart" },
   { href: "/products", label: "Productos", icon: "pizza" },
   { href: "/categories", label: "Categorías", icon: "box" },
