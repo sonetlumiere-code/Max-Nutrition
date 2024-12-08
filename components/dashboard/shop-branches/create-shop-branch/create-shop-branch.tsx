@@ -60,7 +60,7 @@ const CreateShopBranch = () => {
       addressApartment: "",
       postCode: "",
       phoneNumber: "",
-      email: "",
+      email: undefined,
       description: "",
       isActive: true,
       operationalHours: [],

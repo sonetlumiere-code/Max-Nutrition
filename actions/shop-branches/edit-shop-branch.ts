@@ -31,7 +31,7 @@ export async function editShopBranch({
 
   const {
     addressNumber,
-    addressStreet,
+    addressGeoRef,
     branchType,
     description,
     email,
@@ -55,8 +55,10 @@ export async function editShopBranch({
           deleteMany: {},
           create: operationalHours.map(({ dayOfWeek, startTime, endTime }) => ({
             dayOfWeek,
-            startTime: startTime ? new Date(`1970-01-01T${startTime}Z`) : null,
-            endTime: endTime ? new Date(`1970-01-01T${endTime}Z`) : null,
+            startTime: startTime
+              ? new Date(`1970-01-01T${startTime}:00Z`)
+              : null,
+            endTime: endTime ? new Date(`1970-01-01T${endTime}:00Z`) : null,
           })),
         }
       : undefined
@@ -65,7 +67,7 @@ export async function editShopBranch({
       where: { id },
       data: {
         addressNumber,
-        addressStreet,
+        addressStreet: addressGeoRef?.calle.nombre,
         branchType,
         description,
         email,

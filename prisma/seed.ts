@@ -890,7 +890,7 @@ async function main() {
             addressStreet: "Main St",
             addressNumber: 123,
             phoneNumber: "+54 11 1234 5678",
-            email: "agronomia@example.com",
+            email: null,
             latitude: null,
             longitude: null,
             managerName: "",

@@ -30,6 +30,9 @@ const EditShopBranchPage = async ({ params }: EditShopBranchProps) => {
     where: {
       id: shopBranchId,
     },
+    include: {
+      operationalHours: true,
+    },
   })
 
   if (!shopBranch) {
@@ -53,8 +56,6 @@ const EditShopBranchPage = async ({ params }: EditShopBranchProps) => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-
-      <h2 className='font-semibold text-lg'>Editar Sucursal</h2>
 
       <EditShopBranch shopBranch={shopBranch} />
     </>
