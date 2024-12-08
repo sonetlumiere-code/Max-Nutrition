@@ -26,7 +26,7 @@ import { useRouter } from "next/navigation"
 import { Icons } from "@/components/icons"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
-import { BranchType } from "@prisma/client"
+import { BranchType, DayOfWeek } from "@prisma/client"
 import {
   Select,
   SelectContent,
@@ -38,10 +38,21 @@ import {
 import MunicipalitySelect from "@/components/municipality-select"
 import LocalitySelect from "@/components/locality-select"
 import AsyncSelectAddress from "@/components/async-search-address"
+import { translateDayOfWeek } from "@/helpers/helpers"
 
 type ShopBranchSchema = z.infer<typeof shopBranchSchema>
 
 const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
+
+const defaultOperationalHours = [
+  { dayOfWeek: DayOfWeek.Monday, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.Tuesday, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.Wednesday, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.Thursday, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.Friday, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.Saturday, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.Sunday, startTime: "", endTime: "" },
+]
 
 const CreateShopBranch = () => {
   const router = useRouter()
@@ -63,7 +74,7 @@ const CreateShopBranch = () => {
       email: undefined,
       description: "",
       isActive: true,
-      operationalHours: [],
+      operationalHours: defaultOperationalHours,
     },
   })
 
@@ -74,6 +85,8 @@ const CreateShopBranch = () => {
     watch,
     setValue,
   } = form
+
+  const operationalHours = watch("operationalHours")
 
   const onSubmit = async (data: ShopBranchSchema) => {
     const res = await createShopBranch(data)
@@ -319,39 +332,6 @@ const CreateShopBranch = () => {
             </Card>
           </div>
           <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
-            {/* <Card className='overflow-hidden'>
-              <CardHeader>
-                <CardTitle className='text-xl'>Imagen</CardTitle>
-                <CardDescription>Imagen de la sucursal</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='grid gap-2'>
-                  <img
-                    alt='Shop branch image'
-                    className='aspect-square w-full rounded-md object-cover'
-                    src={
-                      imageFile?.length > 0
-                        ? URL.createObjectURL(imageFile[0])
-                        : "/img/no-image.jpg"
-                    }
-                  />
-                  <div className='grid grid-cols-3 gap-2'>
-                    <label className='flex aspect-square w-full items-center justify-center rounded-md border border-dashed cursor-pointer'>
-                      <Icons.upload className='h-4 w-4 text-muted-foreground' />
-                      <span className='sr-only'>Upload</span>
-                      <input
-                        type='file'
-                        disabled={isSubmitting}
-                        className='hidden'
-                        onChange={(event) => {
-                          form.setValue("imageFile", event.target.files)
-                        }}
-                      />
-                    </label>
-                  </div>
-                </div>
-              </CardContent>
-            </Card> */}
             <Card>
               <CardHeader>
                 <CardTitle className='text-xl'>Disponibilidad</CardTitle>
@@ -381,6 +361,63 @@ const CreateShopBranch = () => {
                     )}
                   />
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Horarios</CardTitle>
+                <CardDescription>Horarios operacionales</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {operationalHours?.map((item, index) => (
+                  <div
+                    key={item.dayOfWeek}
+                    className='grid grid-cols-3 gap-1 items-center space-y-1'
+                  >
+                    <FormLabel className='text-sm font-medium'>
+                      {translateDayOfWeek(item.dayOfWeek)}
+                    </FormLabel>
+
+                    <FormField
+                      control={control}
+                      name={`operationalHours.${index}.startTime`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type='time'
+                              className='block'
+                              placeholder='HH:MM'
+                              disabled={isSubmitting}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={control}
+                      name={`operationalHours.${index}.endTime`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type='time'
+                              className='block'
+                              placeholder='HH:MM'
+                              disabled={isSubmitting}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                ))}
               </CardContent>
             </Card>
           </div>

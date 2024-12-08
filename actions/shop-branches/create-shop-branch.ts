@@ -61,11 +61,13 @@ export async function createShopBranch(values: ShopBranchSchema) {
         province,
         timezone,
         operationalHours: {
-          create: operationalHours?.map((hour) => ({
-            dayOfWeek: hour.dayOfWeek,
-            startTime: hour.startTime,
-            endTime: hour.endTime,
-          })),
+          create: operationalHours
+            ?.filter((hours) => hours.startTime && hours.endTime)
+            .map((hours) => ({
+              dayOfWeek: hours.dayOfWeek,
+              startTime: new Date(`1970-01-01T${hours.startTime}:00Z`),
+              endTime: new Date(`1970-01-01T${hours.endTime}:00Z`),
+            })),
         },
       },
     })

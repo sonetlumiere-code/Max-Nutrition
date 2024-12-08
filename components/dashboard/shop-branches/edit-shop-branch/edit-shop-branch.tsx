@@ -90,11 +90,11 @@ const EditShopBranch = ({ shopBranch }: EditShopBranchProps) => {
       email: shopBranch.email || undefined,
       description: shopBranch.description || undefined,
       isActive: shopBranch.isActive,
-      operationalHours: shopBranch.operationalHours.map((hour) => ({
-        ...hour,
-        startTime: hour.startTime ? format(hour.startTime, "HH:mm") : null,
-        endTime: hour.endTime ? format(hour.endTime, "HH:mm") : null,
-      })),
+      // operationalHours: shopBranch.operationalHours.map((hour) => ({
+      //   ...hour,
+      //   startTime: hour.startTime ? format(hour.startTime, "HH:mm") : null,
+      //   endTime: hour.endTime ? format(hour.endTime, "HH:mm") : null,
+      // })),
     },
   })
 
