@@ -66,7 +66,7 @@ const ShopBranchesPage = async () => {
               <div className='max-w-screen-sm'>
                 <CardTitle className='text-xl'>Sucursales</CardTitle>
                 <CardDescription className='hidden md:block'>
-                  Gestiona y actualiza el inventario de viandas.
+                  Gestiona y actualiza tus sucursales.
                 </CardDescription>
               </div>
               <div className='ml-auto'>

@@ -55,10 +55,8 @@ export async function editShopBranch({
           deleteMany: {},
           create: operationalHours.map(({ dayOfWeek, startTime, endTime }) => ({
             dayOfWeek,
-            startTime: startTime
-              ? new Date(`1970-01-01T${startTime}:00Z`)
-              : null,
-            endTime: endTime ? new Date(`1970-01-01T${endTime}:00Z`) : null,
+            startTime: startTime || null,
+            endTime: endTime || null,
           })),
         }
       : undefined

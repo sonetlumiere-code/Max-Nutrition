@@ -899,13 +899,11 @@ async function main() {
             description: "Retail branch located in Agronomía.",
             image: "",
             operationalHours: {
-              create: operationalHours
-                .filter((hours) => hours.startTime && hours.endTime)
-                .map((hours) => ({
-                  dayOfWeek: hours.dayOfWeek,
-                  startTime: new Date(`1970-01-01T${hours.startTime}:00Z`),
-                  endTime: new Date(`1970-01-01T${hours.endTime}:00Z`),
-                })),
+              create: operationalHours?.map((hours) => ({
+                dayOfWeek: hours.dayOfWeek,
+                startTime: hours.startTime || null,
+                endTime: hours.endTime || null,
+              })),
             },
           },
         ],

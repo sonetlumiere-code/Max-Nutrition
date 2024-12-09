@@ -26,7 +26,6 @@ import { useRouter } from "next/navigation"
 import { Icons } from "@/components/icons"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
-import { BranchType } from "@prisma/client"
 import {
   Select,
   SelectContent,
@@ -39,7 +38,7 @@ import MunicipalitySelect from "@/components/municipality-select"
 import LocalitySelect from "@/components/locality-select"
 import AsyncSelectAddress from "@/components/async-search-address"
 import { editShopBranch } from "@/actions/shop-branches/edit-shop-branch"
-import { format } from "date-fns"
+import { translateDayOfWeek } from "@/helpers/helpers"
 
 type EditShopBranchProps = {
   shopBranch: PopulatedShopBranch
@@ -51,8 +50,6 @@ const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
 
 const EditShopBranch = ({ shopBranch }: EditShopBranchProps) => {
   const router = useRouter()
-
-  console.log(shopBranch)
 
   const form = useForm<ShopBranchSchema>({
     resolver: zodResolver(shopBranchSchema),
@@ -90,11 +87,11 @@ const EditShopBranch = ({ shopBranch }: EditShopBranchProps) => {
       email: shopBranch.email || undefined,
       description: shopBranch.description || undefined,
       isActive: shopBranch.isActive,
-      // operationalHours: shopBranch.operationalHours.map((hour) => ({
-      //   ...hour,
-      //   startTime: hour.startTime ? format(hour.startTime, "HH:mm") : null,
-      //   endTime: hour.endTime ? format(hour.endTime, "HH:mm") : null,
-      // })),
+      operationalHours: shopBranch.operationalHours?.map((hour) => ({
+        dayOfWeek: hour.dayOfWeek,
+        startTime: hour.startTime || undefined,
+        endTime: hour.endTime || undefined,
+      })),
     },
   })
 
@@ -106,14 +103,16 @@ const EditShopBranch = ({ shopBranch }: EditShopBranchProps) => {
     setValue,
   } = form
 
+  const operationalHours = watch("operationalHours")
+
   const onSubmit = async (data: ShopBranchSchema) => {
     const res = await editShopBranch({ id: shopBranch.id, values: data })
 
     if (res.success) {
       router.push("/shop-branches")
       toast({
-        title: "Nueva sucursal creada",
-        description: "La sucursal ha sido creada correctamente.",
+        title: "Sucursal actualizada",
+        description: "La sucursal se actualizó correctamente.",
       })
     }
 
@@ -379,6 +378,63 @@ const EditShopBranch = ({ shopBranch }: EditShopBranchProps) => {
                     )}
                   />
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Horarios</CardTitle>
+                <CardDescription>Horarios operacionales</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {operationalHours?.map((item, index) => (
+                  <div
+                    key={item.dayOfWeek}
+                    className='grid grid-cols-3 gap-1 items-center space-y-1'
+                  >
+                    <FormLabel className='text-sm font-medium'>
+                      {translateDayOfWeek(item.dayOfWeek)}
+                    </FormLabel>
+
+                    <FormField
+                      control={control}
+                      name={`operationalHours.${index}.startTime`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type='time'
+                              className='block'
+                              placeholder='HH:MM'
+                              disabled={isSubmitting}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={control}
+                      name={`operationalHours.${index}.endTime`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type='time'
+                              className='block'
+                              placeholder='HH:MM'
+                              disabled={isSubmitting}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                ))}
               </CardContent>
             </Card>
           </div>
