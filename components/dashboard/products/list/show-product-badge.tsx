@@ -3,10 +3,10 @@
 import { editProduct } from "@/actions/products/edit-product"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "@/components/ui/use-toast"
-import { Product } from "@prisma/client"
+import { PopulatedProduct } from "@/types/types"
 
 type ShowProductBadgeProps = {
-  product: Product
+  product: PopulatedProduct
 }
 
 const ShowProductBadge = ({ product }: ShowProductBadgeProps) => {
@@ -14,7 +14,10 @@ const ShowProductBadge = ({ product }: ShowProductBadgeProps) => {
     try {
       const res = await editProduct({
         id: product.id,
-        values: { show: !product.show },
+        values: {
+          categoriesIds: product.categories?.map((category) => category.id),
+          show: !product.show,
+        },
       })
 
       if (res.success) {
