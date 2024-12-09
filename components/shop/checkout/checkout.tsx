@@ -421,7 +421,7 @@ const Checkout = ({
                         )}
                         {shippingMethod === ShippingMethod.TakeAway &&
                           shopSettings?.branches && (
-                            <div className='space-y-3'>
+                            <div className='space-y-3 w-full'>
                               {shopSettings.branches.map((branch) => (
                                 <CheckoutShopBranch
                                   key={branch.id}
