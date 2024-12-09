@@ -7,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button"
 import dynamic from "next/dynamic"
 import { redirect } from "next/navigation"
 import { getShippingSettings } from "@/data/shipping-settings"
+import { getShopSettings } from "@/data/shop-settings"
 
 const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
   ssr: false,
@@ -15,39 +16,51 @@ const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
 export default async function CheckoutPage() {
   const session = await auth()
 
-  const customer = await getCustomer({
-    where: {
-      userId: session?.user.id,
-    },
-    include: {
-      address: true,
-      user: {
-        select: {
-          email: true,
-          name: true,
-        },
+  const [customer, shopSettings, shippingSettings] = await Promise.all([
+    getCustomer({
+      where: {
+        userId: session?.user.id,
       },
-      orders: {
-        orderBy: {
-          createdAt: "desc",
+      include: {
+        address: true,
+        user: {
+          select: {
+            email: true,
+            name: true,
+          },
         },
-        include: {
-          address: true,
-          items: {
-            include: {
-              product: true,
+        orders: {
+          orderBy: {
+            createdAt: "desc",
+          },
+          include: {
+            address: true,
+            items: {
+              include: {
+                product: true,
+              },
             },
           },
         },
       },
-    },
-  })
+    }),
+    getShopSettings({
+      where: { id: "1" },
+      include: {
+        branches: {
+          where: { isActive: true },
+          include: {
+            operationalHours: true,
+          },
+        },
+      },
+    }),
+    getShippingSettings(),
+  ])
 
-  if (!customer) {
+  if (!customer || !shopSettings || !shippingSettings) {
     redirect("/shop")
   }
-
-  const shippingSettings = await getShippingSettings()
 
   return (
     <div className='space-y-6'>
@@ -63,7 +76,11 @@ export default async function CheckoutPage() {
         </Link>
       </div>
 
-      <Checkout customer={customer} shippingSettings={shippingSettings} />
+      <Checkout
+        customer={customer}
+        shopSettings={shopSettings}
+        shippingSettings={shippingSettings}
+      />
     </div>
   )
 }

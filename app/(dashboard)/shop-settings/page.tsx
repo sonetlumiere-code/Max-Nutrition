@@ -11,14 +11,23 @@ import { getShopSettings } from "@/data/shop-settings"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
-const ShopSettings = async () => {
+const ShopSettingsPage = async () => {
   const session = await auth()
 
   if (session?.user.role !== "ADMIN") {
     return redirect("/")
   }
 
-  const settings = await getShopSettings()
+  const settings = await getShopSettings({
+    where: { id: "1" },
+    include: {
+      branches: {
+        include: {
+          operationalHours: true,
+        },
+      },
+    },
+  })
 
   return (
     <>
@@ -41,4 +50,4 @@ const ShopSettings = async () => {
   )
 }
 
-export default ShopSettings
+export default ShopSettingsPage

@@ -53,6 +53,7 @@ export async function editShopBranch({
     const updatedShopBranch = await prisma.shopBranch.update({
       where: { id },
       data: {
+        shopSettingsId: "1",
         addressNumber,
         addressStreet: addressGeoRef?.calle.nombre,
         branchType,

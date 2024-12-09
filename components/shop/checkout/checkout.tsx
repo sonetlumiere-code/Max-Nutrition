@@ -51,7 +51,7 @@ import {
 } from "@/helpers/helpers"
 import { usePromotion } from "@/hooks/use-promotion"
 import { orderSchema } from "@/lib/validations/order-validation"
-import { PopulatedCustomer } from "@/types/types"
+import { PopulatedCustomer, PopulatedShopSettings } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PaymentMethod, ShippingMethod, ShippingSettings } from "@prisma/client"
 import Link from "next/link"
@@ -61,15 +61,21 @@ import { useForm } from "react-hook-form"
 import useSWR from "swr"
 import { z } from "zod"
 import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
+import CheckoutShopBranch from "./checkout-shop-branch"
 
 type OrderSchema = z.infer<typeof orderSchema>
 
 type CheckoutProps = {
   customer: PopulatedCustomer | null
+  shopSettings: PopulatedShopSettings | null
   shippingSettings: ShippingSettings | null
 }
 
-const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
+const Checkout = ({
+  customer,
+  shopSettings,
+  shippingSettings,
+}: CheckoutProps) => {
   const { items, setOpen, clearCart } = useCart()
 
   const {
@@ -413,6 +419,17 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                             )}
                           </>
                         )}
+                        {shippingMethod === ShippingMethod.TakeAway &&
+                          shopSettings?.branches && (
+                            <div className='space-y-3'>
+                              {shopSettings.branches.map((branch) => (
+                                <CheckoutShopBranch
+                                  key={branch.id}
+                                  shopBranch={branch}
+                                />
+                              ))}
+                            </div>
+                          )}
                       </CardFooter>
                     </Card>
                   )}

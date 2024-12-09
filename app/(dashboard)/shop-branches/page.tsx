@@ -35,6 +35,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import DeleteShopBranch from "@/components/dashboard/shop-branches/delete-shop-branch/delete-shop-branch"
+import { Badge } from "@/components/ui/badge"
 
 const ShopBranchesPage = async () => {
   const shopBranches = await getShopBranches()
@@ -87,6 +88,7 @@ const ShopBranchesPage = async () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Etiqueta</TableHead>
+                  <TableHead>Activa</TableHead>
                   <TableHead className='text-end'>
                     <span>Acciones</span>
                   </TableHead>
@@ -96,6 +98,9 @@ const ShopBranchesPage = async () => {
                 {shopBranches?.map((shopBranch) => (
                   <TableRow key={shopBranch.id}>
                     <TableCell>{shopBranch.label}</TableCell>
+                    <TableCell>
+                      <Badge>{shopBranch.isActive ? "Si" : "No"}</Badge>
+                    </TableCell>
                     <TableCell className='text-end'>
                       <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
