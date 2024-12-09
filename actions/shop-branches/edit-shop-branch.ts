@@ -50,17 +50,6 @@ export async function editShopBranch({
   } = validatedFields.data
 
   try {
-    const operationalHoursUpdates = operationalHours
-      ? {
-          deleteMany: {},
-          create: operationalHours.map(({ dayOfWeek, startTime, endTime }) => ({
-            dayOfWeek,
-            startTime: startTime || null,
-            endTime: endTime || null,
-          })),
-        }
-      : undefined
-
     const updatedShopBranch = await prisma.shopBranch.update({
       where: { id },
       data: {
@@ -77,7 +66,22 @@ export async function editShopBranch({
         locality,
         managerName,
         municipality,
-        operationalHours: operationalHoursUpdates,
+        operationalHours:
+          operationalHours && operationalHours.length > 0
+            ? {
+                deleteMany: {},
+                create: operationalHours.map(
+                  ({ dayOfWeek, startTime, endTime }) => ({
+                    dayOfWeek,
+                    startTime: startTime || null,
+                    endTime: endTime || null,
+                  })
+                ),
+              }
+            : {
+                deleteMany: {},
+                create: [],
+              },
         phoneNumber,
         province,
         timezone,
