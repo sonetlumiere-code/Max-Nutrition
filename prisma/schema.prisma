@@ -353,15 +353,16 @@ enum BranchType {
 }
 
 model OperationalHours {
-  id           Int         @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   dayOfWeek    DayOfWeek
-  startTime    String?     @db.VarChar(5) // Stores time in HH:MM format
-  endTime      String?     @db.VarChar(5) // Stores time in HH:MM format
-  shopBranch   ShopBranch? @relation(fields: [shopBranchId], references: [id], onDelete: Cascade)
-  shopBranchId String?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  startTime    String?    @db.VarChar(5) // Stores time in HH:MM format
+  endTime      String?    @db.VarChar(5) // Stores time in HH:MM format
+  shopBranch   ShopBranch @relation(fields: [shopBranchId], references: [id], onDelete: Cascade)
+  shopBranchId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
+  @@unique([dayOfWeek, shopBranchId])
   @@map("operational_hours")
 }
 
