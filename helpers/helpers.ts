@@ -68,7 +68,7 @@ export function translateShippingMethod(
 ): string {
   switch (shippingMethod) {
     case ShippingMethod.DELIVERY:
-      return "DELIVERY"
+      return "Envío a domicilio"
     case ShippingMethod.TAKE_AWAY:
       return "Retiro por sucursal"
     default:

@@ -12,6 +12,8 @@
 // import { PopulatedOrder } from "@/types/types"
 // import { Dispatch, SetStateAction } from "react"
 
+// import { translateShippingMethod } from "@/helpers/helpers"
+
 // type OrdersTableProps = {
 //   orders: PopulatedOrder[]
 //   setSelectedOrder: Dispatch<SetStateAction<PopulatedOrder | null>>
@@ -44,7 +46,7 @@
 //             </TableCell>
 //             <TableCell className='hidden sm:table-cell'>
 //               <Badge className='text-xs' variant='secondary'>
-//                 {order.shippingMethod === "TAKE_AWAY" ? "Take Away" : "DELIVERY"}
+//                 {translateShippingMethod(order.shippingMethod)}
 //               </Badge>
 //             </TableCell>
 //             <TableCell className='hidden sm:table-cell'>
