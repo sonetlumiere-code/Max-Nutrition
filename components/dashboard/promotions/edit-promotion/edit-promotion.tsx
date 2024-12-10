@@ -134,7 +134,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                         <FormLabel>Nombre</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder='Editar promoción'
+                            placeholder='Nombre de la promoción'
                             disabled={isSubmitting}
                             {...field}
                           />
