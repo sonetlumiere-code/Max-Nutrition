@@ -61,7 +61,7 @@ export async function editCustomerAddress(
         addressApartment: addressApartment?.toUpperCase() || "",
         postCode,
         label,
-        labelString: label === CustomerAddressLabel.Other ? labelString : "",
+        labelString: label === CustomerAddressLabel.OTHER ? labelString : "",
       },
     })
 

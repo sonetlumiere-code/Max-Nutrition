@@ -160,7 +160,7 @@ export default function Orders() {
 
   const ordersToExport = Object.values(groupedAndFilteredOrders)
     .flat()
-    .filter((order) => order.status !== OrderStatus.Cancelled)
+    .filter((order) => order.status !== OrderStatus.CANCELLED)
 
   if (error) {
     return <div>Error buscando pedidos.</div>

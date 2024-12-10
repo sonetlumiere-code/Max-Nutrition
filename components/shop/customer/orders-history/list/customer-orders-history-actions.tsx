@@ -38,7 +38,7 @@ const CustomerOrdersHistoryActions = ({
           <Icons.eye className='w-4 h-4 mr-2' />
           <p>Ver</p>
         </DropdownMenuItem>
-        {order.status === OrderStatus.Pending && (
+        {order.status === OrderStatus.PENDING && (
           <DropdownMenuItem>
             <CancelCustomerOrder order={order} />
           </DropdownMenuItem>

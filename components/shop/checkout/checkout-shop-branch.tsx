@@ -10,11 +10,11 @@ type CheckoutOperationalHoursProps = {
 
 const CheckoutShopBranch = ({ shopBranch }: CheckoutOperationalHoursProps) => {
   const weekdays: Partial<DayOfWeek>[] = [
-    DayOfWeek.Monday,
-    DayOfWeek.Tuesday,
-    DayOfWeek.Wednesday,
-    DayOfWeek.Thursday,
-    DayOfWeek.Friday,
+    DayOfWeek.MONDAY,
+    DayOfWeek.TUESDAY,
+    DayOfWeek.WEDNESDAY,
+    DayOfWeek.THURSDAY,
+    DayOfWeek.FRIDAY,
   ]
 
   const weekdaysHours = shopBranch.operationalHours.filter((hour) =>
@@ -30,10 +30,10 @@ const CheckoutShopBranch = ({ shopBranch }: CheckoutOperationalHoursProps) => {
     )
 
   const saturdayHours = shopBranch.operationalHours.find(
-    (hour) => hour.dayOfWeek === "Saturday"
+    (hour) => hour.dayOfWeek === "SATURDAY"
   )
   const sundayHours = shopBranch.operationalHours.find(
-    (hour) => hour.dayOfWeek === "Sunday"
+    (hour) => hour.dayOfWeek === "SUNDAY"
   )
 
   let message = ""
@@ -56,13 +56,13 @@ const CheckoutShopBranch = ({ shopBranch }: CheckoutOperationalHoursProps) => {
   }
 
   if (saturdayHours && saturdayHours.startTime && saturdayHours.endTime) {
-    message += ` y ${translateDayOfWeek("Saturday")} de ${
+    message += ` y ${translateDayOfWeek("SATURDAY")} de ${
       saturdayHours.startTime
     } a ${saturdayHours.endTime}`
   }
 
   if (sundayHours && sundayHours.startTime && sundayHours.endTime) {
-    message += `\n${translateDayOfWeek("Sunday")}: ${sundayHours.startTime} a ${
+    message += `\n${translateDayOfWeek("SUNDAY")}: ${sundayHours.startTime} a ${
       sundayHours.endTime
     }`
   }

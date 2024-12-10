@@ -26,7 +26,7 @@ export default function SignupPage() {
         <div className='absolute inset-0 bg-[url("../public/img/gradient.jpeg")]' />
         <div className='relative z-20 flex items-center'>
           <Link href='/' className='block'>
-            <span className='sr-only'>Home</span>
+            <span className='sr-only'>HOME</span>
             <img
               src='img/mxm-logo.png'
               alt='MXM Máxima Nutrición'

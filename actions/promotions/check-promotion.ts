@@ -42,9 +42,9 @@ export async function checkPromotion({ items, subtotal }: CheckPromotionProps) {
 
     if (isEligible) {
       const discountAmount =
-        promotion.discountType === "Fixed"
+        promotion.discountType === "FIXED"
           ? promotion.discount
-          : promotion.discountType === "Percentage"
+          : promotion.discountType === "PERCENTAGE"
           ? (subtotalPrice * promotion.discount) / 100
           : 0
       finalPrice = subtotalPrice - discountAmount

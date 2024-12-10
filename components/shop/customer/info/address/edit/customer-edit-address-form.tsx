@@ -145,7 +145,7 @@ const CustomerEditAddressForm = ({
               )}
             />
 
-            {watch("label") === CustomerAddressLabel.Other && (
+            {watch("label") === CustomerAddressLabel.OTHER && (
               <FormField
                 control={control}
                 name='labelString'

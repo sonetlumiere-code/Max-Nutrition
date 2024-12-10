@@ -55,7 +55,7 @@ export async function createCustomerAddress(values: CustomerAddressSchema) {
         addressApartment: addressApartment?.toUpperCase() || "",
         postCode,
         label,
-        labelString: label === CustomerAddressLabel.Other ? labelString : "",
+        labelString: label === CustomerAddressLabel.OTHER ? labelString : "",
       },
     })
 

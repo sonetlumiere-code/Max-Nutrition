@@ -63,13 +63,13 @@ const getAddressLabelWithIcon = (
   labelString: string | null
 ) => {
   switch (label) {
-    case "Home":
+    case "HOME":
       return (
         <div className='flex items-center'>
           <Icons.mapPin className='mr-2 h-4 w-4' /> Casa
         </div>
       )
-    case "Work":
+    case "WORK":
       return (
         <div className='flex items-center'>
           <Icons.mapPin className='mr-2 h-4 w-4' /> Trabajo

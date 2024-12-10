@@ -100,7 +100,7 @@ export async function createOrder(values: OrderSchema) {
 
     let shippingCost = 0
 
-    if (shippingMethod === ShippingMethod.Delivery) {
+    if (shippingMethod === ShippingMethod.DELIVERY) {
       const shippingSettings = await getShippingSettings()
       const totalProductsQuantity = items.reduce(
         (acc, curr) => acc + curr.quantity,

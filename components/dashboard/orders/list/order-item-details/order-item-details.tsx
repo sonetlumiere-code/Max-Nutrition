@@ -89,7 +89,7 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
                     Descuento promocional ({order.appliedPromotionName})
                   </span>
                   <span className='text-destructive'>
-                    {order.appliedPromotionDiscountType === "Percentage" ? (
+                    {order.appliedPromotionDiscountType === "PERCENTAGE" ? (
                       <>
                         -{order.appliedPromotionDiscount}% (-$
                         {(order.subtotal * order.appliedPromotionDiscount) /
@@ -118,7 +118,7 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
         <div className='flex justify-between'>
           <div className='grid gap-3'>
             <div className='font-semibold'>Información de entrega</div>
-            {order.shippingMethod === "Delivery" && (
+            {order.shippingMethod === "DELIVERY" && (
               <>
                 {order.address ? (
                   <address className='grid gap-0.5 not-italic text-muted-foreground'>
@@ -153,12 +153,12 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
           <div className='font-semibold'>Estado de la orden</div>
           <Badge
             className={cn({
-              "bg-amber-500 hover:bg-amber-500/80": order.status === "Pending",
-              "bg-sky-500 hover:bg-sky-500/80": order.status === "Accepted",
+              "bg-amber-500 hover:bg-amber-500/80": order.status === "PENDING",
+              "bg-sky-500 hover:bg-sky-500/80": order.status === "ACCEPTED",
               "bg-emerald-500 hover:bg-emerald-500/80":
-                order.status === "Completed",
+                order.status === "COMPLETED",
               "bg-destructive hover:bg-destructive/80":
-                order.status === "Cancelled",
+                order.status === "CANCELLED",
             })}
           >
             {translateOrderStatus(order.status)}
@@ -192,15 +192,15 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
           <dl className='grid gap-3'>
             <div className='flex items-center justify-between'>
               <dt className='flex items-center gap-1 text-muted-foreground'>
-                {order.paymentMethod === "Cash"
+                {order.paymentMethod === "CASH"
                   ? "Efectivo"
-                  : order.paymentMethod === "BankTransfer"
+                  : order.paymentMethod === "BANK_TRANSFER"
                   ? "Transferencia bancaria"
-                  : order.paymentMethod === "MercadoPago"
+                  : order.paymentMethod === "MERCADO_PAGO"
                   ? "Mercado Pago"
-                  : order.paymentMethod === "CreditCard"
+                  : order.paymentMethod === "CREDIT_CARD"
                   ? "Tarjeta de crédito"
-                  : order.paymentMethod === "DebitCard"
+                  : order.paymentMethod === "DEBIT_CARD"
                   ? "Tarjeta de débito"
                   : ""}
               </dt>

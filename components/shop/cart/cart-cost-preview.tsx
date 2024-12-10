@@ -29,7 +29,7 @@ const CartCostPreview = () => {
             </div>
             <div className='flex flex-col text-end'>
               <span>${subtotalPrice}</span>
-              {appliedPromotion.discountType === "Fixed" ? (
+              {appliedPromotion.discountType === "FIXED" ? (
                 <span className='text-destructive'>
                   -${appliedPromotion.discount}
                 </span>

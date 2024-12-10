@@ -64,7 +64,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
                   Descuento promocional ({order.appliedPromotionName})
                 </span>
                 <span className='text-destructive'>
-                  {order.appliedPromotionDiscountType === "Percentage" ? (
+                  {order.appliedPromotionDiscountType === "PERCENTAGE" ? (
                     <>
                       -{order.appliedPromotionDiscount}% (-$
                       {(order.subtotal * order.appliedPromotionDiscount) / 100})
@@ -90,7 +90,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
         <div className='flex justify-between'>
           <div className='grid gap-3 text-sm'>
             <div className='font-semibold'>Información de entrega</div>
-            {order.shippingMethod === "Delivery" && (
+            {order.shippingMethod === "DELIVERY" && (
               <>
                 {order.address ? (
                   <address className='grid gap-0.5 not-italic text-muted-foreground'>
@@ -125,12 +125,12 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
           <div className='font-semibold'>Estado de la orden</div>
           <Badge
             className={cn("", {
-              "bg-amber-500 hover:bg-amber-500/80": order.status === "Pending",
-              "bg-sky-500 hover:bg-sky-500/80": order.status === "Accepted",
+              "bg-amber-500 hover:bg-amber-500/80": order.status === "PENDING",
+              "bg-sky-500 hover:bg-sky-500/80": order.status === "ACCEPTED",
               "bg-emerald-500 hover:bg-emerald-500/80":
-                order.status === "Completed",
+                order.status === "COMPLETED",
               "bg-destructive hover:bg-destructive/80":
-                order.status === "Cancelled",
+                order.status === "CANCELLED",
             })}
           >
             {translateOrderStatus(order.status)}

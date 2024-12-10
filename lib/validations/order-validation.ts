@@ -18,7 +18,7 @@ const coreOrderSchema = z.object({
 
 export const orderSchema = coreOrderSchema.refine(
   (data) => {
-    if (data.shippingMethod === ShippingMethod.Delivery) {
+    if (data.shippingMethod === ShippingMethod.DELIVERY) {
       return (
         !!data.customerAddressId &&
         typeof data.customerAddressId === "string" &&

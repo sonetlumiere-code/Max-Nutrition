@@ -855,13 +855,13 @@ export const ingredientsData: Omit<
 ]
 
 const operationalHours = [
-  { dayOfWeek: DayOfWeek.Monday, startTime: "09:00", endTime: "17:00" },
-  { dayOfWeek: DayOfWeek.Tuesday, startTime: "09:00", endTime: "17:00" },
-  { dayOfWeek: DayOfWeek.Wednesday, startTime: "09:00", endTime: "17:00" },
-  { dayOfWeek: DayOfWeek.Thursday, startTime: "09:00", endTime: "17:00" },
-  { dayOfWeek: DayOfWeek.Friday, startTime: "09:00", endTime: "17:00" },
-  { dayOfWeek: DayOfWeek.Saturday, startTime: "10:00", endTime: "14:00" },
-  { dayOfWeek: DayOfWeek.Sunday, startTime: null, endTime: null }, // Closed
+  { dayOfWeek: DayOfWeek.MONDAY, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.TUESDAY, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.WEDNESDAY, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.THURSDAY, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.FRIDAY, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.SATURDAY, startTime: "10:00", endTime: "14:00" },
+  { dayOfWeek: DayOfWeek.SUNDAY, startTime: null, endTime: null }, // Closed
 ]
 
 async function main() {
@@ -878,7 +878,7 @@ async function main() {
     update: {},
     create: {
       id: "1",
-      allowedPaymentMethods: [PaymentMethod.Cash, PaymentMethod.BankTransfer],
+      allowedPaymentMethods: [PaymentMethod.CASH, PaymentMethod.BANK_TRANSFER],
       branches: {
         create: [
           {
@@ -917,8 +917,8 @@ async function main() {
     create: {
       id: "1",
       allowedShippingMethods: [
-        ShippingMethod.Delivery,
-        ShippingMethod.TakeAway,
+        ShippingMethod.DELIVERY,
+        ShippingMethod.TAKE_AWAY,
       ],
       minProductsQuantityForDelivery: 10,
     },

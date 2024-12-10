@@ -55,7 +55,7 @@ const CustomerCreateAddressForm = ({
       addressFloor: 0,
       addressApartment: "",
       postCode: "",
-      label: CustomerAddressLabel.Home,
+      label: CustomerAddressLabel.HOME,
       labelString: "",
     },
   })
@@ -130,7 +130,7 @@ const CustomerCreateAddressForm = ({
               )}
             />
 
-            {watch("label") === CustomerAddressLabel.Other && (
+            {watch("label") === CustomerAddressLabel.OTHER && (
               <FormField
                 control={control}
                 name='labelString'

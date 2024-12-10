@@ -14,7 +14,7 @@ const DeleteCustomerAddress = ({ address }: DeleteCustomerAddressProps) => {
 
   const onDelete = async () => {
     const label =
-      address.label !== CustomerAddressLabel.Other
+      address.label !== CustomerAddressLabel.OTHER
         ? translateAddressLabel(address.label)
         : address.labelString
 

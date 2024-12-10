@@ -63,13 +63,13 @@ const CustomerOrdersHistoryTable = ({
                 <Badge
                   className={cn("", {
                     "bg-amber-500 hover:bg-amber-500/80":
-                      order.status === "Pending",
+                      order.status === "PENDING",
                     "bg-sky-500 hover:bg-sky-500/80":
-                      order.status === "Accepted",
+                      order.status === "ACCEPTED",
                     "bg-emerald-500 hover:bg-emerald-500/80":
-                      order.status === "Completed",
+                      order.status === "COMPLETED",
                     "bg-destructive hover:bg-destructive/80":
-                      order.status === "Cancelled",
+                      order.status === "CANCELLED",
                   })}
                 >
                   {translateOrderStatus(order.status)}

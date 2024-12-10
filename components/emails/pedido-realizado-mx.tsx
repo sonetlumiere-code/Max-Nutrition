@@ -50,7 +50,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, orderLink }) => {
               Detalle de tu pedido
             </Heading>
             <Section className='text-center'>
-              {order.shippingMethod === ShippingMethod.Delivery && (
+              {order.shippingMethod === ShippingMethod.DELIVERY && (
                 <>
                   <Text className='leading-[24px] mx-0 my-[10px] p-0 text-[14px] text-black'>
                     Hola{" "}
@@ -72,7 +72,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, orderLink }) => {
                 </>
               )}
             </Section>
-            {order.shippingMethod === ShippingMethod.TakeAway && (
+            {order.shippingMethod === ShippingMethod.TAKE_AWAY && (
               <Text className='leading-[24px] mx-0 my-[10px] p-0 text-[14px] text-black'>
                 Hola <strong>{order.customer?.name}</strong>, tu pedido se
                 realizó correctamente y podrás pasarlo a retirar por nuestra
@@ -198,7 +198,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, orderLink }) => {
                     </Column>
                     <Column>
                       <Text className='text-right text-red-500 font-normal'>
-                        {order.appliedPromotionDiscountType === "Percentage" ? (
+                        {order.appliedPromotionDiscountType === "PERCENTAGE" ? (
                           <>
                             -{order.appliedPromotionDiscount}% (-$
                             {(order.subtotal * order.appliedPromotionDiscount) /

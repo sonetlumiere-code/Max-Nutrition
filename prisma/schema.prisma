@@ -20,13 +20,13 @@ enum Role {
 }
 
 enum DayOfWeek {
-  Monday
-  Tuesday
-  Wednesday
-  Thursday
-  Friday
-  Saturday
-  Sunday
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
 
 model User {
@@ -107,9 +107,9 @@ model Customer {
 }
 
 enum CustomerAddressLabel {
-  Home
-  Work
-  Other
+  HOME
+  WORK
+  OTHER
 }
 
 model CustomerAddress {
@@ -209,10 +209,10 @@ model Product {
 }
 
 enum OrderStatus {
-  Pending
-  Accepted
-  Completed
-  Cancelled
+  PENDING
+  ACCEPTED
+  COMPLETED
+  CANCELLED
 }
 
 model Order {
@@ -227,7 +227,7 @@ model Order {
   customerAddressId            String?
   address                      CustomerAddress?       @relation(fields: [customerAddressId], references: [id])
   items                        OrderItem[]
-  status                       OrderStatus            @default(Pending)
+  status                       OrderStatus            @default(PENDING)
   paymentMethod                PaymentMethod
   shippingMethod               ShippingMethod
   shippingCost                 Float
@@ -253,11 +253,11 @@ model OrderItem {
 }
 
 enum PaymentMethod {
-  Cash
-  BankTransfer
-  MercadoPago
-  CreditCard
-  DebitCard
+  CASH
+  BANK_TRANSFER
+  MERCADO_PAGO
+  CREDIT_CARD
+  DEBIT_CARD
 }
 
 model Promotion {
@@ -277,8 +277,8 @@ model Promotion {
 }
 
 enum PromotionDiscountType {
-  Fixed
-  Percentage
+  FIXED
+  PERCENTAGE
 }
 
 model PromotionCategory {
@@ -367,8 +367,8 @@ model OperationalHours {
 }
 
 enum ShippingMethod {
-  TakeAway
-  Delivery
+  TAKE_AWAY
+  DELIVERY
 }
 
 // TO DO: Connect with shop settings or move to shop settings

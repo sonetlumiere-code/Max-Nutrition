@@ -99,8 +99,8 @@ const Checkout = ({
     resolver: zodResolver(orderSchema),
     defaultValues: {
       customerAddressId: "",
-      paymentMethod: PaymentMethod.Cash,
-      shippingMethod: ShippingMethod.Delivery,
+      paymentMethod: PaymentMethod.CASH,
+      shippingMethod: ShippingMethod.DELIVERY,
       items: items.map((item) => ({
         productId: item.product.id,
         quantity: item.quantity,
@@ -137,7 +137,7 @@ const Checkout = ({
   )
 
   const { data: shippingZone, isValidating: isValidatingShippingZone } = useSWR(
-    shippingMethod === ShippingMethod.Delivery && selectedAddress?.locality
+    shippingMethod === ShippingMethod.DELIVERY && selectedAddress?.locality
       ? [
           "/api/shipping-zone",
           { locality: selectedAddress.locality, isActive: true },
@@ -188,7 +188,7 @@ const Checkout = ({
     )
 
     return (
-      shippingMethod === ShippingMethod.Delivery &&
+      shippingMethod === ShippingMethod.DELIVERY &&
       shippingSettings &&
       shippingSettings.minProductsQuantityForDelivery <= totalProductsQuantity
     )
@@ -348,7 +348,7 @@ const Checkout = ({
                               <Select
                                 onValueChange={(value) => {
                                   field.onChange(value)
-                                  if (value === ShippingMethod.TakeAway) {
+                                  if (value === ShippingMethod.TAKE_AWAY) {
                                     setValue("customerAddressId", "")
                                   }
                                 }}
@@ -384,7 +384,7 @@ const Checkout = ({
                         />
                       </CardContent>
                       <CardFooter>
-                        {shippingMethod === ShippingMethod.Delivery && (
+                        {shippingMethod === ShippingMethod.DELIVERY && (
                           <>
                             {!isValidMinQuantity ? (
                               <Alert variant='destructive'>
@@ -419,7 +419,7 @@ const Checkout = ({
                             )}
                           </>
                         )}
-                        {shippingMethod === ShippingMethod.TakeAway &&
+                        {shippingMethod === ShippingMethod.TAKE_AWAY &&
                           shopSettings?.branches && (
                             <div className='space-y-3 w-full'>
                               {shopSettings.branches.map((branch) => (
@@ -434,7 +434,7 @@ const Checkout = ({
                     </Card>
                   )}
 
-                  {shippingMethod === ShippingMethod.Delivery && (
+                  {shippingMethod === ShippingMethod.DELIVERY && (
                     <>
                       {customer?.address?.length === 0 ? (
                         <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm p-6'>
@@ -566,19 +566,19 @@ const Checkout = ({
                               >
                                 <div>
                                   <RadioGroupItem
-                                    value={PaymentMethod.MercadoPago}
-                                    id={PaymentMethod.MercadoPago}
+                                    value={PaymentMethod.MERCADO_PAGO}
+                                    id={PaymentMethod.MERCADO_PAGO}
                                     className='peer sr-only'
                                     disabled={
                                       appliedPromotion
                                         ? !appliedPromotion?.allowedPaymentMethods.includes(
-                                            PaymentMethod.MercadoPago
+                                            PaymentMethod.MERCADO_PAGO
                                           )
                                         : false
                                     }
                                   />
                                   <Label
-                                    htmlFor={PaymentMethod.MercadoPago}
+                                    htmlFor={PaymentMethod.MERCADO_PAGO}
                                     className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
                                   >
                                     <Icons.creditCard className='mb-3 h-6 w-6' />
@@ -587,19 +587,19 @@ const Checkout = ({
                                 </div>
                                 <div>
                                   <RadioGroupItem
-                                    value={PaymentMethod.Cash}
-                                    id={PaymentMethod.Cash}
+                                    value={PaymentMethod.CASH}
+                                    id={PaymentMethod.CASH}
                                     className='peer sr-only'
                                     disabled={
                                       appliedPromotion
                                         ? !appliedPromotion?.allowedPaymentMethods.includes(
-                                            PaymentMethod.Cash
+                                            PaymentMethod.CASH
                                           )
                                         : false
                                     }
                                   />
                                   <Label
-                                    htmlFor={PaymentMethod.Cash}
+                                    htmlFor={PaymentMethod.CASH}
                                     className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
                                   >
                                     <Icons.dollarSign className='mb-3 h-6 w-6' />
@@ -636,7 +636,7 @@ const Checkout = ({
                           <span>Descuento ({appliedPromotion.name})</span>
                           {isLoadingPromotions ? (
                             <Skeleton className='w-20 h-8' />
-                          ) : appliedPromotion.discountType === "Fixed" ? (
+                          ) : appliedPromotion.discountType === "FIXED" ? (
                             <span className='text-destructive'>
                               -${appliedPromotion.discount}
                             </span>
@@ -674,12 +674,12 @@ const Checkout = ({
                       className='ml-auto'
                       disabled={
                         isSubmitting ||
-                        (shippingMethod === "Delivery" &&
+                        (shippingMethod === "DELIVERY" &&
                           !isValidMinQuantity) ||
-                        (shippingMethod === "Delivery" &&
+                        (shippingMethod === "DELIVERY" &&
                           !customer?.address?.length) ||
                         (isSubmitted && !isValid)
-                        // (shippingMethod === "Delivery" && !shippingZone)
+                        // (shippingMethod === "DELIVERY" && !shippingZone)
                       }
                     >
                       {isSubmitting && (

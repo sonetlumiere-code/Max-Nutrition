@@ -58,11 +58,11 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
       name: "",
       description: "",
       isActive: true,
-      discountType: PromotionDiscountType.Fixed,
+      discountType: PromotionDiscountType.FIXED,
       discount: 0,
       categories: [{ categoryId: "", quantity: 0 }],
-      allowedPaymentMethods: [PaymentMethod.Cash],
-      allowedShippingMethods: [ShippingMethod.Delivery],
+      allowedPaymentMethods: [PaymentMethod.CASH],
+      allowedShippingMethods: [ShippingMethod.DELIVERY],
     },
   })
 
@@ -181,7 +181,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                             <FormItem className='flex items-center space-x-3 space-y-0'>
                               <FormControl>
                                 <RadioGroupItem
-                                  value={PromotionDiscountType.Fixed}
+                                  value={PromotionDiscountType.FIXED}
                                 />
                               </FormControl>
                               <FormLabel className='font-normal'>
@@ -191,7 +191,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                             <FormItem className='flex items-center space-x-3 space-y-0'>
                               <FormControl>
                                 <RadioGroupItem
-                                  value={PromotionDiscountType.Percentage}
+                                  value={PromotionDiscountType.PERCENTAGE}
                                 />
                               </FormControl>
                               <FormLabel className='font-normal'>
@@ -212,7 +212,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                       <FormItem>
                         <FormLabel>
                           Descuento{" "}
-                          {watch("discountType") === PromotionDiscountType.Fixed
+                          {watch("discountType") === PromotionDiscountType.FIXED
                             ? "fijo"
                             : "porcentual"}
                         </FormLabel>

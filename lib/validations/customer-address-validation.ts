@@ -23,8 +23,8 @@ export const customerAddressSchema = z
   })
   .refine(
     (data) =>
-      data.label !== CustomerAddressLabel.Other ||
-      (data.label === CustomerAddressLabel.Other &&
+      data.label !== CustomerAddressLabel.OTHER ||
+      (data.label === CustomerAddressLabel.OTHER &&
         data.labelString?.trim().length > 0),
     {
       message: "Debes ingresar una etiqueta personalizada.",

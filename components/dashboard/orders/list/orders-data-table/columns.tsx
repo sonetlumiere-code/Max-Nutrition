@@ -86,10 +86,10 @@ export const columns: ColumnDef<PopulatedOrder>[] = [
       return (
         <Badge
           className={cn("ml-4", {
-            "bg-amber-500 hover:bg-amber-500/80": status === "Pending",
-            "bg-sky-500 hover:bg-sky-500/80": status === "Accepted",
-            "bg-emerald-500 hover:bg-emerald-500/80": status === "Completed",
-            "bg-destructive hover:bg-destructive/80": status === "Cancelled",
+            "bg-amber-500 hover:bg-amber-500/80": status === "PENDING",
+            "bg-sky-500 hover:bg-sky-500/80": status === "ACCEPTED",
+            "bg-emerald-500 hover:bg-emerald-500/80": status === "COMPLETED",
+            "bg-destructive hover:bg-destructive/80": status === "CANCELLED",
           })}
         >
           {translateOrderStatus(status)}

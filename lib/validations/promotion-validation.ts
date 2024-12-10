@@ -31,7 +31,7 @@ export const promotionSchema = z
       .nonempty({ message: "Debes seleccionar al menos un método de envío." }),
   })
   .superRefine((data, ctx) => {
-    if (data.discountType === PromotionDiscountType.Percentage) {
+    if (data.discountType === PromotionDiscountType.PERCENTAGE) {
       if (data.discount < 1 || data.discount > 100) {
         ctx.addIssue({
           code: "custom",

@@ -187,7 +187,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                             <FormItem className='flex items-center space-x-3 space-y-0'>
                               <FormControl>
                                 <RadioGroupItem
-                                  value={PromotionDiscountType.Fixed}
+                                  value={PromotionDiscountType.FIXED}
                                 />
                               </FormControl>
                               <FormLabel className='font-normal'>
@@ -197,7 +197,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                             <FormItem className='flex items-center space-x-3 space-y-0'>
                               <FormControl>
                                 <RadioGroupItem
-                                  value={PromotionDiscountType.Percentage}
+                                  value={PromotionDiscountType.PERCENTAGE}
                                 />
                               </FormControl>
                               <FormLabel className='font-normal'>
@@ -218,7 +218,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                       <FormItem>
                         <FormLabel>
                           Descuento{" "}
-                          {watch("discountType") === PromotionDiscountType.Fixed
+                          {watch("discountType") === PromotionDiscountType.FIXED
                             ? "fijo"
                             : "porcentual"}
                         </FormLabel>

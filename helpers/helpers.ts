@@ -22,9 +22,9 @@ export const translateUnit = (measurement: Measurement): string => {
 
 export const translateAddressLabel = (value: CustomerAddressLabel) => {
   switch (value) {
-    case CustomerAddressLabel.Home:
+    case CustomerAddressLabel.HOME:
       return "Casa"
-    case CustomerAddressLabel.Work:
+    case CustomerAddressLabel.WORK:
       return "Trabajo"
     default:
       return "Otro"
@@ -33,13 +33,13 @@ export const translateAddressLabel = (value: CustomerAddressLabel) => {
 
 export function translateOrderStatus(status: OrderStatus): string {
   switch (status) {
-    case "Pending":
+    case OrderStatus.PENDING:
       return "Pendiente"
-    case "Accepted":
+    case OrderStatus.ACCEPTED:
       return "Aceptado"
-    case "Completed":
+    case OrderStatus.COMPLETED:
       return "Completado"
-    case "Cancelled":
+    case OrderStatus.CANCELLED:
       return "Cancelado"
     default:
       return "Desconocido"
@@ -48,15 +48,15 @@ export function translateOrderStatus(status: OrderStatus): string {
 
 export function translatePaymentMethod(paymentMethod: PaymentMethod): string {
   switch (paymentMethod) {
-    case PaymentMethod.BankTransfer:
+    case PaymentMethod.BANK_TRANSFER:
       return "Transferencia bancaria"
-    case PaymentMethod.Cash:
+    case PaymentMethod.CASH:
       return "Efectivo"
-    case PaymentMethod.CreditCard:
+    case PaymentMethod.CREDIT_CARD:
       return "Tarjeta de crédito"
-    case PaymentMethod.DebitCard:
+    case PaymentMethod.DEBIT_CARD:
       return "Tarjeta de débito"
-    case PaymentMethod.MercadoPago:
+    case PaymentMethod.MERCADO_PAGO:
       return "Mercado Pago"
     default:
       return "Otro"
@@ -67,9 +67,9 @@ export function translateShippingMethod(
   shippingMethod: ShippingMethod
 ): string {
   switch (shippingMethod) {
-    case ShippingMethod.Delivery:
-      return "Delivery"
-    case ShippingMethod.TakeAway:
+    case ShippingMethod.DELIVERY:
+      return "DELIVERY"
+    case ShippingMethod.TAKE_AWAY:
       return "Retiro por sucursal"
     default:
       return "Otro"
@@ -78,19 +78,19 @@ export function translateShippingMethod(
 
 export function translateDayOfWeek(dayOfWeek: DayOfWeek): string {
   switch (dayOfWeek) {
-    case DayOfWeek.Monday:
+    case DayOfWeek.MONDAY:
       return "Lunes"
-    case DayOfWeek.Tuesday:
+    case DayOfWeek.TUESDAY:
       return "Martes"
-    case DayOfWeek.Wednesday:
+    case DayOfWeek.WEDNESDAY:
       return "Miércoles"
-    case DayOfWeek.Thursday:
+    case DayOfWeek.THURSDAY:
       return "Jueves"
-    case DayOfWeek.Friday:
+    case DayOfWeek.FRIDAY:
       return "Viernes"
-    case DayOfWeek.Saturday:
+    case DayOfWeek.SATURDAY:
       return "Sábado"
-    case DayOfWeek.Sunday:
+    case DayOfWeek.SUNDAY:
       return "Domingo"
     default:
       return dayOfWeek // Return the original value as a fallback

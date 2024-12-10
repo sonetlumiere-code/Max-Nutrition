@@ -45,13 +45,13 @@ type ShopBranchSchema = z.infer<typeof shopBranchSchema>
 const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
 
 const defaultOperationalHours = [
-  { dayOfWeek: DayOfWeek.Monday, startTime: "", endTime: "" },
-  { dayOfWeek: DayOfWeek.Tuesday, startTime: "", endTime: "" },
-  { dayOfWeek: DayOfWeek.Wednesday, startTime: "", endTime: "" },
-  { dayOfWeek: DayOfWeek.Thursday, startTime: "", endTime: "" },
-  { dayOfWeek: DayOfWeek.Friday, startTime: "", endTime: "" },
-  { dayOfWeek: DayOfWeek.Saturday, startTime: "", endTime: "" },
-  { dayOfWeek: DayOfWeek.Sunday, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.MONDAY, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.TUESDAY, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.WEDNESDAY, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.THURSDAY, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.FRIDAY, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.SATURDAY, startTime: "", endTime: "" },
+  { dayOfWeek: DayOfWeek.SUNDAY, startTime: "", endTime: "" },
 ]
 
 const CreateShopBranch = () => {

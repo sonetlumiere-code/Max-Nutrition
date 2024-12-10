@@ -32,7 +32,7 @@ export async function editOrder({
     validatedFields.data
 
   try {
-    if (shippingMethod === ShippingMethod.Delivery) {
+    if (shippingMethod === ShippingMethod.DELIVERY) {
       const customerAddress = await prisma.customerAddress.findUnique({
         where: {
           id: customerAddressId,

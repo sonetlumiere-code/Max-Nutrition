@@ -44,19 +44,19 @@
 //             </TableCell>
 //             <TableCell className='hidden sm:table-cell'>
 //               <Badge className='text-xs' variant='secondary'>
-//                 {order.shippingMethod === "TakeAway" ? "Take Away" : "Delivery"}
+//                 {order.shippingMethod === "TAKE_AWAY" ? "Take Away" : "DELIVERY"}
 //               </Badge>
 //             </TableCell>
 //             <TableCell className='hidden sm:table-cell'>
 //               <Badge
 //                 className={cn({
 //                   "bg-amber-500 hover:bg-amber-500/80":
-//                     order.status === "Pending",
-//                   "bg-sky-500 hover:bg-sky-500/80": order.status === "Accepted",
+//                     order.status === "PENDING",
+//                   "bg-sky-500 hover:bg-sky-500/80": order.status === "ACCEPTED",
 //                   "bg-emerald-500 hover:bg-emerald-500/80":
-//                     order.status === "Completed",
+//                     order.status === "COMPLETED",
 //                   "bg-destructive hover:bg-destructive/80":
-//                     order.status === "Cancelled",
+//                     order.status === "CANCELLED",
 //                 })}
 //               >
 //                 {translateOrderStatus(order.status)}
