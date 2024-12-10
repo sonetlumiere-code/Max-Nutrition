@@ -128,7 +128,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                         <FormLabel>Nombre</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder='Editar promoción'
+                            placeholder='Nombre de la promoción'
                             disabled={isSubmitting}
                             {...field}
                           />
