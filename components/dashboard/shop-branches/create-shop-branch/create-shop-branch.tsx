@@ -174,7 +174,7 @@ const CreateShopBranch = () => {
                         <FormLabel>Teléfono</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder='Describa la sucursal'
+                            placeholder='Teléfono de la sucursal'
                             disabled={isSubmitting}
                             {...field}
                           />
@@ -192,7 +192,7 @@ const CreateShopBranch = () => {
                         <FormLabel>Email</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder='Describa la sucursal'
+                            placeholder='Email de la sucursal'
                             disabled={isSubmitting}
                             {...field}
                           />

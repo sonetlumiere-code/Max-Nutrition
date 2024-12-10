@@ -191,7 +191,7 @@ const EditShopBranch = ({ shopBranch }: EditShopBranchProps) => {
                         <FormLabel>Teléfono</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder='Describa la sucursal'
+                            placeholder='Teléfono de la sucursal'
                             disabled={isSubmitting}
                             {...field}
                           />
@@ -209,7 +209,7 @@ const EditShopBranch = ({ shopBranch }: EditShopBranchProps) => {
                         <FormLabel>Email</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder='Describa la sucursal'
+                            placeholder='Email de la sucursal'
                             disabled={isSubmitting}
                             {...field}
                           />
