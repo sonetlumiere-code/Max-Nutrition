@@ -53,7 +53,7 @@ import { usePromotion } from "@/hooks/use-promotion"
 import { orderSchema } from "@/lib/validations/order-validation"
 import { PopulatedCustomer, PopulatedShopSettings } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PaymentMethod, ShippingMethod, ShippingSettings } from "@prisma/client"
+import { PaymentMethod, ShippingMethod } from "@prisma/client"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo } from "react"
@@ -68,14 +68,9 @@ type OrderSchema = z.infer<typeof orderSchema>
 type CheckoutProps = {
   customer: PopulatedCustomer | null
   shopSettings: PopulatedShopSettings | null
-  shippingSettings: ShippingSettings | null
 }
 
-const Checkout = ({
-  customer,
-  shopSettings,
-  shippingSettings,
-}: CheckoutProps) => {
+const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
   const { items, setOpen, clearCart } = useCart()
 
   const {
@@ -88,6 +83,9 @@ const Checkout = ({
   } = usePromotion()
 
   const router = useRouter()
+
+  const shippingSettings = shopSettings?.shippingSettings
+  const branches = shopSettings?.branches
 
   useEffect(() => {
     if (!items.length || !customer) {
@@ -420,9 +418,9 @@ const Checkout = ({
                           </>
                         )}
                         {shippingMethod === ShippingMethod.TAKE_AWAY &&
-                          shopSettings?.branches && (
+                          branches && (
                             <div className='space-y-3 w-full'>
-                              {shopSettings.branches.map((branch) => (
+                              {branches.map((branch) => (
                                 <CheckoutShopBranch
                                   key={branch.id}
                                   shopBranch={branch}

@@ -8,6 +8,8 @@ import {
 
 const prisma = new PrismaClient()
 
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
+
 export const ingredientsData: Omit<
   Ingredient,
   "id" | "createdAt" | "updatedAt"
@@ -874,10 +876,9 @@ async function main() {
   }
 
   await prisma.shopSettings.upsert({
-    where: { id: "1" },
+    where: { id: shopSettingsId },
     update: {},
     create: {
-      id: "1",
       allowedPaymentMethods: [PaymentMethod.CASH, PaymentMethod.BANK_TRANSFER],
       branches: {
         create: [
@@ -908,19 +909,15 @@ async function main() {
           },
         ],
       },
-    },
-  })
-
-  await prisma.shippingSettings.upsert({
-    where: { id: "1" },
-    update: {},
-    create: {
-      id: "1",
-      allowedShippingMethods: [
-        ShippingMethod.DELIVERY,
-        ShippingMethod.TAKE_AWAY,
-      ],
-      minProductsQuantityForDelivery: 10,
+      shippingSettings: {
+        create: {
+          allowedShippingMethods: [
+            ShippingMethod.DELIVERY,
+            ShippingMethod.TAKE_AWAY,
+          ],
+          minProductsQuantityForDelivery: 10,
+        },
+      },
     },
   })
 }

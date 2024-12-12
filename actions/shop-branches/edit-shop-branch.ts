@@ -6,6 +6,8 @@ import { shopBranchSchema } from "@/lib/validations/shop-branch-validation"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
+
 const partialShopBranchSchema = shopBranchSchema.partial()
 
 type PartialShopBranchSchema = z.infer<typeof partialShopBranchSchema>
@@ -53,7 +55,7 @@ export async function editShopBranch({
     const updatedShopBranch = await prisma.shopBranch.update({
       where: { id },
       data: {
-        shopSettingsId: "1",
+        shopSettingsId,
         addressNumber,
         addressStreet: addressGeoRef?.calle.nombre,
         branchType,

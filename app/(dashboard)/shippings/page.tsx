@@ -34,12 +34,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getShippingSettings } from "@/data/shipping-settings"
-import { getShippingZones } from "@/data/shipping-zones"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { ShippingSettings } from "@prisma/client"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+
+const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
 
 const Shippings = async () => {
   const session = await auth()
@@ -48,11 +49,14 @@ const Shippings = async () => {
     return redirect("/")
   }
 
-  const [shippingZones, shippingSettings] = await Promise.all([
-    getShippingZones(),
-    getShippingSettings(),
-  ])
+  const shippingSettings = await getShippingSettings({
+    where: { id: shippingSettingsId },
+    include: {
+      shippingZones: true,
+    },
+  })
 
+  const shippingZones = shippingSettings?.shippingZones
   const shippingZonesLength = shippingZones?.length || 0
 
   return (

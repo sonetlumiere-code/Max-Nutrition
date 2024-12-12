@@ -6,6 +6,8 @@ import { shopBranchSchema } from "@/lib/validations/shop-branch-validation"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
+const shopSettingsId = process.env.SHOP_SETTINGS_ID as string
+
 type ShopBranchSchema = z.infer<typeof shopBranchSchema>
 
 export async function createShopBranch(values: ShopBranchSchema) {
@@ -44,7 +46,7 @@ export async function createShopBranch(values: ShopBranchSchema) {
   try {
     const shopBranch = await prisma.shopBranch.create({
       data: {
-        shopSettingsId: "1",
+        shopSettingsId,
         addressNumber,
         addressStreet: addressGeoRef.calle.nombre,
         branchType,

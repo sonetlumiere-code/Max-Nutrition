@@ -14,6 +14,8 @@ import { revalidatePath } from "next/cache"
 import { z } from "zod"
 import { checkPromotion } from "../promotions/check-promotion"
 
+const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
+
 type OrderSchema = z.infer<typeof orderSchema>
 
 export async function createOrder(values: OrderSchema) {
@@ -101,7 +103,10 @@ export async function createOrder(values: OrderSchema) {
     let shippingCost = 0
 
     if (shippingMethod === ShippingMethod.DELIVERY) {
-      const shippingSettings = await getShippingSettings()
+      const shippingSettings = await getShippingSettings({
+        where: { id: shippingSettingsId },
+      })
+
       const totalProductsQuantity = items.reduce(
         (acc, curr) => acc + curr.quantity,
         0

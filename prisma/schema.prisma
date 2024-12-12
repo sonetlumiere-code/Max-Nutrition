@@ -306,18 +306,19 @@ model Category {
 }
 
 model ShopSettings {
-  id                    String          @id @default("1")
-  branches              ShopBranch[]
+  id                    String            @id @default(cuid())
   allowedPaymentMethods PaymentMethod[]
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+  branches              ShopBranch[]
+  shippingSettings      ShippingSettings?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
 
   @@map("shop_settings")
 }
 
 model ShopBranch {
   id               String             @id @default(cuid())
-  label            String // Example: "Sucursal Agronomía"
+  label            String
   branchType       BranchType         @default(RETAIL)
   province         String
   municipality     String
@@ -337,8 +338,8 @@ model ShopBranch {
   timezone         String?
   isActive         Boolean            @default(true)
   operationalHours OperationalHours[]
-  shopSettings     ShopSettings?      @relation(fields: [shopSettingsId], references: [id])
-  shopSettingsId   String?
+  shopSettingsId   String
+  shopSettings     ShopSettings       @relation(fields: [shopSettingsId], references: [id], onDelete: Cascade)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
@@ -346,10 +347,7 @@ model ShopBranch {
 }
 
 enum BranchType {
-  RETAIL // Open to the public, customer-facing
-  WAREHOUSE // Not open to the public, storage or distribution
-  CORPORATE // Head office, administrative functions
-  SERVICE_CENTER // Provides specialized services but not direct sales
+  RETAIL
 }
 
 model OperationalHours {
@@ -357,8 +355,8 @@ model OperationalHours {
   dayOfWeek    DayOfWeek
   startTime    String?    @db.VarChar(5) // Stores time in HH:MM format
   endTime      String?    @db.VarChar(5) // Stores time in HH:MM format
-  shopBranch   ShopBranch @relation(fields: [shopBranchId], references: [id], onDelete: Cascade)
   shopBranchId String
+  shopBranch   ShopBranch @relation(fields: [shopBranchId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
@@ -371,11 +369,13 @@ enum ShippingMethod {
   DELIVERY
 }
 
-// TO DO: Connect with shop settings or move to shop settings
 model ShippingSettings {
-  id                             String           @id @default("1")
+  id                             String           @id @default(cuid())
   allowedShippingMethods         ShippingMethod[]
   minProductsQuantityForDelivery Int              @default(10)
+  shopSettings                   ShopSettings     @relation(fields: [shopSettingsId], references: [id])
+  shopSettingsId                 String           @unique
+  shippingZones                  ShippingZone[]
   createdAt                      DateTime         @default(now())
   updatedAt                      DateTime         @updatedAt
 
@@ -383,14 +383,16 @@ model ShippingSettings {
 }
 
 model ShippingZone {
-  id           String   @id @default(cuid())
-  province     String
-  municipality String
-  locality     String
-  isActive     Boolean  @default(true)
-  cost         Float    @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                 String           @id @default(cuid())
+  province           String
+  municipality       String
+  locality           String
+  isActive           Boolean          @default(true)
+  cost               Float            @default(0)
+  shippingSettingsId String
+  shippingSettings   ShippingSettings @relation(fields: [shippingSettingsId], references: [id], onDelete: Cascade)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 
   @@map("shipping_zones")
 }

@@ -6,17 +6,18 @@ import { getCustomer } from "@/data/customer"
 import { buttonVariants } from "@/components/ui/button"
 import dynamic from "next/dynamic"
 import { redirect } from "next/navigation"
-import { getShippingSettings } from "@/data/shipping-settings"
 import { getShopSettings } from "@/data/shop-settings"
 
 const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
   ssr: false,
 })
 
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
+
 export default async function CheckoutPage() {
   const session = await auth()
 
-  const [customer, shopSettings, shippingSettings] = await Promise.all([
+  const [customer, shopSettings] = await Promise.all([
     getCustomer({
       where: {
         userId: session?.user.id,
@@ -45,8 +46,9 @@ export default async function CheckoutPage() {
       },
     }),
     getShopSettings({
-      where: { id: "1" },
+      where: { id: shopSettingsId },
       include: {
+        shippingSettings: true,
         branches: {
           where: { isActive: true },
           include: {
@@ -55,10 +57,9 @@ export default async function CheckoutPage() {
         },
       },
     }),
-    getShippingSettings(),
   ])
 
-  if (!customer || !shopSettings || !shippingSettings) {
+  if (!customer || !shopSettings) {
     redirect("/shop")
   }
 
@@ -76,11 +77,7 @@ export default async function CheckoutPage() {
         </Link>
       </div>
 
-      <Checkout
-        customer={customer}
-        shopSettings={shopSettings}
-        shippingSettings={shippingSettings}
-      />
+      <Checkout customer={customer} shopSettings={shopSettings} />
     </div>
   )
 }

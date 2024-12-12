@@ -28,7 +28,8 @@ export const shopBranchSchema = z.object({
   email: z
     .string()
     .email({ message: "El correo electrónico no es válido." })
-    .optional(),
+    .optional()
+    .or(z.literal("")),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
   managerName: z.string().optional(),

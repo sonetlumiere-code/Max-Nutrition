@@ -15,6 +15,8 @@ import {
   ShopBranch,
   OperationalHours,
   ShopSettings,
+  ShippingZone,
+  ShippingSettings,
 } from "@prisma/client"
 
 export type PopulatedRecipe = Recipe & {
@@ -73,6 +75,11 @@ export interface IngredientTotal {
 
 export type PopulatedShopSettings = ShopSettings & {
   branches?: PopulatedShopBranch[]
+  shippingSettings?: PopulatedShippingSettings
+}
+
+export type PopulatedShippingSettings = ShippingSettings & {
+  shippingZones?: ShippingZone[]
 }
 
 export type PopulatedShopBranch = ShopBranch & {

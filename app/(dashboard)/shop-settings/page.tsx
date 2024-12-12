@@ -11,6 +11,8 @@ import { getShopSettings } from "@/data/shop-settings"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
+
 const ShopSettingsPage = async () => {
   const session = await auth()
 
@@ -19,7 +21,7 @@ const ShopSettingsPage = async () => {
   }
 
   const settings = await getShopSettings({
-    where: { id: "1" },
+    where: { id: shopSettingsId },
     include: {
       branches: {
         include: {

@@ -6,6 +6,8 @@ import { shippingZoneSchema } from "@/lib/validations/shipping-zone-validation"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
+const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID as string
+
 type ShippingZoneSchema = z.infer<typeof shippingZoneSchema>
 
 export async function createShippingZone(values: ShippingZoneSchema) {
@@ -27,6 +29,7 @@ export async function createShippingZone(values: ShippingZoneSchema) {
   try {
     const shippingZone = await prisma.shippingZone.create({
       data: {
+        shippingSettingsId,
         province,
         municipality,
         locality,
