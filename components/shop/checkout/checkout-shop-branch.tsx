@@ -8,6 +8,13 @@ type CheckoutOperationalHoursProps = {
   shopBranch: PopulatedShopBranch
 }
 
+type HourGroup = {
+  startDay: DayOfWeek
+  endDay: DayOfWeek
+  startTime: string
+  endTime: string
+}
+
 const CheckoutShopBranch = ({ shopBranch }: CheckoutOperationalHoursProps) => {
   const weekdays: Partial<DayOfWeek>[] = [
     DayOfWeek.MONDAY,
@@ -17,51 +24,82 @@ const CheckoutShopBranch = ({ shopBranch }: CheckoutOperationalHoursProps) => {
     DayOfWeek.FRIDAY,
   ]
 
-  const weekdaysHours = shopBranch.operationalHours.filter((hour) =>
-    weekdays.includes(hour.dayOfWeek as keyof typeof DayOfWeek)
+  const groupConsecutiveDays = (
+    hours: typeof shopBranch.operationalHours
+  ): HourGroup[] => {
+    const groups: HourGroup[] = []
+    let currentGroup: HourGroup | null = null
+
+    for (let i = 0; i < hours.length; i++) {
+      const hour = hours[i]
+
+      if (
+        currentGroup &&
+        hour.startTime === currentGroup.startTime &&
+        hour.endTime === currentGroup.endTime &&
+        hours[i - 1]?.dayOfWeek ===
+          weekdays[weekdays.indexOf(hour.dayOfWeek as DayOfWeek) - 1]
+      ) {
+        currentGroup.endDay = hour.dayOfWeek as DayOfWeek
+      } else {
+        if (currentGroup) groups.push(currentGroup)
+        currentGroup = {
+          startDay: hour.dayOfWeek as DayOfWeek,
+          endDay: hour.dayOfWeek as DayOfWeek,
+          startTime: hour.startTime || "",
+          endTime: hour.endTime || "",
+        }
+      }
+    }
+
+    if (currentGroup) groups.push(currentGroup)
+    return groups
+  }
+
+  const validOperationalHours = shopBranch.operationalHours.filter(
+    (hour) => hour.startTime && hour.endTime
   )
 
-  const areWeekdaysSameHours =
-    weekdaysHours.length === 5 &&
-    weekdaysHours.every(
-      (hour) =>
-        hour.startTime === weekdaysHours[0].startTime &&
-        hour.endTime === weekdaysHours[0].endTime
+  const weekdaysHours = validOperationalHours
+    .filter((hour) =>
+      weekdays.includes(hour.dayOfWeek as keyof typeof DayOfWeek)
+    )
+    .sort(
+      (a, b) =>
+        weekdays.indexOf(a.dayOfWeek as DayOfWeek) -
+        weekdays.indexOf(b.dayOfWeek as DayOfWeek)
     )
 
-  const saturdayHours = shopBranch.operationalHours.find(
+  const groupedWeekdays = groupConsecutiveDays(weekdaysHours)
+
+  const saturdayHours = validOperationalHours.find(
     (hour) => hour.dayOfWeek === "SATURDAY"
   )
-  const sundayHours = shopBranch.operationalHours.find(
+  const sundayHours = validOperationalHours.find(
     (hour) => hour.dayOfWeek === "SUNDAY"
   )
 
-  let message = ""
-
-  if (areWeekdaysSameHours) {
-    message = `Abierto de ${translateDayOfWeek(
-      weekdays[0]
-    )} a ${translateDayOfWeek(weekdays[4])} de ${
-      weekdaysHours[0].startTime
-    } a ${weekdaysHours[0].endTime}`
-  } else {
-    message += weekdaysHours
-      .map(
-        (hour) =>
-          `${translateDayOfWeek(hour.dayOfWeek)}: ${hour.startTime} a ${
-            hour.endTime
+  let message = groupedWeekdays
+    .map((group) =>
+      group.startDay === group.endDay
+        ? `${translateDayOfWeek(group.startDay)}: ${group.startTime} a ${
+            group.endTime
           }`
-      )
-      .join(", ")
-  }
+        : `Abierto de ${translateDayOfWeek(
+            group.startDay
+          )} a ${translateDayOfWeek(group.endDay)} de ${group.startTime} a ${
+            group.endTime
+          }`
+    )
+    .join(", ")
 
-  if (saturdayHours && saturdayHours.startTime && saturdayHours.endTime) {
+  if (saturdayHours) {
     message += ` y ${translateDayOfWeek("SATURDAY")} de ${
       saturdayHours.startTime
     } a ${saturdayHours.endTime}`
   }
 
-  if (sundayHours && sundayHours.startTime && sundayHours.endTime) {
+  if (sundayHours) {
     message += `\n${translateDayOfWeek("SUNDAY")}: ${sundayHours.startTime} a ${
       sundayHours.endTime
     }`

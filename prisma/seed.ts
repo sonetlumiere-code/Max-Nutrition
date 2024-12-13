@@ -885,7 +885,7 @@ async function main() {
           {
             label: "Sucursal Agronomía",
             branchType: "RETAIL",
-            province: "Buenos Aires",
+            province: "Ciudad Autónoma de Buenos Aires",
             municipality: "CABA",
             locality: "Agronomía",
             addressStreet: "Main St",
