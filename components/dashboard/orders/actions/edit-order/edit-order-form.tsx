@@ -55,7 +55,7 @@ const EditOrderForm = ({ order, setOpen }: EditOrderFormProps) => {
     })
 
     if (res.success) {
-      mutate("/api/orders")
+      mutate("orders")
       toast({
         title: "Pedido actualizado.",
         description: "La orden ha sido actualizada.",

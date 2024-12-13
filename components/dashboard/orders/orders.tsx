@@ -96,7 +96,7 @@ export default function Orders() {
     data: orders,
     error,
     isLoading,
-  } = useSWR<PopulatedOrder[] | null>("/api/orders", fetchOrders)
+  } = useSWR<PopulatedOrder[] | null>("orders", fetchOrders)
 
   const groupedAndFilteredOrders = useMemo(() => {
     if (!orders) return {}

@@ -137,7 +137,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
   const { data: shippingZone, isValidating: isValidatingShippingZone } = useSWR(
     shippingMethod === ShippingMethod.DELIVERY && selectedAddress?.locality
       ? [
-          "/api/shipping-zone",
+          "shipping-zone",
           { locality: selectedAddress.locality, isActive: true },
         ]
       : null,
