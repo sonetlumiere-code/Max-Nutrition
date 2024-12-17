@@ -29,6 +29,7 @@ const CustomerOrdersHistoryPage = async () => {
         },
         include: {
           address: true,
+          appliedPromotions: true,
           items: {
             include: {
               product: true,

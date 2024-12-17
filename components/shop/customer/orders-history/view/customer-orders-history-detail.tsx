@@ -54,38 +54,62 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
         <ul className='grid gap-3 text-sm'>
           <li className='flex items-center justify-between'>
             <span className='text-muted-foreground'>Subtotal</span>
-            <span>${order.subtotal || order.total}</span>
+            <span>
+              $
+              {order.subtotal
+                ? order.subtotal.toFixed(2)
+                : order.total.toFixed(2)}
+            </span>
           </li>
-          {order.appliedPromotionName &&
-            order.appliedPromotionDiscount &&
-            order.subtotal && (
-              <li className='flex items-center justify-between'>
-                <span className='text-muted-foreground'>
-                  Descuento promocional ({order.appliedPromotionName})
-                </span>
-                <span className='text-destructive'>
-                  {order.appliedPromotionDiscountType === "PERCENTAGE" ? (
-                    <>
-                      -{order.appliedPromotionDiscount}% (-$
-                      {(order.subtotal * order.appliedPromotionDiscount) / 100})
-                    </>
-                  ) : (
-                    <>-${order.appliedPromotionDiscount}</>
-                  )}
-                </span>
-              </li>
-            )}
+
+          {order.appliedPromotions && order.appliedPromotions.length > 0 && (
+            <ul>
+              {order.appliedPromotions.map((appliedPromotion, index) => (
+                <li key={index} className='flex items-center justify-between'>
+                  <span className='text-muted-foreground'>
+                    {appliedPromotion.promotionName} (x
+                    {appliedPromotion.appliedTimes})
+                  </span>
+                  <span className='text-destructive'>
+                    {appliedPromotion.promotionDiscountType === "PERCENTAGE" ? (
+                      <>
+                        -{appliedPromotion.promotionDiscount}% (-$
+                        {(
+                          ((order.subtotal || 0) *
+                            appliedPromotion.promotionDiscount) /
+                          100
+                        ).toFixed(2)}
+                        )
+                      </>
+                    ) : appliedPromotion.promotionDiscountType === "FIXED" ? (
+                      <>
+                        -$
+                        {(
+                          appliedPromotion.promotionDiscount *
+                            appliedPromotion.appliedTimes || 0
+                        ).toFixed(2)}
+                      </>
+                    ) : null}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+
           <li className='flex items-center justify-between'>
             <span className='text-muted-foreground'>Costo de envío</span>
             <span>
-              {order.shippingCost ? `$${order.shippingCost}` : "Gratis"}
+              {order.shippingCost
+                ? `$${order.shippingCost.toFixed(2)}`
+                : "Gratis"}
             </span>
           </li>
           <li className='flex items-center justify-between font-semibold'>
             <span className='text-muted-foreground'>Total</span>
-            <span>${order.total}</span>
+            <span>${order.total.toFixed(2)}</span>
           </li>
         </ul>
+
         <Separator className='my-4' />
         <div className='flex justify-between'>
           <div className='grid gap-3 text-sm'>
@@ -114,8 +138,8 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
               </>
             )}
           </div>
-          <div className='grid auto-rows-max gap-3'>
-            <Badge variant='secondary'>
+          <div>
+            <Badge variant='secondary' className='text-nowrap'>
               {translateShippingMethod(order.shippingMethod)}
             </Badge>
           </div>

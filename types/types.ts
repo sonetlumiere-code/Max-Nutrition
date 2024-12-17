@@ -17,6 +17,7 @@ import {
   ShopSettings,
   ShippingZone,
   ShippingSettings,
+  AppliedPromotion,
 } from "@prisma/client"
 
 export type PopulatedRecipe = Recipe & {
@@ -46,6 +47,7 @@ export type PopulatedOrder = Order & {
   items?: PopulatedOrderItem[]
   customer?: PopulatedCustomer
   address?: CustomerAddress
+  appliedPromotions?: AppliedPromotion[]
 }
 
 export type PopulatedOrderItem = OrderItem & {
@@ -87,3 +89,7 @@ export type PopulatedShopBranch = ShopBranch & {
 }
 
 export type TimePeriod = "week" | "month" | "year" | "all"
+
+export type PromotionToApply = PopulatedPromotion & {
+  appliedTimes: number
+}

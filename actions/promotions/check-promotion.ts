@@ -1,7 +1,7 @@
 "use server"
 
 import { getPromotions } from "@/data/promotions"
-import { PopulatedProduct } from "@/types/types"
+import { PromotionToApply, PopulatedProduct } from "@/types/types"
 import { Category } from "@prisma/client"
 
 type CheckPromotionProps = {
@@ -15,12 +15,17 @@ type CheckPromotionProps = {
 export async function checkPromotion({ items, subtotal }: CheckPromotionProps) {
   const promotions = await getPromotions({ include: { categories: true } })
 
-  const initialPromotion = null
   const subtotalPrice = subtotal
-  let finalPrice = subtotalPrice
+  let totalDiscountAmount = 0
+  let appliedPromotions: PromotionToApply[] = []
 
   if (!promotions?.length) {
-    return { appliedPromotion: initialPromotion, subtotalPrice, finalPrice }
+    return {
+      appliedPromotions,
+      subtotalPrice,
+      totalDiscountAmount,
+      finalPrice: subtotalPrice,
+    }
   }
 
   const categoryCount: Record<string, number> = {}
@@ -34,28 +39,44 @@ export async function checkPromotion({ items, subtotal }: CheckPromotionProps) {
     })
   })
 
-  for (const promotion of promotions) {
-    const isEligible = promotion.categories?.every((requirement) => {
-      const { categoryId, quantity } = requirement
-      return categoryCount[categoryId] >= quantity
-    })
+  promotions.forEach((promotion) => {
+    if (promotion.discountType === "FIXED" && promotion.categories?.length) {
+      let applicable = true
+      let maxIterations = Infinity
 
-    if (isEligible) {
-      const discountAmount =
-        promotion.discountType === "FIXED"
-          ? promotion.discount
-          : promotion.discountType === "PERCENTAGE"
-          ? (subtotalPrice * promotion.discount) / 100
-          : 0
-      finalPrice = subtotalPrice - discountAmount
+      promotion.categories.forEach(({ categoryId, quantity }) => {
+        const availableQuantity = categoryCount[categoryId] || 0
+        const iterations = Math.floor(availableQuantity / quantity)
 
-      return {
-        appliedPromotion: promotion,
-        subtotalPrice,
-        finalPrice,
+        if (iterations === 0) {
+          applicable = false
+        }
+        maxIterations = Math.min(maxIterations, iterations)
+      })
+
+      const cappedIterations = Math.min(
+        maxIterations,
+        promotion.maxApplicableTimes || Infinity
+      )
+
+      if (applicable && cappedIterations > 0) {
+        const discountAmount = cappedIterations * promotion.discount
+        totalDiscountAmount += discountAmount
+
+        appliedPromotions.push({
+          ...promotion,
+          appliedTimes: cappedIterations,
+        })
       }
     }
-  }
+  })
 
-  return { appliedPromotion: initialPromotion, subtotalPrice, finalPrice }
+  const finalPrice = subtotalPrice - totalDiscountAmount
+
+  return {
+    appliedPromotions,
+    subtotalPrice,
+    totalDiscountAmount,
+    finalPrice,
+  }
 }

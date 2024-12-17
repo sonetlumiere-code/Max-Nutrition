@@ -75,10 +75,9 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
 
   const {
     promotions,
-    appliedPromotion,
+    appliedPromotions,
     isLoadingPromotions,
     subtotalPrice,
-    discountAmount,
     finalPrice,
   } = usePromotion()
 
@@ -280,42 +279,51 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                       <CardHeader>
                         <CardTitle className='text-xl'>Promoción</CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        {appliedPromotion ? (
-                          <Alert>
-                            <Icons.badgePercent className='h-4 w-4' />
-                            <AlertTitle>¡Promoción aplicada!</AlertTitle>
-                            <AlertDescription>
-                              <div className='flex flex-col text-sm text-muted-foreground'>
-                                <span>{appliedPromotion.name}</span>
-                                <span>{appliedPromotion.description}</span>
-                                <span>
-                                  Métodos de pago habilitados:{" "}
-                                  {new Intl.ListFormat("es", {
-                                    style: "long",
-                                    type: "conjunction",
-                                  }).format(
-                                    appliedPromotion.allowedPaymentMethods.map(
-                                      translatePaymentMethod
-                                    )
-                                  )}
-                                  {"."}
-                                </span>
-                                <span>
-                                  Métodos de envío habilitados:{" "}
-                                  {new Intl.ListFormat("es", {
-                                    style: "long",
-                                    type: "conjunction",
-                                  }).format(
-                                    appliedPromotion.allowedShippingMethods.map(
-                                      translateShippingMethod
-                                    )
-                                  )}
-                                  {"."}
-                                </span>
-                              </div>
-                            </AlertDescription>
-                          </Alert>
+                      <CardContent className='space-y-3'>
+                        {appliedPromotions.length > 0 ? (
+                          appliedPromotions.map((promotion) => (
+                            <Alert key={promotion.id}>
+                              <Icons.badgePercent className='h-4 w-4' />
+                              <AlertTitle>
+                                <div className='flex justify-between'>
+                                  <span>¡Promoción aplicada!</span>
+                                  <span className='text-sm text-muted-foreground'>
+                                    x {promotion.appliedTimes}
+                                  </span>
+                                </div>
+                              </AlertTitle>
+                              <AlertDescription>
+                                <div className='flex flex-col text-sm text-muted-foreground'>
+                                  <span>{promotion.name}</span>
+                                  <span>{promotion.description}</span>
+                                  <span>
+                                    Métodos de pago habilitados:{" "}
+                                    {new Intl.ListFormat("es", {
+                                      style: "long",
+                                      type: "conjunction",
+                                    }).format(
+                                      promotion.allowedPaymentMethods.map(
+                                        translatePaymentMethod
+                                      )
+                                    )}
+                                    {"."}
+                                  </span>
+                                  <span>
+                                    Métodos de envío habilitados:{" "}
+                                    {new Intl.ListFormat("es", {
+                                      style: "long",
+                                      type: "conjunction",
+                                    }).format(
+                                      promotion.allowedShippingMethods.map(
+                                        translateShippingMethod
+                                      )
+                                    )}
+                                    {"."}
+                                  </span>
+                                </div>
+                              </AlertDescription>
+                            </Alert>
+                          ))
                         ) : (
                           <Alert>
                             <Icons.circleAlert className='h-4 w-4' />
@@ -358,21 +366,25 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                                 </SelectTrigger>
                                 <SelectContent>
                                   {shippingSettings?.allowedShippingMethods.map(
-                                    (method) => (
-                                      <SelectItem
-                                        key={method}
-                                        value={method}
-                                        disabled={
-                                          appliedPromotion
-                                            ? !appliedPromotion?.allowedShippingMethods.includes(
-                                                method
-                                              )
-                                            : false
-                                        }
-                                      >
-                                        {translateShippingMethod(method)}
-                                      </SelectItem>
-                                    )
+                                    (method) => {
+                                      const isDisabled =
+                                        appliedPromotions.length > 0 &&
+                                        !appliedPromotions.every((promotion) =>
+                                          promotion.allowedShippingMethods.includes(
+                                            method
+                                          )
+                                        )
+
+                                      return (
+                                        <SelectItem
+                                          key={method}
+                                          value={method}
+                                          disabled={isDisabled}
+                                        >
+                                          {translateShippingMethod(method)}
+                                        </SelectItem>
+                                      )
+                                    }
                                   )}
                                 </SelectContent>
                               </Select>
@@ -455,7 +467,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                             <div className='space-between flex items-center'>
                               <div className='max-w-screen-sm'>
                                 <CardTitle className='text-xl'>
-                                  Dirección de envío
+                                  Dirección
                                 </CardTitle>
                               </div>
                               <div className='ml-auto'>
@@ -568,13 +580,15 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                                     id={PaymentMethod.MERCADO_PAGO}
                                     className='peer sr-only'
                                     disabled={
-                                      appliedPromotion
-                                        ? !appliedPromotion?.allowedPaymentMethods.includes(
-                                            PaymentMethod.MERCADO_PAGO
-                                          )
-                                        : false
+                                      appliedPromotions.length > 0 &&
+                                      !appliedPromotions.every((promotion) =>
+                                        promotion.allowedPaymentMethods.includes(
+                                          PaymentMethod.MERCADO_PAGO
+                                        )
+                                      )
                                     }
                                   />
+
                                   <Label
                                     htmlFor={PaymentMethod.MERCADO_PAGO}
                                     className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
@@ -589,13 +603,15 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                                     id={PaymentMethod.CASH}
                                     className='peer sr-only'
                                     disabled={
-                                      appliedPromotion
-                                        ? !appliedPromotion?.allowedPaymentMethods.includes(
-                                            PaymentMethod.CASH
-                                          )
-                                        : false
+                                      appliedPromotions.length > 0 &&
+                                      !appliedPromotions.every((promotion) =>
+                                        promotion.allowedPaymentMethods.includes(
+                                          PaymentMethod.CASH
+                                        )
+                                      )
                                     }
                                   />
+
                                   <Label
                                     htmlFor={PaymentMethod.CASH}
                                     className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
@@ -626,31 +642,50 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                         {isLoadingPromotions ? (
                           <Skeleton className='w-20 h-8' />
                         ) : (
-                          <span>${subtotalPrice}</span>
+                          <span>${subtotalPrice.toFixed(2)}</span>
                         )}
                       </div>
-                      {appliedPromotion && (
-                        <div className='flex items-center justify-between text-sm'>
-                          <span>Descuento ({appliedPromotion.name})</span>
-                          {isLoadingPromotions ? (
-                            <Skeleton className='w-20 h-8' />
-                          ) : appliedPromotion.discountType === "FIXED" ? (
-                            <span className='text-destructive'>
-                              -${appliedPromotion.discount}
-                            </span>
-                          ) : (
-                            <span className='text-destructive'>
-                              -{appliedPromotion.discount}% (-${discountAmount})
-                            </span>
-                          )}
-                        </div>
-                      )}
+
+                      {appliedPromotions.length > 0 &&
+                        appliedPromotions.map((promotion) => {
+                          const appliedDiscount =
+                            promotion.discountType === "PERCENTAGE"
+                              ? subtotalPrice * (promotion.discount / 100)
+                              : promotion.discountType === "FIXED"
+                              ? promotion.discount *
+                                (promotion.appliedTimes || 1)
+                              : 0
+
+                          return (
+                            <div
+                              key={promotion.id}
+                              className='flex items-center justify-between text-sm'
+                            >
+                              <span>
+                                {promotion.name} (x{promotion.appliedTimes})
+                              </span>
+                              {isLoadingPromotions ? (
+                                <Skeleton className='w-20 h-8' />
+                              ) : promotion.discountType === "FIXED" ? (
+                                <span className='text-destructive'>
+                                  -${appliedDiscount.toFixed(2)}
+                                </span>
+                              ) : promotion.discountType === "PERCENTAGE" ? (
+                                <span className='text-destructive'>
+                                  -{promotion.discount}% (-$
+                                  {appliedDiscount.toFixed(2)})
+                                </span>
+                              ) : null}
+                            </div>
+                          )
+                        })}
+
                       <div className='flex items-center justify-between text-sm'>
                         <span>Costo de envío</span>
                         {isLoadingPromotions ? (
                           <Skeleton className='w-20 h-8' />
                         ) : (
-                          <span>${shippingCost}</span>
+                          <span>${shippingCost.toFixed(2)}</span>
                         )}
                       </div>
 
@@ -677,7 +712,6 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                         (shippingMethod === "DELIVERY" &&
                           !customer?.address?.length) ||
                         (isSubmitted && !isValid)
-                        // (shippingMethod === "DELIVERY" && !shippingZone)
                       }
                     >
                       {isSubmitting && (

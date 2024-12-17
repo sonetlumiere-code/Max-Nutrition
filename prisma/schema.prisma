@@ -217,25 +217,23 @@ enum OrderStatus {
 }
 
 model Order {
-  id                           String                 @id @default(cuid())
-  customerId                   String
-  subtotal                     Float?
-  total                        Float
-  appliedPromotionName         String?
-  appliedPromotionDiscountType PromotionDiscountType?
-  appliedPromotionDiscount     Float?
-  customer                     Customer               @relation(fields: [customerId], references: [id])
-  customerAddressId            String?
-  address                      CustomerAddress?       @relation(fields: [customerAddressId], references: [id])
-  items                        OrderItem[]
-  status                       OrderStatus            @default(PENDING)
-  paymentMethod                PaymentMethod
-  shippingMethod               ShippingMethod
-  shippingCost                 Float
-  taxCost                      Float?
-  notes                        String?
-  createdAt                    DateTime               @default(now())
-  updatedAt                    DateTime               @updatedAt
+  id                String             @id @default(cuid())
+  customerId        String
+  subtotal          Float?
+  total             Float
+  customer          Customer           @relation(fields: [customerId], references: [id])
+  customerAddressId String?
+  address           CustomerAddress?   @relation(fields: [customerAddressId], references: [id])
+  items             OrderItem[] // Link to order items
+  status            OrderStatus        @default(PENDING)
+  paymentMethod     PaymentMethod
+  shippingMethod    ShippingMethod
+  shippingCost      Float
+  taxCost           Float?
+  notes             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  appliedPromotions AppliedPromotion[]
 
   @@map("orders")
 }
@@ -262,6 +260,20 @@ enum PaymentMethod {
   DEBIT_CARD
 }
 
+model AppliedPromotion {
+  id                    String     @id @default(cuid())
+  orderId               String
+  promotion             Promotion? @relation(fields: [promotionId], references: [id])
+  promotionId           String?
+  promotionName         String
+  promotionDiscountType String
+  promotionDiscount     Float
+  appliedTimes          Int
+  order                 Order      @relation(fields: [orderId], references: [id])
+
+  @@map("applied_promotions")
+}
+
 model Promotion {
   id                     String                @id @default(cuid())
   name                   String
@@ -269,11 +281,13 @@ model Promotion {
   discountType           PromotionDiscountType
   discount               Float
   categories             PromotionCategory[]
+  maxApplicableTimes     Int?
   isActive               Boolean               @default(true)
   allowedPaymentMethods  PaymentMethod[]
   allowedShippingMethods ShippingMethod[]
   createdAt              DateTime              @default(now())
   updatedAt              DateTime              @updatedAt
+  appliedPromotion       AppliedPromotion[]
 
   @@map("promotions")
 }

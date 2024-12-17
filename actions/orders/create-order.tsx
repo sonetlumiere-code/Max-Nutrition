@@ -75,12 +75,14 @@ export async function createOrder(values: OrderSchema) {
       return acc + item.product.price * item.quantity
     }, 0)
 
-    const { appliedPromotion, finalPrice } = await checkPromotion({
+    const { appliedPromotions, finalPrice } = await checkPromotion({
       items: populatedItems,
       subtotal,
     })
 
-    if (appliedPromotion) {
+    let promotionsData = []
+
+    for (const appliedPromotion of appliedPromotions) {
       const allowedShippingMethods =
         appliedPromotion.allowedShippingMethods || []
       const allowedPaymentMethods = appliedPromotion.allowedPaymentMethods || []
@@ -98,6 +100,14 @@ export async function createOrder(values: OrderSchema) {
             "El método de pago seleccionado no es válido para la promoción.",
         }
       }
+
+      promotionsData.push({
+        promotionId: appliedPromotion.id,
+        promotionName: appliedPromotion.name,
+        promotionDiscountType: appliedPromotion.discountType,
+        promotionDiscount: appliedPromotion.discount,
+        appliedTimes: appliedPromotion.appliedTimes,
+      })
     }
 
     let shippingCost = 0
@@ -117,7 +127,7 @@ export async function createOrder(values: OrderSchema) {
         shippingSettings.minProductsQuantityForDelivery > totalProductsQuantity
       ) {
         return {
-          error: `La cantidad de productos debe ser mayor o igual a ${shippingSettings.minProductsQuantityForDelivery} para permitir la entrega.`,
+          error: `La cantidad de productos debe ser mayor o igual a ${shippingSettings.minProductsQuantityForDelivery} para permitir la entrega a domicilio.`,
         }
       }
 
@@ -155,9 +165,6 @@ export async function createOrder(values: OrderSchema) {
         shippingCost,
         paymentMethod,
         taxCost: 0,
-        appliedPromotionName: appliedPromotion?.name ?? null,
-        appliedPromotionDiscountType: appliedPromotion?.discountType ?? null,
-        appliedPromotionDiscount: appliedPromotion?.discount ?? null,
         subtotal,
         total,
         items: {
@@ -167,9 +174,13 @@ export async function createOrder(values: OrderSchema) {
             withSalt: item.variation.withSalt,
           })),
         },
+        appliedPromotions: {
+          create: promotionsData,
+        },
       },
       include: {
         address: true,
+        appliedPromotions: true,
         customer: {
           include: {
             user: {

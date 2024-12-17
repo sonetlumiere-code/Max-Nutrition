@@ -63,6 +63,7 @@ const fetchOrders = async () => {
         },
       },
       address: true,
+      appliedPromotions: true,
     },
     orderBy: {
       createdAt: "desc",

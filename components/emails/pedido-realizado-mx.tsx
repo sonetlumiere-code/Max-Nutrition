@@ -187,31 +187,42 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, orderLink }) => {
                 </Row>
               )}
 
-              {order.appliedPromotionName &&
-                order.appliedPromotionDiscount &&
-                order.subtotal && (
-                  <Row>
+              {order.appliedPromotions &&
+                order.appliedPromotions?.length > 0 &&
+                order.appliedPromotions.map((promotion, index) => (
+                  <Row key={index}>
                     <Column>
                       <Text className='text-left text-black font-normal'>
-                        Descuento promocional ({order.appliedPromotionName})
+                        Descuento promocional ({promotion.promotionName})
                       </Text>
                     </Column>
                     <Column>
                       <Text className='text-right text-red-500 font-normal'>
-                        {order.appliedPromotionDiscountType === "PERCENTAGE" ? (
+                        {promotion.promotionDiscountType === "PERCENTAGE" ? (
                           <>
-                            -{order.appliedPromotionDiscount}% (-$
-                            {(order.subtotal * order.appliedPromotionDiscount) /
-                              100}
+                            -{promotion.promotionDiscount}% (-$
+                            {order.subtotal
+                              ? (
+                                  (order.subtotal *
+                                    promotion.promotionDiscount) /
+                                  100
+                                ).toFixed(2)
+                              : "0.00"}
                             )
                           </>
                         ) : (
-                          <>-${order.appliedPromotionDiscount.toFixed(2)}</>
+                          <>
+                            -$
+                            {(
+                              promotion.promotionDiscount *
+                                promotion.appliedTimes || 0
+                            ).toFixed(2)}
+                          </>
                         )}
                       </Text>
                     </Column>
                   </Row>
-                )}
+                ))}
 
               <Row>
                 <Column>

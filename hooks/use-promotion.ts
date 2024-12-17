@@ -4,21 +4,25 @@ import { useCart } from "@/components/cart-provider"
 import { Category } from "@prisma/client"
 import { useMemo } from "react"
 import { useGetPromotions } from "./use-get-promotions"
+import { PromotionToApply } from "@/types/types"
 
 export function usePromotion() {
   const { items, getSubtotalPrice } = useCart()
-
   const { promotions, isLoadingPromotions } = useGetPromotions()
 
-  const { appliedPromotion, subtotalPrice, discountAmount, finalPrice } =
+  const { appliedPromotions, subtotalPrice, totalDiscountAmount, finalPrice } =
     useMemo(() => {
-      const initialPromotion = null
       const subtotalPrice = getSubtotalPrice()
-      let discountAmount = 0
-      let finalPrice = subtotalPrice
+      let totalDiscountAmount = 0
+      let appliedPromotions: PromotionToApply[] = []
 
       if (!promotions?.length) {
-        return { appliedPromotion: initialPromotion, subtotalPrice, finalPrice }
+        return {
+          appliedPromotions,
+          subtotalPrice,
+          totalDiscountAmount,
+          finalPrice: subtotalPrice,
+        }
       }
 
       const categoryCount: Record<string, number> = {}
@@ -32,35 +36,46 @@ export function usePromotion() {
         })
       })
 
-      for (const promotion of promotions) {
-        const isEligible = promotion.categories?.every((requirement) => {
-          const { categoryId, quantity } = requirement
-          return categoryCount[categoryId] >= quantity
-        })
+      promotions.forEach((promotion) => {
+        if (
+          promotion.discountType === "FIXED" &&
+          promotion.categories?.length
+        ) {
+          let applicable = true
+          let maxIterations = Infinity
 
-        if (isEligible) {
-          discountAmount =
-            promotion.discountType === "FIXED"
-              ? promotion.discount
-              : promotion.discountType === "PERCENTAGE"
-              ? (subtotalPrice * promotion.discount) / 100
-              : 0
-          finalPrice = subtotalPrice - discountAmount
+          promotion.categories.forEach(({ categoryId, quantity }) => {
+            const availableQuantity = categoryCount[categoryId] || 0
+            const iterations = Math.floor(availableQuantity / quantity)
 
-          return {
-            appliedPromotion: promotion,
-            subtotalPrice,
-            discountAmount,
-            finalPrice,
+            if (iterations === 0) {
+              applicable = false
+            }
+            maxIterations = Math.min(maxIterations, iterations)
+          })
+
+          const cappedIterations = Math.min(
+            maxIterations,
+            promotion.maxApplicableTimes || Infinity
+          )
+
+          if (applicable && cappedIterations > 0) {
+            const discountAmount = cappedIterations * promotion.discount
+            totalDiscountAmount += discountAmount
+            appliedPromotions.push({
+              ...promotion,
+              appliedTimes: cappedIterations,
+            })
           }
         }
-      }
+      })
+
+      const finalPrice = subtotalPrice - totalDiscountAmount
 
       return {
-        promotions,
-        appliedPromotion: initialPromotion,
+        appliedPromotions,
         subtotalPrice,
-        discountAmount,
+        totalDiscountAmount,
         finalPrice,
       }
     }, [items, promotions, getSubtotalPrice])
@@ -68,9 +83,9 @@ export function usePromotion() {
   return {
     promotions,
     isLoadingPromotions,
-    appliedPromotion,
+    appliedPromotions,
     subtotalPrice,
-    discountAmount,
+    totalDiscountAmount,
     finalPrice,
   }
 }
