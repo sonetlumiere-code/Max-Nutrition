@@ -572,7 +572,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
                                 className='grid grid-cols-2 gap-4'
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || isLoadingPromotions}
                               >
                                 <div>
                                   <RadioGroupItem
