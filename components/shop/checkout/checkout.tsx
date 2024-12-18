@@ -94,17 +94,6 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
   const shippingMethod = watch("shippingMethod")
   const customerAddressId = watch("customerAddressId")
 
-  // useEffect(() => {
-  //   setValue(
-  //     "items",
-  //     items.map((item) => ({
-  //       productId: item.product.id,
-  //       quantity: item.quantity,
-  //       variation: item.variation,
-  //     }))
-  //   )
-  // }, [items, setValue])
-
   const selectedAddress = useMemo(
     () => customer?.address?.find((a) => a.id === customerAddressId),
     [customer?.address, customerAddressId]
@@ -117,7 +106,8 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
           { locality: selectedAddress.locality, isActive: true },
         ]
       : null,
-    ([_, params]) => getShippingZone({ where: params })
+    ([_, params]) => getShippingZone({ where: params }),
+    { revalidateOnFocus: false }
   )
 
   const shippingCost = shippingZone?.cost || 0
