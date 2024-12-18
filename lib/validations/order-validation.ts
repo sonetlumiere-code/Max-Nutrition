@@ -34,3 +34,5 @@ export const orderSchema = coreOrderSchema.refine(
 )
 
 export const partialOrderSchema = coreOrderSchema.partial()
+
+export type OrderSchema = z.infer<typeof orderSchema>

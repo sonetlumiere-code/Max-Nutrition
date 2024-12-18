@@ -7,7 +7,7 @@ import { getShippingZone } from "@/data/shipping-zones"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { sendOrderDetailsEmail } from "@/lib/mail/mail"
-import { orderSchema } from "@/lib/validations/order-validation"
+import { OrderSchema, orderSchema } from "@/lib/validations/order-validation"
 import { PopulatedOrder, PopulatedProduct } from "@/types/types"
 import { ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
@@ -15,8 +15,6 @@ import { z } from "zod"
 import { checkPromotion } from "../promotions/check-promotion"
 
 const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
-
-type OrderSchema = z.infer<typeof orderSchema>
 
 export async function createOrder(values: OrderSchema) {
   const session = await auth()
