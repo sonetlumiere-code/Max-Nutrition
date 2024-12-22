@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/form"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { translatePaymentMethod } from "@/helpers/helpers"
 import { usePromotion } from "@/hooks/use-promotion"
 import { OrderSchema } from "@/lib/validations/order-validation"
 import { PaymentMethod } from "@prisma/client"
@@ -17,11 +18,20 @@ import { Control } from "react-hook-form"
 
 interface CheckoutPaymentMethodFieldProps {
   control: Control<OrderSchema>
+  allowedPaymentMethods: PaymentMethod[]
   isSubmitting: boolean
+}
+const paymentMethodIcons: Record<PaymentMethod, JSX.Element> = {
+  CASH: <Icons.circleDollarSign className='mb-3 h-6 w-6' />,
+  BANK_TRANSFER: <Icons.landmark className='mb-3 h-6 w-6' />,
+  MERCADO_PAGO: <Icons.creditCard className='mb-3 h-6 w-6' />,
+  CREDIT_CARD: <Icons.creditCard className='mb-3 h-6 w-6' />,
+  DEBIT_CARD: <Icons.creditCard className='mb-3 h-6 w-6' />,
 }
 
 const CheckoutPaymentMethodField = ({
   control,
+  allowedPaymentMethods,
   isSubmitting,
 }: CheckoutPaymentMethodFieldProps) => {
   const { appliedPromotions, isLoadingPromotions } = usePromotion()
@@ -38,52 +48,34 @@ const CheckoutPaymentMethodField = ({
               onValueChange={field.onChange}
               defaultValue={field.value}
               className='grid grid-cols-2 gap-4'
-              disabled={isSubmitting || isLoadingPromotions}
             >
-              <div>
-                <RadioGroupItem
-                  value={PaymentMethod.MERCADO_PAGO}
-                  id={PaymentMethod.MERCADO_PAGO}
-                  className='peer sr-only'
-                  disabled={
-                    appliedPromotions.length > 0 &&
-                    !appliedPromotions.every((promotion) =>
-                      promotion.allowedPaymentMethods.includes(
-                        PaymentMethod.MERCADO_PAGO
-                      )
-                    )
-                  }
-                />
-                <Label
-                  htmlFor={PaymentMethod.MERCADO_PAGO}
-                  className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
-                >
-                  <Icons.creditCard className='mb-3 h-6 w-6' />
-                  Mercado Pago
-                </Label>
-              </div>
-              <div>
-                <RadioGroupItem
-                  value={PaymentMethod.CASH}
-                  id={PaymentMethod.CASH}
-                  className='peer sr-only'
-                  disabled={
-                    appliedPromotions.length > 0 &&
-                    !appliedPromotions.every((promotion) =>
-                      promotion.allowedPaymentMethods.includes(
-                        PaymentMethod.CASH
-                      )
-                    )
-                  }
-                />
-                <Label
-                  htmlFor={PaymentMethod.CASH}
-                  className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
-                >
-                  <Icons.dollarSign className='mb-3 h-6 w-6' />
-                  Efectivo
-                </Label>
-              </div>
+              {allowedPaymentMethods.map((method) => {
+                const isDisabled =
+                  appliedPromotions.length > 0 &&
+                  !appliedPromotions.every((promotion) =>
+                    promotion.allowedPaymentMethods.includes(method)
+                  )
+
+                return (
+                  <div key={method}>
+                    <RadioGroupItem
+                      value={method}
+                      id={method}
+                      className='peer sr-only'
+                      disabled={
+                        isSubmitting || isLoadingPromotions || isDisabled
+                      }
+                    />
+                    <Label
+                      htmlFor={method}
+                      className='flex flex-col items-center justify-between text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
+                    >
+                      {paymentMethodIcons[method]}
+                      {translatePaymentMethod(method)}
+                    </Label>
+                  </div>
+                )
+              })}
             </RadioGroup>
           </FormControl>
           <FormMessage />

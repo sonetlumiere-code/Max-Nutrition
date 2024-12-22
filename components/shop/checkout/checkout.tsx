@@ -61,7 +61,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
   const { promotions, appliedPromotions } = usePromotion()
   const router = useRouter()
 
-  const { branches, shippingSettings } = shopSettings
+  const { branches, shippingSettings, allowedPaymentMethods } = shopSettings
 
   useEffect(() => {
     if (!items.length || !customer) {
@@ -399,6 +399,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                     <CardContent>
                       <CheckoutPaymentMethodField
                         control={form.control}
+                        allowedPaymentMethods={allowedPaymentMethods}
                         isSubmitting={isSubmitting}
                       />
                     </CardContent>
