@@ -95,7 +95,7 @@ export function translateDayOfWeek(dayOfWeek: DayOfWeek): string {
     case DayOfWeek.SUNDAY:
       return "Domingo"
     default:
-      return dayOfWeek // Return the original value as a fallback
+      return dayOfWeek
   }
 }
 

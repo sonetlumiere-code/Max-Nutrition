@@ -21,6 +21,7 @@ interface CheckoutPaymentMethodFieldProps {
   allowedPaymentMethods: PaymentMethod[]
   isSubmitting: boolean
 }
+
 const paymentMethodIcons: Record<PaymentMethod, JSX.Element> = {
   CASH: <Icons.circleDollarSign className='mb-3 h-6 w-6' />,
   BANK_TRANSFER: <Icons.landmark className='mb-3 h-6 w-6' />,
