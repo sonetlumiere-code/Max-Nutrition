@@ -402,7 +402,7 @@ model ShippingZone {
   id                 String           @id @default(cuid())
   province           String
   municipality       String
-  locality           String
+  locality           String           @unique
   isActive           Boolean          @default(true)
   cost               Float            @default(0)
   shippingSettingsId String
