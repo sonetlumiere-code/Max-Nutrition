@@ -1,55 +1,46 @@
-import EditShopSettings from "@/components/dashboard/shop-settings/edit-shop-settings/edit-shop-settings"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { getShopSettings } from "@/data/shop-settings"
-import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
-const shopSettingsId = process.env.SHOP_SETTINGS_ID
+// const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
 const ShopSettingsPage = async () => {
-  const session = await auth()
+  return redirect("/orders")
 
-  if (session?.user.role !== "ADMIN") {
-    return redirect("/")
-  }
+  // const session = await auth()
 
-  const settings = await getShopSettings({
-    where: { id: shopSettingsId },
-    include: {
-      branches: {
-        include: {
-          operationalHours: true,
-        },
-      },
-    },
-  })
+  // if (session?.user.role !== "ADMIN") {
+  //   return redirect("/")
+  // }
 
-  return (
-    <>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink>Inicio</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Configuración</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+  // const settings = await getShopSettings({
+  //   where: { id: shopSettingsId },
+  //   include: {
+  //     branches: {
+  //       include: {
+  //         operationalHours: true,
+  //       },
+  //     },
+  //   },
+  // })
 
-      <h2 className='font-semibold text-lg'>Configuración</h2>
+  // return (
+  //   <>
+  //     <Breadcrumb>
+  //       <BreadcrumbList>
+  //         <BreadcrumbItem>
+  //           <BreadcrumbLink>Inicio</BreadcrumbLink>
+  //         </BreadcrumbItem>
+  //         <BreadcrumbSeparator />
+  //         <BreadcrumbItem>
+  //           <BreadcrumbPage>Configuración</BreadcrumbPage>
+  //         </BreadcrumbItem>
+  //       </BreadcrumbList>
+  //     </Breadcrumb>
 
-      {settings && <EditShopSettings settings={settings} />}
-    </>
-  )
+  //     <h2 className='font-semibold text-lg'>Configuración</h2>
+
+  //     {settings && <EditShopSettings settings={settings} />}
+  //   </>
+  // )
 }
 
 export default ShopSettingsPage
