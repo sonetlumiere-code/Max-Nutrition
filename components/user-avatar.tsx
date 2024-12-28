@@ -1,9 +1,8 @@
-import { Role } from "@prisma/client"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { User } from "next-auth"
 
 type UserAvatarProps = {
-  user?: User & { role: Role }
+  user?: User
 }
 
 const UserAvatar: React.FC<UserAvatarProps> = ({ user }) => {

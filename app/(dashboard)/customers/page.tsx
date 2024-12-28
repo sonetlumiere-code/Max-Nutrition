@@ -31,6 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import UserAvatar from "@/components/user-avatar"
 import { getCustomers } from "@/data/customer"
 import { auth } from "@/lib/auth/auth"
 import { format } from "date-fns"
@@ -102,11 +103,7 @@ export default async function CustomersPage() {
                 <TableRow key={customer.id}>
                   <TableCell className='hidden sm:table-cell'>
                     {customer.user?.image ? (
-                      <img
-                        src={customer.user.image}
-                        alt='Customer Image'
-                        className='h-8 w-8 text-muted-foreground rounded-full'
-                      />
+                      <UserAvatar user={customer.user} />
                     ) : (
                       <Icons.circleUser className='h-8 w-8 text-muted-foreground' />
                     )}

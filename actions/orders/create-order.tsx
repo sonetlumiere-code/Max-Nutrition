@@ -11,7 +11,6 @@ import { OrderSchema, orderSchema } from "@/lib/validations/order-validation"
 import { PopulatedOrder, PopulatedProduct } from "@/types/types"
 import { ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
 import { checkPromotion } from "../promotions/check-promotion"
 
 const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
