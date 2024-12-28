@@ -47,9 +47,9 @@ import CustomerCreateAddress from "../customer/info/address/create/customer-crea
 import CheckoutShopBranch from "./checkout-shop-branch"
 import CheckoutListItems from "./checkout-list-items-table"
 import CheckoutAppliedPromotions from "./checkout-applied-promotions"
-import CheckoutPaymentMethodField from "./checkout-payment-method-field"
-import CheckoutSummary from "./checkout-summary"
-import CheckoutSelectedAddressInfo from "./checkout-selected-address-info"
+import PaymentMethodField from "../../shared/payment-method-field"
+import Summary from "../../shared/summary"
+import SelectedAddressInfo from "../../shared/selected-address-info"
 
 type CheckoutProps = {
   customer: PopulatedCustomer
@@ -72,6 +72,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
+      origin: "SHOP" as const,
       customerAddressId: "",
       paymentMethod: PaymentMethod.CASH,
       shippingMethod: ShippingMethod.DELIVERY,
@@ -122,7 +123,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
       return
     }
 
-    const res = await createOrder(data)
+    const res = await createOrder({ values: data, sendEmail: true })
 
     if (res.success) {
       clearCart()
@@ -379,7 +380,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                             />
                           </CardContent>
                           <CardFooter>
-                            <CheckoutSelectedAddressInfo
+                            <SelectedAddressInfo
                               selectedAddress={selectedAddress}
                               shippingZone={shippingZone}
                               isValidatingShippingZone={
@@ -397,8 +398,8 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                       <CardTitle className='text-xl'>Método de Pago</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <CheckoutPaymentMethodField
-                        control={form.control}
+                      <PaymentMethodField
+                        control={control}
                         allowedPaymentMethods={allowedPaymentMethods}
                         isSubmitting={isSubmitting}
                       />
@@ -413,7 +414,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                     <CardTitle className='text-xl'>Total del pedido</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CheckoutSummary shippingCost={shippingCost} />
+                    <Summary shippingCost={shippingCost} />
                   </CardContent>
                   <CardFooter>
                     <Button

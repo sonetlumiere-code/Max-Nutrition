@@ -35,7 +35,7 @@ export type PopulatedIngredient = Ingredient & {
 }
 
 export type PopulatedCategory = Category & {
-  products?: Product[]
+  products: Product[]
   promotions?: PromotionCategory[]
 }
 

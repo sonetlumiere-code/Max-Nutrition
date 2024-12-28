@@ -16,7 +16,7 @@ import { OrderSchema } from "@/lib/validations/order-validation"
 import { PaymentMethod } from "@prisma/client"
 import { Control } from "react-hook-form"
 
-interface CheckoutPaymentMethodFieldProps {
+interface PaymentMethodFieldProps {
   control: Control<OrderSchema>
   allowedPaymentMethods: PaymentMethod[]
   isSubmitting: boolean
@@ -30,11 +30,11 @@ const paymentMethodIcons: Record<PaymentMethod, JSX.Element> = {
   DEBIT_CARD: <Icons.creditCard className='mb-3 h-6 w-6' />,
 }
 
-const CheckoutPaymentMethodField = ({
+const PaymentMethodField = ({
   control,
   allowedPaymentMethods,
   isSubmitting,
-}: CheckoutPaymentMethodFieldProps) => {
+}: PaymentMethodFieldProps) => {
   const { appliedPromotions, isLoadingPromotions } = usePromotion()
 
   return (
@@ -86,4 +86,4 @@ const CheckoutPaymentMethodField = ({
   )
 }
 
-export default CheckoutPaymentMethodField
+export default PaymentMethodField

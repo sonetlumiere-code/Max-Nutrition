@@ -9,14 +9,25 @@ import prisma from "@/lib/db/db"
 import { sendOrderDetailsEmail } from "@/lib/mail/mail"
 import { OrderSchema, orderSchema } from "@/lib/validations/order-validation"
 import { PopulatedOrder, PopulatedProduct } from "@/types/types"
-import { ShippingMethod } from "@prisma/client"
+import { Role, ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { checkPromotion } from "../promotions/check-promotion"
 
 const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
 
-export async function createOrder(values: OrderSchema) {
+export async function createOrder({
+  values,
+  sendEmail,
+}: {
+  values: OrderSchema
+  sendEmail?: boolean
+}) {
   const session = await auth()
+  const userRole: Role | undefined = session?.user.role
+
+  if (!session || !userRole) {
+    return { error: "Usuario no autenticado o rol no válido." }
+  }
 
   const validatedFields = orderSchema.safeParse(values)
 
@@ -24,8 +35,29 @@ export async function createOrder(values: OrderSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { customerAddressId, shippingMethod, paymentMethod, items } =
-    validatedFields.data
+  const {
+    origin,
+    customerId,
+    customerAddressId,
+    shippingMethod,
+    paymentMethod,
+    items,
+  } = validatedFields.data
+
+  if (origin === "DASHBOARD" && userRole !== "ADMIN") {
+    return {
+      error:
+        "No autorizado para realizar esta acción desde el panel de administración.",
+    }
+  }
+
+  if (origin === "DASHBOARD" && !customerId) {
+    return {
+      error:
+        "El ID del cliente es obligatorio para crear pedidos desde el panel de administración.",
+    }
+  }
+
   const productIds = items.map((item) => item.productId)
   const uniqueProductIds = Array.from(new Set(productIds))
 
@@ -44,7 +76,8 @@ export async function createOrder(values: OrderSchema) {
       }),
       getCustomer({
         where: {
-          userId: session?.user.id,
+          userId: origin === "SHOP" ? session?.user.id : undefined,
+          id: origin === "DASHBOARD" ? customerId : undefined,
         },
         include: {
           user: true,
@@ -58,7 +91,7 @@ export async function createOrder(values: OrderSchema) {
     }
 
     if (!customer) {
-      return { error: "ID de cliente inválido." }
+      return { error: "Cliente no encontrado." }
     }
 
     const populatedItems = items
@@ -196,11 +229,13 @@ export async function createOrder(values: OrderSchema) {
       },
     })
 
-    sendOrderDetailsEmail({
-      email: customer.user?.email || "",
-      order: order as PopulatedOrder,
-      orderLink: "customer-orders-history",
-    })
+    if (sendEmail) {
+      sendOrderDetailsEmail({
+        email: customer.user?.email || "",
+        order: order as PopulatedOrder,
+        orderLink: "customer-orders-history",
+      })
+    }
 
     revalidatePath("/customer-orders-history")
 

@@ -18,7 +18,7 @@ import {
 } from "@/helpers/helpers"
 import { cn } from "@/lib/utils"
 import { PopulatedOrder } from "@/types/types"
-import OrderItemActions from "../../actions/order-item-actions"
+import OrderItemActions from "../actions/order-item-actions"
 
 type OrderItemDetailsProps = {
   order: PopulatedOrder

@@ -2,17 +2,17 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { CustomerAddress, ShippingZone } from "@prisma/client"
 
-type CheckoutSelectedAddressInfoProps = {
+type SelectedAddressInfoProps = {
   selectedAddress: CustomerAddress | undefined
   shippingZone: ShippingZone | undefined | null
   isValidatingShippingZone: boolean
 }
 
-const CheckoutSelectedAddressInfo = ({
+const SelectedAddressInfo = ({
   selectedAddress,
   shippingZone,
   isValidatingShippingZone,
-}: CheckoutSelectedAddressInfoProps) => {
+}: SelectedAddressInfoProps) => {
   return (
     <>
       {selectedAddress && (
@@ -41,7 +41,7 @@ const CheckoutSelectedAddressInfo = ({
             </p>
           ) : (
             <p className='text-destructive'>
-              Actualmente no realizamos envíos a {selectedAddress?.locality}
+              Envíos a {selectedAddress?.locality} no disponibles actualmente.
             </p>
           )}
         </div>
@@ -50,4 +50,4 @@ const CheckoutSelectedAddressInfo = ({
   )
 }
 
-export default CheckoutSelectedAddressInfo
+export default SelectedAddressInfo

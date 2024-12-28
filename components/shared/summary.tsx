@@ -4,11 +4,11 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { usePromotion } from "@/hooks/use-promotion"
 
-type CheckoutSummaryProps = {
+type SummaryProps = {
   shippingCost: number
 }
 
-const CheckoutSummary = ({ shippingCost }: CheckoutSummaryProps) => {
+const Summary = ({ shippingCost }: SummaryProps) => {
   const { appliedPromotions, isLoadingPromotions, subtotalPrice, finalPrice } =
     usePromotion()
 
@@ -79,4 +79,4 @@ const CheckoutSummary = ({ shippingCost }: CheckoutSummaryProps) => {
   )
 }
 
-export default CheckoutSummary
+export default Summary
