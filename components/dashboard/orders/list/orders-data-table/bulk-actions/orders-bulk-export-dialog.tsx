@@ -1,6 +1,6 @@
 "use client"
 
-import { useMediaQuery } from "@/hooks/use-media-query"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -8,77 +8,121 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { IngredientTotal, PopulatedOrder } from "@/types/types"
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer"
-import { Button } from "@/components/ui/button"
-import { PopulatedOrder } from "@/types/types"
-import { Dispatch, SetStateAction } from "react"
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { translateUnit } from "@/helpers/helpers"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Icons } from "@/components/icons"
-import OrdersBulkExport from "./orders-bulk-export"
+import { exportOrdersToExcel } from "@/actions/orders/export-orders"
 
-type OrdersBulkExportProps = {
+interface OrdersBulkExportDialogProps {
   label: string
-  orders: PopulatedOrder[]
   open: boolean
-  setOpen: Dispatch<SetStateAction<boolean>>
+  setOpen: (open: boolean) => void
+  orders: PopulatedOrder[]
 }
 
-const OrdersBulkExportDialog = ({
+export default function OrdersBulkExportDialog({
   label,
-  orders,
   open,
   setOpen,
-}: OrdersBulkExportProps) => {
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+  orders,
+}: OrdersBulkExportDialogProps) {
+  const ingredientTotals: Record<string, IngredientTotal> = {}
 
-  if (isDesktop) {
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className='sm:max-w-[600px]'>
-          <DialogHeader>
-            <DialogTitle>Exportar pedidos</DialogTitle>
-            <DialogDescription className='flex flex-col'>
-              <span>{label}</span>
-              <span>Cantidad de pedidos: {orders.length}</span>
-            </DialogDescription>
-            <div className='py-4'>
-              <OrdersBulkExport orders={orders} />
-            </div>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    )
+  orders.forEach((order) => {
+    order.items?.forEach((item) => {
+      const product = item.product
+      const recipe = product.recipe
+
+      recipe?.ingredients?.forEach((ingredientEntry) => {
+        const ingredient = ingredientEntry.ingredient
+        const baseQuantity = ingredientEntry.quantity * item.quantity
+        const wasteMultiplier = 1 + ingredient.waste
+        const totalQuantity = baseQuantity * wasteMultiplier
+        const cost = totalQuantity * ingredient.price
+
+        if (ingredient) {
+          if (ingredientTotals[ingredient.id]) {
+            ingredientTotals[ingredient.id].quantity += totalQuantity
+          } else {
+            ingredientTotals[ingredient.id] = {
+              ingredientId: ingredient.id,
+              name: ingredient.name,
+              measurement: ingredient.measurement,
+              quantity: totalQuantity,
+              cost,
+              waste: ingredient.waste,
+            }
+          }
+        }
+      })
+    })
+  })
+
+  const handleExport = () => {
+    exportOrdersToExcel(orders)
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent className='min-h-[40vh]'>
-        <DrawerHeader>
-          <DrawerTitle>Exportar pedidos</DrawerTitle>
-          <DialogDescription className='flex flex-col'>
-            <span>{label}</span>
-            <span>Cantidad de pedidos: {orders.length}</span>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{label}</DialogTitle>
+          <DialogDescription>
+            Resumen de ingredientes necesarios para los pedidos seleccionados.
           </DialogDescription>
-        </DrawerHeader>
-        <div className='p-4'>
-          <OrdersBulkExport orders={orders} />
-        </div>
-        <DrawerFooter className='border-t-2 lg:border-t-0'>
-          <DrawerClose asChild>
-            <Button variant='outline'>
-              <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver
-            </Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+        </DialogHeader>
+        {orders.length > 0 ? (
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Cantidad</TableHead>
+                  <TableHead>Unidad de medida</TableHead>
+                  <TableHead className='text-end'>Costo</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Object.values(ingredientTotals).map((ingredient) => (
+                  <TableRow key={ingredient.ingredientId}>
+                    <TableCell>{ingredient.name}</TableCell>
+                    <TableCell>{ingredient.quantity.toFixed(2)}</TableCell>
+                    <TableCell>
+                      {translateUnit(ingredient.measurement)}
+                    </TableCell>
+                    <TableCell className='text-end'>
+                      ${ingredient.cost.toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <div className='flex justify-end mt-6'>
+              <Button onClick={handleExport} className='gap-2'>
+                <Icons.file className='h-4 w-4' />
+                Descargar Pedidos
+              </Button>
+            </div>
+          </>
+        ) : (
+          <Alert>
+            <Icons.circleAlert className='h-4 w-4' />
+            <AlertTitle>Sin pedidos para exportar</AlertTitle>
+            <AlertDescription>
+              No hay pedidos para exportar en este período.
+            </AlertDescription>
+          </Alert>
+        )}
+      </DialogContent>
+    </Dialog>
   )
 }
-
-export default OrdersBulkExportDialog

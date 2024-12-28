@@ -66,6 +66,7 @@ export interface IngredientTotal {
   measurement: Measurement
   quantity: number
   cost: number
+  waste: number // Ver acá lucas si es necesario (lo aplicó  Cursor)
 }
 
 export type TimePeriod = "week" | "month" | "year" | "all"
