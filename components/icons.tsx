@@ -56,6 +56,7 @@ import {
   User,
   Users,
   Wheat,
+  WheatOff,
   X,
 } from "lucide-react"
 
@@ -177,6 +178,7 @@ export const Icons = {
     </svg>
   ),
   wheat: Wheat,
+  wheatOff: WheatOff,
   x: X,
 }
 

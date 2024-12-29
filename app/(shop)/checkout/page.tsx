@@ -64,7 +64,7 @@ export default async function CheckoutPage() {
   }
 
   return (
-    <div className='space-y-6'>
+    <div className='space-y-6 w-full max-w-3xl mx-auto pt-5 px-4'>
       <div className='flex items-start'>
         <Link
           href='/shop'

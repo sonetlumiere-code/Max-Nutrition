@@ -31,17 +31,18 @@ export default async function HeaderShop({ session }: HeaderShopProps) {
   })
 
   return (
-    <header className='flex items-center justify-between bg-white shadow-sm px-4 sm:px-6 lg:px-8 py-4'>
-      <Link href='/' className='flex items-center gap-2' prefetch={false}>
-        <img
-          src='img/mxm-logo.png'
-          width='116'
-          height='41'
-          alt='MXM Máxima Nutrición'
-          className='object-cover'
-        />
-      </Link>
-      {/* <div className='hidden lg:inline relative flex-1 max-w-md mx-4'>
+    <div className='w-full bg-white shadow-sm'>
+      <header className='max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4'>
+        <Link href='/' className='flex items-center gap-2' prefetch={false}>
+          <img
+            src='img/mxm-logo.png'
+            width='116'
+            height='41'
+            alt='MXM Máxima Nutrición'
+            className='object-cover'
+          />
+        </Link>
+        {/* <div className='hidden lg:inline relative flex-1 max-w-md mx-4'>
           <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground' />
           <Input
             type='search'
@@ -50,28 +51,29 @@ export default async function HeaderShop({ session }: HeaderShopProps) {
           />
         </div> */}
 
-      <div className='flex items-center space-x-4'>
-        <div className='flex'>
-          {promotions && promotions.length > 0 && (
-            <Promotions promotions={promotions}>
-              <Button variant='ghost' size='icon' className='relative'>
-                <Icons.badgePercent className='w-6 h-6 text-muted-foreground' />
-              </Button>
-            </Promotions>
+        <div className='flex items-center space-x-4'>
+          <div className='flex'>
+            {promotions && promotions.length > 0 && (
+              <Promotions promotions={promotions}>
+                <Button variant='ghost' size='icon' className='relative'>
+                  <Icons.badgePercent className='w-6 h-6 text-muted-foreground' />
+                </Button>
+              </Promotions>
+            )}
+            <CartHeaderButton />
+          </div>
+          {session?.user ? (
+            <CustomerProfileDropdown session={session} />
+          ) : (
+            <Link
+              href='/login'
+              className={cn(buttonVariants({ variant: "outline" }), "")}
+            >
+              <Icons.user className='w-5 h-5 mr-2' /> Ingresar
+            </Link>
           )}
-          <CartHeaderButton />
         </div>
-        {session?.user ? (
-          <CustomerProfileDropdown session={session} />
-        ) : (
-          <Link
-            href='/login'
-            className={cn(buttonVariants({ variant: "outline" }), "")}
-          >
-            <Icons.user className='w-5 h-5 mr-2' /> Ingresar
-          </Link>
-        )}
-      </div>
-    </header>
+      </header>
+    </div>
   )
 }
