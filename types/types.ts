@@ -93,3 +93,10 @@ export type TimePeriod = "week" | "month" | "year" | "all"
 export type PromotionToApply = PopulatedPromotion & {
   appliedTimes: number
 }
+
+export type LineItem = {
+  id: string
+  product: PopulatedProduct
+  quantity: number
+  variation: Variation
+}

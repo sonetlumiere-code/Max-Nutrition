@@ -3,14 +3,18 @@
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { usePromotion } from "@/hooks/use-promotion"
+import { LineItem } from "@/types/types"
 
 type SummaryProps = {
+  items: LineItem[]
   shippingCost: number
 }
 
-const Summary = ({ shippingCost }: SummaryProps) => {
+const Summary = ({ items, shippingCost }: SummaryProps) => {
   const { appliedPromotions, isLoadingPromotions, subtotalPrice, finalPrice } =
-    usePromotion()
+    usePromotion({
+      items,
+    })
 
   return (
     <div className='grid gap-2'>

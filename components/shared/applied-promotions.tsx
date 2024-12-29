@@ -7,9 +7,10 @@ import {
   translateShippingMethod,
 } from "@/helpers/helpers"
 import { usePromotion } from "@/hooks/use-promotion"
+import { LineItem } from "@/types/types"
 
-const CheckoutAppliedPromotions = () => {
-  const { appliedPromotions } = usePromotion()
+const AppliedPromotions = ({ items }: { items: LineItem[] }) => {
+  const { appliedPromotions } = usePromotion({ items })
 
   return (
     <>
@@ -60,8 +61,9 @@ const CheckoutAppliedPromotions = () => {
           <Icons.circleAlert className='h-4 w-4' />
           <AlertTitle>Sin promoción aplicada</AlertTitle>
           <AlertDescription>
-            Actualmente no hay promociones disponibles para tu carrito. ¡Explora
-            nuestras promociones para ahorrar en tu próxima compra!
+            Actualmente no hay promociones aplicadas.
+            {/* ¡Explora nuestras
+            promociones para ahorrar en tu próxima compra! */}
           </AlertDescription>
         </Alert>
       )}
@@ -69,4 +71,4 @@ const CheckoutAppliedPromotions = () => {
   )
 }
 
-export default CheckoutAppliedPromotions
+export default AppliedPromotions

@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import { CartItem, useCart } from "@/components/cart-provider"
-import { Icons } from "@/components/icons"
+import { useCart } from "@/components/cart-provider"
+import { QuantityInput } from "@/components/shared/quantity-input"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { TableCell, TableRow } from "@/components/ui/table"
+import { LineItem } from "@/types/types"
 
-const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
+const CartListItem = ({ cartItem }: { cartItem: LineItem }) => {
   const { decrementQuantity, incrementQuantity, removeItem } = useCart()
 
   return (
@@ -31,35 +31,17 @@ const CartListItem = ({ cartItem }: { cartItem: CartItem }) => {
         </div>
       </TableCell>
       <TableCell className='font-medium space-x-2 justify-end w-1/12'>
-        <div className='flex items-center border-2 rounded-md justify-between max-w-24'>
-          <Button
-            variant='link'
-            size='icon'
-            className='rounded-full p-1 hover:bg-muted transition-colors'
-            onClick={
-              cartItem.quantity === 1
-                ? () => removeItem(cartItem.id)
-                : () => decrementQuantity(cartItem.id)
+        <QuantityInput
+          value={cartItem.quantity}
+          onIncrement={() => incrementQuantity(cartItem.id)}
+          onDecrement={() => {
+            if (cartItem.quantity > 1) {
+              decrementQuantity(cartItem.id)
+            } else {
+              removeItem(cartItem.id)
             }
-          >
-            {cartItem.quantity === 1 ? (
-              <Icons.trash2 className='w-4 h-4 text-destructive' />
-            ) : (
-              <Icons.minus className='w-4 h-4' />
-            )}
-          </Button>
-          <div className='text-sm font-bold min-w-4 text-center'>
-            {cartItem.quantity}
-          </div>
-          <Button
-            variant='link'
-            size='icon'
-            className='rounded-full p-1 hover:bg-muted transition-colors'
-            onClick={() => incrementQuantity(cartItem.id)}
-          >
-            <Icons.plus className='w-4 h-4' />
-          </Button>
-        </div>
+          }}
+        />
       </TableCell>
     </TableRow>
   )

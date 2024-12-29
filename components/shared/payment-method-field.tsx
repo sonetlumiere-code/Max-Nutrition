@@ -13,11 +13,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { translatePaymentMethod } from "@/helpers/helpers"
 import { usePromotion } from "@/hooks/use-promotion"
 import { OrderSchema } from "@/lib/validations/order-validation"
+import { LineItem } from "@/types/types"
 import { PaymentMethod } from "@prisma/client"
 import { Control } from "react-hook-form"
 
 interface PaymentMethodFieldProps {
   control: Control<OrderSchema>
+  items: LineItem[]
   allowedPaymentMethods: PaymentMethod[]
   isSubmitting: boolean
 }
@@ -32,10 +34,13 @@ const paymentMethodIcons: Record<PaymentMethod, JSX.Element> = {
 
 const PaymentMethodField = ({
   control,
+  items,
   allowedPaymentMethods,
   isSubmitting,
 }: PaymentMethodFieldProps) => {
-  const { appliedPromotions, isLoadingPromotions } = usePromotion()
+  const { appliedPromotions, isLoadingPromotions } = usePromotion({
+    items,
+  })
 
   return (
     <FormField

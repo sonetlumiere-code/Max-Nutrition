@@ -9,15 +9,13 @@ type CheckPromotionProps = {
     product: PopulatedProduct
     quantity: number
   }[]
-  subtotal: number
 }
 
-export async function checkPromotion({ items, subtotal }: CheckPromotionProps) {
+export async function checkPromotion({ items }: CheckPromotionProps) {
   const promotions = await getPromotions({ include: { categories: true } })
 
   return calculatePromotions({
     items,
     promotions: promotions || [],
-    subtotal,
   })
 }

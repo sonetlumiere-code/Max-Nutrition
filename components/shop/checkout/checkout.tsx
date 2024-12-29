@@ -3,7 +3,6 @@
 import { createOrder } from "@/actions/orders/create-order"
 import { useCart } from "@/components/cart-provider"
 import { Icons } from "@/components/icons"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -46,10 +45,11 @@ import useSWR from "swr"
 import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
 import CheckoutShopBranch from "./checkout-shop-branch"
 import CheckoutListItems from "./checkout-list-items-table"
-import CheckoutAppliedPromotions from "./checkout-applied-promotions"
-import PaymentMethodField from "../../shared/payment-method-field"
-import Summary from "../../shared/summary"
-import SelectedAddressInfo from "../../shared/selected-address-info"
+import AppliedPromotions from "../../shared/applied-promotions"
+import PaymentMethodField from "@/components/shared/payment-method-field"
+import Summary from "@/components/shared/summary"
+import SelectedAddressInfo from "@/components/shared/selected-address-info"
+import AllowedDelivery from "@/components/shared/allowed-delivery"
 
 type CheckoutProps = {
   customer: PopulatedCustomer
@@ -58,7 +58,9 @@ type CheckoutProps = {
 
 const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
   const { items, setOpen, clearCart } = useCart()
-  const { promotions, appliedPromotions } = usePromotion()
+  const { promotions, appliedPromotions } = usePromotion({
+    items,
+  })
   const router = useRouter()
 
   const { branches, shippingSettings, allowedPaymentMethods } = shopSettings
@@ -146,18 +148,20 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
     }
   }
 
-  const isValidMinQuantity = useMemo(() => {
+  const isValidMinQuantity: boolean = (() => {
     const totalProductsQuantity = items.reduce(
       (acc, curr) => acc + curr.quantity,
       0
     )
 
     return (
-      shippingMethod === ShippingMethod.DELIVERY &&
-      shippingSettings &&
-      shippingSettings.minProductsQuantityForDelivery <= totalProductsQuantity
+      (shippingMethod === ShippingMethod.DELIVERY &&
+        shippingSettings &&
+        shippingSettings.minProductsQuantityForDelivery <=
+          totalProductsQuantity) ||
+      false
     )
-  }, [shippingMethod, shippingSettings, items])
+  })()
 
   return (
     <>
@@ -204,7 +208,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                         <CardTitle className='text-xl'>Promociones</CardTitle>
                       </CardHeader>
                       <CardContent className='space-y-3'>
-                        <CheckoutAppliedPromotions />
+                        <AppliedPromotions items={items} />
                       </CardContent>
                     </Card>
                   )}
@@ -264,41 +268,13 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                         />
                       </CardContent>
                       <CardFooter>
-                        {shippingMethod === ShippingMethod.DELIVERY && (
-                          <>
-                            {!isValidMinQuantity ? (
-                              <Alert variant='destructive'>
-                                <Icons.circleAlert className='h-4 w-4' />
-                                <AlertTitle className='leading-5'>
-                                  Agrega más productos para habilitar envío a
-                                  domicilio.
-                                </AlertTitle>
-                                <AlertDescription className='leading-4'>
-                                  La cantidad mínima de productos para habilitar
-                                  envío a domicilio es{" "}
-                                  {
-                                    shippingSettings?.minProductsQuantityForDelivery
-                                  }
-                                  .
-                                </AlertDescription>
-                              </Alert>
-                            ) : (
-                              <Alert variant='success'>
-                                <Icons.circleCheck className='h-4 w-4' />
-                                <AlertTitle className='leading-5'>
-                                  Envío a domicilio habilitado
-                                </AlertTitle>
-                                <AlertDescription className='leading-4'>
-                                  Alcanzaste la cantidad mínima de{" "}
-                                  {
-                                    shippingSettings?.minProductsQuantityForDelivery
-                                  }{" "}
-                                  productos para habilitar envío a domicilio.
-                                </AlertDescription>
-                              </Alert>
-                            )}
-                          </>
-                        )}
+                        <AllowedDelivery
+                          shippingMethod={shippingMethod}
+                          isValidMinQuantity={isValidMinQuantity}
+                          minProductsQuantityForDelivery={
+                            shippingSettings.minProductsQuantityForDelivery
+                          }
+                        />
                         {shippingMethod === ShippingMethod.TAKE_AWAY &&
                           branches && (
                             <div className='space-y-3 w-full'>
@@ -400,6 +376,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                     <CardContent>
                       <PaymentMethodField
                         control={control}
+                        items={items}
                         allowedPaymentMethods={allowedPaymentMethods}
                         isSubmitting={isSubmitting}
                       />
@@ -414,7 +391,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                     <CardTitle className='text-xl'>Total del pedido</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Summary shippingCost={shippingCost} />
+                    <Summary items={items} shippingCost={shippingCost} />
                   </CardContent>
                   <CardFooter>
                     <Button

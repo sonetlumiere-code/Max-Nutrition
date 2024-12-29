@@ -12,18 +12,11 @@ import {
   SetStateAction,
   useMemo,
 } from "react"
-import { PopulatedProduct, Variation } from "@/types/types"
-
-export type CartItem = {
-  id: string
-  product: PopulatedProduct
-  quantity: number
-  variation: Variation
-}
+import { LineItem, PopulatedProduct, Variation } from "@/types/types"
 
 type CartProviderState = {
-  items: CartItem[]
-  setItems: Dispatch<SetStateAction<CartItem[]>>
+  items: LineItem[]
+  setItems: Dispatch<SetStateAction<LineItem[]>>
   addItem: (
     product: PopulatedProduct,
     quantity: number,
@@ -72,10 +65,10 @@ const parseJSON = (value: string | null): any => {
 }
 
 const mergeCarts = (
-  userCart: CartItem[],
-  guestCart: CartItem[]
-): CartItem[] => {
-  const cartMap = new Map<string, CartItem>()
+  userCart: LineItem[],
+  guestCart: LineItem[]
+): LineItem[] => {
+  const cartMap = new Map<string, LineItem>()
 
   ;[...userCart, ...guestCart].forEach((item) => {
     const key = `${item.product.id}-${JSON.stringify(item.variation)}`
@@ -94,7 +87,7 @@ const mergeCarts = (
 }
 
 export function CartProvider({ children, session }: CartProviderProps) {
-  const [items, setItems] = useState<CartItem[]>(() => {
+  const [items, setItems] = useState<LineItem[]>(() => {
     if (typeof window === "undefined") return initialState.items
 
     const guestCart = parseJSON(

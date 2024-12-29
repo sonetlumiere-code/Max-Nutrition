@@ -1,4 +1,9 @@
-import { PopulatedPromotion, PromotionToApply } from "@/types/types"
+import {
+  LineItem,
+  PopulatedProduct,
+  PopulatedPromotion,
+  PromotionToApply,
+} from "@/types/types"
 import {
   Category,
   CustomerAddressLabel,
@@ -102,16 +107,18 @@ export function translateDayOfWeek(dayOfWeek: DayOfWeek): string {
 export function calculatePromotions({
   items,
   promotions,
-  subtotal,
 }: {
   items: {
-    product: { categories?: Category[] }
+    product: PopulatedProduct
     quantity: number
   }[]
   promotions: PopulatedPromotion[]
-  subtotal: number
 }) {
-  const subtotalPrice = subtotal
+  const subtotalPrice = items.reduce(
+    (acc, item) => acc + item.product.price * item.quantity,
+    0
+  )
+
   let totalDiscountAmount = 0
   let appliedPromotions: PromotionToApply[] = []
 

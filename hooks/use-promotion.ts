@@ -1,23 +1,22 @@
-"use client"
-
-import { useCart } from "@/components/cart-provider"
+import { calculatePromotions } from "@/helpers/helpers"
 import { useMemo } from "react"
 import { useGetPromotions } from "./use-get-promotions"
-import { calculatePromotions } from "@/helpers/helpers"
+import { LineItem } from "@/types/types"
 
-export function usePromotion() {
-  const { items, getSubtotalPrice } = useCart()
+type UsePromotionProps = {
+  items: LineItem[]
+}
+
+export function usePromotion({ items }: UsePromotionProps) {
   const { promotions, isLoadingPromotions } = useGetPromotions()
 
-  const subtotalPrice = getSubtotalPrice()
-
-  const { appliedPromotions, totalDiscountAmount, finalPrice } = useMemo(() => {
-    return calculatePromotions({
-      items,
-      promotions: promotions || [],
-      subtotal: subtotalPrice,
-    })
-  }, [items, promotions, subtotalPrice])
+  const { appliedPromotions, totalDiscountAmount, subtotalPrice, finalPrice } =
+    useMemo(() => {
+      return calculatePromotions({
+        items,
+        promotions: promotions || [],
+      })
+    }, [items, promotions])
 
   return {
     promotions,

@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import {
+  LineItem,
   PopulatedCategory,
   PopulatedCustomer,
   PopulatedShopSettings,
@@ -45,11 +46,13 @@ import SelectedAddressInfo from "@/components/shared/selected-address-info"
 import useSWR from "swr"
 import { getShippingZone } from "@/data/shipping-zones"
 import { useMemo } from "react"
-import { Input } from "@/components/ui/input"
 import Summary from "@/components/shared/summary"
 import { createOrder } from "@/actions/orders/create-order"
 import { toast } from "@/components/ui/use-toast"
 import { useRouter } from "next/navigation"
+import AppliedPromotions from "@/components/shared/applied-promotions"
+import AllowedDelivery from "@/components/shared/allowed-delivery"
+import { QuantityInput } from "@/components/shared/quantity-input"
 
 type CreateOrderProps = {
   categories: PopulatedCategory[]
@@ -66,10 +69,6 @@ const CreateOrder = ({
 
   const { shippingSettings, allowedPaymentMethods } = shopSettings
 
-  // const { promotions, appliedPromotions, isLoadingPromotions } = usePromotion()
-
-  // console.log({ appliedPromotions })
-
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
@@ -84,7 +83,7 @@ const CreateOrder = ({
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting, errors, isSubmitted, isValid },
     setValue,
     watch,
   } = form
@@ -94,12 +93,13 @@ const CreateOrder = ({
     name: "items",
   })
 
+  const items = watch("items")
   const customerId = watch("customerId")
   const shippingMethod = watch("shippingMethod")
   const customerAddressId = watch("customerAddressId")
 
-  const customer = customers?.find((c) => c.id === customerId)
-  const selectedAddress = customer?.address?.find(
+  const selectedCustomer = customers?.find((c) => c.id === customerId)
+  const selectedAddress = selectedCustomer?.address?.find(
     (a) => a.id === customerAddressId
   )
 
@@ -121,9 +121,25 @@ const CreateOrder = ({
     [categories]
   )
 
-  const placeOrder = async (data: OrderSchema) => {
-    console.log(data)
+  const lineItems: LineItem[] = items
+    .map((item) => {
+      const product = products.find((p) => p.id === item.productId)
+      if (!product) {
+        return null
+      }
+      return {
+        product,
+        quantity: item.quantity,
+        variation: item.variation,
+      }
+    })
+    .filter((item): item is LineItem => item !== null)
 
+  const { promotions, appliedPromotions } = usePromotion({
+    items: lineItems,
+  })
+
+  const placeOrder = async (data: OrderSchema) => {
     if (selectedAddress && !shippingZone) {
       toast({
         variant: "destructive",
@@ -135,7 +151,6 @@ const CreateOrder = ({
 
     const res = await createOrder({ values: data, sendEmail: false })
 
-    console.log(res)
     if (res.success) {
       toast({
         title: "Pedido creado",
@@ -151,12 +166,36 @@ const CreateOrder = ({
     }
   }
 
+  const isValidMinQuantity: boolean = (() => {
+    const totalProductsQuantity = items.reduce(
+      (acc, curr) => acc + curr.quantity,
+      0
+    )
+
+    return (
+      (shippingMethod === ShippingMethod.DELIVERY &&
+        shippingSettings &&
+        shippingSettings.minProductsQuantityForDelivery <=
+          totalProductsQuantity) ||
+      false
+    )
+  })()
+
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(placeOrder)} className='grid gap-4'>
         <div className='flex justify-between items-center'>
           <h2 className='font-semibold text-lg'>Crear pedido</h2>
-          <Button type='submit' disabled={isSubmitting}>
+          <Button
+            type='submit'
+            disabled={
+              isSubmitting ||
+              (isSubmitted &&
+                !isValid &&
+                shippingMethod === "DELIVERY" &&
+                (!isValidMinQuantity || !selectedCustomer?.address?.length))
+            }
+          >
             {isSubmitting && (
               <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
             )}
@@ -254,7 +293,7 @@ const CreateOrder = ({
                           name={`items.${index}.variation.withSalt`}
                           render={({ field }) => (
                             <FormItem className='flex flex-col w-1/5'>
-                              <FormLabel>Con/Sin Sal</FormLabel>
+                              <FormLabel>Sal</FormLabel>
                               <FormControl>
                                 <Select
                                   onValueChange={(value) =>
@@ -288,13 +327,17 @@ const CreateOrder = ({
                             <FormItem className='flex flex-col w-1/5'>
                               <FormLabel>Cantidad</FormLabel>
                               <FormControl>
-                                <Input
-                                  type='number'
-                                  min={0}
-                                  step={1}
-                                  placeholder='Cantidad'
+                                <QuantityInput
+                                  value={field.value}
+                                  onIncrement={() =>
+                                    field.onChange(field.value + 1)
+                                  }
+                                  onDecrement={() =>
+                                    field.value > 1
+                                      ? field.onChange(field.value - 1)
+                                      : null
+                                  }
                                   disabled={isSubmitting}
-                                  {...field}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -302,7 +345,7 @@ const CreateOrder = ({
                           )}
                         />
 
-                        <div className='flex items-end justify-between'>
+                        <div className='flex justify-between mt-6'>
                           <Button
                             type='button'
                             size='icon'
@@ -343,13 +386,16 @@ const CreateOrder = ({
               </CardFooter>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className='text-xl'>Promociones</CardTitle>
-                <CardDescription>Promociones</CardDescription>
-              </CardHeader>
-              <CardContent>content</CardContent>
-            </Card>
+            {promotions && promotions.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className='text-xl'>Promociones</CardTitle>
+                </CardHeader>
+                <CardContent className='space-y-3'>
+                  <AppliedPromotions items={lineItems} />
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
@@ -361,6 +407,7 @@ const CreateOrder = ({
               <CardContent>
                 <PaymentMethodField
                   control={control}
+                  items={lineItems}
                   allowedPaymentMethods={allowedPaymentMethods}
                   isSubmitting={isSubmitting}
                 />
@@ -369,7 +416,7 @@ const CreateOrder = ({
 
             <Card>
               <CardHeader>
-                <CardTitle className='text-xl'>Método de envío</CardTitle>
+                <CardTitle className='text-xl'>Envío</CardTitle>
                 <CardDescription>Método de envío</CardDescription>
               </CardHeader>
               <CardContent>
@@ -395,18 +442,18 @@ const CreateOrder = ({
                         <SelectContent>
                           {shippingSettings?.allowedShippingMethods.map(
                             (method) => {
-                              // const isDisabled =
-                              //   appliedPromotions.length > 0 &&
-                              //   !appliedPromotions.every((promotion) =>
-                              //     promotion.allowedShippingMethods.includes(
-                              //       method
-                              //     )
-                              //   )
+                              const isDisabled =
+                                appliedPromotions.length > 0 &&
+                                !appliedPromotions.every((promotion) =>
+                                  promotion.allowedShippingMethods.includes(
+                                    method
+                                  )
+                                )
                               return (
                                 <SelectItem
                                   key={method}
                                   value={method}
-                                  // disabled={isDisabled}
+                                  disabled={isDisabled}
                                 >
                                   {translateShippingMethod(method)}
                                 </SelectItem>
@@ -420,6 +467,15 @@ const CreateOrder = ({
                   )}
                 />
               </CardContent>
+              <CardFooter>
+                <AllowedDelivery
+                  shippingMethod={shippingMethod}
+                  isValidMinQuantity={isValidMinQuantity}
+                  minProductsQuantityForDelivery={
+                    shippingSettings?.minProductsQuantityForDelivery as number
+                  }
+                />
+              </CardFooter>
             </Card>
 
             {shippingMethod === ShippingMethod.DELIVERY && (
@@ -431,7 +487,8 @@ const CreateOrder = ({
                 <CardContent>
                   {customerId ? (
                     <>
-                      {customer?.address && customer.address.length > 0 ? (
+                      {selectedCustomer?.address &&
+                      selectedCustomer.address.length > 0 ? (
                         <FormField
                           control={control}
                           name={"customerAddressId"}
@@ -447,7 +504,7 @@ const CreateOrder = ({
                                   <SelectValue placeholder='' />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {customer?.address?.map((a) => (
+                                  {selectedCustomer?.address?.map((a) => (
                                     <SelectItem key={a.id} value={a.id}>
                                       {translateAddressLabel(a.label)}
                                     </SelectItem>
@@ -459,7 +516,7 @@ const CreateOrder = ({
                           )}
                         />
                       ) : (
-                        <Alert>
+                        <Alert variant='destructive'>
                           <Icons.circleAlert className='h-4 w-4' />
                           <AlertTitle className='leading-5'>
                             Cliente sin dirección
@@ -499,7 +556,7 @@ const CreateOrder = ({
                 <CardDescription>Total del pedido</CardDescription>
               </CardHeader>
               <CardContent>
-                <Summary shippingCost={shippingCost} />
+                <Summary items={lineItems} shippingCost={shippingCost} />
               </CardContent>
             </Card>
           </div>

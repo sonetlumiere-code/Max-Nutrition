@@ -107,7 +107,6 @@ export async function createOrder({
 
     const { appliedPromotions, finalPrice } = await checkPromotion({
       items: populatedItems,
-      subtotal,
     })
 
     let promotionsData = []
