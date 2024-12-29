@@ -20,8 +20,8 @@ export default async function ShopLayout({ children }: ShopLayoutProps) {
       </main>
       <footer className='h-20 bg-gray-200 flex items-center justify-center p-4 mt-8'>
         <p className='text-sm text-muted-foreground'>
-          © 2025 Máxima Nutrición. Todos los derechos reservados. | Seguinos en
-          nuestras redes sociales.
+          © {new Date().getFullYear()} Máxima Nutrición. Todos los derechos
+          reservados. | Seguinos en nuestras redes sociales.
         </p>
       </footer>
     </CartProvider>
