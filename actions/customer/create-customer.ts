@@ -30,7 +30,7 @@ export async function createCustomer(values: CustomerSchema) {
   try {
     const customer = await prisma.customer.create({
       data: {
-        userId,
+        userId: userId || null,
         birthdate,
         phone,
         name,

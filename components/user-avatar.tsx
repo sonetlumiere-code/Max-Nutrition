@@ -11,7 +11,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ user }) => {
     : `https://api.dicebear.com/7.x/initials/svg?${new URLSearchParams({
         scale: "80",
         backgroundType: "gradientLinear",
-        seed: user?.email || "User",
+        seed: user?.email || "",
       }).toString()}`
 
   // const initials = user?.name?.slice(0, 1).toUpperCase() || ""

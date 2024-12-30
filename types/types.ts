@@ -73,7 +73,7 @@ export interface IngredientTotal {
   measurement: Measurement
   quantity: number
   cost: number
-  waste: number // Ver acá lucas si es necesario (lo aplicó  Cursor)
+  waste: number
 }
 
 export type PopulatedShopSettings = ShopSettings & {

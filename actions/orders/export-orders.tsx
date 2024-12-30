@@ -7,6 +7,16 @@ export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
     const totalItems =
       order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
 
+    const totalDiscount =
+      order.appliedPromotions?.reduce(
+        (sum, promo) => sum + promo.promotionDiscount,
+        0
+      ) || 0
+
+    const appliedPromotionNames =
+      order.appliedPromotions?.map((promo) => promo.promotionName).join(", ") ||
+      "N/A"
+
     return {
       "Nombre Cliente": order.customer?.name || "N/A",
       Email: order.customer?.user?.email || "N/A",
@@ -21,10 +31,10 @@ export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
       "Cantidad Total de Productos": totalItems,
       Subtotal: order.subtotal || order.total,
       "Costo de Envío": order.shippingCost || 0,
-      Descuento: order.appliedPromotionDiscount || 0,
-      "Promoción Aplicada": order.appliedPromotionName || "N/A",
+      Descuento: totalDiscount,
+      "Promoción Aplicada": appliedPromotionNames,
       Total: order.total,
-      Fecha: order.createdAt.toLocaleDateString("es-AR"),
+      Fecha: new Date(order.createdAt).toLocaleDateString("es-AR"),
     }
   })
 

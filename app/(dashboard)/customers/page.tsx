@@ -8,13 +8,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card"
 import {
   DropdownMenu,
@@ -34,6 +35,7 @@ import {
 import UserAvatar from "@/components/user-avatar"
 import { getCustomers } from "@/data/customer"
 import { auth } from "@/lib/auth/auth"
+import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -76,9 +78,25 @@ export default async function CustomersPage() {
 
       <Card>
         <CardHeader>
-          <CardDescription>
-            Administra tus clientes y visualiza su información.
-          </CardDescription>
+          <div className='space-between flex items-center'>
+            <div className='max-w-screen-sm'>
+              <CardTitle className='text-xl'>Clientes</CardTitle>
+              <CardDescription>
+                Administra tus clientes y visualiza su información.
+              </CardDescription>
+            </div>
+            <div className='ml-auto'>
+              <Link
+                href='customers/create-customer'
+                className={cn(buttonVariants({ variant: "default" }))}
+              >
+                <>
+                  <Icons.circlePlus className='mr-2 h-4 w-4' />
+                  Agregar
+                </>
+              </Link>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
@@ -102,24 +120,24 @@ export default async function CustomersPage() {
               {customers?.map((customer) => (
                 <TableRow key={customer.id}>
                   <TableCell className='hidden sm:table-cell'>
-                    {customer.user?.image ? (
+                    {customer.user ? (
                       <UserAvatar user={customer.user} />
                     ) : (
-                      <Icons.circleUser className='h-8 w-8 text-muted-foreground' />
+                      <Icons.circleUser className='h-11 w-11 text-muted-foreground' />
                     )}
                   </TableCell>
-                  <TableCell className='font-medium'>
-                    {customer.user?.name}
-                  </TableCell>
+                  <TableCell className='font-medium'>{customer.name}</TableCell>
                   <TableCell className='hidden sm:table-cell'>
-                    <Button
-                      variant='link'
-                      size='default'
-                      className='group px-0'
-                    >
-                      {customer.user?.email}
-                      <Icons.clipboard className='h-4 w-4 ml-1 invisible group-hover:visible' />
-                    </Button>
+                    {customer.user ? (
+                      <Button
+                        variant='link'
+                        size='default'
+                        className='group px-0'
+                      >
+                        {customer.user?.email}
+                        <Icons.clipboard className='h-4 w-4 ml-1 invisible group-hover:visible' />
+                      </Button>
+                    ) : null}
                   </TableCell>
                   <TableCell className='hidden md:table-cell'>
                     {customer.phone ? (
