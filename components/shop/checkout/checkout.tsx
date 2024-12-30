@@ -56,7 +56,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { PaymentMethod, ShippingMethod, ShippingSettings } from "@prisma/client"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import useSWR from "swr"
 import { z } from "zod"
@@ -83,11 +83,15 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
 
   const router = useRouter()
 
+  const [isRedirecting, setIsRedirecting] = useState(false)
+
   useEffect(() => {
     if (!items.length || !customer) {
-      router.replace("/shop")
+      if (!isRedirecting) {
+        router.replace("/shop")
+      }
     }
-  }, [items, customer, router])
+  }, [items, customer, router, isRedirecting])
 
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
@@ -155,6 +159,8 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     const res = await createOrder(data)
 
     if (res.success) {
+      setIsRedirecting(true)
+      await router.replace(`/order-confirmed?orderId=${res.order.id}`)
       clearCart()
       toast({
         title: "Pedido realizado",
@@ -165,7 +171,6 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
           </ToastAction>
         ),
       })
-      router.replace("/shop")
     } else if (res.error) {
       toast({
         variant: "destructive",

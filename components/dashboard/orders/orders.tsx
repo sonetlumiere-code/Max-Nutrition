@@ -31,6 +31,7 @@ import {
 import { es } from "date-fns/locale"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
+import { exportOrdersToExcel } from "@/actions/orders/export-orders"
 
 const fetchOrders = async () => {
   const orders = await getOrders({
@@ -158,9 +159,15 @@ export default function Orders() {
     setSelectedTab(tab)
   }
 
-  const ordersToExport = Object.values(groupedAndFilteredOrders)
-    .flat()
-    .filter((order) => order.status !== OrderStatus.Cancelled)
+  const handleExport = () => {
+    if (!orders) return
+
+    const ordersToExport = Object.values(groupedAndFilteredOrders)
+      .flat()
+      .filter((order) => order.status !== OrderStatus.Cancelled)
+
+    exportOrdersToExcel(ordersToExport)
+  }
 
   if (error) {
     return <div>Error buscando pedidos.</div>
@@ -195,7 +202,7 @@ export default function Orders() {
                     size='sm'
                     variant='outline'
                     className='h-7 gap-1 text-sm'
-                    onClick={() => setOpenBulkExportDialog(true)}
+                    onClick={handleExport}
                   >
                     <Icons.file className='h-3.5 w-3.5' />
                     <span className='sr-only sm:not-sr-only'>Exportar</span>
@@ -265,7 +272,9 @@ export default function Orders() {
           }`}
           open={openBulkExportDialog}
           setOpen={setOpenBulkExportDialog}
-          orders={ordersToExport}
+          orders={Object.values(groupedAndFilteredOrders)
+            .flat()
+            .filter((order) => order.status !== OrderStatus.Cancelled)}
         />
       )}
     </>
