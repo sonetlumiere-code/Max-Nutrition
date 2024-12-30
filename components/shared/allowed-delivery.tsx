@@ -14,7 +14,7 @@ const AllowedDelivery = ({
   minProductsQuantityForDelivery,
 }: AllowedDeliveryProps) => {
   return (
-    <div>
+    <div className='w-full'>
       {shippingMethod === ShippingMethod.DELIVERY && (
         <>
           {!isValidMinQuantity ? (
