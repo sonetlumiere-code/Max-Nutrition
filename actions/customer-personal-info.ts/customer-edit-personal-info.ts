@@ -8,16 +8,10 @@ import { z } from "zod"
 
 type CustomerSchema = z.infer<typeof customerSchema>
 
-export async function editCustomer({
-  id,
-  values,
-}: {
-  id: string
-  values: CustomerSchema
-}) {
+export async function customerEditPersonalInfo(values: CustomerSchema) {
   const session = await auth()
 
-  if (session?.user.role !== "ADMIN") {
+  if (!session) {
     return { error: "No autorizado." }
   }
 
@@ -31,7 +25,7 @@ export async function editCustomer({
 
   try {
     const customer = await prisma.customer.update({
-      where: { id },
+      where: { userId: session.user.id },
       data: {
         name,
         birthdate,
@@ -43,7 +37,7 @@ export async function editCustomer({
       },
     })
 
-    revalidatePath("/customers")
+    revalidatePath("/customer-info")
 
     return { success: customer }
   } catch (error) {

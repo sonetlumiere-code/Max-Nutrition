@@ -1,6 +1,6 @@
 "use client"
 
-import { editCustomer } from "@/actions/customer/edit-customer"
+import { customerEditPersonalInfo } from "@/actions/customer-personal-info.ts/customer-edit-personal-info"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -42,7 +42,6 @@ const CustomerEditPersonalInfoForm = ({
   const form = useForm<CustomerSchema>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
-      userId: customer.userId || "",
       name: customer.name || customer.user?.name || "",
       phone: customer.phone || 0,
       birthdate: customer.birthdate || undefined,
@@ -56,7 +55,7 @@ const CustomerEditPersonalInfoForm = ({
   } = form
 
   const onSubmit = async (data: CustomerSchema) => {
-    const res = await editCustomer({ id: customer.id, values: data })
+    const res = await customerEditPersonalInfo(data)
 
     setOpen(false)
 

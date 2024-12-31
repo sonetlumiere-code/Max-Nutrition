@@ -32,14 +32,16 @@ import { Calendar } from "@/components/ui/calendar"
 import { cn } from "@/lib/utils"
 import { createCustomer } from "@/actions/customer/create-customer"
 import { toast } from "@/components/ui/use-toast"
+import { useRouter } from "next/navigation"
 
 type CustomerSchema = z.infer<typeof customerSchema>
 
 const CreateCustomer = () => {
+  const router = useRouter()
+
   const form = useForm<CustomerSchema>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
-      userId: "",
       name: "",
       phone: 0,
       birthdate: undefined,
@@ -54,8 +56,6 @@ const CreateCustomer = () => {
   } = form
 
   const onSubmit = async (data: CustomerSchema) => {
-    console.log(data)
-
     const res = await createCustomer(data)
 
     if (res.success) {
@@ -63,6 +63,7 @@ const CreateCustomer = () => {
         title: "Cliente creado",
         description: "Cliente creado correctamente.",
       })
+      router.push("/customers")
     }
 
     if (res.error) {

@@ -2,8 +2,8 @@
 
 import prisma from "@/lib/db/db"
 import { sendWelcomeEmail } from "@/lib/mail/mail"
-import { createCustomer } from "../customer/create-customer"
 import { updateUser } from "./user"
+import { createCustomerByUser } from "@/actions/onboarding/create-customer-by-user"
 
 export const newVerification = async (token: string) => {
   const existingToken = await prisma.verificationToken.findFirst({
@@ -36,7 +36,7 @@ export const newVerification = async (token: string) => {
         emailVerified: new Date(),
         email: existingToken.email,
       }),
-      createCustomer({
+      createCustomerByUser({
         userId: existingUser.id,
         name: existingUser.name || "",
       }),
