@@ -1,11 +1,18 @@
 "use server"
 
+import { auth } from "@/lib/auth/auth"
 import { uploadToCloudinary } from "@/lib/cloudinary/cloudinary-config"
 
 async function uploadImage(
   formData: FormData
 ): Promise<{ message?: string; public_id?: string; error?: string }> {
   try {
+    const session = await auth()
+
+    if (!session) {
+      return { error: "No autorizado." }
+    }
+
     const imageFile = formData.get("imageFile") as File
 
     if (!imageFile) {
