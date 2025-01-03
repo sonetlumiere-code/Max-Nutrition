@@ -338,6 +338,7 @@ const CreateOrder = ({
                                       : null
                                   }
                                   disabled={isSubmitting}
+                                  minQuantity={1}
                                 />
                               </FormControl>
                               <FormMessage />

@@ -41,6 +41,7 @@ const CartListItem = ({ cartItem }: { cartItem: LineItem }) => {
               removeItem(cartItem.id)
             }
           }}
+          minQuantity={0}
         />
       </TableCell>
     </TableRow>

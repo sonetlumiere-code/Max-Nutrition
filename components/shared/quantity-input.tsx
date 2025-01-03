@@ -7,7 +7,7 @@ interface QuantityInputProps {
   onIncrement: () => void
   onDecrement: () => void
   disabled?: boolean
-  minQuantity?: number
+  minQuantity: number
 }
 
 export const QuantityInput: React.FC<QuantityInputProps> = ({
@@ -15,7 +15,7 @@ export const QuantityInput: React.FC<QuantityInputProps> = ({
   onIncrement,
   onDecrement,
   disabled = false,
-  minQuantity = 1,
+  minQuantity = 0,
 }) => {
   return (
     <div className='flex items-center border rounded-md justify-between max-w-24 h-10'>
@@ -27,7 +27,11 @@ export const QuantityInput: React.FC<QuantityInputProps> = ({
         onClick={onDecrement}
         disabled={value <= minQuantity || disabled}
       >
-        <Icons.minus className='w-4 h-4' />
+        {minQuantity === 0 && value === 1 ? (
+          <Icons.trash2 className='w-4 h-4' />
+        ) : (
+          <Icons.minus className='w-4 h-4' />
+        )}
       </Button>
       <div className='text-sm font-bold min-w-4 text-center'>{value}</div>
       <Button

@@ -268,24 +268,27 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                         />
                       </CardContent>
                       <CardFooter>
-                        <AllowedDelivery
-                          shippingMethod={shippingMethod}
-                          isValidMinQuantity={isValidMinQuantity}
-                          minProductsQuantityForDelivery={
-                            shippingSettings.minProductsQuantityForDelivery
-                          }
-                        />
-                        {shippingMethod === ShippingMethod.TAKE_AWAY &&
-                          branches && (
-                            <div className='space-y-3 w-full'>
-                              {branches.map((branch) => (
-                                <CheckoutShopBranch
-                                  key={branch.id}
-                                  shopBranch={branch}
-                                />
-                              ))}
-                            </div>
+                        <div className='w-full'>
+                          {shippingMethod === ShippingMethod.DELIVERY && (
+                            <AllowedDelivery
+                              isValidMinQuantity={isValidMinQuantity}
+                              minProductsQuantityForDelivery={
+                                shippingSettings.minProductsQuantityForDelivery
+                              }
+                            />
                           )}
+                          {shippingMethod === ShippingMethod.TAKE_AWAY &&
+                            branches && (
+                              <div className='space-y-3'>
+                                {branches.map((branch) => (
+                                  <CheckoutShopBranch
+                                    key={branch.id}
+                                    shopBranch={branch}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                        </div>
                       </CardFooter>
                     </Card>
                   )}

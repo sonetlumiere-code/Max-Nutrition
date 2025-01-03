@@ -36,11 +36,12 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
   password      String?
-  role          Role      @default(USER)
-  accounts      Account[]
-  customer      Customer?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  customer Customer?
+  role     Role      @default(USER)
 
   @@map("users")
 }
@@ -92,16 +93,17 @@ model PasswordResetToken {
 }
 
 model Customer {
-  id        String            @id @default(cuid())
-  userId    String?           @unique
+  id        String    @id @default(cuid())
+  userId    String?   @unique
   name      String
   birthdate DateTime?
-  phone     Int?              @default(0)
-  address   CustomerAddress[]
-  orders    Order[]
-  user      User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  phone     Int?      @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  address CustomerAddress[]
+  orders  Order[]
+  user    User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("customers")
 }
@@ -113,9 +115,8 @@ enum CustomerAddressLabel {
 }
 
 model CustomerAddress {
-  id               String               @id @default(cuid())
+  id               String   @id @default(cuid())
   customerId       String
-  label            CustomerAddressLabel
   labelString      String?
   province         String
   municipality     String
@@ -126,10 +127,12 @@ model CustomerAddress {
   addressApartment String?
   postCode         String
   notes            String?
-  customer         Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
-  order            Order[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  customer Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  label    CustomerAddressLabel
+  order    Order[]
 
   @@map("customer_addresses")
 }
@@ -143,68 +146,72 @@ enum Measurement {
 }
 
 model Ingredient {
-  id          String             @id @default(cuid())
-  name        String             @unique
+  id        String   @id @default(cuid())
+  name      String   @unique
+  price     Float    @default(0)
+  brand     String?
+  waste     Float    @default(0)
+  carbs     Float    @default(0)
+  proteins  Float    @default(0)
+  fats      Float    @default(0)
+  fiber     Float    @default(0)
+  calories  Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   measurement Measurement
-  price       Float              @default(0)
-  brand       String?
-  waste       Float              @default(0)
-  carbs       Float              @default(0)
-  proteins    Float              @default(0)
-  fats        Float              @default(0)
-  fiber       Float              @default(0)
-  calories    Float              @default(0)
   recipes     RecipeIngredient[]
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
 
   @@map("ingredients")
 }
 
 model Recipe {
-  id                String             @id @default(cuid())
+  id                String   @id @default(cuid())
   name              String
   description       String?
   instructions      String?
-  timeToCookMinutes Int?               @default(0)
-  portions          Int                @default(1)
-  ingredients       RecipeIngredient[]
-  product           Product?
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  timeToCookMinutes Int?     @default(0)
+  portions          Int      @default(1)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  ingredients RecipeIngredient[]
+  product     Product?
 
   @@map("recipes")
 }
 
 model RecipeIngredient {
-  id           String     @id @default(cuid())
+  id           String   @id @default(cuid())
   recipeId     String
   ingredientId String
   quantity     Float
-  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
   @@unique([recipeId, ingredientId])
 }
 
 model Product {
-  id               String      @id @default(cuid())
+  id               String   @id @default(cuid())
   name             String
   description      String
   price            Float
   promotionalPrice Float
-  featured         Boolean     @default(false)
-  stock            Boolean     @default(true)
-  show             Boolean     @default(true)
+  featured         Boolean  @default(false)
+  stock            Boolean  @default(true)
+  show             Boolean  @default(true)
   image            String
-  recipeId         String?     @unique
-  recipe           Recipe?     @relation(fields: [recipeId], references: [id])
-  categories       Category[]
-  orderItems       OrderItem[]
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  recipeId         String?  @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  categories Category[]
+  orderItems OrderItem[]
+  recipe     Recipe?     @relation(fields: [recipeId], references: [id])
 
   @@map("products")
 }
@@ -217,23 +224,24 @@ enum OrderStatus {
 }
 
 model Order {
-  id                String             @id @default(cuid())
+  id                String   @id @default(cuid())
   customerId        String
   subtotal          Float?
   total             Float
-  customer          Customer           @relation(fields: [customerId], references: [id])
   customerAddressId String?
-  address           CustomerAddress?   @relation(fields: [customerAddressId], references: [id])
-  items             OrderItem[]
-  status            OrderStatus        @default(PENDING)
-  paymentMethod     PaymentMethod
-  shippingMethod    ShippingMethod
   shippingCost      Float
   taxCost           Float?
   notes             String?
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  address           CustomerAddress?   @relation(fields: [customerAddressId], references: [id])
   appliedPromotions AppliedPromotion[]
+  customer          Customer           @relation(fields: [customerId], references: [id])
+  items             OrderItem[]
+  paymentMethod     PaymentMethod
+  shippingMethod    ShippingMethod
+  status            OrderStatus        @default(PENDING)
 
   @@map("orders")
 }
@@ -243,12 +251,14 @@ model OrderItem {
   orderId   String
   productId String
   quantity  Int
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product   Product  @relation(fields: [productId], references: [id])
   withSalt  Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([orderId, productId, withSalt])
   @@map("order_items")
 }
 
@@ -261,33 +271,36 @@ enum PaymentMethod {
 }
 
 model AppliedPromotion {
-  id                    String     @id @default(cuid())
+  id                    String @id @default(cuid())
   orderId               String
-  promotion             Promotion? @relation(fields: [promotionId], references: [id])
-  promotionId           String?
+  promotionId           String
   promotionName         String
   promotionDiscountType String
   promotionDiscount     Float
   appliedTimes          Int
-  order                 Order      @relation(fields: [orderId], references: [id])
 
+  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  promotion Promotion @relation(fields: [promotionId], references: [id])
+
+  @@unique([orderId, promotionId])
   @@map("applied_promotions")
 }
 
 model Promotion {
-  id                     String                @id @default(cuid())
-  name                   String
-  description            String
-  discountType           PromotionDiscountType
-  discount               Float
-  categories             PromotionCategory[]
-  maxApplicableTimes     Int?
-  isActive               Boolean               @default(true)
+  id                 String   @id @default(cuid())
+  name               String
+  description        String
+  discount           Float
+  maxApplicableTimes Int?
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  appliedPromotion       AppliedPromotion[]
   allowedPaymentMethods  PaymentMethod[]
   allowedShippingMethods ShippingMethod[]
-  createdAt              DateTime              @default(now())
-  updatedAt              DateTime              @updatedAt
-  appliedPromotion       AppliedPromotion[]
+  categories             PromotionCategory[]
+  discountType           PromotionDiscountType
 
   @@map("promotions")
 }
@@ -298,44 +311,47 @@ enum PromotionDiscountType {
 }
 
 model PromotionCategory {
-  id          String    @id @default(cuid())
+  id          String   @id @default(cuid())
   promotionId String
   categoryId  String
   quantity    Int
-  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
-  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
+  category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  promotion Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+  @@unique([promotionId, categoryId])
   @@map("promotion_categories")
 }
 
 model Category {
-  id         String              @id @default(cuid())
-  name       String              @unique
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   products   Product[]
   promotions PromotionCategory[]
-  createdAt  DateTime            @default(now())
-  updatedAt  DateTime            @updatedAt
 
   @@map("categories")
 }
 
 model ShopSettings {
-  id                    String            @id @default(cuid())
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   allowedPaymentMethods PaymentMethod[]
   branches              ShopBranch[]
   shippingSettings      ShippingSettings?
-  createdAt             DateTime          @default(now())
-  updatedAt             DateTime          @updatedAt
 
   @@map("shop_settings")
 }
 
 model ShopBranch {
-  id               String             @id @default(cuid())
+  id               String   @id @default(cuid())
   label            String
-  branchType       BranchType         @default(RETAIL)
   province         String
   municipality     String
   locality         String
@@ -352,12 +368,14 @@ model ShopBranch {
   image            String?
   description      String?
   timezone         String?
-  isActive         Boolean            @default(true)
-  operationalHours OperationalHours[]
+  isActive         Boolean  @default(true)
   shopSettingsId   String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  branchType       BranchType         @default(RETAIL)
+  operationalHours OperationalHours[]
   shopSettings     ShopSettings       @relation(fields: [shopSettingsId], references: [id], onDelete: Cascade)
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
 
   @@map("shop_branches")
 }
@@ -367,14 +385,15 @@ enum BranchType {
 }
 
 model OperationalHours {
-  id           Int        @id @default(autoincrement())
-  dayOfWeek    DayOfWeek
-  startTime    String?    @db.VarChar(5) // Stores time in HH:MM format
-  endTime      String?    @db.VarChar(5) // Stores time in HH:MM format
+  id           Int      @id @default(autoincrement())
+  startTime    String?  @db.VarChar(5) // Stores time in HH:MM format
+  endTime      String?  @db.VarChar(5) // Stores time in HH:MM format
   shopBranchId String
-  shopBranch   ShopBranch @relation(fields: [shopBranchId], references: [id], onDelete: Cascade)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  dayOfWeek  DayOfWeek
+  shopBranch ShopBranch @relation(fields: [shopBranchId], references: [id], onDelete: Cascade)
 
   @@unique([dayOfWeek, shopBranchId])
   @@map("operational_hours")
@@ -386,29 +405,31 @@ enum ShippingMethod {
 }
 
 model ShippingSettings {
-  id                             String           @id @default(cuid())
-  allowedShippingMethods         ShippingMethod[]
-  minProductsQuantityForDelivery Int              @default(10)
-  shopSettings                   ShopSettings     @relation(fields: [shopSettingsId], references: [id])
-  shopSettingsId                 String           @unique
-  shippingZones                  ShippingZone[]
-  createdAt                      DateTime         @default(now())
-  updatedAt                      DateTime         @updatedAt
+  id                             String   @id @default(cuid())
+  minProductsQuantityForDelivery Int      @default(10)
+  shopSettingsId                 String   @unique
+  createdAt                      DateTime @default(now())
+  updatedAt                      DateTime @updatedAt
+
+  allowedShippingMethods ShippingMethod[]
+  shippingZones          ShippingZone[]
+  shopSettings           ShopSettings     @relation(fields: [shopSettingsId], references: [id])
 
   @@map("shipping_settings")
 }
 
 model ShippingZone {
-  id                 String           @id @default(cuid())
+  id                 String   @id @default(cuid())
   province           String
   municipality       String
-  locality           String           @unique
-  isActive           Boolean          @default(true)
-  cost               Float            @default(0)
+  locality           String   @unique
+  isActive           Boolean  @default(true)
+  cost               Float    @default(0)
   shippingSettingsId String
-  shippingSettings   ShippingSettings @relation(fields: [shippingSettingsId], references: [id], onDelete: Cascade)
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  shippingSettings ShippingSettings @relation(fields: [shippingSettingsId], references: [id], onDelete: Cascade)
 
   @@map("shipping_zones")
 }
