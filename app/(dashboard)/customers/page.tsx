@@ -171,11 +171,13 @@ export default async function CustomersPage() {
                             <Icons.eye className='h-4 w-4 mr-2' /> Ver
                           </DropdownMenuItem>
                         </Link>
+                        <Link href={`customers/edit-customer/${customer.id}`}>
+                          <DropdownMenuItem>
+                            <Icons.pencil className='h-4 w-4 mr-2' /> Editar
+                          </DropdownMenuItem>
+                        </Link>
                         {/* <DropdownMenuItem>
-                          <Pencil className='h-4 w-4 mr-2' /> Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Trash className='h-4 w-4 mr-2' /> Eliminar
+                          <Icons.trash2 className='h-4 w-4 mr-2' /> Eliminar
                         </DropdownMenuItem> */}
                       </DropdownMenuContent>
                     </DropdownMenu>
