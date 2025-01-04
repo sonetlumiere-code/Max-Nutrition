@@ -50,7 +50,10 @@ const EditShippingSettings = ({
   } = form
 
   const onSubmit = async (data: ShippingSettingsSchema) => {
-    const res = await editShippingSettings({ values: data })
+    const res = await editShippingSettings({
+      id: shippingSettings.id,
+      values: data,
+    })
 
     if (res.success) {
       toast({

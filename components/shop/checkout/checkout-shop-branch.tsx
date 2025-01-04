@@ -1,4 +1,3 @@
-import { Icons } from "@/components/icons"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { translateDayOfWeek } from "@/helpers/helpers"
 import { PopulatedShopBranch } from "@/types/types"
@@ -106,10 +105,12 @@ const CheckoutShopBranch = ({ shopBranch }: CheckoutOperationalHoursProps) => {
   }
 
   return (
-    <Alert>
-      <Icons.store className='h-4 w-4' />
+    <Alert className='border-none'>
+      {/* <Icons.store className='h-4 w-4' /> */}
       <AlertTitle>{shopBranch.label}</AlertTitle>
-      <AlertDescription>{message}</AlertDescription>
+      <AlertDescription className='text-muted-foreground'>
+        {message}
+      </AlertDescription>
     </Alert>
   )
 }

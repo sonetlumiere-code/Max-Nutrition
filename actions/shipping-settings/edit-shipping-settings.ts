@@ -6,13 +6,13 @@ import { shippingSettingsSchema } from "@/lib/validations/shipping-settings-vali
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
-const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
-
 type ShippingSettingsSchema = z.infer<typeof shippingSettingsSchema>
 
 export async function editShippingSettings({
+  id,
   values,
 }: {
+  id: string
   values: ShippingSettingsSchema
 }) {
   const session = await auth()
@@ -32,7 +32,7 @@ export async function editShippingSettings({
 
   try {
     const updatedShippingSettings = await prisma.shippingSettings.update({
-      where: { id: shippingSettingsId },
+      where: { id },
       data: {
         allowedShippingMethods,
         minProductsQuantityForDelivery,

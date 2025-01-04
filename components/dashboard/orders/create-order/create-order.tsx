@@ -53,6 +53,7 @@ import { useRouter } from "next/navigation"
 import AppliedPromotions from "@/components/shared/applied-promotions"
 import AllowedDelivery from "@/components/shared/allowed-delivery"
 import { QuantityInput } from "@/components/shared/quantity-input"
+import ShopBranchField from "@/components/shared/shop-branch-field"
 
 type CreateOrderProps = {
   categories: PopulatedCategory[]
@@ -67,7 +68,7 @@ const CreateOrder = ({
 }: CreateOrderProps) => {
   const router = useRouter()
 
-  const { shippingSettings, allowedPaymentMethods } = shopSettings
+  const { shippingSettings, allowedPaymentMethods, branches } = shopSettings
 
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
@@ -76,6 +77,7 @@ const CreateOrder = ({
       customerId: "",
       paymentMethod: PaymentMethod.CASH,
       shippingMethod: ShippingMethod.DELIVERY,
+      shopBranchId: "",
       items: [],
     },
   })
@@ -93,10 +95,7 @@ const CreateOrder = ({
     name: "items",
   })
 
-  const items = watch("items")
-  const customerId = watch("customerId")
-  const shippingMethod = watch("shippingMethod")
-  const customerAddressId = watch("customerAddressId")
+  const { items, customerId, shippingMethod, customerAddressId } = watch()
 
   const selectedCustomer = customers?.find((c) => c.id === customerId)
   const selectedAddress = selectedCustomer?.address?.find(
@@ -469,13 +468,24 @@ const CreateOrder = ({
                 />
               </CardContent>
               <CardFooter>
-                <AllowedDelivery
-                  shippingMethod={shippingMethod}
-                  isValidMinQuantity={isValidMinQuantity}
-                  minProductsQuantityForDelivery={
-                    shippingSettings?.minProductsQuantityForDelivery as number
-                  }
-                />
+                <div className='w-full'>
+                  {shippingMethod === ShippingMethod.DELIVERY ? (
+                    <AllowedDelivery
+                      isValidMinQuantity={isValidMinQuantity}
+                      minProductsQuantityForDelivery={
+                        shippingSettings?.minProductsQuantityForDelivery as number
+                      }
+                    />
+                  ) : shippingMethod === ShippingMethod.TAKE_AWAY ? (
+                    branches && (
+                      <ShopBranchField
+                        control={control}
+                        branches={branches}
+                        isSubmitting={isSubmitting}
+                      />
+                    )
+                  ) : null}
+                </div>
               </CardFooter>
             </Card>
 

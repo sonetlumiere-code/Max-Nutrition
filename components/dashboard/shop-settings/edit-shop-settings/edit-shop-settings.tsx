@@ -30,7 +30,7 @@ const EditShopSettings = ({ settings }: EditShopSettingsProps) => {
   } = form
 
   const onSubmit = async (data: ShopSettingsSchema) => {
-    const res = await editSettings({ values: data })
+    const res = await editSettings({ id: settings.id, values: data })
 
     if (res.success) {
       toast({

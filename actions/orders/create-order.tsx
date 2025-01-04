@@ -12,6 +12,7 @@ import { PopulatedOrder, PopulatedProduct } from "@/types/types"
 import { Role, ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { checkPromotion } from "../promotions/check-promotion"
+import { getShopBranch } from "@/data/shop-branches"
 
 const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
 
@@ -42,6 +43,7 @@ export async function createOrder({
     shippingMethod,
     paymentMethod,
     items,
+    shopBranchId,
   } = validatedFields.data
 
   if (origin === "DASHBOARD" && userRole !== "ADMIN") {
@@ -58,8 +60,9 @@ export async function createOrder({
     }
   }
 
-  const productIds = items.map((item) => item.productId)
-  const uniqueProductIds = Array.from(new Set(productIds))
+  const uniqueProductIds = Array.from(
+    new Set(items.map((item) => item.productId))
+  )
 
   try {
     const [products, customer] = await Promise.all([
@@ -141,6 +144,16 @@ export async function createOrder({
 
     let shippingCost = 0
 
+    if (shippingMethod === ShippingMethod.TAKE_AWAY) {
+      const branch = await getShopBranch({
+        where: { id: shopBranchId, isActive: true },
+      })
+
+      if (!branch) {
+        return { error: "ID de sucursal inválido." }
+      }
+    }
+
     if (shippingMethod === ShippingMethod.DELIVERY) {
       const shippingSettings = await getShippingSettings({
         where: { id: shippingSettingsId },
@@ -196,6 +209,7 @@ export async function createOrder({
         taxCost: 0,
         subtotal,
         total,
+        shopBranchId: shippingMethod === "TAKE_AWAY" ? shopBranchId : null,
         items: {
           create: items.map((item) => ({
             productId: item.productId,
@@ -236,6 +250,7 @@ export async function createOrder({
       })
     }
 
+    revalidatePath("/orders")
     revalidatePath("/customer-orders-history")
 
     return { success: "La orden se creó exitosamente.", order }

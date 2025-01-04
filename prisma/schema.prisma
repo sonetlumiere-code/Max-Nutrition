@@ -232,6 +232,7 @@ model Order {
   shippingCost      Float
   taxCost           Float?
   notes             String?
+  shopBranchId      String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -241,6 +242,7 @@ model Order {
   items             OrderItem[]
   paymentMethod     PaymentMethod
   shippingMethod    ShippingMethod
+  shopBranch        ShopBranch?        @relation(fields: [shopBranchId], references: [id])
   status            OrderStatus        @default(PENDING)
 
   @@map("orders")
@@ -376,6 +378,7 @@ model ShopBranch {
   branchType       BranchType         @default(RETAIL)
   operationalHours OperationalHours[]
   shopSettings     ShopSettings       @relation(fields: [shopSettingsId], references: [id], onDelete: Cascade)
+  Order            Order[]
 
   @@map("shop_branches")
 }

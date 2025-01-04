@@ -6,11 +6,15 @@ import { shopSettingsSchema } from "@/lib/validations/shop-settings-validation"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
-const shopSettingsId = process.env.SHOP_SETTINGS_ID
-
 type SettingsSchema = z.infer<typeof shopSettingsSchema>
 
-export async function editSettings({ values }: { values: SettingsSchema }) {
+export async function editSettings({
+  id,
+  values,
+}: {
+  id: string
+  values: SettingsSchema
+}) {
   const session = await auth()
 
   if (session?.user.role !== "ADMIN") {
@@ -27,7 +31,7 @@ export async function editSettings({ values }: { values: SettingsSchema }) {
 
   try {
     const updatedSettings = await prisma.shopSettings.update({
-      where: { id: shopSettingsId },
+      where: { id },
       data: {
         allowedPaymentMethods,
       },

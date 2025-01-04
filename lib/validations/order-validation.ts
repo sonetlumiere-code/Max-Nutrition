@@ -8,6 +8,8 @@ const coreOrderSchema = z.object({
   paymentMethod: z.nativeEnum(PaymentMethod),
   shippingMethod: z.nativeEnum(ShippingMethod),
   status: z.nativeEnum(OrderStatus).optional(),
+  shopBranchId: z.string().optional(),
+  notes: z.string().optional(),
   items: z
     .array(
       z.object({
@@ -47,6 +49,18 @@ export const orderSchema = coreOrderSchema
     {
       message: "Debes seleccionar la dirección de envío para delivery.",
       path: ["customerAddressId"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.shippingMethod === ShippingMethod.TAKE_AWAY) {
+        return !!data.shopBranchId && data.shopBranchId.trim().length > 0
+      }
+      return true
+    },
+    {
+      message: "Debes seleccionar una sucursal.",
+      path: ["shopBranchId"],
     }
   )
 

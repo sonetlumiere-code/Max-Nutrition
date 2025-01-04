@@ -43,13 +43,13 @@ import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import useSWR from "swr"
 import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
-import CheckoutShopBranch from "./checkout-shop-branch"
 import CheckoutListItems from "./checkout-list-items-table"
 import AppliedPromotions from "../../shared/applied-promotions"
 import PaymentMethodField from "@/components/shared/payment-method-field"
 import Summary from "@/components/shared/summary"
 import SelectedAddressInfo from "@/components/shared/selected-address-info"
 import AllowedDelivery from "@/components/shared/allowed-delivery"
+import ShopBranchField from "@/components/shared/shop-branch-field"
 
 type CheckoutProps = {
   customer: PopulatedCustomer
@@ -78,6 +78,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
       customerAddressId: "",
       paymentMethod: PaymentMethod.CASH,
       shippingMethod: ShippingMethod.DELIVERY,
+      shopBranchId: shopSettings.branches?.[0].id || "",
       items: items.map((item) => ({
         productId: item.product.id,
         quantity: item.quantity,
@@ -94,8 +95,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
     setValue,
   } = form
 
-  const shippingMethod = watch("shippingMethod")
-  const customerAddressId = watch("customerAddressId")
+  const { shippingMethod, customerAddressId } = watch()
 
   const selectedAddress = useMemo(
     () => customer?.address?.find((a) => a.id === customerAddressId),
@@ -269,25 +269,22 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                       </CardContent>
                       <CardFooter>
                         <div className='w-full'>
-                          {shippingMethod === ShippingMethod.DELIVERY && (
+                          {shippingMethod === ShippingMethod.DELIVERY ? (
                             <AllowedDelivery
                               isValidMinQuantity={isValidMinQuantity}
                               minProductsQuantityForDelivery={
                                 shippingSettings.minProductsQuantityForDelivery
                               }
                             />
-                          )}
-                          {shippingMethod === ShippingMethod.TAKE_AWAY &&
+                          ) : shippingMethod === ShippingMethod.TAKE_AWAY ? (
                             branches && (
-                              <div className='space-y-3'>
-                                {branches.map((branch) => (
-                                  <CheckoutShopBranch
-                                    key={branch.id}
-                                    shopBranch={branch}
-                                  />
-                                ))}
-                              </div>
-                            )}
+                              <ShopBranchField
+                                control={control}
+                                branches={branches}
+                                isSubmitting={isSubmitting}
+                              />
+                            )
+                          ) : null}
                         </div>
                       </CardFooter>
                     </Card>
