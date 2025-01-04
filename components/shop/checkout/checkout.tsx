@@ -79,11 +79,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
       paymentMethod: PaymentMethod.CASH,
       shippingMethod: ShippingMethod.DELIVERY,
       shopBranchId: shopSettings.branches?.[0].id || "",
-      items: items.map((item) => ({
-        productId: item.product.id,
-        quantity: item.quantity,
-        variation: item.variation,
-      })),
+      items: [],
     },
   })
 
@@ -96,6 +92,17 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
   } = form
 
   const { shippingMethod, customerAddressId } = watch()
+
+  useEffect(() => {
+    setValue(
+      "items",
+      items.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        variation: item.variation,
+      }))
+    )
+  }, [items, setValue])
 
   const selectedAddress = useMemo(
     () => customer?.address?.find((a) => a.id === customerAddressId),
