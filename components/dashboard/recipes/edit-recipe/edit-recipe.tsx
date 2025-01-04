@@ -139,7 +139,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                           control={control}
                           name={`ingredients.${index}.ingredientId`}
                           render={({ field }) => (
-                            <FormItem className='flex flex-col w-2/5'>
+                            <FormItem className='w-2/5'>
                               <FormLabel className='text-xs'>
                                 Ingrediente
                               </FormLabel>
@@ -167,7 +167,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                                   </SelectContent>
                                 </Select>
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className='text-xs' />
                             </FormItem>
                           )}
                         />
@@ -176,7 +176,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                           control={control}
                           name={`ingredients.${index}.quantity`}
                           render={({ field }) => (
-                            <FormItem className='flex flex-col w-2/5'>
+                            <FormItem className='w-2/5'>
                               <FormLabel className='text-xs'>
                                 Cantidad
                               </FormLabel>
@@ -190,12 +190,12 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                                   {...field}
                                 />
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className='text-xs' />
                             </FormItem>
                           )}
                         />
 
-                        <div className='flex items-end justify-between'>
+                        <div className='flex justify-between mt-8'>
                           <Button
                             type='button'
                             size='icon'

@@ -25,8 +25,6 @@ type OrderItemDetailsProps = {
 }
 
 const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
-  console.log(order)
-
   return (
     <Card className='overflow-hidden'>
       <CardHeader className='flex flex-row items-start bg-muted/50'>

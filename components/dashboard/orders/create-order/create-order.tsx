@@ -264,8 +264,10 @@ const CreateOrder = ({
                           control={control}
                           name={`items.${index}.productId`}
                           render={({ field }) => (
-                            <FormItem className='flex flex-col w-2/5'>
-                              <FormLabel>Producto</FormLabel>
+                            <FormItem className='w-2/5'>
+                              <FormLabel className='text-xs'>
+                                Producto
+                              </FormLabel>
                               <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
@@ -282,7 +284,7 @@ const CreateOrder = ({
                                   ))}
                                 </SelectContent>
                               </Select>
-                              <FormMessage />
+                              <FormMessage className='text-xs' />
                             </FormItem>
                           )}
                         />
@@ -291,8 +293,8 @@ const CreateOrder = ({
                           control={control}
                           name={`items.${index}.variation.withSalt`}
                           render={({ field }) => (
-                            <FormItem className='flex flex-col w-1/5'>
-                              <FormLabel>Sal</FormLabel>
+                            <FormItem className='w-1/5'>
+                              <FormLabel className='text-xs'>Sal</FormLabel>
                               <FormControl>
                                 <Select
                                   onValueChange={(value) =>
@@ -314,7 +316,7 @@ const CreateOrder = ({
                                   </SelectContent>
                                 </Select>
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className='text-xs' />
                             </FormItem>
                           )}
                         />
@@ -323,8 +325,10 @@ const CreateOrder = ({
                           control={control}
                           name={`items.${index}.quantity`}
                           render={({ field }) => (
-                            <FormItem className='flex flex-col w-1/5'>
-                              <FormLabel>Cantidad</FormLabel>
+                            <FormItem className='w-1/5'>
+                              <FormLabel className='text-xs'>
+                                Cantidad
+                              </FormLabel>
                               <FormControl>
                                 <QuantityInput
                                   value={field.value}
@@ -340,12 +344,12 @@ const CreateOrder = ({
                                   minQuantity={1}
                                 />
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className='text-xs' />
                             </FormItem>
                           )}
                         />
 
-                        <div className='flex justify-between mt-6'>
+                        <div className='flex justify-between mt-8'>
                           <Button
                             type='button'
                             size='icon'

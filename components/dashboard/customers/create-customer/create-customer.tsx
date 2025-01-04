@@ -143,10 +143,10 @@ const CreateCustomer = () => {
                     control={form.control}
                     name='birthdate'
                     render={({ field }) => (
-                      <FormItem className='flex flex-col'>
+                      <FormItem>
                         <FormLabel>Fecha de nacimiento</FormLabel>
                         <Popover>
-                          <PopoverTrigger asChild>
+                          <PopoverTrigger asChild className='w-full'>
                             <FormControl>
                               <Button
                                 disabled={isSubmitting}

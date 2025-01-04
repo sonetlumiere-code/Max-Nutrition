@@ -139,7 +139,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                             {...field}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className='text-xs' />
                       </FormItem>
                     )}
                   />
@@ -254,7 +254,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                           control={control}
                           name={`categories.${index}.categoryId`}
                           render={({ field }) => (
-                            <FormItem className='flex flex-col'>
+                            <FormItem>
                               <FormLabel className='text-xs'>
                                 Categoría
                               </FormLabel>
@@ -282,46 +282,42 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                                   </SelectContent>
                                 </Select>
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className='text-xs' />
                             </FormItem>
                           )}
                         />
                       </div>
 
-                      <div className='w-1/2 flex justify-between'>
-                        <FormField
-                          control={control}
-                          name={`categories.${index}.quantity`}
-                          render={({ field }) => (
-                            <FormItem className='flex flex-col'>
-                              <FormLabel className='text-xs'>
-                                Cantidad
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type='number'
-                                  min={0}
-                                  placeholder='Cantidad'
-                                  disabled={isSubmitting}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                      <FormField
+                        control={control}
+                        name={`categories.${index}.quantity`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className='text-xs'>Cantidad</FormLabel>
+                            <FormControl>
+                              <Input
+                                type='number'
+                                min={0}
+                                placeholder='Cantidad'
+                                disabled={isSubmitting}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage className='text-xs' />
+                          </FormItem>
+                        )}
+                      />
 
-                        <div className='flex items-end justify-between'>
-                          <Button
-                            type='button'
-                            size='icon'
-                            variant='ghost'
-                            onClick={() => remove(index)}
-                            disabled={isSubmitting || fields.length === 1}
-                          >
-                            <Icons.x className='w-3 h-3' />
-                          </Button>
-                        </div>
+                      <div className='flex justify-between mt-8'>
+                        <Button
+                          type='button'
+                          size='icon'
+                          variant='ghost'
+                          onClick={() => remove(index)}
+                          disabled={isSubmitting || fields.length === 1}
+                        >
+                          <Icons.x className='w-3 h-3' />
+                        </Button>
                       </div>
                     </div>
                   ))}

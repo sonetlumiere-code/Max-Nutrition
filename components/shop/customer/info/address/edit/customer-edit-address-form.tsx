@@ -118,7 +118,7 @@ const CustomerEditAddressForm = ({
               control={form.control}
               name='label'
               render={({ field }) => (
-                <FormItem className='flex flex-col'>
+                <FormItem>
                   <FormLabel>Etiqueta</FormLabel>
                   <Select
                     onValueChange={field.onChange}
