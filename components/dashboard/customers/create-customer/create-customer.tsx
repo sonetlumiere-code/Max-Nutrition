@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form"
 import { customerSchema } from "@/lib/validations/customer-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 import {
   Card,
@@ -33,8 +33,22 @@ import { cn } from "@/lib/utils"
 import { createCustomer } from "@/actions/customer/create-customer"
 import { toast } from "@/components/ui/use-toast"
 import { useRouter } from "next/navigation"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { CustomerAddressLabel } from "@prisma/client"
+import { translateAddressLabel } from "@/helpers/helpers"
+import MunicipalitySelect from "@/components/municipality-select"
+import AsyncSelectAddress from "@/components/async-search-address"
+import LocalitySelect from "@/components/locality-select"
 
 type CustomerSchema = z.infer<typeof customerSchema>
+
+const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
 
 const CreateCustomer = () => {
   const router = useRouter()
@@ -53,7 +67,14 @@ const CreateCustomer = () => {
     control,
     handleSubmit,
     formState: { isSubmitting },
+    watch,
+    setValue,
   } = form
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "address",
+  })
 
   const onSubmit = async (data: CustomerSchema) => {
     const res = await createCustomer(data)
@@ -196,7 +217,303 @@ const CreateCustomer = () => {
                 <CardTitle className='text-xl'>Direcciones</CardTitle>
                 <CardDescription>Direcciones del cliente</CardDescription>
               </CardHeader>
-              <CardContent>direcciones</CardContent>
+              <CardContent>
+                <div className='space-y-3'>
+                  {fields.map((field, index) => (
+                    <fieldset key={field.id} className='border p-5 rounded-md'>
+                      <legend>
+                        <FormLabel className='mx-2'>
+                          Dirección {index + 1}
+                        </FormLabel>
+                      </legend>
+                      <div className='space-y-3'>
+                        <FormField
+                          control={control}
+                          name={`address.${index}.label`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Etiqueta</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={
+                                  field.value?.toString() || "false"
+                                }
+                                disabled={isSubmitting}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder='' />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {Object.entries(CustomerAddressLabel).map(
+                                    ([key, value]) => (
+                                      <SelectItem key={key} value={value}>
+                                        {translateAddressLabel(value)}
+                                      </SelectItem>
+                                    )
+                                  )}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {watch(`address.${index}.label`) ===
+                          CustomerAddressLabel.OTHER && (
+                          <FormField
+                            control={control}
+                            name={`address.${index}.labelString`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Etiqueta personalizada</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder='Ejemplo: Casa de un amigo.'
+                                    disabled={isSubmitting}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
+
+                        <FormField
+                          control={control}
+                          name={`address.${index}.province`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Provincia</FormLabel>
+                              <Select
+                                onValueChange={(value) => {
+                                  field.onChange(value)
+                                  setValue(`address.${index}.municipality`, "")
+                                  setValue(`address.${index}.locality`, "")
+                                }}
+                                defaultValue={field.value || ""}
+                                disabled={isSubmitting}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder='Selecciona una provincia' />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {provinces?.map((province) => (
+                                    <SelectItem key={province} value={province}>
+                                      {province}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={control}
+                          name={`address.${index}.municipality`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                {watch(`address.${index}.province`) ===
+                                "Ciudad Autónoma de Buenos Aires"
+                                  ? "Comuna"
+                                  : "Municipalidad"}
+                              </FormLabel>
+                              <FormControl>
+                                <MunicipalitySelect
+                                  province={watch(`address.${index}.province`)}
+                                  value={field.value}
+                                  onChange={(value) => {
+                                    field.onChange(value)
+                                    setValue(`address.${index}.locality`, "")
+                                  }}
+                                  isDisabled={isSubmitting}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={control}
+                          name={`address.${index}.locality`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                {watch(`address.${index}.province`) ===
+                                "Ciudad Autónoma de Buenos Aires"
+                                  ? "Barrio"
+                                  : "Localidad"}
+                              </FormLabel>
+                              <FormControl>
+                                <LocalitySelect
+                                  province={watch(`address.${index}.province`)}
+                                  municipality={watch(
+                                    `address.${index}.municipality`
+                                  )}
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  isDisabled={isSubmitting}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={control}
+                          name={`address.${index}.addressGeoRef`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Calle/Avenida</FormLabel>
+                              <FormControl>
+                                <AsyncSelectAddress
+                                  selected={field.value}
+                                  onChange={field.onChange}
+                                  disabled={
+                                    isSubmitting ||
+                                    !watch(`address.${index}.municipality`)
+                                  }
+                                  province={watch(`address.${index}.province`)}
+                                  municipality={watch(
+                                    `address.${index}.municipality`
+                                  )}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className='grid grid-cols-3 gap-2'>
+                          <FormField
+                            control={control}
+                            name={`address.${index}.addressNumber`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Altura</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type='number'
+                                    placeholder='Numeración'
+                                    disabled={isSubmitting}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={control}
+                            name={`address.${index}.addressFloor`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Piso</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type='number'
+                                    placeholder='Numeración'
+                                    disabled={isSubmitting}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={control}
+                            name={`address.${index}.addressApartment`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Departamento</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder='Departamento'
+                                    disabled={isSubmitting}
+                                    {...field}
+                                    onChange={(e) =>
+                                      field.onChange(
+                                        e.target.value.toUpperCase()
+                                      )
+                                    }
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <FormField
+                          control={control}
+                          name={`address.${index}.postCode`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Código postal</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type='number'
+                                  step='1'
+                                  placeholder='Código postal'
+                                  disabled={isSubmitting}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className='flex justify-end mt-8'>
+                          <Button
+                            type='button'
+                            variant='outline'
+                            onClick={() => remove(index)}
+                            disabled={isSubmitting}
+                          >
+                            <small>Quitar</small>
+                          </Button>
+                        </div>
+                      </div>
+                    </fieldset>
+                  ))}
+
+                  <Button
+                    type='button'
+                    variant='ghost'
+                    onClick={() =>
+                      append({
+                        addressApartment: "",
+                        addressFloor: 0,
+                        addressGeoRef: undefined as any,
+                        addressNumber: 0,
+                        label: CustomerAddressLabel.HOME,
+                        labelString: "",
+                        locality: "",
+                        municipality: "",
+                        postCode: "",
+                        province: "",
+                      })
+                    }
+                    disabled={isSubmitting}
+                  >
+                    <Icons.plus className='w-4 h-4 mr-1' />
+                    <small>Agregar Dirección</small>
+                  </Button>
+                </div>
+              </CardContent>
             </Card>
           </div>
         </div>

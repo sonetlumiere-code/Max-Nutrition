@@ -21,7 +21,7 @@ export async function createCustomer(values: CustomerSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { birthdate, name, phone } = validatedFields.data
+  const { birthdate, name, phone, address } = validatedFields.data
 
   try {
     const customer = await prisma.customer.create({
@@ -31,10 +31,25 @@ export async function createCustomer(values: CustomerSchema) {
         phone,
         name,
       },
-      include: {
-        orders: true,
-      },
     })
+
+    if (address && address.length > 0) {
+      await prisma.customerAddress.createMany({
+        data: address.map((addr) => ({
+          customerId: customer.id,
+          province: addr.province,
+          municipality: addr.municipality,
+          locality: addr.locality,
+          addressStreet: addr.addressGeoRef.calle.nombre,
+          addressNumber: addr.addressNumber,
+          addressFloor: addr.addressFloor,
+          addressApartment: addr.addressApartment,
+          postCode: addr.postCode,
+          label: addr.label,
+          labelString: addr.labelString,
+        })),
+      })
+    }
 
     revalidatePath("/customers")
 
