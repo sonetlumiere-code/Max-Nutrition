@@ -48,6 +48,7 @@ export type PopulatedOrder = Order & {
   customer?: PopulatedCustomer
   address?: CustomerAddress
   appliedPromotions?: AppliedPromotion[]
+  shopBranch?: ShopBranch
 }
 
 export type PopulatedOrderItem = OrderItem & {

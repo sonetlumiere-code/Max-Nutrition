@@ -25,6 +25,8 @@ type OrderItemDetailsProps = {
 }
 
 const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
+  console.log(order)
+
   return (
     <Card className='overflow-hidden'>
       <CardHeader className='flex flex-row items-start bg-muted/50'>
@@ -139,7 +141,7 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
         <div className='flex justify-between'>
           <div className='grid gap-3'>
             <div className='font-semibold'>Información de entrega</div>
-            {order.shippingMethod === "DELIVERY" && (
+            {order.shippingMethod === "DELIVERY" ? (
               <>
                 {order.address ? (
                   <address className='grid gap-0.5 not-italic text-muted-foreground'>
@@ -161,7 +163,11 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
                   </span>
                 )}
               </>
-            )}
+            ) : order.shippingMethod === "TAKE_AWAY" ? (
+              <span className='text-muted-foreground'>
+                {order.shopBranch?.label || "Sucursal no especificada"}
+              </span>
+            ) : null}
           </div>
           <div>
             <Badge variant='secondary' className='text-nowrap'>

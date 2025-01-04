@@ -30,6 +30,7 @@ const CustomerOrdersHistoryPage = async () => {
         include: {
           address: true,
           appliedPromotions: true,
+          shopBranch: true,
           items: {
             include: {
               product: true,

@@ -114,7 +114,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
         <div className='flex justify-between'>
           <div className='grid gap-3 text-sm'>
             <div className='font-semibold'>Información de entrega</div>
-            {order.shippingMethod === "DELIVERY" && (
+            {order.shippingMethod === "DELIVERY" ? (
               <>
                 {order.address ? (
                   <address className='grid gap-0.5 not-italic text-muted-foreground'>
@@ -136,7 +136,11 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
                   </span>
                 )}
               </>
-            )}
+            ) : order.shippingMethod === "TAKE_AWAY" ? (
+              <span className='text-muted-foreground'>
+                {order.shopBranch?.label || "Sucursal no especificada"}
+              </span>
+            ) : null}
           </div>
           <div>
             <Badge variant='secondary' className='text-nowrap'>
