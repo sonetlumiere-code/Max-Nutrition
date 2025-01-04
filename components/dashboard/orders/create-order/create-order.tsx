@@ -77,7 +77,7 @@ const CreateOrder = ({
       customerId: "",
       paymentMethod: PaymentMethod.CASH,
       shippingMethod: ShippingMethod.DELIVERY,
-      shopBranchId: "",
+      shopBranchId: shopSettings.branches?.[0].id || "",
       items: [],
     },
   })
