@@ -30,26 +30,24 @@ export async function createCustomer(values: CustomerSchema) {
         birthdate,
         phone,
         name,
+        address: address?.length
+          ? {
+              create: address.map((addr) => ({
+                province: addr.province,
+                municipality: addr.municipality,
+                locality: addr.locality,
+                addressStreet: addr.addressGeoRef.calle.nombre,
+                addressNumber: addr.addressNumber,
+                addressFloor: addr.addressFloor,
+                addressApartment: addr.addressApartment,
+                postCode: addr.postCode,
+                label: addr.label,
+                labelString: addr.labelString,
+              })),
+            }
+          : undefined,
       },
     })
-
-    if (address && address.length > 0) {
-      await prisma.customerAddress.createMany({
-        data: address.map((addr) => ({
-          customerId: customer.id,
-          province: addr.province,
-          municipality: addr.municipality,
-          locality: addr.locality,
-          addressStreet: addr.addressGeoRef.calle.nombre,
-          addressNumber: addr.addressNumber,
-          addressFloor: addr.addressFloor,
-          addressApartment: addr.addressApartment,
-          postCode: addr.postCode,
-          label: addr.label,
-          labelString: addr.labelString,
-        })),
-      })
-    }
 
     revalidatePath("/customers")
 
