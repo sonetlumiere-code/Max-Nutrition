@@ -12,7 +12,7 @@ import { Control } from "react-hook-form"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 import { PopulatedShopBranch } from "@/types/types"
 import { Label } from "../ui/label"
-import CheckoutShopBranch from "../shop/checkout/checkout-shop-branch"
+import ShopBranchData from "./checkout-shop-branch"
 
 interface ShopBranchFieldProps {
   control: Control<OrderSchema>
@@ -52,7 +52,7 @@ const ShopBranchField = ({
                     htmlFor={branch.id}
                     className='flex flex-col items-center justify-between text-center rounded-lg border-2 border-muted peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
                   >
-                    <CheckoutShopBranch shopBranch={branch} />
+                    <ShopBranchData shopBranch={branch} />
                   </Label>
                 </div>
               ))}

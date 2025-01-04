@@ -14,7 +14,7 @@ type HourGroup = {
   endTime: string
 }
 
-const CheckoutShopBranch = ({ shopBranch }: CheckoutOperationalHoursProps) => {
+const ShopBranchData = ({ shopBranch }: CheckoutOperationalHoursProps) => {
   const weekdays: Partial<DayOfWeek>[] = [
     DayOfWeek.MONDAY,
     DayOfWeek.TUESDAY,
@@ -115,4 +115,4 @@ const CheckoutShopBranch = ({ shopBranch }: CheckoutOperationalHoursProps) => {
   )
 }
 
-export default CheckoutShopBranch
+export default ShopBranchData
