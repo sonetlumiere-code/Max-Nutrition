@@ -9,6 +9,7 @@ import {
 const prisma = new PrismaClient()
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
+const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
 
 export const ingredientsData: Omit<
   Ingredient,
@@ -879,6 +880,7 @@ async function main() {
     where: { id: shopSettingsId },
     update: {},
     create: {
+      id: shopSettingsId,
       allowedPaymentMethods: [PaymentMethod.CASH, PaymentMethod.BANK_TRANSFER],
       branches: {
         create: [
@@ -911,6 +913,7 @@ async function main() {
       },
       shippingSettings: {
         create: {
+          id: shippingSettingsId,
           allowedShippingMethods: [
             ShippingMethod.DELIVERY,
             ShippingMethod.TAKE_AWAY,
