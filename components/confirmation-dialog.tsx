@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { FC, useEffect, useState } from "react"
+import { FC } from "react"
 import { Button } from "./ui/button"
 import {
   Dialog,
@@ -11,50 +11,39 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "./ui/drawer"
+import { Icons } from "./icons"
 
-export interface ConfirmationOptions {
-  catchOnCancel?: boolean
-  variant?: "destructive" | "info"
+interface ConfirmationDialogProps {
+  open: boolean
+  isDesktop: boolean
+  seconds: number
   title: string
   description: string
-  countDown?: number
-}
-
-interface ConfirmationDialogProps extends ConfirmationOptions {
-  open: boolean
+  variant?: "destructive" | "info"
   onSubmit: () => void
   onClose: () => void
 }
 
 export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
   open,
+  isDesktop,
   title,
-  variant,
   description,
+  variant,
+  seconds,
   onSubmit,
   onClose,
-  countDown = 0,
 }) => {
-  const [seconds, setSeconds] = useState(countDown)
-
-  useEffect(() => {
-    setSeconds(countDown)
-  }, [countDown])
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null
-    if (open && seconds > 0) {
-      interval = setInterval(() => {
-        setSeconds((prev) => prev - 1)
-      }, 1000)
-    }
-
-    return () => {
-      if (interval) clearInterval(interval)
-    }
-  }, [seconds, open])
-
-  return (
+  return isDesktop ? (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
@@ -66,26 +55,49 @@ export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
           >
             {title}
           </DialogTitle>
-          <div className='flex items-start'>
-            <DialogDescription>{description}</DialogDescription>
-          </div>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <div className='flex gap-2 justify-end'>
-            <Button
-              variant={variant === "destructive" ? "destructive" : "default"}
-              disabled={seconds > 0}
-              onClick={onSubmit}
-              className='w-24'
-            >
-              {seconds > 0 ? seconds : "Confirmar"}
-            </Button>
-            <Button variant='outline' onClick={onClose} autoFocus>
-              Cancelar
-            </Button>
-          </div>
+          <Button
+            variant={variant === "destructive" ? "destructive" : "default"}
+            disabled={seconds > 0}
+            onClick={onSubmit}
+            className='w-24'
+          >
+            {seconds > 0 ? seconds : "Confirmar"}
+          </Button>
+          <Button variant='outline' onClick={onClose}>
+            Cancelar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  ) : (
+    <Drawer open={open} onOpenChange={(isOpen) => (!isOpen ? onClose() : null)}>
+      <DrawerContent className='min-h-[40vh]'>
+        <DrawerHeader>
+          <DrawerTitle
+            className={cn({ "text-destructive": variant === "destructive" })}
+          >
+            {title}
+          </DrawerTitle>
+          <DrawerDescription>{description}</DrawerDescription>
+        </DrawerHeader>
+        <DrawerFooter className='border-t-2 lg:border-t-0'>
+          <Button
+            variant={variant === "destructive" ? "destructive" : "default"}
+            disabled={seconds > 0}
+            onClick={onSubmit}
+          >
+            {seconds > 0 ? seconds : "Confirmar"}
+          </Button>
+          <DrawerClose asChild>
+            <Button variant='outline'>
+              <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   )
 }
