@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import DeleteCustomer from "@/components/dashboard/customers/delete-customer/delete-customer"
 import { Icons } from "@/components/icons"
 import {
   Breadcrumb,
@@ -176,9 +177,9 @@ export default async function CustomersPage() {
                             <Icons.pencil className='h-4 w-4 mr-2' /> Editar
                           </DropdownMenuItem>
                         </Link>
-                        {/* <DropdownMenuItem>
-                          <Icons.trash2 className='h-4 w-4 mr-2' /> Eliminar
-                        </DropdownMenuItem> */}
+                        <DropdownMenuItem>
+                          <DeleteCustomer customer={customer} />
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
