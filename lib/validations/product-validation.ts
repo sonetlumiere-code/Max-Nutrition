@@ -34,6 +34,8 @@ export const productSchema = z.object({
       { message: "La imagen debe ser de tipo .jpg, .jpeg, .png o .webp" }
     )
     .optional(),
-  recipeId: z.string().nullable(),
-  categoriesIds: z.array(z.string()).optional(),
+  recipeId: z.string().min(1, { message: "Debes seleccionar una receta." }),
+  categoriesIds: z
+    .array(z.string())
+    .min(1, { message: "Debes seleccionar al menos una categoría." }),
 })

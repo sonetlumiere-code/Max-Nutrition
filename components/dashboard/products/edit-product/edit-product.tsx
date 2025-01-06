@@ -55,6 +55,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
     resolver: zodResolver(productSchema),
     defaultValues: {
       ...product,
+      recipeId: product.recipeId || "",
       categoriesIds: product.categories?.map((category) => category.id),
     },
   })
@@ -63,7 +64,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
     control,
     watch,
     handleSubmit,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting },
   } = form
 
   const imageFile = watch("imageFile")
@@ -105,7 +106,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
       <form onSubmit={handleSubmit(onSubmit)} className='grid gap-4'>
         <div className='flex justify-between items-center'>
           <h2 className='font-semibold text-lg'>Editar Producto</h2>
-          <Button type='submit' disabled={isSubmitting || !isValid}>
+          <Button type='submit' disabled={isSubmitting}>
             {isSubmitting && (
               <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
             )}
@@ -339,7 +340,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
               </CardHeader>
               <CardContent>
                 <div className='space-y-6'>
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name='stock'
                     render={({ field }) => (
@@ -357,7 +358,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
                         </FormControl>
                       </FormItem>
                     )}
-                  />
+                  /> */}
                   <FormField
                     control={form.control}
                     name='show'
