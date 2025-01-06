@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
-import DeleteShippingZone from "../../delete-shipping-zone/delete-shipping-zone"
+import DeleteShippingZone from "@/components/dashboard/shippings/shipping-zones/delete-shipping-zone/delete-shipping-zone"
 
 export const columns: ColumnDef<ShippingZone>[] = [
   {
