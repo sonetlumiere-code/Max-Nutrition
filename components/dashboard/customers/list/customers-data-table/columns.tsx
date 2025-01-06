@@ -7,6 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
@@ -176,6 +177,7 @@ export const columns: ColumnDef<PopulatedCustomer>[] = [
                   <Icons.pencil className='h-4 w-4 mr-2' /> Editar
                 </DropdownMenuItem>
               </Link>
+              <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <DeleteCustomer customer={customer} />
               </DropdownMenuItem>
