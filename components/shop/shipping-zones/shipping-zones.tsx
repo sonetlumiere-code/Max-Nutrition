@@ -25,6 +25,14 @@ import { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { ShippingZone } from "@prisma/client"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 type ShippingZonesProps = {
   children: ReactNode
@@ -44,9 +52,26 @@ const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
             <DialogDescription>Zonas de envío disponibles</DialogDescription>
           </DialogHeader>
 
-          {shippingZones.map((shippingZone) => (
-            <span key={shippingZone.id}>{shippingZone.municipality}</span>
-          ))}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Zona</TableHead>
+                <TableHead className='text-right'>Costo</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {shippingZones.map((shippingZone) => (
+                <TableRow key={shippingZone.id}>
+                  <TableCell className='text-xs md:text-sm'>
+                    {shippingZone.municipality}
+                  </TableCell>
+                  <TableCell className='text-right'>
+                    {shippingZone.cost}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
 
           <DialogFooter className='flex flex-col'>
             <DialogClose asChild>
@@ -71,9 +96,26 @@ const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
           </DrawerHeader>
 
           <div className='space-y-3 p-4'>
-            {shippingZones.map((shippingZone) => (
-              <span key={shippingZone.id}>{shippingZone.municipality}</span>
-            ))}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Localidad</TableHead>
+                  <TableHead className='text-right'>Costo</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {shippingZones.map((shippingZone) => (
+                  <TableRow key={shippingZone.id}>
+                    <TableCell className='text-xs md:text-sm'>
+                      {shippingZone.locality}
+                    </TableCell>
+                    <TableCell className='text-right'>
+                      $ {shippingZone.cost}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
 
           <DrawerFooter className='border-t-2 lg:border-t-0'>
