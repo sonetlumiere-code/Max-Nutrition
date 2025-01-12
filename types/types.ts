@@ -79,11 +79,12 @@ export interface IngredientTotal {
 
 export type PopulatedShopSettings = ShopSettings & {
   branches?: PopulatedShopBranch[]
-  shippingSettings?: PopulatedShippingSettings
+  shippingSettings?: ShippingSettings
+  shippingZones?: ShippingZone[]
 }
 
 export type PopulatedShippingSettings = ShippingSettings & {
-  shippingZones?: ShippingZone[]
+  shopSettings?: ShopSettings
 }
 
 export type PopulatedShopBranch = ShopBranch & {

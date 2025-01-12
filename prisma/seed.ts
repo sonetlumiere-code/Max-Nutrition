@@ -9,7 +9,6 @@ import {
 const prisma = new PrismaClient()
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
-const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
 
 export const ingredientsData: Omit<
   Ingredient,
@@ -868,6 +867,11 @@ const operationalHours = [
 ]
 
 async function main() {
+  if (!shopSettingsId) {
+    console.error("Es necesario el ID de la configuración de tienda.")
+    return
+  }
+
   for (const ingredient of ingredientsData) {
     await prisma.ingredient.upsert({
       where: { name: ingredient.name },
@@ -913,7 +917,6 @@ async function main() {
       },
       shippingSettings: {
         create: {
-          id: shippingSettingsId,
           allowedShippingMethods: [
             ShippingMethod.DELIVERY,
             ShippingMethod.TAKE_AWAY,

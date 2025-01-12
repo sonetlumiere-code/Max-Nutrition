@@ -14,6 +14,10 @@ import { getShopSettings } from "@/data/shop-settings"
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
 const CreateOrderPage = async () => {
+  if (!shopSettingsId) {
+    return <span>Es necesario el ID de la configuración de tienda.</span>
+  }
+
   const [categories, customers, shopSettings] = await Promise.all([
     getCategories({
       include: {

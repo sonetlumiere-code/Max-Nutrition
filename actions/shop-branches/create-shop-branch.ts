@@ -6,11 +6,15 @@ import { shopBranchSchema } from "@/lib/validations/shop-branch-validation"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
-const shopSettingsId = process.env.SHOP_SETTINGS_ID as string
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
 type ShopBranchSchema = z.infer<typeof shopBranchSchema>
 
 export async function createShopBranch(values: ShopBranchSchema) {
+  if (!shopSettingsId) {
+    return { error: "Es necesario el ID de la configuración de tienda." }
+  }
+
   const session = await auth()
 
   if (session?.user.role !== "ADMIN") {

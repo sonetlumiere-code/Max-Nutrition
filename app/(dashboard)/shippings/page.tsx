@@ -16,30 +16,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { getShippingSettings } from "@/data/shipping-settings"
+import { getShopSettings } from "@/data/shop-settings"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { ShippingSettings } from "@prisma/client"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
-const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
 const Shippings = async () => {
+  if (!shopSettingsId) {
+    return <span>Es necesario el ID de la configuración de tienda.</span>
+  }
+
   const session = await auth()
 
   if (session?.user.role !== "ADMIN") {
     return redirect("/")
   }
 
-  const shippingSettings = await getShippingSettings({
-    where: { id: shippingSettingsId },
+  const shopSettings = await getShopSettings({
+    where: { id: shopSettingsId },
     include: {
+      shippingSettings: true,
       shippingZones: true,
     },
   })
 
-  const shippingZones = shippingSettings?.shippingZones
+  const shippingSettings = shopSettings?.shippingSettings
+  const shippingZones = shopSettings?.shippingZones
 
   return (
     <>

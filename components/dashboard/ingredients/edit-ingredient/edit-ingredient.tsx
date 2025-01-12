@@ -132,11 +132,7 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
                       </FormControl>
                       <SelectContent>
                         {Object.values(Measurement).map((measurement) => (
-                          <SelectItem
-                            key={measurement}
-                            value={measurement}
-                            className='capitalize'
-                          >
+                          <SelectItem key={measurement} value={measurement}>
                             {translateUnit(measurement)}
                           </SelectItem>
                         ))}

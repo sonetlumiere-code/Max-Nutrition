@@ -17,11 +17,15 @@ import {
 export const translateUnit = (measurement: Measurement): string => {
   switch (measurement) {
     case Measurement.GRAM:
-      return "Gramo"
+      return "Gramo (g)"
+    case Measurement.KILOGRAM:
+      return "Kilogramo (Kg)"
     case Measurement.MILLILITER:
-      return "Mililitro"
+      return "Mililitro (mL)"
+    case Measurement.LITER:
+      return "Litro (L)"
     case Measurement.UNIT:
-      return "Unidad"
+      return "Unidad (1)"
     default:
       return "Desconocido"
   }
@@ -180,5 +184,27 @@ export function calculatePromotions({
     subtotalPrice,
     totalDiscountAmount,
     finalPrice,
+  }
+}
+
+/**
+ * Returns the multiplier for a given measurement unit.
+ * @param measurement - The measurement unit.
+ * @returns The multiplier value for the unit.
+ */
+export function getMeasurementMultiplier(measurement: Measurement): number {
+  switch (measurement) {
+    case Measurement.UNIT:
+      return 1
+    case Measurement.GRAM:
+      return 1 // Grams are the base unit
+    case Measurement.KILOGRAM:
+      return 1000 // 1 kg = 1000 grams
+    case Measurement.MILLILITER:
+      return 1 // Milliliters are the base unit
+    case Measurement.LITER:
+      return 1000 // 1 liter = 1000 milliliters
+    default:
+      throw new Error(`Unknown measurement unit: ${measurement}`)
   }
 }

@@ -14,7 +14,7 @@ import { revalidatePath } from "next/cache"
 import { checkPromotion } from "../promotions/check-promotion"
 import { getShopBranch } from "@/data/shop-branches"
 
-const shippingSettingsId = process.env.SHIPPING_SETTINGS_ID
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
 export async function createOrder({
   values,
@@ -23,6 +23,10 @@ export async function createOrder({
   values: OrderSchema
   sendEmail?: boolean
 }) {
+  if (!shopSettingsId) {
+    return { error: "Es necesario el ID de la configuración de tienda." }
+  }
+
   const session = await auth()
   const userRole: Role | undefined = session?.user.role
 
@@ -156,7 +160,7 @@ export async function createOrder({
 
     if (shippingMethod === ShippingMethod.DELIVERY) {
       const shippingSettings = await getShippingSettings({
-        where: { id: shippingSettingsId },
+        where: { shopSettingsId },
       })
 
       const totalProductsQuantity = items.reduce(

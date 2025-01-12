@@ -140,7 +140,9 @@ model CustomerAddress {
 enum Measurement {
   UNIT
   GRAM
+  KILOGRAM
   MILLILITER
+  LITER
 
   @@map("measurement")
 }
@@ -347,6 +349,7 @@ model ShopSettings {
   allowedPaymentMethods PaymentMethod[]
   branches              ShopBranch[]
   shippingSettings      ShippingSettings?
+  shippingZones          ShippingZone[]
 
   @@map("shop_settings")
 }
@@ -415,7 +418,6 @@ model ShippingSettings {
   updatedAt                      DateTime @updatedAt
 
   allowedShippingMethods ShippingMethod[]
-  shippingZones          ShippingZone[]
   shopSettings           ShopSettings     @relation(fields: [shopSettingsId], references: [id])
 
   @@map("shipping_settings")
@@ -428,11 +430,11 @@ model ShippingZone {
   locality           String   @unique
   isActive           Boolean  @default(true)
   cost               Float    @default(0)
-  shippingSettingsId String
+  shopSettingsId     String
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  shippingSettings ShippingSettings @relation(fields: [shippingSettingsId], references: [id], onDelete: Cascade)
+  shopSettings ShopSettings @relation(fields: [shopSettingsId], references: [id], onDelete: Cascade)
 
   @@map("shipping_zones")
 }

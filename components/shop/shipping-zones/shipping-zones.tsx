@@ -66,7 +66,7 @@ const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
                     {shippingZone.municipality}
                   </TableCell>
                   <TableCell className='text-right'>
-                    {shippingZone.cost}
+                    ${shippingZone.cost}
                   </TableCell>
                 </TableRow>
               ))}
@@ -110,7 +110,7 @@ const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
                       {shippingZone.locality}
                     </TableCell>
                     <TableCell className='text-right'>
-                      $ {shippingZone.cost}
+                      ${shippingZone.cost}
                     </TableCell>
                   </TableRow>
                 ))}

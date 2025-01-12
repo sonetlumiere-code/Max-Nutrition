@@ -19,6 +19,10 @@ export async function editShopBranch({
   id: string
   values: PartialShopBranchSchema
 }) {
+  if (!shopSettingsId) {
+    return { error: "Es necesario el ID de la configuración de tienda." }
+  }
+
   const session = await auth()
 
   if (session?.user.role !== "ADMIN") {

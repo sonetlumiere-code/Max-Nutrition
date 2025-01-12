@@ -15,6 +15,10 @@ const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
 export default async function CheckoutPage() {
+  if (!shopSettingsId) {
+    return <span>Es necesario el ID de la configuración de tienda.</span>
+  }
+
   const session = await auth()
 
   const [customer, shopSettings] = await Promise.all([
