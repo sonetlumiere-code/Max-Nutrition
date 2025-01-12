@@ -1,7 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
 import { CheckCircle, Truck } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -20,8 +19,8 @@ interface OrderConfirmedProps {
 
 export default function OrderConfirmed({ order }: OrderConfirmedProps) {
   return (
-    <div className='container mx-auto px-4 py-12 min-h-[80dvh]'>
-      <Card className='w-full max-w-2xl mx-auto'>
+    <div className='mx-auto min-h-[80dvh]'>
+      <Card className='w-full mx-auto'>
         <CardHeader className='text-center'>
           <div className='mx-auto mb-4'>
             <CheckCircle className='h-12 w-12 text-green-500' />

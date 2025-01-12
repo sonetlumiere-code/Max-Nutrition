@@ -63,7 +63,7 @@ const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
               {shippingZones.map((shippingZone) => (
                 <TableRow key={shippingZone.id}>
                   <TableCell className='text-xs md:text-sm'>
-                    {shippingZone.municipality}
+                    {shippingZone.locality}
                   </TableCell>
                   <TableCell className='text-right'>
                     ${shippingZone.cost}

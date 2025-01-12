@@ -14,16 +14,17 @@ export default async function ShopLayout({ children }: ShopLayoutProps) {
   return (
     <CartProvider session={session}>
       <Cart />
-      <HeaderShop session={session} />
-      <main className='flex flex-col w-full mx-auto pb-16 min-h-[80dvh]'>
-        {children}
-      </main>
-      <footer className='h-20 bg-gray-200 flex items-center justify-center p-4 mt-8'>
-        <p className='text-sm text-muted-foreground'>
-          © {new Date().getFullYear()} Máxima Nutrición. Todos los derechos
-          reservados. | Seguinos en nuestras redes sociales.
-        </p>
-      </footer>
+
+      <div className='grid min-h-screen grid-rows-[auto_1fr_auto]'>
+        <HeaderShop session={session} />
+        <main className='flex flex-col w-full mx-auto pb-16'>{children}</main>
+        <footer className='h-20 bg-gray-200 flex items-center justify-center p-4'>
+          <p className='text-sm text-muted-foreground'>
+            © {new Date().getFullYear()} Máxima Nutrición. Todos los derechos
+            reservados. | Seguinos en nuestras redes sociales.
+          </p>
+        </footer>
+      </div>
     </CartProvider>
   )
 }

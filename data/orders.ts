@@ -1,6 +1,5 @@
 "use server"
 
-import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { PopulatedOrder } from "@/types/types"
 import { Prisma } from "@prisma/client"
@@ -16,44 +15,17 @@ export const getOrders = async (args?: Prisma.OrderFindManyArgs) => {
   }
 }
 
-export async function getOrder(orderId: string) {
+export async function getOrder(args: Prisma.OrderFindFirstArgs) {
   try {
-    const session = await auth()
-
-    if (!session?.user) {
-      return { error: "No autorizado" }
-    }
-
-    const order = await prisma.order.findUnique({
-      where: {
-        id: orderId,
-        customer: {
-          userId: session.user.id,
-        },
-      },
-      include: {
-        items: {
-          include: {
-            product: true,
-          },
-        },
-        customer: {
-          include: {
-            user: true,
-            address: true,
-          },
-        },
-        address: true,
-      },
-    })
+    const order = await prisma.order.findFirst(args)
 
     if (!order) {
-      return { error: "Orden no encontrada" }
+      return null
     }
 
-    return { success: true, order: order as PopulatedOrder }
+    return order as PopulatedOrder
   } catch (error) {
     console.error("Error obteniendo orden:", error)
-    return { error: "Error al obtener la orden" }
+    return null
   }
 }

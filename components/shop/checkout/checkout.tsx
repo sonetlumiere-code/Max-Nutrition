@@ -44,7 +44,7 @@ import { useForm } from "react-hook-form"
 import useSWR from "swr"
 import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
 import CheckoutListItems from "./checkout-list-items-table"
-import AppliedPromotions from "../../shared/applied-promotions"
+import AppliedPromotions from "@/components/shared/applied-promotions"
 import PaymentMethodField from "@/components/shared/payment-method-field"
 import Summary from "@/components/shared/summary"
 import SelectedAddressInfo from "@/components/shared/selected-address-info"
@@ -57,28 +57,29 @@ type CheckoutProps = {
 }
 
 const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
+  const [isFulfilled, setIsFulfilled] = useState(false)
+
   const { items, setOpen, clearCart } = useCart()
   const { promotions, appliedPromotions } = usePromotion({
     items,
   })
   const router = useRouter()
 
-  const [isRedirecting, setIsRedirecting] = useState(false)
   const { branches, shippingSettings, allowedPaymentMethods } = shopSettings
 
   useEffect(() => {
-    if (!items.length || !customer) {
-      if (!isRedirecting) {
+    if (!isFulfilled) {
+      if (!items.length || !customer) {
         router.replace("/shop")
       }
     }
-  }, [items, customer, router, isRedirecting])
+  }, [items, customer, router, isFulfilled])
 
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
       origin: "SHOP" as const,
-      customerAddressId: "",
+      customerAddressId: customer.address?.[0]?.id || "",
       paymentMethod: PaymentMethod.CASH,
       shippingMethod: ShippingMethod.DELIVERY,
       shopBranchId: shopSettings.branches?.[0].id || "",
@@ -138,8 +139,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
     const res = await createOrder({ values: data, sendEmail: true })
 
     if (res.success) {
-      setIsRedirecting(true)
-      await router.replace(`/order-confirmed/${res.order.id}`)
+      setIsFulfilled(true)
       clearCart()
       toast({
         title: "Pedido realizado",
@@ -150,6 +150,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
           </ToastAction>
         ),
       })
+      router.push(`/order-confirmed/${res.order.id}`)
     } else if (res.error) {
       toast({
         variant: "destructive",
@@ -247,7 +248,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                                 disabled={isSubmitting}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder='' />
+                                  <SelectValue placeholder='Selecciona el método de envío' />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {shippingSettings?.allowedShippingMethods.map(
@@ -346,12 +347,12 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                                 <FormItem>
                                   <FormLabel>Dirección de envío</FormLabel>
                                   <Select
+                                    value={field.value}
                                     onValueChange={field.onChange}
-                                    defaultValue=''
                                     disabled={isSubmitting}
                                   >
                                     <SelectTrigger>
-                                      <SelectValue placeholder='' />
+                                      <SelectValue placeholder='Selecciona tu dirección' />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {customer?.address?.map((a) => (

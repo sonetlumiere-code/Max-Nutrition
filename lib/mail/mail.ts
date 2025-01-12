@@ -63,6 +63,9 @@ export const sendOrderDetailsEmail = async ({
   order: PopulatedOrder
   orderLink: string
 }) => {
+  if (!email) {
+    return
+  }
   await resend.emails.send({
     from: "onboarding@resend.dev",
     to: email,
