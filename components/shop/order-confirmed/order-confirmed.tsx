@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { CheckCircle, Truck } from "lucide-react"
-import { getOrder } from "@/actions/orders/get-order"
+import { getOrder } from "@/data/orders"
 
 import { Button } from "@/components/ui/button"
 import {

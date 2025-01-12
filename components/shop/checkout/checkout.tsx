@@ -160,7 +160,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
 
     if (res.success) {
       setIsRedirecting(true)
-      await router.replace(`/order-confirmed?orderId=${res.order.id}`)
+      await router.replace(`/order-confirmed/${res.order.id}`)
       clearCart()
       toast({
         title: "Pedido realizado",
