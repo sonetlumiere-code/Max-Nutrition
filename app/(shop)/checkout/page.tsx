@@ -21,6 +21,10 @@ export default async function CheckoutPage() {
 
   const session = await auth()
 
+  if (!session) {
+    redirect("/shop")
+  }
+
   const [customer, shopSettings] = await Promise.all([
     getCustomer({
       where: {
