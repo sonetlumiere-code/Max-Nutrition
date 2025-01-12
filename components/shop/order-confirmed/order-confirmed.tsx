@@ -1,11 +1,6 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useSearchParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { CheckCircle, Truck } from "lucide-react"
-import { getOrder } from "@/data/orders"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,69 +12,13 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { Skeleton } from "@/components/ui/skeleton"
+import { PopulatedOrder } from "@/types/types"
 
-export default function OrderConfirmed() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const [order, setOrder] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+interface OrderConfirmedProps {
+  order: PopulatedOrder
+}
 
-  useEffect(() => {
-    const orderId = searchParams.get("orderId")
-    if (!orderId) {
-      router.replace("/shop")
-      return
-    }
-
-    const fetchOrderData = async () => {
-      try {
-        const res = await getOrder(orderId)
-        if (res.success) {
-          setOrder(res.order)
-        }
-      } catch (error) {
-        console.error("Error fetching order data:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchOrderData()
-  }, [searchParams, router])
-
-  if (loading) {
-    return (
-      <div className='container mx-auto px-4 py-12'>
-        <Card className='w-full max-w-2xl mx-auto'>
-          <CardHeader className='text-center'>
-            <Skeleton className='h-12 w-12 rounded-full mx-auto mb-4' />
-            <Skeleton className='h-8 w-64 mx-auto' />
-          </CardHeader>
-          <CardContent className='space-y-6'>
-            <Skeleton className='h-24 w-full' />
-            <Skeleton className='h-24 w-full' />
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
-  if (!order) {
-    return (
-      <div className='container mx-auto px-4 py-12 text-center'>
-        <Card className='w-full max-w-2xl mx-auto'>
-          <CardContent className='py-12'>
-            <p className='text-lg'>No se encontró el pedido</p>
-            <Button asChild className='mt-4'>
-              <Link href='/shop'>Volver a la tienda</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
+export default function OrderConfirmed({ order }: OrderConfirmedProps) {
   return (
     <div className='container mx-auto px-4 py-12 min-h-[80dvh]'>
       <Card className='w-full max-w-2xl mx-auto'>
@@ -101,9 +40,6 @@ export default function OrderConfirmed() {
             <Badge className='mt-2'>
               {order.status === "Pending" && "Pendiente"}
               {order.status === "Accepted" && "Aceptado"}
-              {order.status === "InProgress" && "En Preparación"}
-              {order.status === "ReadyForDelivery" && "Listo para entregar"}
-              {order.status === "OutForDelivery" && "En camino"}
               {order.status === "Completed" && "Completado"}
               {order.status === "Cancelled" && "Cancelado"}
             </Badge>
@@ -113,7 +49,7 @@ export default function OrderConfirmed() {
 
           <div className='space-y-2'>
             <h3 className='font-semibold'>Resumen del Pedido:</h3>
-            {order.items.map((item: any, index: number) => (
+            {order.items?.map((item: any, index: number) => (
               <div key={index} className='flex items-center justify-between'>
                 <div className='flex items-center space-x-4'>
                   <div className='relative h-16 w-16'>
@@ -161,7 +97,7 @@ export default function OrderConfirmed() {
                 <span className='text-destructive'>
                   {order.appliedPromotionDiscountType === "Percentage"
                     ? `-${order.appliedPromotionDiscount}% (-$${
-                        (order.subtotal * order.appliedPromotionDiscount) / 100
+                        ((order.subtotal ?? 0) * (order.appliedPromotionDiscount ?? 0)) / 100
                       })`
                     : `-$${order.appliedPromotionDiscount}`}
                 </span>

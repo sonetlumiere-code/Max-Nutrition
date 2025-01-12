@@ -51,7 +51,7 @@ export async function getOrder(orderId: string) {
       return { error: "Orden no encontrada" }
     }
 
-    return { success: true, order }
+    return { success: true, order: order as PopulatedOrder }
   } catch (error) {
     console.error("Error obteniendo orden:", error)
     return { error: "Error al obtener la orden" }
