@@ -18,7 +18,7 @@ import {
 } from "@/helpers/helpers"
 import { cn } from "@/lib/utils"
 import { PopulatedOrder } from "@/types/types"
-import OrderItemActions from "../../actions/order-item-actions"
+import OrderItemActions from "../actions/order-item-actions"
 
 type OrderItemDetailsProps = {
   order: PopulatedOrder
@@ -78,39 +78,60 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
           <ul className='grid gap-3'>
             <li className='flex items-center justify-between'>
               <span className='text-muted-foreground'>Subtotal</span>
-              <span>${order.subtotal || order.total}</span>
+              <span>
+                $
+                {order.subtotal
+                  ? order.subtotal.toFixed(2)
+                  : order.total.toFixed(2)}
+              </span>
             </li>
 
-            {order.appliedPromotionName &&
-              order.appliedPromotionDiscount &&
-              order.subtotal && (
-                <li className='flex items-center justify-between'>
-                  <span className='text-muted-foreground'>
-                    Descuento promocional ({order.appliedPromotionName})
-                  </span>
-                  <span className='text-destructive'>
-                    {order.appliedPromotionDiscountType === "Percentage" ? (
-                      <>
-                        -{order.appliedPromotionDiscount}% (-$
-                        {(order.subtotal * order.appliedPromotionDiscount) /
-                          100}
-                        )
-                      </>
-                    ) : (
-                      <>-${order.appliedPromotionDiscount}</>
-                    )}
-                  </span>
-                </li>
-              )}
+            {order.appliedPromotions && order.appliedPromotions.length > 0 && (
+              <ul>
+                {order.appliedPromotions.map((appliedPromotion, index) => (
+                  <li key={index} className='flex items-center justify-between'>
+                    <span className='text-muted-foreground'>
+                      {appliedPromotion.promotionName} (x
+                      {appliedPromotion.appliedTimes})
+                    </span>
+                    <span className='text-destructive'>
+                      {appliedPromotion.promotionDiscountType ===
+                      "PERCENTAGE" ? (
+                        <>
+                          -{appliedPromotion.promotionDiscount}% (-$
+                          {(
+                            ((order.subtotal || 0) *
+                              appliedPromotion.promotionDiscount) /
+                            100
+                          ).toFixed(2)}
+                          )
+                        </>
+                      ) : appliedPromotion.promotionDiscountType === "FIXED" ? (
+                        <>
+                          -$
+                          {(
+                            appliedPromotion.promotionDiscount *
+                              appliedPromotion.appliedTimes || 0
+                          ).toFixed(2)}
+                        </>
+                      ) : null}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
             <li className='flex items-center justify-between'>
               <span className='text-muted-foreground'>Costo de envío</span>
               <span>
-                {order.shippingCost ? `$${order.shippingCost}` : "Gratis"}
+                {order.shippingCost
+                  ? `$${order.shippingCost.toFixed(2)}`
+                  : "Gratis"}
               </span>
             </li>
             <li className='flex items-center justify-between font-semibold'>
               <span className='text-muted-foreground'>Total</span>
-              <span>${order.total}</span>
+              <span>${order.total.toFixed(2)}</span>
             </li>
           </ul>
         </div>
@@ -118,7 +139,7 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
         <div className='flex justify-between'>
           <div className='grid gap-3'>
             <div className='font-semibold'>Información de entrega</div>
-            {order.shippingMethod === "Delivery" && (
+            {order.shippingMethod === "DELIVERY" ? (
               <>
                 {order.address ? (
                   <address className='grid gap-0.5 not-italic text-muted-foreground'>
@@ -140,10 +161,14 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
                   </span>
                 )}
               </>
-            )}
+            ) : order.shippingMethod === "TAKE_AWAY" ? (
+              <span className='text-muted-foreground'>
+                {order.shopBranch?.label || "Sucursal no especificada"}
+              </span>
+            ) : null}
           </div>
-          <div className='grid auto-rows-max gap-3'>
-            <Badge variant='secondary'>
+          <div>
+            <Badge variant='secondary' className='text-nowrap'>
               {translateShippingMethod(order.shippingMethod)}
             </Badge>
           </div>
@@ -153,12 +178,12 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
           <div className='font-semibold'>Estado de la orden</div>
           <Badge
             className={cn({
-              "bg-amber-500 hover:bg-amber-500/80": order.status === "Pending",
-              "bg-sky-500 hover:bg-sky-500/80": order.status === "Accepted",
+              "bg-amber-500 hover:bg-amber-500/80": order.status === "PENDING",
+              "bg-sky-500 hover:bg-sky-500/80": order.status === "ACCEPTED",
               "bg-emerald-500 hover:bg-emerald-500/80":
-                order.status === "Completed",
+                order.status === "COMPLETED",
               "bg-destructive hover:bg-destructive/80":
-                order.status === "Cancelled",
+                order.status === "CANCELLED",
             })}
           >
             {translateOrderStatus(order.status)}
@@ -192,15 +217,15 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
           <dl className='grid gap-3'>
             <div className='flex items-center justify-between'>
               <dt className='flex items-center gap-1 text-muted-foreground'>
-                {order.paymentMethod === "Cash"
+                {order.paymentMethod === "CASH"
                   ? "Efectivo"
-                  : order.paymentMethod === "BankTransfer"
+                  : order.paymentMethod === "BANK_TRANSFER"
                   ? "Transferencia bancaria"
-                  : order.paymentMethod === "MercadoPago"
+                  : order.paymentMethod === "MERCADO_PAGO"
                   ? "Mercado Pago"
-                  : order.paymentMethod === "CreditCard"
+                  : order.paymentMethod === "CREDIT_CARD"
                   ? "Tarjeta de crédito"
-                  : order.paymentMethod === "DebitCard"
+                  : order.paymentMethod === "DEBIT_CARD"
                   ? "Tarjeta de débito"
                   : ""}
               </dt>

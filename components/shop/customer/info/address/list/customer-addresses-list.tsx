@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import CustomerAddressActions from "./customer-address-actions"
-import { AddressLabel, CustomerAddress } from "@prisma/client"
+import { CustomerAddressLabel, CustomerAddress } from "@prisma/client"
 import { Icons } from "@/components/icons"
 
 type CustomerAddressesListProps = {
@@ -59,17 +59,17 @@ const CustomerAddressesList = ({ addresses }: CustomerAddressesListProps) => {
 export default CustomerAddressesList
 
 const getAddressLabelWithIcon = (
-  label: AddressLabel,
+  label: CustomerAddressLabel,
   labelString: string | null
 ) => {
   switch (label) {
-    case "Home":
+    case "HOME":
       return (
         <div className='flex items-center'>
           <Icons.mapPin className='mr-2 h-4 w-4' /> Casa
         </div>
       )
-    case "Work":
+    case "WORK":
       return (
         <div className='flex items-center'>
           <Icons.mapPin className='mr-2 h-4 w-4' /> Trabajo

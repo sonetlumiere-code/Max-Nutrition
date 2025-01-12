@@ -38,10 +38,10 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
             </p>
             <p className='font-semibold mt-2'>Número de Pedido: #{order.id}</p>
             <Badge className='mt-2'>
-              {order.status === "Pending" && "Pendiente"}
-              {order.status === "Accepted" && "Aceptado"}
-              {order.status === "Completed" && "Completado"}
-              {order.status === "Cancelled" && "Cancelado"}
+              {order.status === "PENDING" && "Pendiente"}
+              {order.status === "ACCEPTED" && "Aceptado"}
+              {order.status === "COMPLETED" && "Completado"}
+              {order.status === "CANCELLED" && "Cancelado"}
             </Badge>
           </div>
 
@@ -89,19 +89,39 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
               <span>${order.subtotal}</span>
             </div>
 
-            {order.appliedPromotionName && (
-              <div className='flex justify-between'>
-                <span className='text-muted-foreground'>
-                  Descuento ({order.appliedPromotionName})
-                </span>
-                <span className='text-destructive'>
-                  {order.appliedPromotionDiscountType === "Percentage"
-                    ? `-${order.appliedPromotionDiscount}% (-$${
-                        ((order.subtotal ?? 0) * (order.appliedPromotionDiscount ?? 0)) / 100
-                      })`
-                    : `-$${order.appliedPromotionDiscount}`}
-                </span>
-              </div>
+            {order.appliedPromotions && order.appliedPromotions.length > 0 && (
+              <ul>
+                {order.appliedPromotions.map((appliedPromotion, index) => (
+                  <li key={index} className='flex justify-between items-center'>
+                    <span className='text-muted-foreground'>
+                      {appliedPromotion.promotionName} (x
+                      {appliedPromotion.appliedTimes || 1})
+                    </span>
+                    <span className='text-destructive'>
+                      {appliedPromotion.promotionDiscountType ===
+                      "PERCENTAGE" ? (
+                        <>
+                          -{appliedPromotion.promotionDiscount}% (-$
+                          {(
+                            ((order.subtotal || 0) *
+                              (appliedPromotion.promotionDiscount || 0)) /
+                            100
+                          ).toFixed(2)}
+                          )
+                        </>
+                      ) : appliedPromotion.promotionDiscountType === "FIXED" ? (
+                        <>
+                          -$
+                          {(
+                            (appliedPromotion.promotionDiscount || 0) *
+                            (appliedPromotion.appliedTimes || 1)
+                          ).toFixed(2)}
+                        </>
+                      ) : null}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             )}
 
             <div className='flex justify-between'>
@@ -122,12 +142,12 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
             <div className='flex items-center space-x-2 text-muted-foreground'>
               <Truck className='h-5 w-5' />
               <p>
-                {order.shippingMethod === "Delivery"
+                {order.shippingMethod === "DELIVERY"
                   ? "Envío a domicilio"
                   : "Retiro en local"}
               </p>
             </div>
-            {order.shippingMethod === "Delivery" && order.address && (
+            {order.shippingMethod === "DELIVERY" && order.address && (
               <p className='text-sm text-muted-foreground'>
                 {order.address.addressStreet} {order.address.addressNumber}{" "}
                 {order.address.addressFloor || ""}{" "}
@@ -146,12 +166,12 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
           <div className='space-y-2'>
             <h3 className='font-semibold'>Método de Pago:</h3>
             <p className='text-muted-foreground'>
-              {order.paymentMethod === "Cash" && "Efectivo"}
-              {order.paymentMethod === "CreditCard" && "Tarjeta de crédito"}
-              {order.paymentMethod === "DebitCard" && "Tarjeta de débito"}
-              {order.paymentMethod === "BankTransfer" &&
+              {order.paymentMethod === "CASH" && "Efectivo"}
+              {order.paymentMethod === "CREDIT_CARD" && "Tarjeta de crédito"}
+              {order.paymentMethod === "DEBIT_CARD" && "Tarjeta de débito"}
+              {order.paymentMethod === "BANK_TRANSFER" &&
                 "Transferencia bancaria"}
-              {order.paymentMethod === "MercadoPago" && "Mercado Pago"}
+              {order.paymentMethod === "MERCADO_PAGO" && "Mercado Pago"}
             </p>
           </div>
         </CardContent>

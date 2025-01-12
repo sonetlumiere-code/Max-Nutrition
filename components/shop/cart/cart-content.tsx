@@ -1,11 +1,11 @@
-import { CartItem } from "@/components/cart-provider"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import CartCostPreview from "./cart-cost-preview"
 import CartList from "./cart-list"
 import { Icons } from "@/components/icons"
+import { LineItem } from "@/types/types"
 
 type CartContentProps = {
-  items: CartItem[]
+  items: LineItem[]
 }
 
 const CartContent = ({ items }: CartContentProps) => {

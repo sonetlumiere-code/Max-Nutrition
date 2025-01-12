@@ -4,48 +4,62 @@ import { usePromotion } from "@/hooks/use-promotion"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Icons } from "@/components/icons"
 import { cn } from "@/lib/utils"
+import { useCart } from "@/components/cart-provider"
 
 const CartCostPreview = () => {
-  const {
-    promotions,
-    isLoadingPromotions,
-    appliedPromotion,
-    subtotalPrice,
-    discountAmount,
-    finalPrice,
-  } = usePromotion()
+  const { items, getSubtotalPrice } = useCart()
+  const { isLoadingPromotions, appliedPromotions, finalPrice } = usePromotion({
+    items,
+  })
 
   return (
     <>
-      {appliedPromotion ? (
+      {appliedPromotions.length > 0 ? (
         <Alert>
           <Icons.badgePercent className='h-4 w-4' />
-          <AlertTitle>¡Promoción aplicada!</AlertTitle>
+          <AlertTitle>¡Promociones aplicadas!</AlertTitle>
           <AlertDescription className='flex justify-between'>
             <div className='flex flex-col'>
               <span>Subtotal</span>
-              <span>Descuento ({appliedPromotion.name})</span>
+              {appliedPromotions.map((appliedPromotion) => (
+                <span key={appliedPromotion.id}>
+                  {appliedPromotion.name} (x{appliedPromotion.appliedTimes})
+                </span>
+              ))}
               <span>Precio total</span>
             </div>
             <div className='flex flex-col text-end'>
-              <span>${subtotalPrice}</span>
-              {appliedPromotion.discountType === "Fixed" ? (
-                <span className='text-destructive'>
-                  -${appliedPromotion.discount}
+              <span>${getSubtotalPrice().toFixed(2)}</span>
+              {appliedPromotions.map((appliedPromotion) => (
+                <span key={appliedPromotion.id} className='text-destructive'>
+                  {appliedPromotion.discountType === "FIXED" ? (
+                    <>
+                      -$
+                      {(
+                        appliedPromotion.appliedTimes *
+                        appliedPromotion.discount
+                      ).toFixed(2)}
+                    </>
+                  ) : appliedPromotion.discountType === "PERCENTAGE" ? (
+                    <>
+                      -{appliedPromotion.discount}% (-$
+                      {(
+                        appliedPromotion.appliedTimes *
+                        appliedPromotion.discount
+                      ).toFixed(2)}
+                      )
+                    </>
+                  ) : null}
                 </span>
-              ) : (
-                <span className='text-destructive'>
-                  -{appliedPromotion.discount}% (-${discountAmount})
-                </span>
-              )}
-              <span>${finalPrice}</span>
+              ))}
+              <span>${finalPrice.toFixed(2)}</span>
             </div>
           </AlertDescription>
         </Alert>
       ) : (
         <Alert
           className={cn({
-            invisible: isLoadingPromotions || !promotions?.length,
+            invisible: isLoadingPromotions,
           })}
         >
           <Icons.info className='h-4 w-4' />

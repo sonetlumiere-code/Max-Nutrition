@@ -8,10 +8,16 @@ import {
   useRef,
   useState,
 } from "react"
-import {
-  ConfirmationDialog,
-  ConfirmationOptions,
-} from "@/components/confirmation-dialog"
+import { ConfirmationDialog } from "@/components/confirmation-dialog"
+import { useMediaQuery } from "@/hooks/use-media-query"
+
+export interface ConfirmationOptions {
+  catchOnCancel?: boolean
+  variant?: "destructive" | "info"
+  title: string
+  description: string
+  countDown?: number
+}
 
 export const ConfirmationServiceContext = createContext<
   (options: ConfirmationOptions) => Promise<boolean>
@@ -20,8 +26,9 @@ export const ConfirmationServiceContext = createContext<
 export const ConfirmationProvider = ({ children }: { children: ReactNode }) => {
   const [confirmationState, setConfirmationState] =
     useState<ConfirmationOptions | null>(null)
-
   const [open, setOpen] = useState<boolean>(false)
+  const [seconds, setSeconds] = useState<number>(0)
+  const isDesktop = useMediaQuery("(min-width: 768px)")
 
   const awaitingPromiseRef = useRef<{
     resolve: (value: boolean) => void
@@ -30,6 +37,7 @@ export const ConfirmationProvider = ({ children }: { children: ReactNode }) => {
 
   const openConfirmation = (options: ConfirmationOptions) => {
     setConfirmationState(options)
+    setSeconds(options.countDown || 0)
     setOpen(true)
     return new Promise<boolean>((resolve, reject) => {
       awaitingPromiseRef.current = { resolve, reject }
@@ -55,6 +63,20 @@ export const ConfirmationProvider = ({ children }: { children: ReactNode }) => {
   }
 
   useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+
+    if (open && seconds > 0) {
+      interval = setInterval(() => {
+        setSeconds((prev) => prev - 1)
+      }, 1000)
+    }
+
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [seconds, open])
+
+  useEffect(() => {
     if (!open) {
       setTimeout(() => {
         setConfirmationState(null)
@@ -65,13 +87,16 @@ export const ConfirmationProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ConfirmationServiceContext.Provider value={openConfirmation}>
       {children}
-
-      <ConfirmationDialog
-        open={open}
-        onSubmit={handleSubmit}
-        onClose={handleClose}
-        {...(confirmationState as ConfirmationOptions)}
-      />
+      {confirmationState && (
+        <ConfirmationDialog
+          open={open}
+          onSubmit={handleSubmit}
+          onClose={handleClose}
+          seconds={seconds}
+          isDesktop={isDesktop}
+          {...confirmationState}
+        />
+      )}
     </ConfirmationServiceContext.Provider>
   )
 }

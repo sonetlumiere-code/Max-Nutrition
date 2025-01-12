@@ -23,7 +23,7 @@ const CancelCustomerOrder = ({ order }: CancelCustomerOrderProps) => {
       const res = await editOrder({
         id: order.id,
         values: {
-          status: OrderStatus.Cancelled,
+          status: OrderStatus.CANCELLED,
         },
       })
 

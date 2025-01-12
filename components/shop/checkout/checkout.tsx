@@ -1,11 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { createOrder } from "@/actions/orders/create-order"
 import { useCart } from "@/components/cart-provider"
 import { Icons } from "@/components/icons"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -16,14 +13,11 @@ import {
 } from "@/components/ui/card"
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Select,
   SelectContent,
@@ -31,59 +25,46 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { Skeleton } from "@/components/ui/skeleton"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { ToastAction } from "@/components/ui/toast"
 import { toast } from "@/components/ui/use-toast"
 import { getShippingZone } from "@/data/shipping-zones"
 import {
   translateAddressLabel,
-  translatePaymentMethod,
   translateShippingMethod,
 } from "@/helpers/helpers"
 import { usePromotion } from "@/hooks/use-promotion"
-import { orderSchema } from "@/lib/validations/order-validation"
-import { PopulatedCustomer } from "@/types/types"
+import { OrderSchema, orderSchema } from "@/lib/validations/order-validation"
+import { PopulatedCustomer, PopulatedShopSettings } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PaymentMethod, ShippingMethod, ShippingSettings } from "@prisma/client"
+import { PaymentMethod, ShippingMethod } from "@prisma/client"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import useSWR from "swr"
-import { z } from "zod"
 import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
-
-type OrderSchema = z.infer<typeof orderSchema>
+import CheckoutListItems from "./checkout-list-items-table"
+import AppliedPromotions from "../../shared/applied-promotions"
+import PaymentMethodField from "@/components/shared/payment-method-field"
+import Summary from "@/components/shared/summary"
+import SelectedAddressInfo from "@/components/shared/selected-address-info"
+import AllowedDelivery from "@/components/shared/allowed-delivery"
+import ShopBranchField from "@/components/shared/shop-branch-field"
 
 type CheckoutProps = {
-  customer: PopulatedCustomer | null
-  shippingSettings: ShippingSettings | null
+  customer: PopulatedCustomer
+  shopSettings: PopulatedShopSettings
 }
 
-const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
+const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
   const { items, setOpen, clearCart } = useCart()
-
-  const {
-    promotions,
-    appliedPromotion,
-    isLoadingPromotions,
-    subtotalPrice,
-    discountAmount,
-    finalPrice,
-  } = usePromotion()
-
+  const { promotions, appliedPromotions } = usePromotion({
+    items,
+  })
   const router = useRouter()
 
   const [isRedirecting, setIsRedirecting] = useState(false)
+  const { branches, shippingSettings, allowedPaymentMethods } = shopSettings
 
   useEffect(() => {
     if (!items.length || !customer) {
@@ -96,14 +77,12 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
+      origin: "SHOP" as const,
       customerAddressId: "",
-      paymentMethod: PaymentMethod.Cash,
-      shippingMethod: ShippingMethod.Delivery,
-      items: items.map((item) => ({
-        productId: item.product.id,
-        quantity: item.quantity,
-        variation: item.variation,
-      })),
+      paymentMethod: PaymentMethod.CASH,
+      shippingMethod: ShippingMethod.DELIVERY,
+      shopBranchId: shopSettings.branches?.[0].id || "",
+      items: [],
     },
   })
 
@@ -115,8 +94,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     setValue,
   } = form
 
-  const shippingMethod = watch("shippingMethod")
-  const customerAddressId = watch("customerAddressId")
+  const { shippingMethod, customerAddressId } = watch()
 
   useEffect(() => {
     setValue(
@@ -135,13 +113,14 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
   )
 
   const { data: shippingZone, isValidating: isValidatingShippingZone } = useSWR(
-    shippingMethod === ShippingMethod.Delivery && selectedAddress?.locality
+    shippingMethod === ShippingMethod.DELIVERY && selectedAddress?.locality
       ? [
-          "/api/shipping-zone",
+          "shipping-zone",
           { locality: selectedAddress.locality, isActive: true },
         ]
       : null,
-    ([_, params]) => getShippingZone({ where: params })
+    ([_, params]) => getShippingZone({ where: params }),
+    { revalidateOnFocus: false }
   )
 
   const shippingCost = shippingZone?.cost || 0
@@ -156,7 +135,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
       return
     }
 
-    const res = await createOrder(data)
+    const res = await createOrder({ values: data, sendEmail: true })
 
     if (res.success) {
       setIsRedirecting(true)
@@ -180,18 +159,20 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
     }
   }
 
-  const isValidMinQuantity = useMemo(() => {
+  const isValidMinQuantity: boolean = (() => {
     const totalProductsQuantity = items.reduce(
       (acc, curr) => acc + curr.quantity,
       0
     )
 
     return (
-      shippingMethod === ShippingMethod.Delivery &&
-      shippingSettings &&
-      shippingSettings.minProductsQuantityForDelivery <= totalProductsQuantity
+      (shippingMethod === ShippingMethod.DELIVERY &&
+        shippingSettings &&
+        shippingSettings.minProductsQuantityForDelivery <=
+          totalProductsQuantity) ||
+      false
     )
-  }, [shippingMethod, shippingSettings, items])
+  })()
 
   return (
     <>
@@ -228,106 +209,17 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                       </div>
                     </CardHeader>
                     <CardContent className='p-3 md:p-6 md:pt-0'>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Vianda</TableHead>
-                            <TableHead className='whitespace-nowrap'>
-                              {/* Con/Sin sal */}
-                            </TableHead>
-                            <TableHead className='hidden md:table-cell'>
-                              Precio
-                            </TableHead>
-                            <TableHead className='text-end'>Cantidad</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {items?.map((item) => (
-                            <TableRow key={item.id}>
-                              <TableCell className='font-medium flex gap-3'>
-                                <img
-                                  src={
-                                    item.product.image
-                                      ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${item.product.image}`
-                                      : "/img/no-image.jpg"
-                                  }
-                                  className='h-10 w-10 rounded-md'
-                                  alt={item.product.name}
-                                />
-                                <p className='text-sm'>{item.product.name}</p>
-                              </TableCell>
-                              <TableCell className='whitespace-nowrap'>
-                                {item.variation.withSalt ? (
-                                  <Badge variant='secondary'>Con sal</Badge>
-                                ) : (
-                                  <Badge variant='secondary'>Sin sal</Badge>
-                                )}
-                              </TableCell>
-                              <TableCell className='hidden md:table-cell'>
-                                ${item.product?.price}
-                              </TableCell>
-                              <TableCell className='text-end'>
-                                x {item.quantity}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                      <CheckoutListItems />
                     </CardContent>
                   </Card>
 
                   {promotions && promotions.length > 0 && (
                     <Card>
                       <CardHeader>
-                        <CardTitle className='text-xl'>Promoción</CardTitle>
+                        <CardTitle className='text-xl'>Promociones</CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        {appliedPromotion ? (
-                          <Alert>
-                            <Icons.badgePercent className='h-4 w-4' />
-                            <AlertTitle>¡Promoción aplicada!</AlertTitle>
-                            <AlertDescription>
-                              <div className='flex flex-col text-sm text-muted-foreground'>
-                                <span>{appliedPromotion.name}</span>
-                                <span>{appliedPromotion.description}</span>
-                                <span>
-                                  Métodos de pago habilitados:{" "}
-                                  {new Intl.ListFormat("es", {
-                                    style: "long",
-                                    type: "conjunction",
-                                  }).format(
-                                    appliedPromotion.allowedPaymentMethods.map(
-                                      translatePaymentMethod
-                                    )
-                                  )}
-                                  {"."}
-                                </span>
-                                <span>
-                                  Métodos de envío habilitados:{" "}
-                                  {new Intl.ListFormat("es", {
-                                    style: "long",
-                                    type: "conjunction",
-                                  }).format(
-                                    appliedPromotion.allowedShippingMethods.map(
-                                      translateShippingMethod
-                                    )
-                                  )}
-                                  {"."}
-                                </span>
-                              </div>
-                            </AlertDescription>
-                          </Alert>
-                        ) : (
-                          <Alert>
-                            <Icons.circleAlert className='h-4 w-4' />
-                            <AlertTitle>Sin promoción aplicada</AlertTitle>
-                            <AlertDescription>
-                              Actualmente no hay promociones disponibles para tu
-                              carrito. ¡Explora nuestras promociones para
-                              ahorrar en tu próxima compra!
-                            </AlertDescription>
-                          </Alert>
-                        )}
+                      <CardContent className='space-y-3'>
+                        <AppliedPromotions items={items} />
                       </CardContent>
                     </Card>
                   )}
@@ -347,7 +239,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                               <Select
                                 onValueChange={(value) => {
                                   field.onChange(value)
-                                  if (value === ShippingMethod.TakeAway) {
+                                  if (value === ShippingMethod.TAKE_AWAY) {
                                     setValue("customerAddressId", "")
                                   }
                                 }}
@@ -359,21 +251,25 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                                 </SelectTrigger>
                                 <SelectContent>
                                   {shippingSettings?.allowedShippingMethods.map(
-                                    (method) => (
-                                      <SelectItem
-                                        key={method}
-                                        value={method}
-                                        disabled={
-                                          appliedPromotion
-                                            ? !appliedPromotion?.allowedShippingMethods.includes(
-                                                method
-                                              )
-                                            : false
-                                        }
-                                      >
-                                        {translateShippingMethod(method)}
-                                      </SelectItem>
-                                    )
+                                    (method) => {
+                                      const isDisabled =
+                                        appliedPromotions.length > 0 &&
+                                        !appliedPromotions.every((promotion) =>
+                                          promotion.allowedShippingMethods.includes(
+                                            method
+                                          )
+                                        )
+
+                                      return (
+                                        <SelectItem
+                                          key={method}
+                                          value={method}
+                                          disabled={isDisabled}
+                                        >
+                                          {translateShippingMethod(method)}
+                                        </SelectItem>
+                                      )
+                                    }
                                   )}
                                 </SelectContent>
                               </Select>
@@ -383,46 +279,29 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                         />
                       </CardContent>
                       <CardFooter>
-                        {shippingMethod === ShippingMethod.Delivery && (
-                          <>
-                            {!isValidMinQuantity ? (
-                              <Alert variant='destructive'>
-                                <Icons.circleAlert className='h-4 w-4' />
-                                <AlertTitle className='leading-5'>
-                                  Agrega más productos para habilitar envío a
-                                  domicilio.
-                                </AlertTitle>
-                                <AlertDescription className='leading-4'>
-                                  La cantidad mínima de productos para habilitar
-                                  envío a domicilio es{" "}
-                                  {
-                                    shippingSettings?.minProductsQuantityForDelivery
-                                  }
-                                  .
-                                </AlertDescription>
-                              </Alert>
-                            ) : (
-                              <Alert variant='success'>
-                                <Icons.circleCheck className='h-4 w-4' />
-                                <AlertTitle className='leading-5'>
-                                  Envío a domicilio habilitado
-                                </AlertTitle>
-                                <AlertDescription className='leading-4'>
-                                  Alcanzaste la cantidad mínima de{" "}
-                                  {
-                                    shippingSettings?.minProductsQuantityForDelivery
-                                  }{" "}
-                                  productos para habilitar envío a domicilio.
-                                </AlertDescription>
-                              </Alert>
-                            )}
-                          </>
-                        )}
+                        <div className='w-full'>
+                          {shippingMethod === ShippingMethod.DELIVERY ? (
+                            <AllowedDelivery
+                              isValidMinQuantity={isValidMinQuantity}
+                              minProductsQuantityForDelivery={
+                                shippingSettings.minProductsQuantityForDelivery
+                              }
+                            />
+                          ) : shippingMethod === ShippingMethod.TAKE_AWAY ? (
+                            branches && (
+                              <ShopBranchField
+                                control={control}
+                                branches={branches}
+                                isSubmitting={isSubmitting}
+                              />
+                            )
+                          ) : null}
+                        </div>
                       </CardFooter>
                     </Card>
                   )}
 
-                  {shippingMethod === ShippingMethod.Delivery && (
+                  {shippingMethod === ShippingMethod.DELIVERY && (
                     <>
                       {customer?.address?.length === 0 ? (
                         <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm p-6'>
@@ -445,7 +324,7 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                             <div className='space-between flex items-center'>
                               <div className='max-w-screen-sm'>
                                 <CardTitle className='text-xl'>
-                                  Dirección de envío
+                                  Dirección
                                 </CardTitle>
                               </div>
                               <div className='ml-auto'>
@@ -459,7 +338,6 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                               </div>
                             </div>
                           </CardHeader>
-
                           <CardContent>
                             <FormField
                               control={control}
@@ -479,9 +357,6 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                                       {customer?.address?.map((a) => (
                                         <SelectItem key={a.id} value={a.id}>
                                           {translateAddressLabel(a.label)}
-                                          {/* ({a.addressStreet}{" "}
-                                          {a.addressNumber} {a.addressFloor || ""}{" "}
-                                          {a.addressApartment}) */}
                                         </SelectItem>
                                       ))}
                                     </SelectContent>
@@ -492,42 +367,13 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                             />
                           </CardContent>
                           <CardFooter>
-                            {selectedAddress && (
-                              <div className='w-full text-sm space-y-3'>
-                                <address className='grid gap-0.5 not-italic text-muted-foreground'>
-                                  <span>
-                                    {selectedAddress?.addressStreet}{" "}
-                                    {selectedAddress?.addressNumber}{" "}
-                                    {selectedAddress?.addressFloor || ""}{" "}
-                                    {selectedAddress?.addressApartment}
-                                  </span>
-                                  <span>
-                                    {selectedAddress?.province},{" "}
-                                    {selectedAddress?.municipality},
-                                    {selectedAddress?.locality}
-                                  </span>{" "}
-                                  <span>
-                                    Código postal: {selectedAddress?.postCode}
-                                  </span>
-                                </address>
-
-                                <Separator />
-
-                                {isValidatingShippingZone ? (
-                                  <Skeleton className='w-20 h-5' />
-                                ) : shippingZone ? (
-                                  <p className='text-muted-foreground'>
-                                    Costo de envío a {shippingZone.locality}:{" "}
-                                    <b>${shippingZone?.cost}</b>
-                                  </p>
-                                ) : (
-                                  <p className='text-destructive'>
-                                    Actualmente no realizamos envíos a{" "}
-                                    {selectedAddress?.locality}
-                                  </p>
-                                )}
-                              </div>
-                            )}
+                            <SelectedAddressInfo
+                              selectedAddress={selectedAddress}
+                              shippingZone={shippingZone}
+                              isValidatingShippingZone={
+                                isValidatingShippingZone
+                              }
+                            />
                           </CardFooter>
                         </Card>
                       )}
@@ -539,122 +385,24 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                       <CardTitle className='text-xl'>Método de Pago</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <FormField
-                        control={form.control}
-                        name='paymentMethod'
-                        render={({ field }) => (
-                          <FormItem className='space-y-3'>
-                            <FormLabel>Método de pago</FormLabel>
-                            <FormControl>
-                              <RadioGroup
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                className='grid grid-cols-2 gap-4'
-                                disabled={isSubmitting}
-                              >
-                                <div>
-                                  <RadioGroupItem
-                                    value={PaymentMethod.MercadoPago}
-                                    id={PaymentMethod.MercadoPago}
-                                    className='peer sr-only'
-                                    disabled={
-                                      appliedPromotion
-                                        ? !appliedPromotion?.allowedPaymentMethods.includes(
-                                            PaymentMethod.MercadoPago
-                                          )
-                                        : false
-                                    }
-                                  />
-                                  <Label
-                                    htmlFor={PaymentMethod.MercadoPago}
-                                    className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
-                                  >
-                                    <Icons.creditCard className='mb-3 h-6 w-6' />
-                                    Mercado Pago
-                                  </Label>
-                                </div>
-                                <div>
-                                  <RadioGroupItem
-                                    value={PaymentMethod.Cash}
-                                    id={PaymentMethod.Cash}
-                                    className='peer sr-only'
-                                    disabled={
-                                      appliedPromotion
-                                        ? !appliedPromotion?.allowedPaymentMethods.includes(
-                                            PaymentMethod.Cash
-                                          )
-                                        : false
-                                    }
-                                  />
-                                  <Label
-                                    htmlFor={PaymentMethod.Cash}
-                                    className='flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
-                                  >
-                                    <Icons.dollarSign className='mb-3 h-6 w-6' />
-                                    Efectivo
-                                  </Label>
-                                </div>
-                              </RadioGroup>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                      <PaymentMethodField
+                        control={control}
+                        items={items}
+                        allowedPaymentMethods={allowedPaymentMethods}
+                        isSubmitting={isSubmitting}
                       />
                     </CardContent>
                   </Card>
                 </div>
               </div>
+
               <div className='grid gap-6'>
                 <Card>
                   <CardHeader>
                     <CardTitle className='text-xl'>Total del pedido</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className='grid gap-2'>
-                      <div className='flex items-center justify-between text-sm'>
-                        <span>Subtotal</span>
-                        {isLoadingPromotions ? (
-                          <Skeleton className='w-20 h-8' />
-                        ) : (
-                          <span>${subtotalPrice}</span>
-                        )}
-                      </div>
-                      {appliedPromotion && (
-                        <div className='flex items-center justify-between text-sm'>
-                          <span>Descuento ({appliedPromotion.name})</span>
-                          {isLoadingPromotions ? (
-                            <Skeleton className='w-20 h-8' />
-                          ) : appliedPromotion.discountType === "Fixed" ? (
-                            <span className='text-destructive'>
-                              -${appliedPromotion.discount}
-                            </span>
-                          ) : (
-                            <span className='text-destructive'>
-                              -{appliedPromotion.discount}% (-${discountAmount})
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      <div className='flex items-center justify-between text-sm'>
-                        <span>Costo de envío</span>
-                        {isLoadingPromotions ? (
-                          <Skeleton className='w-20 h-8' />
-                        ) : (
-                          <span>${shippingCost}</span>
-                        )}
-                      </div>
-
-                      <Separator />
-
-                      <div className='flex items-center justify-between font-bold'>
-                        <span>Total</span>
-                        {isLoadingPromotions ? (
-                          <Skeleton className='w-20 h-6' />
-                        ) : (
-                          <span>${(finalPrice + shippingCost).toFixed(2)}</span>
-                        )}
-                      </div>
-                    </div>
+                    <Summary items={items} shippingCost={shippingCost} />
                   </CardContent>
                   <CardFooter>
                     <Button
@@ -662,12 +410,11 @@ const Checkout = ({ customer, shippingSettings }: CheckoutProps) => {
                       className='ml-auto'
                       disabled={
                         isSubmitting ||
-                        (shippingMethod === "Delivery" &&
+                        (shippingMethod === "DELIVERY" &&
                           !isValidMinQuantity) ||
-                        (shippingMethod === "Delivery" &&
+                        (shippingMethod === "DELIVERY" &&
                           !customer?.address?.length) ||
                         (isSubmitted && !isValid)
-                        // (shippingMethod === "Delivery" && !shippingZone)
                       }
                     >
                       {isSubmitting && (

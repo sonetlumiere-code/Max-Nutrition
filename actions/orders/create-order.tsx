@@ -7,17 +7,32 @@ import { getShippingZone } from "@/data/shipping-zones"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { sendOrderDetailsEmail } from "@/lib/mail/mail"
-import { orderSchema } from "@/lib/validations/order-validation"
+import { OrderSchema, orderSchema } from "@/lib/validations/order-validation"
 import { PopulatedOrder, PopulatedProduct } from "@/types/types"
-import { ShippingMethod } from "@prisma/client"
+import { Role, ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
 import { checkPromotion } from "../promotions/check-promotion"
+import { getShopBranch } from "@/data/shop-branches"
 
-type OrderSchema = z.infer<typeof orderSchema>
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
-export async function createOrder(values: OrderSchema) {
+export async function createOrder({
+  values,
+  sendEmail,
+}: {
+  values: OrderSchema
+  sendEmail?: boolean
+}) {
+  if (!shopSettingsId) {
+    return { error: "Es necesario el ID de la configuración de tienda." }
+  }
+
   const session = await auth()
+  const userRole: Role | undefined = session?.user.role
+
+  if (!session || !userRole) {
+    return { error: "Usuario no autenticado o rol no válido." }
+  }
 
   const validatedFields = orderSchema.safeParse(values)
 
@@ -25,10 +40,33 @@ export async function createOrder(values: OrderSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { customerAddressId, shippingMethod, paymentMethod, items } =
-    validatedFields.data
-  const productIds = items.map((item) => item.productId)
-  const uniqueProductIds = Array.from(new Set(productIds))
+  const {
+    origin,
+    customerId,
+    customerAddressId,
+    shippingMethod,
+    paymentMethod,
+    items,
+    shopBranchId,
+  } = validatedFields.data
+
+  if (origin === "DASHBOARD" && userRole !== "ADMIN") {
+    return {
+      error:
+        "No autorizado para realizar esta acción desde el panel de administración.",
+    }
+  }
+
+  if (origin === "DASHBOARD" && !customerId) {
+    return {
+      error:
+        "El ID del cliente es obligatorio para crear pedidos desde el panel de administración.",
+    }
+  }
+
+  const uniqueProductIds = Array.from(
+    new Set(items.map((item) => item.productId))
+  )
 
   try {
     const [products, customer] = await Promise.all([
@@ -45,7 +83,8 @@ export async function createOrder(values: OrderSchema) {
       }),
       getCustomer({
         where: {
-          userId: session?.user.id,
+          userId: origin === "SHOP" ? session?.user.id : undefined,
+          id: origin === "DASHBOARD" ? customerId : undefined,
         },
         include: {
           user: true,
@@ -59,7 +98,7 @@ export async function createOrder(values: OrderSchema) {
     }
 
     if (!customer) {
-      return { error: "ID de cliente inválido." }
+      return { error: "Cliente no encontrado." }
     }
 
     const populatedItems = items
@@ -73,12 +112,13 @@ export async function createOrder(values: OrderSchema) {
       return acc + item.product.price * item.quantity
     }, 0)
 
-    const { appliedPromotion, finalPrice } = await checkPromotion({
+    const { appliedPromotions, finalPrice } = await checkPromotion({
       items: populatedItems,
-      subtotal,
     })
 
-    if (appliedPromotion) {
+    let promotionsData = []
+
+    for (const appliedPromotion of appliedPromotions) {
       const allowedShippingMethods =
         appliedPromotion.allowedShippingMethods || []
       const allowedPaymentMethods = appliedPromotion.allowedPaymentMethods || []
@@ -96,12 +136,33 @@ export async function createOrder(values: OrderSchema) {
             "El método de pago seleccionado no es válido para la promoción.",
         }
       }
+
+      promotionsData.push({
+        promotionId: appliedPromotion.id,
+        promotionName: appliedPromotion.name,
+        promotionDiscountType: appliedPromotion.discountType,
+        promotionDiscount: appliedPromotion.discount,
+        appliedTimes: appliedPromotion.appliedTimes,
+      })
     }
 
     let shippingCost = 0
 
-    if (shippingMethod === ShippingMethod.Delivery) {
-      const shippingSettings = await getShippingSettings()
+    if (shippingMethod === ShippingMethod.TAKE_AWAY) {
+      const branch = await getShopBranch({
+        where: { id: shopBranchId, isActive: true },
+      })
+
+      if (!branch) {
+        return { error: "ID de sucursal inválido." }
+      }
+    }
+
+    if (shippingMethod === ShippingMethod.DELIVERY) {
+      const shippingSettings = await getShippingSettings({
+        where: { shopSettingsId },
+      })
+
       const totalProductsQuantity = items.reduce(
         (acc, curr) => acc + curr.quantity,
         0
@@ -112,7 +173,7 @@ export async function createOrder(values: OrderSchema) {
         shippingSettings.minProductsQuantityForDelivery > totalProductsQuantity
       ) {
         return {
-          error: `La cantidad de productos debe ser mayor o igual a ${shippingSettings.minProductsQuantityForDelivery} para permitir la entrega.`,
+          error: `La cantidad de productos debe ser mayor o igual a ${shippingSettings.minProductsQuantityForDelivery} para permitir la entrega a domicilio.`,
         }
       }
 
@@ -150,11 +211,9 @@ export async function createOrder(values: OrderSchema) {
         shippingCost,
         paymentMethod,
         taxCost: 0,
-        appliedPromotionName: appliedPromotion?.name ?? null,
-        appliedPromotionDiscountType: appliedPromotion?.discountType ?? null,
-        appliedPromotionDiscount: appliedPromotion?.discount ?? null,
         subtotal,
         total,
+        shopBranchId: shippingMethod === "TAKE_AWAY" ? shopBranchId : null,
         items: {
           create: items.map((item) => ({
             productId: item.productId,
@@ -162,9 +221,13 @@ export async function createOrder(values: OrderSchema) {
             withSalt: item.variation.withSalt,
           })),
         },
+        appliedPromotions: {
+          create: promotionsData,
+        },
       },
       include: {
         address: true,
+        appliedPromotions: true,
         customer: {
           include: {
             user: {
@@ -183,12 +246,15 @@ export async function createOrder(values: OrderSchema) {
       },
     })
 
-    sendOrderDetailsEmail({
-      email: customer.user?.email || "",
-      order: order as PopulatedOrder,
-      orderLink: "customer-orders-history",
-    })
+    if (sendEmail) {
+      sendOrderDetailsEmail({
+        email: customer.user?.email || "",
+        order: order as PopulatedOrder,
+        orderLink: "customer-orders-history",
+      })
+    }
 
+    revalidatePath("/orders")
     revalidatePath("/customer-orders-history")
 
     return { success: "La orden se creó exitosamente.", order }

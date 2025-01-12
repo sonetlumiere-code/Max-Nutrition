@@ -6,9 +6,15 @@ import { shippingZoneSchema } from "@/lib/validations/shipping-zone-validation"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
 
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
+
 type ShippingZoneSchema = z.infer<typeof shippingZoneSchema>
 
 export async function createShippingZone(values: ShippingZoneSchema) {
+  if (!shopSettingsId) {
+    return { error: "Es necesario el ID de la configuración de tienda." }
+  }
+
   const session = await auth()
 
   if (session?.user.role !== "ADMIN") {
@@ -27,6 +33,7 @@ export async function createShippingZone(values: ShippingZoneSchema) {
   try {
     const shippingZone = await prisma.shippingZone.create({
       data: {
+        shopSettingsId,
         province,
         municipality,
         locality,

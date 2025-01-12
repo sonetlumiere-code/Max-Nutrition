@@ -12,6 +12,12 @@ import {
   Recipe,
   RecipeIngredient,
   User,
+  ShopBranch,
+  OperationalHours,
+  ShopSettings,
+  ShippingZone,
+  ShippingSettings,
+  AppliedPromotion,
 } from "@prisma/client"
 
 export type PopulatedRecipe = Recipe & {
@@ -29,7 +35,7 @@ export type PopulatedIngredient = Ingredient & {
 }
 
 export type PopulatedCategory = Category & {
-  products?: Product[]
+  products: Product[]
   promotions?: PromotionCategory[]
 }
 
@@ -41,6 +47,8 @@ export type PopulatedOrder = Order & {
   items?: PopulatedOrderItem[]
   customer?: PopulatedCustomer
   address?: CustomerAddress
+  appliedPromotions?: AppliedPromotion[]
+  shopBranch?: ShopBranch
 }
 
 export type PopulatedOrderItem = OrderItem & {
@@ -66,7 +74,32 @@ export interface IngredientTotal {
   measurement: Measurement
   quantity: number
   cost: number
-  waste: number // Ver acá lucas si es necesario (lo aplicó  Cursor)
+  waste: number
+}
+
+export type PopulatedShopSettings = ShopSettings & {
+  branches?: PopulatedShopBranch[]
+  shippingSettings?: ShippingSettings
+  shippingZones?: ShippingZone[]
+}
+
+export type PopulatedShippingSettings = ShippingSettings & {
+  shopSettings?: ShopSettings
+}
+
+export type PopulatedShopBranch = ShopBranch & {
+  operationalHours: OperationalHours[]
 }
 
 export type TimePeriod = "week" | "month" | "year" | "all"
+
+export type PromotionToApply = PopulatedPromotion & {
+  appliedTimes: number
+}
+
+export type LineItem = {
+  id: string
+  product: PopulatedProduct
+  quantity: number
+  variation: Variation
+}

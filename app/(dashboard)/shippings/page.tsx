@@ -1,5 +1,5 @@
 import EditShippingSettings from "@/components/dashboard/shippings/shipping-settings/edit-shipping-settings/edit-shipping-settings"
-import DeleteShippingZone from "@/components/dashboard/shippings/shipping-zones/delete-shipping-zone/delete-shipping-zone"
+import ShippingZonesDataTable from "@/components/dashboard/shippings/shipping-zones/list/shipping-zones-data-table/shipping-zones-data-table"
 import { Icons } from "@/components/icons"
 import {
   Breadcrumb,
@@ -13,47 +13,39 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { getShippingSettings } from "@/data/shipping-settings"
-import { getShippingZones } from "@/data/shipping-zones"
+import { getShopSettings } from "@/data/shop-settings"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { ShippingSettings } from "@prisma/client"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
+
 const Shippings = async () => {
+  if (!shopSettingsId) {
+    return <span>Es necesario el ID de la configuración de tienda.</span>
+  }
+
   const session = await auth()
 
   if (session?.user.role !== "ADMIN") {
     return redirect("/")
   }
 
-  const [shippingZones, shippingSettings] = await Promise.all([
-    getShippingZones(),
-    getShippingSettings(),
-  ])
+  const shopSettings = await getShopSettings({
+    where: { id: shopSettingsId },
+    include: {
+      shippingSettings: true,
+      shippingZones: true,
+    },
+  })
 
-  const shippingZonesLength = shippingZones?.length || 0
+  const shippingSettings = shopSettings?.shippingSettings
+  const shippingZones = shopSettings?.shippingZones
 
   return (
     <>
@@ -75,7 +67,7 @@ const Shippings = async () => {
 
       <div className='grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8'>
         <div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
-          {shippingZonesLength > 0 ? (
+          {shippingZones && shippingZones.length > 0 ? (
             <Card>
               <CardHeader>
                 <div className='space-between flex items-center'>
@@ -99,71 +91,8 @@ const Shippings = async () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Provincia</TableHead>
-                      <TableHead>Municipalidad</TableHead>
-                      <TableHead>Localidad</TableHead>
-                      <TableHead className='hidden md:table-cell'>
-                        Costo
-                      </TableHead>
-                      <TableHead className='text-end'>
-                        <span>Acciones</span>
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {shippingZones?.map((shippingZone) => (
-                      <TableRow key={shippingZone.id}>
-                        <TableCell>{shippingZone.province}</TableCell>
-                        <TableCell>{shippingZone.municipality}</TableCell>
-                        <TableCell>{shippingZone.locality}</TableCell>
-                        <TableCell className='max-w-28 hidden md:table-cell'>
-                          <p className='truncate'>$ {shippingZone.cost}</p>
-                        </TableCell>
-                        <TableCell className='text-end'>
-                          <DropdownMenu modal={false}>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup='true'
-                                size='icon'
-                                variant='ghost'
-                              >
-                                <Icons.moreHorizontal className='h-4 w-4' />
-                                <span className='sr-only'>Mostrar menú</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end'>
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <Link
-                                href={`shippings/edit-shipping-zone/${shippingZone.id}`}
-                              >
-                                <DropdownMenuItem>
-                                  <Icons.pencil className='w-4 h-4 mr-2' />
-                                  Editar
-                                </DropdownMenuItem>
-                              </Link>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem>
-                                <DeleteShippingZone
-                                  shippingZone={shippingZone}
-                                />
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <ShippingZonesDataTable shippingZones={shippingZones} />
               </CardContent>
-              <CardFooter>
-                <div className='text-xs text-muted-foreground'>
-                  Mostrando <strong>{shippingZonesLength}</strong> zona
-                  {shippingZonesLength > 1 ? "s" : ""} de envío
-                </div>
-              </CardFooter>
             </Card>
           ) : (
             <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>

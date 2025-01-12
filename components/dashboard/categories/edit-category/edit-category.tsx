@@ -95,7 +95,7 @@ const EditCategory = ({ category, products }: EditCategoryProps) => {
                 control={form.control}
                 name='productsIds'
                 render={({ field }) => (
-                  <FormItem className='flex flex-col'>
+                  <FormItem>
                     <FormLabel>Productos</FormLabel>
                     <MultiSelect
                       options={

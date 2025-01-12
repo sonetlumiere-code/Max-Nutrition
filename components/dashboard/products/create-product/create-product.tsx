@@ -60,6 +60,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
       stock: true,
       show: true,
       image: "",
+      categoriesIds: [],
       recipeId: "",
     },
   })
@@ -219,7 +220,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                   control={form.control}
                   name='categoriesIds'
                   render={({ field }) => (
-                    <FormItem className='flex flex-col'>
+                    <FormItem>
                       <FormLabel>Categorías</FormLabel>
                       <MultiSelect
                         options={
@@ -330,7 +331,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
               </CardHeader>
               <CardContent>
                 <div className='space-y-6'>
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name='stock'
                     render={({ field }) => (
@@ -348,7 +349,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                         </FormControl>
                       </FormItem>
                     )}
-                  />
+                  /> */}
                   <FormField
                     control={form.control}
                     name='show'

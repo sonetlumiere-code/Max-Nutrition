@@ -4,7 +4,7 @@ import OrderItemDetails from "@/components/dashboard/orders/list/order-item-deta
 import OrdersBulkExportDialog from "@/components/dashboard/orders/list/orders-data-table/bulk-actions/orders-bulk-export-dialog"
 import OrdersDataTable from "@/components/dashboard/orders/list/orders-data-table/orders-data-table"
 import { Icons } from "@/components/icons"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -15,6 +15,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getOrders } from "@/data/orders"
+import { cn } from "@/lib/utils"
 import { PopulatedOrder, TimePeriod } from "@/types/types"
 import { OrderStatus } from "@prisma/client"
 import {
@@ -29,6 +30,7 @@ import {
   subYears,
 } from "date-fns"
 import { es } from "date-fns/locale"
+import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 import { exportOrdersToExcel } from "@/actions/orders/export-orders"
@@ -64,6 +66,8 @@ const fetchOrders = async () => {
         },
       },
       address: true,
+      appliedPromotions: true,
+      shopBranch: true,
     },
     orderBy: {
       createdAt: "desc",
@@ -97,7 +101,7 @@ export default function Orders() {
     data: orders,
     error,
     isLoading,
-  } = useSWR<PopulatedOrder[] | null>("/api/orders", fetchOrders)
+  } = useSWR<PopulatedOrder[] | null>("orders", fetchOrders)
 
   const groupedAndFilteredOrders = useMemo(() => {
     if (!orders) return {}
@@ -164,7 +168,7 @@ export default function Orders() {
 
     const ordersToExport = Object.values(groupedAndFilteredOrders)
       .flat()
-      .filter((order) => order.status !== OrderStatus.Cancelled)
+      .filter((order) => order.status !== OrderStatus.CANCELLED)
 
     exportOrdersToExcel(ordersToExport)
   }
@@ -212,10 +216,25 @@ export default function Orders() {
               <TabsContent value={selectedTab}>
                 <Card>
                   <CardHeader className='px-7'>
-                    <CardTitle>Pedidos</CardTitle>
-                    <CardDescription>
-                      Pedidos recientes de tu tienda.
-                    </CardDescription>
+                    <div className='space-between flex items-center'>
+                      <div className='max-w-screen-sm'>
+                        <CardTitle className='text-xl'>Pedidos</CardTitle>
+                        <CardDescription className='hidden md:block'>
+                          Pedidos recientes de tu tienda.
+                        </CardDescription>
+                      </div>
+                      <div className='ml-auto'>
+                        <Link
+                          href='orders/create-order'
+                          className={cn(buttonVariants({ variant: "default" }))}
+                        >
+                          <>
+                            <Icons.circlePlus className='mr-2 h-4 w-4' />
+                            Crear
+                          </>
+                        </Link>
+                      </div>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     {Object.keys(groupedAndFilteredOrders).length > 0 ? (
@@ -274,7 +293,7 @@ export default function Orders() {
           setOpen={setOpenBulkExportDialog}
           orders={Object.values(groupedAndFilteredOrders)
             .flat()
-            .filter((order) => order.status !== OrderStatus.Cancelled)}
+            .filter((order) => order.status !== OrderStatus.CANCELLED)}
         />
       )}
     </>

@@ -9,8 +9,10 @@ import { z } from "zod"
 type ShippingSettingsSchema = z.infer<typeof shippingSettingsSchema>
 
 export async function editShippingSettings({
+  id,
   values,
 }: {
+  id: string
   values: ShippingSettingsSchema
 }) {
   const session = await auth()
@@ -30,7 +32,7 @@ export async function editShippingSettings({
 
   try {
     const updatedShippingSettings = await prisma.shippingSettings.update({
-      where: { id: "1" },
+      where: { id },
       data: {
         allowedShippingMethods,
         minProductsQuantityForDelivery,

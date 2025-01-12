@@ -58,11 +58,11 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
       name: "",
       description: "",
       isActive: true,
-      discountType: PromotionDiscountType.Fixed,
+      discountType: PromotionDiscountType.FIXED,
       discount: 0,
       categories: [{ categoryId: "", quantity: 0 }],
-      allowedPaymentMethods: [PaymentMethod.Cash],
-      allowedShippingMethods: [ShippingMethod.Delivery],
+      allowedPaymentMethods: [PaymentMethod.CASH],
+      allowedShippingMethods: [ShippingMethod.DELIVERY],
     },
   })
 
@@ -181,23 +181,23 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                             <FormItem className='flex items-center space-x-3 space-y-0'>
                               <FormControl>
                                 <RadioGroupItem
-                                  value={PromotionDiscountType.Fixed}
+                                  value={PromotionDiscountType.FIXED}
                                 />
                               </FormControl>
                               <FormLabel className='font-normal'>
                                 Descuento fijo
                               </FormLabel>
                             </FormItem>
-                            <FormItem className='flex items-center space-x-3 space-y-0'>
+                            {/* <FormItem className='flex items-center space-x-3 space-y-0'>
                               <FormControl>
                                 <RadioGroupItem
-                                  value={PromotionDiscountType.Percentage}
+                                  value={PromotionDiscountType.PERCENTAGE}
                                 />
                               </FormControl>
                               <FormLabel className='font-normal'>
                                 Descuento porcentual
                               </FormLabel>
-                            </FormItem>
+                            </FormItem> */}
                           </RadioGroup>
                         </FormControl>
                         <FormMessage />
@@ -212,7 +212,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                       <FormItem>
                         <FormLabel>
                           Descuento{" "}
-                          {watch("discountType") === PromotionDiscountType.Fixed
+                          {watch("discountType") === PromotionDiscountType.FIXED
                             ? "fijo"
                             : "porcentual"}
                         </FormLabel>
@@ -248,7 +248,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                           control={control}
                           name={`categories.${index}.categoryId`}
                           render={({ field }) => (
-                            <FormItem className='flex flex-col'>
+                            <FormItem>
                               <FormLabel className='text-xs'>
                                 Categoría
                               </FormLabel>
@@ -276,46 +276,42 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                                   </SelectContent>
                                 </Select>
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className='text-xs' />
                             </FormItem>
                           )}
                         />
                       </div>
 
-                      <div className='w-1/2 flex justify-between'>
-                        <FormField
-                          control={control}
-                          name={`categories.${index}.quantity`}
-                          render={({ field }) => (
-                            <FormItem className='flex flex-col'>
-                              <FormLabel className='text-xs'>
-                                Cantidad
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type='number'
-                                  min={0}
-                                  placeholder='Cantidad'
-                                  disabled={isSubmitting}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                      <FormField
+                        control={control}
+                        name={`categories.${index}.quantity`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className='text-xs'>Cantidad</FormLabel>
+                            <FormControl>
+                              <Input
+                                type='number'
+                                min={0}
+                                placeholder='Cantidad'
+                                disabled={isSubmitting}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage className='text-xs' />
+                          </FormItem>
+                        )}
+                      />
 
-                        <div className='flex items-end justify-between'>
-                          <Button
-                            type='button'
-                            size='icon'
-                            variant='ghost'
-                            onClick={() => remove(index)}
-                            disabled={isSubmitting || fields.length === 1}
-                          >
-                            <Icons.x className='w-3 h-3' />
-                          </Button>
-                        </div>
+                      <div className='flex justify-between mt-8'>
+                        <Button
+                          type='button'
+                          size='icon'
+                          variant='ghost'
+                          onClick={() => remove(index)}
+                          disabled={isSubmitting || fields.length === 1}
+                        >
+                          <Icons.x className='w-3 h-3' />
+                        </Button>
                       </div>
                     </div>
                   ))}

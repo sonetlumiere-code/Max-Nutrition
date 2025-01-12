@@ -1,0 +1,26 @@
+"use server"
+
+import { auth } from "@/lib/auth/auth"
+import prisma from "@/lib/db/db"
+import { revalidatePath } from "next/cache"
+
+export async function deleteShopBranch({ id }: { id: string }) {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return { error: "No autorizado." }
+  }
+
+  try {
+    const shopBranch = await prisma.shopBranch.delete({
+      where: { id },
+    })
+
+    revalidatePath("/shop-branches")
+
+    return { success: shopBranch }
+  } catch (error) {
+    console.log(error)
+    return { error: "Hubo un error al eliminar la sucursal." }
+  }
+}

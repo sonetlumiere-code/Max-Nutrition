@@ -95,7 +95,7 @@ const CreateCategory = ({ products }: CreateCategoryProps) => {
                 control={form.control}
                 name='productsIds'
                 render={({ field }) => (
-                  <FormItem className='flex flex-col'>
+                  <FormItem>
                     <FormLabel>Productos</FormLabel>
                     <MultiSelect
                       options={

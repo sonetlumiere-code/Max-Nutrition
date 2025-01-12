@@ -6,48 +6,66 @@ import { getCustomer } from "@/data/customer"
 import { buttonVariants } from "@/components/ui/button"
 import dynamic from "next/dynamic"
 import { redirect } from "next/navigation"
-import { getShippingSettings } from "@/data/shipping-settings"
+import { getShopSettings } from "@/data/shop-settings"
 
 const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
   ssr: false,
 })
 
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
+
 export default async function CheckoutPage() {
+  if (!shopSettingsId) {
+    return <span>Es necesario el ID de la configuración de tienda.</span>
+  }
+
   const session = await auth()
 
-  const customer = await getCustomer({
-    where: {
-      userId: session?.user.id,
-    },
-    include: {
-      address: true,
-      user: {
-        select: {
-          email: true,
-          name: true,
-        },
+  const [customer, shopSettings] = await Promise.all([
+    getCustomer({
+      where: {
+        userId: session?.user.id,
       },
-      orders: {
-        orderBy: {
-          createdAt: "desc",
+      include: {
+        address: true,
+        user: {
+          select: {
+            email: true,
+            name: true,
+          },
         },
-        include: {
-          address: true,
-          items: {
-            include: {
-              product: true,
+        orders: {
+          orderBy: {
+            createdAt: "desc",
+          },
+          include: {
+            address: true,
+            items: {
+              include: {
+                product: true,
+              },
             },
           },
         },
       },
-    },
-  })
+    }),
+    getShopSettings({
+      where: { id: shopSettingsId },
+      include: {
+        shippingSettings: true,
+        branches: {
+          where: { isActive: true },
+          include: {
+            operationalHours: true,
+          },
+        },
+      },
+    }),
+  ])
 
-  if (!customer) {
+  if (!customer || !shopSettings) {
     redirect("/shop")
   }
-
-  const shippingSettings = await getShippingSettings()
 
   return (
     <div className='space-y-6 w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
@@ -63,7 +81,7 @@ export default async function CheckoutPage() {
         </Link>
       </div>
 
-      <Checkout customer={customer} shippingSettings={shippingSettings} />
+      <Checkout customer={customer} shopSettings={shopSettings} />
     </div>
   )
 }

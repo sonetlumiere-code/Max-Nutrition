@@ -1,5 +1,4 @@
 import { updateUser } from "@/actions/auth/user"
-import { createCustomer } from "@/actions/customer/create-customer"
 import { getUser } from "@/data/user"
 import prisma from "@/lib/db/db"
 import { PrismaAdapter } from "@auth/prisma-adapter"
@@ -7,6 +6,7 @@ import { Role } from "@prisma/client"
 import NextAuth from "next-auth"
 import { sendWelcomeEmail } from "../mail/mail"
 import authConfig from "./auth.config"
+import { createCustomerByUser } from "@/actions/onboarding/create-customer-by-user"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
@@ -20,7 +20,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           updateUser(user.id, {
             emailVerified: new Date(),
           }),
-          createCustomer({
+          createCustomerByUser({
             userId: user.id,
             name: user.name || "",
           }),

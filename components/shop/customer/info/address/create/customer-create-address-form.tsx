@@ -28,7 +28,7 @@ import { toast } from "@/components/ui/use-toast"
 import { translateAddressLabel } from "@/helpers/helpers"
 import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { AddressLabel } from "@prisma/client"
+import { CustomerAddressLabel } from "@prisma/client"
 import { Dispatch, SetStateAction } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -55,7 +55,7 @@ const CustomerCreateAddressForm = ({
       addressFloor: 0,
       addressApartment: "",
       postCode: "",
-      label: AddressLabel.Home,
+      label: CustomerAddressLabel.HOME,
       labelString: "",
     },
   })
@@ -103,7 +103,7 @@ const CustomerCreateAddressForm = ({
               control={form.control}
               name='label'
               render={({ field }) => (
-                <FormItem className='flex flex-col'>
+                <FormItem>
                   <FormLabel>Etiqueta</FormLabel>
                   <Select
                     onValueChange={field.onChange}
@@ -116,11 +116,13 @@ const CustomerCreateAddressForm = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.entries(AddressLabel).map(([key, value]) => (
-                        <SelectItem key={key} value={value}>
-                          {translateAddressLabel(value)}
-                        </SelectItem>
-                      ))}
+                      {Object.entries(CustomerAddressLabel).map(
+                        ([key, value]) => (
+                          <SelectItem key={key} value={value}>
+                            {translateAddressLabel(value)}
+                          </SelectItem>
+                        )
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -128,7 +130,7 @@ const CustomerCreateAddressForm = ({
               )}
             />
 
-            {watch("label") === AddressLabel.Other && (
+            {watch("label") === CustomerAddressLabel.OTHER && (
               <FormField
                 control={control}
                 name='labelString'

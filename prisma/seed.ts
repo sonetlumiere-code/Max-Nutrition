@@ -1,6 +1,14 @@
-import { Ingredient, PrismaClient, ShippingMethod } from "@prisma/client"
+import {
+  DayOfWeek,
+  Ingredient,
+  PaymentMethod,
+  PrismaClient,
+  ShippingMethod,
+} from "@prisma/client"
 
 const prisma = new PrismaClient()
+
+const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
 export const ingredientsData: Omit<
   Ingredient,
@@ -848,7 +856,22 @@ export const ingredientsData: Omit<
   },
 ]
 
+const operationalHours = [
+  { dayOfWeek: DayOfWeek.MONDAY, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.TUESDAY, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.WEDNESDAY, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.THURSDAY, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.FRIDAY, startTime: "09:00", endTime: "17:00" },
+  { dayOfWeek: DayOfWeek.SATURDAY, startTime: "10:00", endTime: "14:00" },
+  { dayOfWeek: DayOfWeek.SUNDAY, startTime: null, endTime: null }, // Closed
+]
+
 async function main() {
+  if (!shopSettingsId) {
+    console.error("Es necesario el ID de la configuración de tienda.")
+    return
+  }
+
   for (const ingredient of ingredientsData) {
     await prisma.ingredient.upsert({
       where: { name: ingredient.name },
@@ -857,25 +880,50 @@ async function main() {
     })
   }
 
-  await prisma.settings.upsert({
-    where: { id: "1" },
+  await prisma.shopSettings.upsert({
+    where: { id: shopSettingsId },
     update: {},
     create: {
-      id: "1",
-      operationalHours: "",
-    },
-  })
-
-  await prisma.shippingSettings.upsert({
-    where: { id: "1" },
-    update: {},
-    create: {
-      id: "1",
-      allowedShippingMethods: [
-        ShippingMethod.Delivery,
-        ShippingMethod.TakeAway,
-      ],
-      minProductsQuantityForDelivery: 10,
+      id: shopSettingsId,
+      allowedPaymentMethods: [PaymentMethod.CASH, PaymentMethod.BANK_TRANSFER],
+      branches: {
+        create: [
+          {
+            label: "Sucursal Agronomía",
+            branchType: "RETAIL",
+            province: "Ciudad Autónoma de Buenos Aires",
+            municipality: "CABA",
+            locality: "Agronomía",
+            addressStreet: "Main St",
+            addressNumber: 123,
+            phoneNumber: "+54 11 1234 5678",
+            email: null,
+            latitude: null,
+            longitude: null,
+            managerName: "",
+            timezone: "America/Argentina/Buenos_Aires",
+            isActive: true,
+            description: "Retail branch located in Agronomía.",
+            image: "",
+            operationalHours: {
+              create: operationalHours?.map((hours) => ({
+                dayOfWeek: hours.dayOfWeek,
+                startTime: hours.startTime || null,
+                endTime: hours.endTime || null,
+              })),
+            },
+          },
+        ],
+      },
+      shippingSettings: {
+        create: {
+          allowedShippingMethods: [
+            ShippingMethod.DELIVERY,
+            ShippingMethod.TAKE_AWAY,
+          ],
+          minProductsQuantityForDelivery: 10,
+        },
+      },
     },
   })
 }

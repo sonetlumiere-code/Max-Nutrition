@@ -6,10 +6,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import CartListItem from "./cart-list-item"
-import { CartItem } from "@/components/cart-provider"
+import { LineItem } from "@/types/types"
 
 type CartListProps = {
-  items: CartItem[]
+  items: LineItem[]
 }
 
 const CartList = ({ items }: CartListProps) => {

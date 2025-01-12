@@ -1,6 +1,6 @@
 "use server"
 
-import { getCustomer } from "@/data/customer"
+import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { customerSchema } from "@/lib/validations/customer-validation"
 import { revalidatePath } from "next/cache"
@@ -9,38 +9,47 @@ import { z } from "zod"
 type CustomerSchema = z.infer<typeof customerSchema>
 
 export async function createCustomer(values: CustomerSchema) {
+  const session = await auth()
+
+  if (session?.user.role !== "ADMIN") {
+    return { error: "No autorizado." }
+  }
+
   const validatedFields = customerSchema.safeParse(values)
 
   if (!validatedFields.success) {
     return { error: "Campos inválidos." }
   }
 
-  const { birthdate, name, phone, userId } = validatedFields.data
-
-  const customer = await getCustomer({
-    where: {
-      userId,
-    },
-  })
-
-  if (customer) {
-    return { error: "Usuario ya tiene un perfil de cliente." }
-  }
+  const { birthdate, name, phone, address } = validatedFields.data
 
   try {
     const customer = await prisma.customer.create({
       data: {
-        userId,
+        userId: null,
         birthdate,
         phone,
         name,
-      },
-      include: {
-        orders: true,
+        address: address?.length
+          ? {
+              create: address.map((addr) => ({
+                province: addr.province,
+                municipality: addr.municipality,
+                locality: addr.locality,
+                addressStreet: addr.addressGeoRef.calle.nombre,
+                addressNumber: addr.addressNumber,
+                addressFloor: addr.addressFloor,
+                addressApartment: addr.addressApartment,
+                postCode: addr.postCode,
+                label: addr.label,
+                labelString: addr.labelString,
+              })),
+            }
+          : undefined,
       },
     })
 
-    revalidatePath("/customer-info")
+    revalidatePath("/customers")
 
     return { success: customer }
   } catch (error) {
