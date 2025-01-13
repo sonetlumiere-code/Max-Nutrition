@@ -25,6 +25,8 @@ export default async function CheckoutPage() {
     redirect("/shop")
   }
 
+  console.log(session)
+
   const [customer, shopSettings] = await Promise.all([
     getCustomer({
       where: {
@@ -66,6 +68,8 @@ export default async function CheckoutPage() {
       },
     }),
   ])
+
+  console.log({ customer, shopSettings })
 
   if (!customer || !shopSettings) {
     redirect("/shop")
