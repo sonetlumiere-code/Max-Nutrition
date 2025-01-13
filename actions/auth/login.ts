@@ -2,7 +2,7 @@
 
 import { signIn } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { sendVerificacionEmail } from "@/lib/mail/mail"
+import { sendVerificationEmail } from "@/lib/mail/mail"
 import { generateVerificationToken } from "@/lib/token/token"
 import { loginSchema } from "@/lib/validations/login-validation"
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
@@ -39,7 +39,7 @@ export const login = async ({
       existingUser.email
     )
 
-    await sendVerificacionEmail(
+    await sendVerificationEmail(
       verificationToken.email,
       verificationToken.token
     )
