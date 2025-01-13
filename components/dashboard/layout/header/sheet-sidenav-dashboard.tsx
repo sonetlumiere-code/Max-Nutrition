@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { usePathname } from "next/navigation"
@@ -30,7 +31,16 @@ const SheetSideNavDashboard = () => {
       </SheetTrigger>
       <SheetContent side='left' className='flex flex-col'>
         <SheetHeader>
-          <SheetTitle>Máxima nutrición</SheetTitle>
+          <SheetTitle>
+            <Link href='/' className='block'>
+              <span className='sr-only'>HOME</span>
+              <img
+                src='img/mxm-logo.png'
+                alt='MXM Máxima Nutrición'
+                className='mx-auto py-4'
+              />
+            </Link>
+          </SheetTitle>
           <SheetDescription></SheetDescription>
         </SheetHeader>
         <nav className='grid gap-2 font-medium'>

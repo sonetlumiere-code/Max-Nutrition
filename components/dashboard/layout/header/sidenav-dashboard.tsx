@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import Link from "next/link"
@@ -15,8 +16,14 @@ export default function SideNavDashboard() {
       <div className='flex h-full max-h-screen flex-col gap-2'>
         <div className='flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6'>
           <Link href='/' className='flex items-center gap-2 font-semibold'>
-            <span>Máxima Nutrición </span>
+            <span className='sr-only'>HOME</span>
+            <img
+              src='img/mxm-logo.png'
+              alt='MXM Máxima Nutrición'
+              className='mx-auto py-4'
+            />
           </Link>
+
           {/* <Button variant='outline' size='icon' className='ml-auto h-8 w-8'>
             <Icons.bell className='h-4 w-4' />
             <span className='sr-only'>Toggle notifications</span>
