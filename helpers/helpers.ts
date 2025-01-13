@@ -187,11 +187,6 @@ export function calculatePromotions({
   }
 }
 
-/**
- * Returns the multiplier for a given measurement unit.
- * @param measurement - The measurement unit.
- * @returns The multiplier value for the unit.
- */
 export function getMeasurementMultiplier(measurement: Measurement): number {
   switch (measurement) {
     case Measurement.UNIT:
