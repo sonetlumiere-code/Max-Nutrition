@@ -8,13 +8,18 @@ import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+const resendEmail = process.env.RESEND_EMAIL
 const baseUrl = process.env.BASE_URL
 
-export const sendVerificacionEmail = async (email: string, token: string) => {
+if (!resendEmail) {
+  throw new Error("RESEND_EMAIL is not defined in the environment variables.")
+}
+
+export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${baseUrl}/new-verification?token=${token}`
 
   await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: resendEmail,
     to: email,
     subject: "Confirma tu Email",
     react: VerificationEmail({
@@ -27,7 +32,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${baseUrl}/new-password?token=${token}`
 
   await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: resendEmail,
     to: email,
     subject: "Cambia tu contraseña",
     react: PasswordReset({
@@ -45,7 +50,7 @@ export const sendWelcomeEmail = async ({
   userName: string
 }) => {
   await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: resendEmail,
     to: email,
     subject: "¡Te damos la Bienvenida a Máxima Nutrición!",
     react: WelcomeClient({
@@ -64,10 +69,11 @@ export const sendOrderDetailsEmail = async ({
   orderLink: string
 }) => {
   if (!email) {
-    return
+    throw new Error("Email is required to send order details.")
   }
+
   await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: resendEmail,
     to: email,
     subject: "Detalles de tu pedido en Máxima Nutrición",
     react: OrderDetails({
