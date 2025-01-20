@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
+import { translateUnit } from "@/helpers/helpers"
 import { recipeSchema } from "@/lib/validations/recipe-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Ingredient } from "@prisma/client"
@@ -127,79 +128,99 @@ const CreateRecipe = ({
                   <Label className='mx-2'>Ingredientes</Label>
                 </legend>
                 <div className='space-y-3'>
-                  {fields.map((field, index) => (
-                    <div key={field.id} className='grid grid-cols-11 gap-3'>
-                      <FormField
-                        control={control}
-                        name={`ingredients.${index}.ingredientId`}
-                        render={({ field }) => (
-                          <FormItem className='col-span-5'>
-                            <FormLabel className='text-xs'>
-                              Ingrediente
-                            </FormLabel>
-                            <FormControl>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                disabled={isSubmitting}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder='Selecciona un ingrediente' />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {ingredients?.map(({ id, name }) => (
-                                    <SelectItem
-                                      key={id}
-                                      value={id}
-                                      disabled={watch("ingredients").some(
-                                        (i) => i.ingredientId === id
-                                      )}
-                                    >
-                                      {name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage className='text-xs' />
-                          </FormItem>
-                        )}
-                      />
+                  {fields.map((field, index) => {
+                    const selectedIngredient = ingredients?.find(
+                      (ingredient) =>
+                        ingredient.id ===
+                        watch(`ingredients.${index}.ingredientId`)
+                    )
 
-                      <FormField
-                        control={control}
-                        name={`ingredients.${index}.quantity`}
-                        render={({ field }) => (
-                          <FormItem className='col-span-5'>
-                            <FormLabel className='text-xs'>Cantidad</FormLabel>
-                            <FormControl>
-                              <Input
-                                type='number'
-                                min={0}
-                                step={0.1}
-                                placeholder='Cantidad'
-                                disabled={isSubmitting}
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage className='text-xs' />
-                          </FormItem>
-                        )}
-                      />
+                    return (
+                      <div key={field.id} className='grid grid-cols-11 gap-3'>
+                        <FormField
+                          control={control}
+                          name={`ingredients.${index}.ingredientId`}
+                          render={({ field }) => (
+                            <FormItem className='col-span-4'>
+                              <FormLabel className='text-xs'>
+                                Ingrediente
+                              </FormLabel>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  disabled={isSubmitting}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder='Selecciona un ingrediente' />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {ingredients?.map(({ id, name }) => (
+                                      <SelectItem
+                                        key={id}
+                                        value={id}
+                                        disabled={watch("ingredients").some(
+                                          (i) => i.ingredientId === id
+                                        )}
+                                      >
+                                        {name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage className='text-xs' />
+                            </FormItem>
+                          )}
+                        />
 
-                      <div className='flex justify-between mt-8'>
-                        <Button
-                          type='button'
-                          size='icon'
-                          variant='ghost'
-                          onClick={() => remove(index)}
-                          disabled={isSubmitting || fields.length === 1}
-                        >
-                          <Icons.x className='w-3 h-3' />
-                        </Button>
+                        <FormField
+                          control={control}
+                          name={`ingredients.${index}.quantity`}
+                          render={({ field }) => (
+                            <FormItem className='col-span-4'>
+                              <FormLabel className='text-xs'>
+                                Cantidad
+                              </FormLabel>
+                              <FormControl>
+                                <div className='flex items-center gap-1'>
+                                  <Input
+                                    type='number'
+                                    min={0}
+                                    step={0.1}
+                                    placeholder='Cantidad'
+                                    disabled={isSubmitting}
+                                    {...field}
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage className='text-xs' />
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className='flex justify-between mt-8 items-center col-span-2'>
+                          <span className='text-xs text-gray-500 '>
+                            {selectedIngredient
+                              ? translateUnit(selectedIngredient?.measurement)
+                              : ""}
+                          </span>
+                        </div>
+
+                        <div className='flex justify-between mt-8'>
+                          <Button
+                            type='button'
+                            size='icon'
+                            variant='ghost'
+                            onClick={() => remove(index)}
+                            disabled={isSubmitting || fields.length === 1}
+                          >
+                            <Icons.x className='w-3 h-3' />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
 
                   <Button
                     type='button'
