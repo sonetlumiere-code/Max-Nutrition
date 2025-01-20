@@ -242,51 +242,47 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
               <CardContent>
                 <div className='space-y-3'>
                   {fields.map((field, index) => (
-                    <div key={field.id} className='flex justify-between gap-2'>
-                      <div className='w-1/2'>
-                        <FormField
-                          control={control}
-                          name={`categories.${index}.categoryId`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className='text-xs'>
-                                Categoría
-                              </FormLabel>
-                              <FormControl>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                  disabled={isSubmitting}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder='Selecciona una categoría' />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {categories?.map(({ id, name }) => (
-                                      <SelectItem
-                                        key={id}
-                                        value={id}
-                                        disabled={watch("categories").some(
-                                          (c) => c.categoryId === id
-                                        )}
-                                      >
-                                        {name}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormMessage className='text-xs' />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+                    <div key={field.id} className='grid grid-cols-11 gap-3'>
+                      <FormField
+                        control={control}
+                        name={`categories.${index}.categoryId`}
+                        render={({ field }) => (
+                          <FormItem className='col-span-5'>
+                            <FormLabel className='text-xs'>Categoría</FormLabel>
+                            <FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                disabled={isSubmitting}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder='Selecciona una categoría' />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {categories?.map(({ id, name }) => (
+                                    <SelectItem
+                                      key={id}
+                                      value={id}
+                                      disabled={watch("categories").some(
+                                        (c) => c.categoryId === id
+                                      )}
+                                    >
+                                      {name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage className='text-xs' />
+                          </FormItem>
+                        )}
+                      />
 
                       <FormField
                         control={control}
                         name={`categories.${index}.quantity`}
                         render={({ field }) => (
-                          <FormItem>
+                          <FormItem className='col-span-5'>
                             <FormLabel className='text-xs'>Cantidad</FormLabel>
                             <FormControl>
                               <Input

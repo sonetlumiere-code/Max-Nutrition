@@ -256,15 +256,12 @@ const CreateOrder = ({
                   </legend>
                   <div className='space-y-3'>
                     {fields.map((field, index) => (
-                      <div
-                        key={field.id}
-                        className='flex justify-between gap-2'
-                      >
+                      <div key={field.id} className='grid grid-cols-11 gap-3'>
                         <FormField
                           control={control}
                           name={`items.${index}.productId`}
                           render={({ field }) => (
-                            <FormItem className='w-2/5'>
+                            <FormItem className='col-span-5'>
                               <FormLabel className='text-xs'>
                                 Producto
                               </FormLabel>
@@ -293,7 +290,7 @@ const CreateOrder = ({
                           control={control}
                           name={`items.${index}.variation.withSalt`}
                           render={({ field }) => (
-                            <FormItem className='w-1/5'>
+                            <FormItem className='col-span-3'>
                               <FormLabel className='text-xs'>Sal</FormLabel>
                               <FormControl>
                                 <Select
@@ -325,7 +322,7 @@ const CreateOrder = ({
                           control={control}
                           name={`items.${index}.quantity`}
                           render={({ field }) => (
-                            <FormItem className='w-1/5'>
+                            <FormItem className='col-span-2'>
                               <FormLabel className='text-xs'>
                                 Cantidad
                               </FormLabel>

@@ -131,15 +131,12 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                   </legend>
                   <div className='space-y-3'>
                     {fields.map((field, index) => (
-                      <div
-                        key={field.id}
-                        className='flex justify-between gap-2'
-                      >
+                      <div key={field.id} className='grid grid-cols-11 gap-3'>
                         <FormField
                           control={control}
                           name={`ingredients.${index}.ingredientId`}
                           render={({ field }) => (
-                            <FormItem className='w-2/5'>
+                            <FormItem className='col-span-5'>
                               <FormLabel className='text-xs'>
                                 Ingrediente
                               </FormLabel>
@@ -176,7 +173,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                           control={control}
                           name={`ingredients.${index}.quantity`}
                           render={({ field }) => (
-                            <FormItem className='w-2/5'>
+                            <FormItem className='col-span-5'>
                               <FormLabel className='text-xs'>
                                 Cantidad
                               </FormLabel>

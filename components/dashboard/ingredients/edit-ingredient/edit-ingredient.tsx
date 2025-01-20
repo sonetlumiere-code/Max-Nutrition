@@ -94,54 +94,56 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
                 )}
               />
 
-              <FormField
-                control={control}
-                name='price'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Precio</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        step='0.01'
-                        placeholder='Precio del ingrediente'
+              <div className='grid grid-cols-2 gap-3'>
+                <FormField
+                  control={control}
+                  name={"measurement"}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Unidad de medida</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
                         disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder='' />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.values(Measurement).map((measurement) => (
+                            <SelectItem key={measurement} value={measurement}>
+                              {translateUnit(measurement)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={control}
-                name={"measurement"}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Unidad de medida</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      disabled={isSubmitting}
-                    >
+                <FormField
+                  control={control}
+                  name='price'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Precio</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder='' />
-                        </SelectTrigger>
+                        <Input
+                          type='number'
+                          step='0.01'
+                          placeholder='Precio del ingrediente'
+                          disabled={isSubmitting}
+                          {...field}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        {Object.values(Measurement).map((measurement) => (
-                          <SelectItem key={measurement} value={measurement}>
-                            {translateUnit(measurement)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={control}
