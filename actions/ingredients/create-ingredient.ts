@@ -1,5 +1,9 @@
 "use server"
 
+import {
+  getBaseMeasurement,
+  getMeasurementConversionFactor,
+} from "@/helpers/helpers" // Assuming the helper function is imported correctly
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { ingredientSchema } from "@/lib/validations/ingredient-validation"
@@ -23,13 +27,17 @@ export async function createIngredient(values: IngredientSchema) {
 
   const { name, price, waste, measurement } = validatedFields.data
 
+  const factor = getMeasurementConversionFactor(measurement)
+  const adjustedPrice = price / factor
+
   try {
     const ingredient = await prisma.ingredient.create({
       data: {
         name,
-        price,
+        price: adjustedPrice,
         waste,
         measurement,
+        baseMeasurement: getBaseMeasurement(measurement),
       },
     })
 

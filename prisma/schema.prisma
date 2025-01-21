@@ -137,11 +137,20 @@ model CustomerAddress {
   @@map("customer_addresses")
 }
 
+enum BaseMeasurement {
+  UNIT
+  GRAM
+  MILLILITER
+
+  @@map("base_measurement")
+}
+
 enum Measurement {
   UNIT
   GRAM
-  KILOGRAM
+  MILLIGRAM
   MILLILITER
+  KILOGRAM
   LITER
 
   @@map("measurement")
@@ -161,8 +170,9 @@ model Ingredient {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  measurement Measurement
-  recipes     RecipeIngredient[]
+  baseMeasurement BaseMeasurement
+  measurement     Measurement
+  recipes         RecipeIngredient[]
 
   @@map("ingredients")
 }

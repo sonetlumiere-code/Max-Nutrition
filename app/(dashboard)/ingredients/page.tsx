@@ -33,7 +33,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getIngredients } from "@/data/ingredients"
-import { translateUnit } from "@/helpers/helpers"
+import {
+  getMeasurementConversionFactor,
+  translateUnit,
+} from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -113,49 +116,56 @@ export default async function IngredientsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {ingredients?.map((ingredient) => (
-                  <TableRow key={ingredient.id}>
-                    <TableCell>{ingredient.name}</TableCell>
-                    <TableCell className='hidden sm:table-cell'>
-                      $ {ingredient.price}
-                    </TableCell>
-                    <TableCell className='hidden sm:table-cell'>
-                      {translateUnit(ingredient.measurement)}
-                    </TableCell>
-                    <TableCell className='hidden sm:table-cell'>
-                      {ingredient.waste} %
-                    </TableCell>
-                    <TableCell className='text-end'>
-                      <DropdownMenu modal={false}>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup='true'
-                            size='icon'
-                            variant='ghost'
-                          >
-                            <Icons.moreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Mostrar menú</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <Link
-                            href={`ingredients/edit-ingredient/${ingredient.id}`}
-                          >
+                {ingredients?.map((ingredient) => {
+                  const factor = getMeasurementConversionFactor(
+                    ingredient.measurement
+                  )
+                  const adjustedPrice = ingredient.price * factor
+
+                  return (
+                    <TableRow key={ingredient.id}>
+                      <TableCell>{ingredient.name}</TableCell>
+                      <TableCell className='hidden sm:table-cell'>
+                        $ {adjustedPrice.toFixed(2)}{" "}
+                      </TableCell>
+                      <TableCell className='hidden sm:table-cell'>
+                        {translateUnit(ingredient.measurement)}
+                      </TableCell>
+                      <TableCell className='hidden sm:table-cell'>
+                        {ingredient.waste} %
+                      </TableCell>
+                      <TableCell className='text-end'>
+                        <DropdownMenu modal={false}>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup='true'
+                              size='icon'
+                              variant='ghost'
+                            >
+                              <Icons.moreHorizontal className='h-4 w-4' />
+                              <span className='sr-only'>Mostrar menú</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align='end'>
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            <Link
+                              href={`ingredients/edit-ingredient/${ingredient.id}`}
+                            >
+                              <DropdownMenuItem>
+                                <Icons.pencil className='w-4 h-4 mr-2' />
+                                Editar
+                              </DropdownMenuItem>
+                            </Link>
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem>
-                              <Icons.pencil className='w-4 h-4 mr-2' />
-                              Editar
+                              <DeleteIngredient ingredient={ingredient} />
                             </DropdownMenuItem>
-                          </Link>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>
-                            <DeleteIngredient ingredient={ingredient} />
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
               </TableBody>
             </Table>
           </CardContent>

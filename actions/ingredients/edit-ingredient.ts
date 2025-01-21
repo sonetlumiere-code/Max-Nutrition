@@ -1,5 +1,9 @@
 "use server"
 
+import {
+  getBaseMeasurement,
+  getMeasurementConversionFactor,
+} from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { ingredientSchema } from "@/lib/validations/ingredient-validation"
@@ -29,10 +33,19 @@ export async function editIngredient({
 
   const { name, price, waste, measurement } = validatedFields.data
 
+  const factor = getMeasurementConversionFactor(measurement)
+  const adjustedPrice = price / factor
+
   try {
     const ingredient = await prisma.ingredient.update({
       where: { id },
-      data: { name, price, waste, measurement },
+      data: {
+        name,
+        price: adjustedPrice,
+        waste,
+        measurement,
+        baseMeasurement: getBaseMeasurement(measurement),
+      },
     })
 
     revalidatePath("/ingredients")

@@ -1,7 +1,17 @@
 import * as XLSX from "xlsx"
-import { IngredientTotal, PopulatedOrder } from "@/types/types"
+import { IngredientTotal, PopulatedOrder, TimePeriod } from "@/types/types"
+import {
+  calculateIngredientData,
+  translatePaymentMethod,
+  translateShippingMethod,
+  translateTimePeriod,
+  translateUnit,
+} from "@/helpers/helpers"
 
-export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
+export const exportOrdersToExcel = (
+  orders: PopulatedOrder[],
+  period: TimePeriod
+) => {
   // Hoja 1: Datos de clientes y sus pedidos
   const customerOrdersData = orders.map((order) => {
     const totalItems =
@@ -26,8 +36,8 @@ export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
         : "N/A",
       Piso: order.address?.addressFloor || "N/A",
       Departamento: order.address?.addressApartment || "N/A",
-      "Método de Envío": order.shippingMethod,
-      "Método de Pago": order.paymentMethod,
+      "Método de Envío": translateShippingMethod(order.shippingMethod),
+      "Método de Pago": translatePaymentMethod(order.paymentMethod),
       "Cantidad Total de Productos": totalItems,
       Subtotal: order.subtotal || order.total,
       "Costo de Envío": order.shippingCost || 0,
@@ -69,23 +79,25 @@ export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
       recipe?.ingredients?.forEach((ingredientEntry) => {
         const ingredient = ingredientEntry.ingredient
         const baseQuantity = ingredientEntry.quantity * item.quantity
-        const wasteMultiplier = 1 + ingredient.waste
-        const totalQuantity = baseQuantity * wasteMultiplier
-        const cost = totalQuantity * ingredient.price
 
         if (ingredient) {
+          const { adjustedQuantity, totalQuantity, cost, waste } =
+            calculateIngredientData(ingredient, baseQuantity)
+
           if (ingredientTotals[ingredient.id]) {
-            ingredientTotals[ingredient.id].quantity += totalQuantity
+            ingredientTotals[ingredient.id].baseQuantity += adjustedQuantity
+            ingredientTotals[ingredient.id].totalQuantity += totalQuantity
             ingredientTotals[ingredient.id].cost += cost
-            ingredientTotals[ingredient.id].waste = ingredient.waste
+            ingredientTotals[ingredient.id].waste = waste
           } else {
             ingredientTotals[ingredient.id] = {
               ingredientId: ingredient.id,
               name: ingredient.name,
               measurement: ingredient.measurement,
-              quantity: totalQuantity,
+              baseQuantity: adjustedQuantity,
+              totalQuantity,
               cost,
-              waste: ingredient.waste,
+              waste,
             }
           }
         }
@@ -96,12 +108,10 @@ export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
   const ingredientSummaryData = Object.values(ingredientTotals).map(
     (ingredient) => ({
       Ingrediente: ingredient.name,
-      "Cantidad Base": Number(
-        (ingredient.quantity / (1 + ingredient.waste)).toFixed(2)
-      ),
-      "Desperdicio (%)": `${(ingredient.waste * 100).toFixed(0)}%`,
-      "Cantidad Total": Number(ingredient.quantity.toFixed(2)),
-      "Unidad de Medida": ingredient.measurement,
+      "Cantidad Base": ingredient.baseQuantity.toFixed(2),
+      "Desperdicio (%)": `${ingredient.waste.toFixed(0)}%`,
+      "Cantidad Total": ingredient.totalQuantity.toFixed(2),
+      "Unidad de Medida": translateUnit(ingredient.measurement),
       "Costo Total": `$${ingredient.cost.toFixed(2)}`,
     })
   )
@@ -112,14 +122,7 @@ export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
     {
       productName: string
       totalQuantitySold: number
-      ingredients: {
-        name: string
-        baseQuantity: number
-        waste: number
-        totalQuantity: number
-        measurement: string
-        cost: number
-      }[]
+      ingredientTotals: IngredientTotal[]
     }
   > = {}
 
@@ -134,43 +137,62 @@ export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
         recipeSummary[product.id] = {
           productName: product.name,
           totalQuantitySold: item.quantity,
-          ingredients: [],
+          ingredientTotals: [],
         }
 
-        // Inicializar los ingredientes para esta receta
         recipe.ingredients?.forEach((ingredientEntry) => {
           const ingredient = ingredientEntry.ingredient
           const baseQuantity = ingredientEntry.quantity * item.quantity
-          const wasteMultiplier = 1 + ingredient.waste
-          const totalQuantity = baseQuantity * wasteMultiplier
-          const cost = totalQuantity * ingredient.price
 
-          recipeSummary[product.id].ingredients.push({
-            name: ingredient.name,
-            baseQuantity: baseQuantity,
-            waste: ingredient.waste,
-            totalQuantity: totalQuantity,
-            measurement: ingredient.measurement,
-            cost: cost,
-          })
+          if (ingredient) {
+            const { adjustedQuantity, totalQuantity, cost, waste } =
+              calculateIngredientData(ingredient, baseQuantity)
+
+            recipeSummary[product.id].ingredientTotals.push({
+              ingredientId: ingredient.id,
+              name: ingredient.name,
+              baseQuantity: adjustedQuantity,
+              totalQuantity,
+              cost,
+              waste,
+              measurement: ingredient.measurement,
+            })
+          }
         })
       } else {
-        // Actualizar cantidad vendida
         recipeSummary[product.id].totalQuantitySold += item.quantity
 
-        // Actualizar cantidades de ingredientes
-        recipe.ingredients?.forEach((ingredientEntry, index) => {
+        recipe.ingredients?.forEach((ingredientEntry) => {
           const ingredient = ingredientEntry.ingredient
           const baseQuantity = ingredientEntry.quantity * item.quantity
-          const wasteMultiplier = 1 + ingredient.waste
-          const totalQuantity = baseQuantity * wasteMultiplier
-          const cost = totalQuantity * ingredient.price
 
-          recipeSummary[product.id].ingredients[index].baseQuantity +=
-            baseQuantity
-          recipeSummary[product.id].ingredients[index].totalQuantity +=
-            totalQuantity
-          recipeSummary[product.id].ingredients[index].cost += cost
+          if (ingredient) {
+            const { adjustedQuantity, totalQuantity, cost, waste } =
+              calculateIngredientData(ingredient, baseQuantity)
+
+            const existingIngredient = recipeSummary[
+              product.id
+            ].ingredientTotals.find(
+              (total) => total.ingredientId === ingredient.id
+            )
+
+            if (existingIngredient) {
+              existingIngredient.baseQuantity += adjustedQuantity
+              existingIngredient.totalQuantity += totalQuantity
+              existingIngredient.cost += cost
+              existingIngredient.waste = waste
+            } else {
+              recipeSummary[product.id].ingredientTotals.push({
+                ingredientId: ingredient.id,
+                name: ingredient.name,
+                baseQuantity: adjustedQuantity,
+                totalQuantity,
+                cost,
+                waste,
+                measurement: ingredient.measurement,
+              })
+            }
+          }
         })
       }
     })
@@ -185,7 +207,7 @@ export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
       Producto: recipe.productName,
       "Cantidad Vendida": recipe.totalQuantitySold,
       "": "", // Columna vacía para separación
-      "Costo Total": `$${recipe.ingredients
+      "Costo Total": `$${recipe.ingredientTotals
         .reduce((sum, ing) => sum + ing.cost, 0)
         .toFixed(2)}`,
     })
@@ -201,13 +223,13 @@ export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
     })
 
     // Agregar ingredientes
-    recipe.ingredients.forEach((ingredient) => {
+    recipe.ingredientTotals.forEach((ingredient) => {
       recipeDetailsData.push({
         Producto: ingredient.name,
         "Cantidad Vendida": ingredient.baseQuantity.toFixed(2),
-        "": `${(ingredient.waste * 100).toFixed(0)}%`,
+        "": `${ingredient.waste.toFixed(0)}%`,
         "Costo Total": ingredient.totalQuantity.toFixed(2),
-        Unidad: ingredient.measurement,
+        Unidad: translateUnit(ingredient.measurement),
         Costo: `$${ingredient.cost.toFixed(2)}`,
       })
     })
@@ -242,8 +264,14 @@ export const exportOrdersToExcel = (orders: PopulatedOrder[]) => {
   XLSX.utils.book_append_sheet(workbook, ws4, "Detalle Recetas")
 
   // Generar archivo y descargarlo
-  const fileName = `MaxNutri_WEB_pedidos_${
-    new Date().toISOString().split("T")[0]
-  }.xlsx`
+  const fileName = `MaxNutri_WEB_Pedidos_${translateTimePeriod(
+    period
+  )}_${new Date()
+    .toLocaleDateString("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+    .replace(/\//g, "-")}.xlsx`
   XLSX.writeFileXLSX(workbook, fileName)
 }

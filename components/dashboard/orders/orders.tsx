@@ -1,7 +1,6 @@
 "use client"
 
 import OrderItemDetails from "@/components/dashboard/orders/list/order-item-details/order-item-details"
-import OrdersBulkExportDialog from "@/components/dashboard/orders/list/orders-data-table/bulk-actions/orders-bulk-export-dialog"
 import OrdersDataTable from "@/components/dashboard/orders/list/orders-data-table/orders-data-table"
 import { Icons } from "@/components/icons"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -19,17 +18,14 @@ import { cn } from "@/lib/utils"
 import { PopulatedOrder, TimePeriod } from "@/types/types"
 import { OrderStatus } from "@prisma/client"
 import {
-  format,
   getMonth,
   getYear,
   isWithinInterval,
-  parseISO,
   startOfWeek,
   subMonths,
   subWeeks,
   subYears,
 } from "date-fns"
-import { es } from "date-fns/locale"
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
@@ -95,7 +91,6 @@ export default function Orders() {
   const [selectedOrder, setSelectedOrder] = useState<PopulatedOrder | null>(
     null
   )
-  const [openBulkExportDialog, setOpenBulkExportDialog] = useState(false)
 
   const {
     data: orders,
@@ -170,7 +165,7 @@ export default function Orders() {
       .flat()
       .filter((order) => order.status !== OrderStatus.CANCELLED)
 
-    exportOrdersToExcel(ordersToExport)
+    exportOrdersToExcel(ordersToExport, selectedTab)
   }
 
   if (error) {
@@ -267,35 +262,6 @@ export default function Orders() {
         </div>
         {selectedOrder && <OrderItemDetails order={selectedOrder} />}
       </main>
-
-      {Object.keys(groupedAndFilteredOrders).length > 0 && (
-        <OrdersBulkExportDialog
-          label={`${
-            selectedTab === "week"
-              ? `Pedidos de la semana del ${format(
-                  new Date(Object.keys(groupedAndFilteredOrders)[0]),
-                  "dd/MM/yyyy"
-                )}`
-              : selectedTab === "month"
-              ? `Pedidos del mes de ${format(
-                  parseISO(`${Object.keys(groupedAndFilteredOrders)[0]}-01`),
-                  "LLLL",
-                  { locale: es }
-                ).replace(/^./, (str) => str.toUpperCase())}`
-              : selectedTab === "year"
-              ? `Pedidos del año ${format(
-                  new Date(Object.keys(groupedAndFilteredOrders)[0]),
-                  "yyyy"
-                )}`
-              : "Todos los pedidos"
-          }`}
-          open={openBulkExportDialog}
-          setOpen={setOpenBulkExportDialog}
-          orders={Object.values(groupedAndFilteredOrders)
-            .flat()
-            .filter((order) => order.status !== OrderStatus.CANCELLED)}
-        />
-      )}
     </>
   )
 }

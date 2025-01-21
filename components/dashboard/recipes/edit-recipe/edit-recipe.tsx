@@ -205,7 +205,9 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                           <div className='flex justify-between mt-8 items-center col-span-2'>
                             <span className='text-xs text-gray-500 '>
                               {selectedIngredient
-                                ? translateUnit(selectedIngredient?.measurement)
+                                ? translateUnit(
+                                    selectedIngredient?.baseMeasurement
+                                  )
                                 : ""}
                             </span>
                           </div>

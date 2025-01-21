@@ -1,13 +1,15 @@
 import {
-  LineItem,
   PopulatedProduct,
   PopulatedPromotion,
   PromotionToApply,
+  TimePeriod,
 } from "@/types/types"
 import {
+  BaseMeasurement,
   Category,
   CustomerAddressLabel,
   DayOfWeek,
+  Ingredient,
   Measurement,
   OrderStatus,
   PaymentMethod,
@@ -18,6 +20,8 @@ export const translateUnit = (measurement: Measurement): string => {
   switch (measurement) {
     case Measurement.GRAM:
       return "Gramo (g)"
+    case Measurement.MILLIGRAM:
+      return "Miligramo (mg)"
     case Measurement.KILOGRAM:
       return "Kilogramo (Kg)"
     case Measurement.MILLILITER:
@@ -108,6 +112,19 @@ export function translateDayOfWeek(dayOfWeek: DayOfWeek): string {
   }
 }
 
+export function translateTimePeriod(period: TimePeriod): string {
+  switch (period) {
+    case "week":
+      return "Semanal"
+    case "month":
+      return "Mensual"
+    case "year":
+      return "Anual"
+    case "all":
+      return "Todo"
+  }
+}
+
 export function calculatePromotions({
   items,
   promotions,
@@ -187,19 +204,66 @@ export function calculatePromotions({
   }
 }
 
-export function getMeasurementMultiplier(measurement: Measurement): number {
+export function getMeasurementConversionFactor(
+  measurement: Measurement
+): number {
   switch (measurement) {
     case Measurement.UNIT:
-      return 1
+      return 1 // No division needed for unit price
     case Measurement.GRAM:
-      return 1 // Grams are the base unit
+      return 1 // Grams are the base unit, no division needed
+    case Measurement.MILLIGRAM:
+      return 0.001 // 1 milligram = 0.001 grams
     case Measurement.KILOGRAM:
-      return 1000 // 1 kg = 1000 grams
+      return 1000 // 1 kilogram = 1000 grams
     case Measurement.MILLILITER:
-      return 1 // Milliliters are the base unit
+      return 1 // Milliliters are the base unit, no division needed
     case Measurement.LITER:
       return 1000 // 1 liter = 1000 milliliters
     default:
       throw new Error(`Unknown measurement unit: ${measurement}`)
+  }
+}
+
+export function getBaseMeasurement(measurement: Measurement): BaseMeasurement {
+  switch (measurement) {
+    case Measurement.UNIT:
+      return Measurement.UNIT
+    case Measurement.GRAM:
+      return Measurement.GRAM
+    case Measurement.MILLIGRAM:
+      return Measurement.GRAM
+    case Measurement.KILOGRAM:
+      return Measurement.GRAM
+    case Measurement.MILLILITER:
+      return Measurement.MILLILITER
+    case Measurement.LITER:
+      return Measurement.MILLILITER
+    default:
+      throw new Error(`Unknown measurement unit: ${measurement}`)
+  }
+}
+
+export const calculateIngredientData = (
+  ingredient: Ingredient,
+  quantity: number
+) => {
+  const baseToFavoriteMultiplier =
+    getMeasurementConversionFactor(ingredient.baseMeasurement) /
+    getMeasurementConversionFactor(ingredient.measurement)
+
+  const adjustedQuantity = quantity * baseToFavoriteMultiplier
+  const adjustedPrice =
+    ingredient.price * getMeasurementConversionFactor(ingredient.measurement)
+  const wasteMultiplier = 1 + ingredient.waste / 100
+  const totalQuantity = adjustedQuantity * wasteMultiplier
+  const cost = totalQuantity * adjustedPrice
+
+  return {
+    adjustedQuantity,
+    adjustedPrice,
+    totalQuantity,
+    cost,
+    waste: ingredient.waste,
   }
 }

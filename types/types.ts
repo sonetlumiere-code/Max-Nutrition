@@ -72,7 +72,8 @@ export interface IngredientTotal {
   ingredientId: string
   name: string
   measurement: Measurement
-  quantity: number
+  baseQuantity: number
+  totalQuantity: number
   cost: number
   waste: number
 }
