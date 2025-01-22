@@ -17,7 +17,7 @@ export const ingredientsData: Omit<
   {
     name: "Aceite",
     waste: 0,
-    price: 1.5,
+    price: 1500,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "LITER",
@@ -69,7 +69,7 @@ export const ingredientsData: Omit<
   {
     name: "Arroz parboil",
     waste: 0,
-    price: 3.5,
+    price: 3500,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -82,7 +82,7 @@ export const ingredientsData: Omit<
   {
     name: "Arroz carnaroli",
     waste: 0,
-    price: 3.0,
+    price: 3000,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -95,7 +95,7 @@ export const ingredientsData: Omit<
   {
     name: "Arroz doble carolina",
     waste: 0,
-    price: 3.0,
+    price: 3000,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -108,7 +108,7 @@ export const ingredientsData: Omit<
   {
     name: "Arvejas congeladas",
     waste: 0,
-    price: 1.971,
+    price: 1971,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -134,7 +134,7 @@ export const ingredientsData: Omit<
   {
     name: "Batata",
     waste: 20,
-    price: 0.65,
+    price: 650,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -147,7 +147,7 @@ export const ingredientsData: Omit<
   {
     name: "Berenjenas",
     waste: 0.5,
-    price: 0.7,
+    price: 700,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -160,7 +160,7 @@ export const ingredientsData: Omit<
   {
     name: "Brócoli",
     waste: 0,
-    price: 2.8,
+    price: 2800,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -173,7 +173,7 @@ export const ingredientsData: Omit<
   {
     name: "Calabaza anco",
     waste: 30,
-    price: 0.45,
+    price: 450,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -186,7 +186,7 @@ export const ingredientsData: Omit<
   {
     name: "Carne picada",
     waste: 0,
-    price: 5.5,
+    price: 5500,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -199,7 +199,7 @@ export const ingredientsData: Omit<
   {
     name: "Carre de cerdo",
     waste: 15,
-    price: 6.3,
+    price: 6300,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -212,7 +212,7 @@ export const ingredientsData: Omit<
   {
     name: "Cebolla",
     waste: 15,
-    price: 0.63,
+    price: 630,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -225,7 +225,7 @@ export const ingredientsData: Omit<
   {
     name: "Cebolla de verdeo",
     waste: 30,
-    price: 0.7,
+    price: 700,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -251,7 +251,7 @@ export const ingredientsData: Omit<
   {
     name: "Choclo congelado",
     waste: 0,
-    price: 2.3,
+    price: 2300,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -316,7 +316,7 @@ export const ingredientsData: Omit<
   {
     name: "Espinaca congelada",
     waste: 0,
-    price: 2.1,
+    price: 2100,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -342,7 +342,7 @@ export const ingredientsData: Omit<
   {
     name: "Filet de merluza",
     waste: 0,
-    price: 3.0,
+    price: 3000,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -355,7 +355,7 @@ export const ingredientsData: Omit<
   {
     name: "Garbanzos secos",
     waste: 0,
-    price: 1.131,
+    price: 1131,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -368,7 +368,7 @@ export const ingredientsData: Omit<
   {
     name: "Harina de arroz",
     waste: 0,
-    price: 0.7,
+    price: 700,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -420,7 +420,7 @@ export const ingredientsData: Omit<
   {
     name: "Leche",
     waste: 0,
-    price: 0.9,
+    price: 900,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "LITER",
@@ -433,7 +433,7 @@ export const ingredientsData: Omit<
   {
     name: "Leche en polvo",
     waste: 0,
-    price: 4.0,
+    price: 4000,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -446,7 +446,7 @@ export const ingredientsData: Omit<
   {
     name: "Lentejas secas",
     waste: 0,
-    price: 2.5,
+    price: 2500,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -459,7 +459,7 @@ export const ingredientsData: Omit<
   {
     name: "Miel",
     waste: 0,
-    price: 3.0,
+    price: 3000,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -472,7 +472,7 @@ export const ingredientsData: Omit<
   {
     name: "Mix de vegetales",
     waste: 0,
-    price: 2.5,
+    price: 2500,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -485,7 +485,7 @@ export const ingredientsData: Omit<
   {
     name: "Morron rojo",
     waste: 20,
-    price: 1.5,
+    price: 1500,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -498,7 +498,7 @@ export const ingredientsData: Omit<
   {
     name: "Morron verde",
     waste: 20,
-    price: 1.5,
+    price: 1500,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -550,7 +550,7 @@ export const ingredientsData: Omit<
   {
     name: "Papa",
     waste: 35,
-    price: 1.2,
+    price: 1200,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -576,7 +576,7 @@ export const ingredientsData: Omit<
   {
     name: "Pechugas de pollo",
     waste: 10,
-    price: 4.8,
+    price: 4800,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -628,7 +628,7 @@ export const ingredientsData: Omit<
   {
     name: "Polenta",
     waste: 0,
-    price: 0.54,
+    price: 540,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -654,7 +654,7 @@ export const ingredientsData: Omit<
   {
     name: "Puré de tomate",
     waste: 0,
-    price: 1.0,
+    price: 1000,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -667,7 +667,7 @@ export const ingredientsData: Omit<
   {
     name: "Queso blanco",
     waste: 0,
-    price: 2.8,
+    price: 2800,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -680,7 +680,7 @@ export const ingredientsData: Omit<
   {
     name: "Quesos duros",
     waste: 0.7,
-    price: 4.5,
+    price: 4500,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -693,7 +693,7 @@ export const ingredientsData: Omit<
   {
     name: "Quesos frescos",
     waste: 0,
-    price: 4.3,
+    price: 4300,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -706,7 +706,7 @@ export const ingredientsData: Omit<
   {
     name: "Rebozador aglu",
     waste: 0,
-    price: 1.5,
+    price: 1500,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -719,7 +719,7 @@ export const ingredientsData: Omit<
   {
     name: "Rebozador natuzen",
     waste: 0,
-    price: 2.64,
+    price: 2640,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -732,7 +732,7 @@ export const ingredientsData: Omit<
   {
     name: "Ricota",
     waste: 0,
-    price: 1.8,
+    price: 1800,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -745,7 +745,7 @@ export const ingredientsData: Omit<
   {
     name: "Sal",
     waste: 0,
-    price: 0.27,
+    price: 270,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -784,7 +784,7 @@ export const ingredientsData: Omit<
   {
     name: "Tomate",
     waste: 15,
-    price: 0.9,
+    price: 900,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -797,7 +797,7 @@ export const ingredientsData: Omit<
   {
     name: "Zanahoria",
     waste: 25,
-    price: 0.8,
+    price: 800,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -810,7 +810,7 @@ export const ingredientsData: Omit<
   {
     name: "Zapallito redondo",
     waste: 10,
-    price: 0.95,
+    price: 950,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -849,7 +849,7 @@ export const ingredientsData: Omit<
   {
     name: "Arroz integral",
     waste: 0,
-    price: 3.0,
+    price: 3000,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -875,7 +875,7 @@ export const ingredientsData: Omit<
   {
     name: "Carne para guiso",
     waste: 0,
-    price: 6.0,
+    price: 6000,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -888,7 +888,7 @@ export const ingredientsData: Omit<
   {
     name: "MANTECA",
     waste: 0,
-    price: 6.25,
+    price: 6250,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",
@@ -914,7 +914,7 @@ export const ingredientsData: Omit<
   {
     name: "Banana",
     waste: 0,
-    price: 2.0,
+    price: 2000,
     brand: null,
     amountPerMeasurement: 1,
     measurement: "KILOGRAM",

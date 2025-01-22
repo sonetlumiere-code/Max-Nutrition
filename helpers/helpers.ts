@@ -29,7 +29,7 @@ export const translateUnit = (measurement: Measurement): string => {
     case Measurement.LITER:
       return "Litro (L)"
     case Measurement.UNIT:
-      return "Unidad (1)"
+      return "Unidad"
     default:
       return "Desconocido"
   }
@@ -255,10 +255,13 @@ export const calculateIngredientData = (
     getMeasurementConversionFactor(ingredient.measurement)
 
   const adjustedQuantity = quantity * conversionRate
+
   const adjustedPrice =
-    ingredient.price * getMeasurementConversionFactor(ingredient.measurement)
+    ingredient.price / (ingredient.amountPerMeasurement || 1)
+
   const wasteMultiplier = 1 + ingredient.waste / 100
   const totalQuantity = adjustedQuantity * wasteMultiplier
+
   const cost = totalQuantity * adjustedPrice
 
   return {

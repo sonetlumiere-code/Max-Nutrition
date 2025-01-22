@@ -27,10 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  translateUnit,
-  getMeasurementConversionFactor,
-} from "@/helpers/helpers"
+import { translateUnit } from "@/helpers/helpers"
 
 type IngredientSchema = z.infer<typeof ingredientSchema>
 
@@ -41,15 +38,11 @@ type EditIngredientProps = {
 const EditIngredient = ({ ingredient }: EditIngredientProps) => {
   const router = useRouter()
 
-  const factor = getMeasurementConversionFactor(ingredient.measurement)
-  const adjustedPrice =
-    ingredient.price * factor * (ingredient.amountPerMeasurement || 1)
-
   const form = useForm<IngredientSchema>({
     resolver: zodResolver(ingredientSchema),
     defaultValues: {
       ...ingredient,
-      price: adjustedPrice,
+      price: ingredient.price,
       amountPerMeasurement: ingredient.amountPerMeasurement || 1,
     },
   })

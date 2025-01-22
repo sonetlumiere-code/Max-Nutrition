@@ -1,6 +1,5 @@
 "use server"
 
-import { getMeasurementConversionFactor } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { ingredientSchema } from "@/lib/validations/ingredient-validation"
@@ -31,15 +30,12 @@ export async function editIngredient({
   const { name, price, waste, measurement, amountPerMeasurement } =
     validatedFields.data
 
-  const factor = getMeasurementConversionFactor(measurement)
-  const adjustedPrice = price / (factor * amountPerMeasurement)
-
   try {
     const ingredient = await prisma.ingredient.update({
       where: { id },
       data: {
         name,
-        price: adjustedPrice,
+        price,
         waste,
         measurement,
         amountPerMeasurement,

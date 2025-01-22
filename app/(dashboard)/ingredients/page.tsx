@@ -120,19 +120,11 @@ export default async function IngredientsPage() {
               </TableHeader>
               <TableBody>
                 {ingredients?.map((ingredient) => {
-                  const factor = getMeasurementConversionFactor(
-                    ingredient.measurement
-                  )
-                  const adjustedPrice =
-                    ingredient.price *
-                    factor *
-                    (ingredient.amountPerMeasurement || 1)
-
                   return (
                     <TableRow key={ingredient.id}>
                       <TableCell>{ingredient.name}</TableCell>
                       <TableCell className='hidden sm:table-cell'>
-                        $ {adjustedPrice.toFixed(2)}{" "}
+                        $ {ingredient.price.toFixed(2)}{" "}
                       </TableCell>
                       <TableCell className='hidden sm:table-cell'>
                         {ingredient.amountPerMeasurement}
