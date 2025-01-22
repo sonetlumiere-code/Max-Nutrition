@@ -8,6 +8,7 @@ export const ingredientSchema = z.object({
       return { message: "Selecciona la unidad de medida." }
     },
   }),
+  amountPerMeasurement: z.coerce.number().positive(),
   price: z.coerce
     .number()
     .min(0.01, { message: "Ingresa el precio del ingrediente." }),

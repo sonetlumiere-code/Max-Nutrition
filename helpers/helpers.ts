@@ -1,11 +1,11 @@
 import {
+  BaseMeasurement,
   PopulatedProduct,
   PopulatedPromotion,
   PromotionToApply,
   TimePeriod,
 } from "@/types/types"
 import {
-  BaseMeasurement,
   Category,
   CustomerAddressLabel,
   DayOfWeek,
@@ -248,11 +248,13 @@ export const calculateIngredientData = (
   ingredient: Ingredient,
   quantity: number
 ) => {
-  const baseToFavoriteMultiplier =
-    getMeasurementConversionFactor(ingredient.baseMeasurement) /
+  const baseMeasurement = getBaseMeasurement(ingredient.measurement)
+
+  const conversionRate =
+    getMeasurementConversionFactor(baseMeasurement) /
     getMeasurementConversionFactor(ingredient.measurement)
 
-  const adjustedQuantity = quantity * baseToFavoriteMultiplier
+  const adjustedQuantity = quantity * conversionRate
   const adjustedPrice =
     ingredient.price * getMeasurementConversionFactor(ingredient.measurement)
   const wasteMultiplier = 1 + ingredient.waste / 100

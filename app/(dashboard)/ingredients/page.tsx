@@ -105,6 +105,9 @@ export default async function IngredientsPage() {
                   <TableHead>Nombre</TableHead>
                   <TableHead className='hidden sm:table-cell'>Precio</TableHead>
                   <TableHead className='hidden sm:table-cell'>
+                    Cantidad
+                  </TableHead>
+                  <TableHead className='hidden sm:table-cell'>
                     Unidad de medida
                   </TableHead>
                   <TableHead className='hidden md:table-cell'>
@@ -120,13 +123,19 @@ export default async function IngredientsPage() {
                   const factor = getMeasurementConversionFactor(
                     ingredient.measurement
                   )
-                  const adjustedPrice = ingredient.price * factor
+                  const adjustedPrice =
+                    ingredient.price *
+                    factor *
+                    (ingredient.amountPerMeasurement || 1)
 
                   return (
                     <TableRow key={ingredient.id}>
                       <TableCell>{ingredient.name}</TableCell>
                       <TableCell className='hidden sm:table-cell'>
                         $ {adjustedPrice.toFixed(2)}{" "}
+                      </TableCell>
+                      <TableCell className='hidden sm:table-cell'>
+                        {ingredient.amountPerMeasurement}
                       </TableCell>
                       <TableCell className='hidden sm:table-cell'>
                         {translateUnit(ingredient.measurement)}

@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
-import { translateUnit } from "@/helpers/helpers"
+import { getBaseMeasurement, translateUnit } from "@/helpers/helpers"
 import { recipeSchema } from "@/lib/validations/recipe-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Ingredient } from "@prisma/client"
@@ -203,7 +203,9 @@ const CreateRecipe = ({
                           <span className='text-xs text-gray-500 '>
                             {selectedIngredient
                               ? translateUnit(
-                                  selectedIngredient?.baseMeasurement
+                                  getBaseMeasurement(
+                                    selectedIngredient?.measurement
+                                  )
                                 )
                               : ""}
                           </span>

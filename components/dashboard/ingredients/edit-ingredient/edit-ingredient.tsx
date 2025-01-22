@@ -42,13 +42,15 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
   const router = useRouter()
 
   const factor = getMeasurementConversionFactor(ingredient.measurement)
-  const adjustedPrice = ingredient.price * factor
+  const adjustedPrice =
+    ingredient.price * factor * (ingredient.amountPerMeasurement || 1)
 
   const form = useForm<IngredientSchema>({
     resolver: zodResolver(ingredientSchema),
     defaultValues: {
       ...ingredient,
       price: adjustedPrice,
+      amountPerMeasurement: ingredient.amountPerMeasurement || 1,
     },
   })
 
@@ -109,6 +111,26 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
               <div className='grid grid-cols-2 gap-3'>
                 <FormField
                   control={control}
+                  name='amountPerMeasurement'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cantidad</FormLabel>
+                      <FormControl>
+                        <Input
+                          type='number'
+                          step='1'
+                          placeholder='Cantidad'
+                          disabled={isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={control}
                   name={"measurement"}
                   render={({ field }) => (
                     <FormItem>
@@ -135,7 +157,9 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
                     </FormItem>
                   )}
                 />
+              </div>
 
+              <div className='grid grid-cols-2 gap-3'>
                 <FormField
                   control={control}
                   name='price'
@@ -155,27 +179,27 @@ const EditIngredient = ({ ingredient }: EditIngredientProps) => {
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <FormField
-                control={control}
-                name='waste'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Desperdicio (%)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        step='0.1'
-                        placeholder='Desperdicio en porcentaje'
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={control}
+                  name='waste'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Desperdicio (%)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type='number'
+                          step='0.1'
+                          placeholder='Desperdicio en porcentaje'
+                          disabled={isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </CardContent>
           <CardFooter>

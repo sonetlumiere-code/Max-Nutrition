@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
-import { translateUnit } from "@/helpers/helpers"
+import { getBaseMeasurement, translateUnit } from "@/helpers/helpers"
 import { recipeSchema } from "@/lib/validations/recipe-validation"
 import { PopulatedRecipe } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -206,7 +206,9 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                             <span className='text-xs text-gray-500 '>
                               {selectedIngredient
                                 ? translateUnit(
-                                    selectedIngredient?.baseMeasurement
+                                    getBaseMeasurement(
+                                      selectedIngredient?.measurement
+                                    )
                                   )
                                 : ""}
                             </span>

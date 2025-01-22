@@ -44,6 +44,7 @@ const CreateIngredient = () => {
       proteins: 0,
       fats: 0,
       fiber: 0,
+      amountPerMeasurement: 1,
     },
   })
 
@@ -101,6 +102,26 @@ const CreateIngredient = () => {
               <div className='grid grid-cols-2 gap-3'>
                 <FormField
                   control={control}
+                  name='amountPerMeasurement'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cantidad</FormLabel>
+                      <FormControl>
+                        <Input
+                          type='number'
+                          step='1'
+                          placeholder='Cantidad'
+                          disabled={isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={control}
                   name={"measurement"}
                   render={({ field }) => (
                     <FormItem>
@@ -127,7 +148,9 @@ const CreateIngredient = () => {
                     </FormItem>
                   )}
                 />
+              </div>
 
+              <div className='grid grid-cols-2 gap-3'>
                 <FormField
                   control={control}
                   name='price'
@@ -147,27 +170,27 @@ const CreateIngredient = () => {
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <FormField
-                control={control}
-                name='waste'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Desperdicio (%)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        step='0.1'
-                        placeholder='Desperdicio en porcentaje'
-                        disabled={isSubmitting}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={control}
+                  name='waste'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Desperdicio (%)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type='number'
+                          step='0.1'
+                          placeholder='Desperdicio en porcentaje'
+                          disabled={isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </CardContent>
           <CardFooter>

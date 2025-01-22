@@ -104,3 +104,11 @@ export type LineItem = {
   quantity: number
   variation: Variation
 }
+
+export const BaseMeasurement = {
+  UNIT: Measurement.UNIT,
+  GRAM: Measurement.GRAM,
+  MILLILITER: Measurement.MILLILITER,
+} as const
+
+export type BaseMeasurement = keyof typeof BaseMeasurement

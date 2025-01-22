@@ -137,14 +137,6 @@ model CustomerAddress {
   @@map("customer_addresses")
 }
 
-enum BaseMeasurement {
-  UNIT
-  GRAM
-  MILLILITER
-
-  @@map("base_measurement")
-}
-
 enum Measurement {
   UNIT
   GRAM
@@ -157,22 +149,22 @@ enum Measurement {
 }
 
 model Ingredient {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  price     Float    @default(0)
-  brand     String?
-  waste     Float    @default(0)
-  carbs     Float    @default(0)
-  proteins  Float    @default(0)
-  fats      Float    @default(0)
-  fiber     Float    @default(0)
-  calories  Float    @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  name                 String   @unique
+  price                Float    @default(0)
+  amountPerMeasurement Float    @default(1)
+  brand                String?
+  waste                Float    @default(0)
+  carbs                Float    @default(0)
+  proteins             Float    @default(0)
+  fats                 Float    @default(0)
+  fiber                Float    @default(0)
+  calories             Float    @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
-  baseMeasurement BaseMeasurement
-  measurement     Measurement
-  recipes         RecipeIngredient[]
+  measurement Measurement
+  recipes     RecipeIngredient[]
 
   @@map("ingredients")
 }

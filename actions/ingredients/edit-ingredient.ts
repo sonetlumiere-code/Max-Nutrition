@@ -1,9 +1,6 @@
 "use server"
 
-import {
-  getBaseMeasurement,
-  getMeasurementConversionFactor,
-} from "@/helpers/helpers"
+import { getMeasurementConversionFactor } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { ingredientSchema } from "@/lib/validations/ingredient-validation"
@@ -31,10 +28,11 @@ export async function editIngredient({
     return { error: "Campos inválidos." }
   }
 
-  const { name, price, waste, measurement } = validatedFields.data
+  const { name, price, waste, measurement, amountPerMeasurement } =
+    validatedFields.data
 
   const factor = getMeasurementConversionFactor(measurement)
-  const adjustedPrice = price / factor
+  const adjustedPrice = price / (factor * amountPerMeasurement)
 
   try {
     const ingredient = await prisma.ingredient.update({
@@ -44,7 +42,7 @@ export async function editIngredient({
         price: adjustedPrice,
         waste,
         measurement,
-        baseMeasurement: getBaseMeasurement(measurement),
+        amountPerMeasurement,
       },
     })
 
