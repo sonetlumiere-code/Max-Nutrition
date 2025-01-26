@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getIngredient } from "@/data/ingredients"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
@@ -17,8 +18,13 @@ interface EditIngredientPageProps {
 
 const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "update:ingredients")) {
     return redirect("/")
   }
 

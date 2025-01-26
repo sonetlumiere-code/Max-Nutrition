@@ -8,13 +8,19 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getIngredients } from "@/data/ingredients"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
 const CreateRecipePage = async () => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "create:recipes")) {
     return redirect("/")
   }
 

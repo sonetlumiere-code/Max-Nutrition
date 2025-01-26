@@ -9,11 +9,17 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import CreateCustomer from "@/components/dashboard/customers/create-customer/create-customer"
+import { hasPermission } from "@/helpers/helpers"
 
 const CreateCustomerPage = async () => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "create:customers")) {
     return redirect("/")
   }
 

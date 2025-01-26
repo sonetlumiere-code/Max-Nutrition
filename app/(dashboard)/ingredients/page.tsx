@@ -33,10 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getIngredients } from "@/data/ingredients"
-import {
-  getMeasurementConversionFactor,
-  translateUnit,
-} from "@/helpers/helpers"
+import { hasPermission, translateUnit } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -44,8 +41,13 @@ import { redirect } from "next/navigation"
 
 export default async function IngredientsPage() {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "view:ingredients")) {
     return redirect("/")
   }
 

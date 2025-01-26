@@ -1,5 +1,6 @@
 "use server"
 
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { categorySchema } from "@/lib/validations/category-validation"
@@ -10,8 +11,13 @@ type CategorySchema = z.infer<typeof categorySchema>
 
 export async function createCategory(values: CategorySchema) {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    return { error: "No autorizado." }
+  }
+
+  if (!hasPermission(session.user, "create:categories")) {
     return { error: "No autorizado." }
   }
 

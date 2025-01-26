@@ -1,5 +1,6 @@
 "use server"
 
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { shippingSettingsSchema } from "@/lib/validations/shipping-settings-validation"
@@ -16,8 +17,13 @@ export async function editShippingSettings({
   values: ShippingSettingsSchema
 }) {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    return { error: "No autorizado." }
+  }
+
+  if (!hasPermission(session.user, "update:shippingSettings")) {
     return { error: "No autorizado." }
   }
 

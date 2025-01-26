@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { getShopSettings } from "@/data/shop-settings"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { ShippingSettings } from "@prisma/client"
@@ -31,8 +32,16 @@ const Shippings = async () => {
   }
 
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (
+    !hasPermission(user, "view:shippingZones") &&
+    !hasPermission(user, "update:shippingSettings")
+  ) {
     return redirect("/")
   }
 
@@ -116,11 +125,13 @@ const Shippings = async () => {
           )}
         </div>
 
-        <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
-          <EditShippingSettings
-            shippingSettings={shippingSettings as ShippingSettings}
-          />
-        </div>
+        {hasPermission(user, "update:shippingSettings") && (
+          <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
+            <EditShippingSettings
+              shippingSettings={shippingSettings as ShippingSettings}
+            />
+          </div>
+        )}
       </div>
     </>
   )

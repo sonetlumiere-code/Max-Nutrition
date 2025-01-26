@@ -3,7 +3,10 @@
 import prisma from "@/lib/db/db"
 import { User } from "@prisma/client"
 
-export const updateUser = async (id: string, data: Partial<User>) => {
+export const updateUser = async (
+  id: string,
+  data: Partial<User> & { roleId?: string }
+) => {
   try {
     const userUpdated = await prisma.user.update({
       where: { id },
@@ -11,8 +14,13 @@ export const updateUser = async (id: string, data: Partial<User>) => {
     })
 
     return userUpdated
-  } catch (error) {
-    console.error(error)
+  } catch (error: any) {
+    if (error.code) {
+      console.error(`Prisma Error [${error.code}]:`, error.message)
+    } else {
+      console.error("Unexpected Error:", error)
+    }
+
     return null
   }
 }

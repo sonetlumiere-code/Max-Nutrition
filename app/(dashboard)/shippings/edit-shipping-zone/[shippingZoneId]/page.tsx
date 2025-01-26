@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getShippingZone } from "@/data/shipping-zones"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
@@ -19,8 +20,13 @@ interface EditShippingZonePageProps {
 
 const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "update:shippingZones")) {
     return redirect("/")
   }
 

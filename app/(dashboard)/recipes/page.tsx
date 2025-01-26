@@ -33,6 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getRecipes } from "@/data/recipes"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -40,8 +41,13 @@ import { redirect } from "next/navigation"
 
 export default async function RecipesPage() {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "view:recipes")) {
     return redirect("/")
   }
 

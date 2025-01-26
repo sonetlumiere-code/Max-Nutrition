@@ -18,7 +18,20 @@ import {
   ShippingZone,
   ShippingSettings,
   AppliedPromotion,
+  Role,
+  Permission,
+  ActionKey,
+  SubjectKey,
 } from "@prisma/client"
+
+export type PopulatedUser = User & {
+  role: PopulatedRole
+}
+
+export type PopulatedRole = Role & {
+  permissions: Permission[]
+  users: PopulatedUser[]
+}
 
 export type PopulatedRecipe = Recipe & {
   ingredients?: PopulatedRecipeIngredient[]
@@ -112,3 +125,5 @@ export const BaseMeasurement = {
 } as const
 
 export type BaseMeasurement = keyof typeof BaseMeasurement
+
+export type PermissionKey = `${ActionKey}:${SubjectKey}`

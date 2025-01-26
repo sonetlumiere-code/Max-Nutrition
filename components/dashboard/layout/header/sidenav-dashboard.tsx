@@ -5,11 +5,20 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
+import { Session } from "next-auth"
 
-export default function SideNavDashboard() {
+type SideNavDashboardProps = {
+  session: Session | null
+}
+
+export default function SideNavDashboard({ session }: SideNavDashboardProps) {
   const pathname = usePathname()
-
   const isActive = (href: string) => pathname === href
+
+  const userPermissionsKeys =
+    session?.user.role?.permissions?.map(
+      (permission) => `${permission.actionKey}:${permission.subjectKey}`
+    ) || []
 
   return (
     <div className='hidden border-r bg-muted/40 md:block'>
@@ -31,23 +40,27 @@ export default function SideNavDashboard() {
         </div>
         <div className='flex-1'>
           <nav className='grid items-start px-2 font-medium lg:px-4'>
-            {navItems.map((item) => {
-              const Icon = Icons[item.icon]
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
-                    isActive(item.href)
-                      ? "bg-muted text-primary"
-                      : "text-muted-foreground"
-                  } transition-all hover:text-primary`}
-                >
-                  <Icon className='h-4 w-4' />
-                  {item.label}
-                </Link>
+            {navItems
+              .filter((item) =>
+                userPermissionsKeys?.includes(item.permissionKey)
               )
-            })}
+              .map((item) => {
+                const Icon = Icons[item.icon]
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                      isActive(item.href)
+                        ? "bg-muted text-primary"
+                        : "text-muted-foreground"
+                    } transition-all hover:text-primary`}
+                  >
+                    <Icon className='h-4 w-4' />
+                    {item.label}
+                  </Link>
+                )
+              })}
             <hr />
           </nav>
         </div>

@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import UserAvatar from "@/components/user-avatar"
-import { Role } from "@prisma/client"
+import { RoleGroup } from "@prisma/client"
 import { Session } from "next-auth"
 import Link from "next/link"
 
@@ -17,7 +17,7 @@ type ProfileDropdownProps = {
 }
 
 const CustomerProfileDropdown = ({ session }: ProfileDropdownProps) => {
-  const isAdmin = session?.user.role === Role.ADMIN
+  const isStaff = session?.user.role?.group === RoleGroup.STAFF
 
   return (
     <DropdownMenu>
@@ -25,7 +25,7 @@ const CustomerProfileDropdown = ({ session }: ProfileDropdownProps) => {
         <UserAvatar user={session?.user} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        {isAdmin && (
+        {isStaff && (
           <>
             <Link href='/orders'>
               <DropdownMenuItem>

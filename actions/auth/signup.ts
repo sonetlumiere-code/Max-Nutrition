@@ -28,11 +28,22 @@ export const signUp = async (values: z.infer<typeof signupSchema>) => {
 
   const hashedPassword = await bcrypt.hash(password, 10)
 
+  const userRole = await prisma.role.findUnique({
+    where: { name: "USER" },
+  })
+
+  if (!userRole) {
+    return { error: "Rol de usuario no encontrado." }
+  }
+
   await prisma.user.create({
     data: {
       name,
       email,
       password: hashedPassword,
+      role: {
+        connect: { id: userRole.id },
+      },
     },
   })
 

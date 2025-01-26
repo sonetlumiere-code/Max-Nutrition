@@ -8,14 +8,20 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getProducts } from "@/data/products"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
 const CreateCategoryPage = async () => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
     redirect("/")
+  }
+
+  if (!hasPermission(user, "create:categories")) {
+    return redirect("/")
   }
 
   const products = await getProducts()

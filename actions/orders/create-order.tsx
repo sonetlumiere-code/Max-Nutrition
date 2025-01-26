@@ -13,6 +13,7 @@ import { Role, ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { checkPromotion } from "../promotions/check-promotion"
 import { getShopBranch } from "@/data/shop-branches"
+import { hasPermission } from "@/helpers/helpers"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
@@ -28,9 +29,9 @@ export async function createOrder({
   }
 
   const session = await auth()
-  const userRole: Role | undefined = session?.user.role
+  const user = session?.user
 
-  if (!session || !userRole) {
+  if (!session || !user) {
     return { error: "Usuario no autenticado o rol no válido." }
   }
 
@@ -50,7 +51,7 @@ export async function createOrder({
     shopBranchId,
   } = validatedFields.data
 
-  if (origin === "DASHBOARD" && userRole !== "ADMIN") {
+  if (origin === "DASHBOARD" && !hasPermission(user, "create:orders")) {
     return {
       error:
         "No autorizado para realizar esta acción desde el panel de administración.",

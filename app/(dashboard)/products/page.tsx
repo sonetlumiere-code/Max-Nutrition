@@ -36,6 +36,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getProducts } from "@/data/products"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -43,8 +44,13 @@ import { redirect } from "next/navigation"
 
 export default async function ProductsPage() {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "view:products")) {
     return redirect("/")
   }
 

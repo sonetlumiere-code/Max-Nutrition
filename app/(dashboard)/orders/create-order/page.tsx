@@ -10,12 +10,26 @@ import {
 import { getCategories } from "@/data/categories"
 import { getCustomers } from "@/data/customer"
 import { getShopSettings } from "@/data/shop-settings"
+import { hasPermission } from "@/helpers/helpers"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
 const CreateOrderPage = async () => {
   if (!shopSettingsId) {
     return <span>Es necesario el ID de la configuración de tienda.</span>
+  }
+
+  const session = await auth()
+  const user = session?.user
+
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "create:orders")) {
+    return redirect("/")
   }
 
   const [categories, customers, shopSettings] = await Promise.all([

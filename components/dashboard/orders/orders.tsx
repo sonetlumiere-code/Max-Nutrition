@@ -30,6 +30,7 @@ import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 import { exportOrdersToExcel } from "@/actions/orders/export-orders"
+import { useSession } from "next-auth/react"
 
 const fetchOrders = async () => {
   const orders = await getOrders({
@@ -91,6 +92,13 @@ export default function Orders() {
   const [selectedOrder, setSelectedOrder] = useState<PopulatedOrder | null>(
     null
   )
+
+  const { data: session } = useSession()
+
+  const userPermissionsKeys =
+    session?.user.role?.permissions?.map(
+      (permission) => `${permission.actionKey}:${permission.subjectKey}`
+    ) || []
 
   const {
     data: orders,
@@ -218,17 +226,21 @@ export default function Orders() {
                           Pedidos recientes de tu tienda.
                         </CardDescription>
                       </div>
-                      <div className='ml-auto'>
-                        <Link
-                          href='orders/create-order'
-                          className={cn(buttonVariants({ variant: "default" }))}
-                        >
-                          <>
-                            <Icons.circlePlus className='mr-2 h-4 w-4' />
-                            Crear
-                          </>
-                        </Link>
-                      </div>
+                      {userPermissionsKeys?.includes("create:orders") && (
+                        <div className='ml-auto'>
+                          <Link
+                            href='orders/create-order'
+                            className={cn(
+                              buttonVariants({ variant: "default" })
+                            )}
+                          >
+                            <>
+                              <Icons.circlePlus className='mr-2 h-4 w-4' />
+                              Crear
+                            </>
+                          </Link>
+                        </div>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent>

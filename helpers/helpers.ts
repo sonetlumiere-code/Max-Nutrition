@@ -1,11 +1,14 @@
+import { ExtendedUser } from "@/types/next-auth"
 import {
   BaseMeasurement,
+  PermissionKey,
   PopulatedProduct,
   PopulatedPromotion,
   PromotionToApply,
   TimePeriod,
 } from "@/types/types"
 import {
+  ActionKey,
   Category,
   CustomerAddressLabel,
   DayOfWeek,
@@ -14,6 +17,7 @@ import {
   OrderStatus,
   PaymentMethod,
   ShippingMethod,
+  SubjectKey,
 } from "@prisma/client"
 
 export const translateUnit = (measurement: Measurement): string => {
@@ -122,6 +126,43 @@ export function translateTimePeriod(period: TimePeriod): string {
       return "Anual"
     case "all":
       return "Todo"
+  }
+}
+
+export function translateSubject(subject: SubjectKey): string {
+  switch (subject) {
+    case "analytics":
+      return "Analítica"
+    case "products":
+      return "Productos"
+    case "categories":
+      return "Categorías"
+    case "promotions":
+      return "Promociones"
+    case "orders":
+      return "Pedidos"
+    case "customers":
+      return "Clientes"
+    case "shopSettings":
+      return "Configuraciones de tienda"
+    case "shopBranches":
+      return "Sucursales de tienda"
+    case "shippingSettings":
+      return "Configuraciones de envío"
+    case "shippingZones":
+      return "Zonas de envío"
+    case "ingredients":
+      return "Ingredientes"
+    case "recipes":
+      return "Recetas"
+    case "roles":
+      return "Roles"
+    case "permissions":
+      return "Permisos"
+    case "users":
+      return "Usuarios"
+    default:
+      return subject
   }
 }
 
@@ -271,4 +312,20 @@ export const calculateIngredientData = (
     cost,
     waste: ingredient.waste,
   }
+}
+
+export function hasPermission(
+  user: ExtendedUser,
+  permissionKey: PermissionKey
+): boolean {
+  const [actionKey, subjectKey] = permissionKey.split(":") as [
+    ActionKey,
+    SubjectKey
+  ]
+
+  return (
+    user.role?.permissions.some(
+      (p) => p.actionKey === actionKey && p.subjectKey === subjectKey
+    ) ?? false
+  )
 }

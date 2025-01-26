@@ -2,11 +2,11 @@ import { updateUser } from "@/actions/auth/user"
 import { getUser } from "@/data/user"
 import prisma from "@/lib/db/db"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import { Role } from "@prisma/client"
 import NextAuth from "next-auth"
 import { sendWelcomeEmail } from "../mail/mail"
 import authConfig from "./auth.config"
 import { createCustomerByUser } from "@/actions/onboarding/create-customer-by-user"
+import { PopulatedRole } from "@/types/types"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
@@ -16,22 +16,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   events: {
     async linkAccount({ user }) {
       if (user.id) {
-        await Promise.all([
-          updateUser(user.id, {
-            emailVerified: new Date(),
-          }),
-          createCustomerByUser({
-            userId: user.id,
-            name: user.name || "",
-          }),
-          sendWelcomeEmail({
-            email: user.email || "",
-            userName: user.name || user.email || "",
-          }),
-        ])
+        const role = await prisma.role.findUnique({
+          where: { name: "USER" },
+        })
+
+        try {
+          await Promise.all([
+            updateUser(user.id, {
+              emailVerified: new Date(),
+              ...(role ? { roleId: role.id } : {}),
+            }),
+            createCustomerByUser({
+              userId: user.id,
+              name: user.name || "",
+            }),
+            sendWelcomeEmail({
+              email: user.email || "",
+              userName: user.name || user.email || "",
+            }),
+          ])
+        } catch (error) {
+          console.error("Error during linkAccount event:", error)
+        }
       }
     },
   },
+
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider !== "credentials") {
@@ -50,7 +60,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token }) {
       if (!token.sub) return token
 
-      const existingUser = await getUser({ where: { id: token.sub } })
+      const existingUser = await getUser({
+        where: { id: token.sub },
+        include: { role: { include: { permissions: true } } },
+      })
 
       if (!existingUser) return token
 
@@ -65,7 +78,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       if (token.role && session.user) {
-        session.user.role = token.role as Role
+        session.user.role = token.role as PopulatedRole
       }
 
       return session

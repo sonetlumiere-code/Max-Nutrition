@@ -10,6 +10,7 @@ import {
 import { getCategories } from "@/data/categories"
 import { getProduct } from "@/data/products"
 import { getRecipes } from "@/data/recipes"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
@@ -21,8 +22,13 @@ interface EditProductPageProps {
 
 const EditProductPage = async ({ params }: EditProductPageProps) => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "update:products")) {
     return redirect("/")
   }
 

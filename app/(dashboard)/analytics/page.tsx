@@ -1,11 +1,17 @@
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
 export default async function AnalyiticsPage() {
-  // const session = await getSession()
   const session = await auth()
 
-  if (session?.user.role !== "ADMIN") {
+  const user = session?.user
+
+  if (!user) {
+    return { error: "No autorizado." }
+  }
+
+  if (!hasPermission(session.user, "view:analytics")) {
     redirect("/")
   }
 

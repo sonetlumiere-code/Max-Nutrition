@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getCustomer } from "@/data/customer"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
@@ -19,8 +20,13 @@ interface EditCustomerPageProps {
 
 const EditCustomerPage = async ({ params }: EditCustomerPageProps) => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "update:customers")) {
     return redirect("/")
   }
 

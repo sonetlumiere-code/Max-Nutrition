@@ -1,5 +1,6 @@
 "use server"
 
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { recipeSchema } from "@/lib/validations/recipe-validation"
@@ -10,8 +11,13 @@ type RecipeSchema = z.infer<typeof recipeSchema>
 
 export async function createRecipe(values: RecipeSchema) {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    return { error: "No autorizado." }
+  }
+
+  if (!hasPermission(session.user, "create:recipes")) {
     return { error: "No autorizado." }
   }
 

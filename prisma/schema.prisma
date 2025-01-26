@@ -14,21 +14,6 @@ datasource db {
   // directUrl = env("DIRECT_URL")
 }
 
-enum Role {
-  ADMIN
-  USER
-}
-
-enum DayOfWeek {
-  MONDAY
-  TUESDAY
-  WEDNESDAY
-  THURSDAY
-  FRIDAY
-  SATURDAY
-  SUNDAY
-}
-
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -36,14 +21,72 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
   password      String?
+  roleId        String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   accounts Account[]
   customer Customer?
-  role     Role      @default(USER)
+  role     Role?     @relation(fields: [roleId], references: [id])
 
   @@map("users")
+}
+
+enum RoleGroup {
+  STAFF
+  CUSTOMER
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  group       RoleGroup
+  permissions Permission[]
+  users       User[]
+
+  @@map("roles")
+}
+
+enum ActionKey {
+  view
+  create
+  update
+  delete
+}
+
+enum SubjectKey {
+  analytics
+  products
+  categories
+  promotions
+  orders
+  customers
+  shopSettings
+  shopBranches
+  shippingSettings
+  shippingZones
+  ingredients
+  recipes
+  roles
+  permissions
+  users
+}
+
+model Permission {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  actionKey   ActionKey
+  subjectKey  SubjectKey
+  description String?
+
+  roles Role[]
+
+  @@unique([actionKey, subjectKey])
+  @@map("permissions")
 }
 
 model Account {
@@ -405,6 +448,16 @@ model OperationalHours {
 
   @@unique([dayOfWeek, shopBranchId])
   @@map("operational_hours")
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
 
 enum ShippingMethod {

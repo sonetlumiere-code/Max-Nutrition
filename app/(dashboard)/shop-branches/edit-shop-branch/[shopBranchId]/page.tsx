@@ -10,6 +10,7 @@ import EditShopBranch from "@/components/dashboard/shop-branches/edit-shop-branc
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { getShopBranch } from "@/data/shop-branches"
+import { hasPermission } from "@/helpers/helpers"
 
 interface EditShopBranchProps {
   params: {
@@ -20,7 +21,13 @@ interface EditShopBranchProps {
 const EditShopBranchPage = async ({ params }: EditShopBranchProps) => {
   const session = await auth()
 
-  if (session?.user.role !== "ADMIN") {
+  const user = session?.user
+
+  if (!user) {
+    return redirect("/")
+  }
+
+  if (!hasPermission(user, "update:shopBranches")) {
     return redirect("/")
   }
 

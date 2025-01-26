@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getCategory } from "@/data/categories"
 import { getProducts } from "@/data/products"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
@@ -20,9 +21,14 @@ interface EditCategoryPageProps {
 
 const EditCategoryPage = async ({ params }: EditCategoryPageProps) => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
     redirect("/")
+  }
+
+  if (!hasPermission(user, "update:categories")) {
+    return redirect("/")
   }
 
   const { categoryId } = params

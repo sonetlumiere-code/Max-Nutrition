@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import DeleteCategory from "@/components/dashboard/categories/delete-category/delete-category"
 import { Icons } from "@/components/icons"
 import {
@@ -22,7 +21,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -34,6 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getCategories } from "@/data/categories"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -41,10 +40,20 @@ import { redirect } from "next/navigation"
 
 export default async function CategoriesPage() {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "view:categories")) {
     return redirect("/")
   }
+
+  const userPermissionsKeys =
+    user.role?.permissions?.map(
+      (permission) => `${permission.actionKey}:${permission.subjectKey}`
+    ) || []
 
   const categories = await getCategories()
   const categoriesLength = categories?.length || 0
@@ -77,17 +86,19 @@ export default async function CategoriesPage() {
                   Gestiona y actualiza las categorías.
                 </CardDescription>
               </div>
-              <div className='ml-auto'>
-                <Link
-                  href='categories/create-category'
-                  className={cn(buttonVariants({ variant: "default" }))}
-                >
-                  <>
-                    <Icons.circlePlus className='mr-2 h-4 w-4' />
-                    Agregar
-                  </>
-                </Link>
-              </div>
+              {userPermissionsKeys.includes("create:categories") && (
+                <div className='ml-auto'>
+                  <Link
+                    href='categories/create-category'
+                    className={cn(buttonVariants({ variant: "default" }))}
+                  >
+                    <>
+                      <Icons.circlePlus className='mr-2 h-4 w-4' />
+                      Agregar
+                    </>
+                  </Link>
+                </div>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -104,35 +115,45 @@ export default async function CategoriesPage() {
                 {categories?.map((category) => (
                   <TableRow key={category.id}>
                     <TableCell>{category.name}</TableCell>
-                    <TableCell className='text-end'>
-                      <DropdownMenu modal={false}>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup='true'
-                            size='icon'
-                            variant='ghost'
-                          >
-                            <Icons.moreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Mostrar menú</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <Link
-                            href={`categories/edit-category/${category.id}`}
-                          >
-                            <DropdownMenuItem>
-                              <Icons.pencil className='w-4 h-4 mr-2' />
-                              Editar
-                            </DropdownMenuItem>
-                          </Link>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>
-                            <DeleteCategory category={category} />
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                    {(userPermissionsKeys.includes("update:categories") ||
+                      userPermissionsKeys.includes("delete:categories")) && (
+                      <TableCell className='text-end'>
+                        <DropdownMenu modal={false}>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup='true'
+                              size='icon'
+                              variant='ghost'
+                            >
+                              <Icons.moreHorizontal className='h-4 w-4' />
+                              <span className='sr-only'>Mostrar menú</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align='end'>
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            {userPermissionsKeys.includes(
+                              "update:categories"
+                            ) && (
+                              <Link
+                                href={`categories/edit-category/${category.id}`}
+                              >
+                                <DropdownMenuItem>
+                                  <Icons.pencil className='w-4 h-4 mr-2' />
+                                  Editar
+                                </DropdownMenuItem>
+                              </Link>
+                            )}
+                            {userPermissionsKeys.includes(
+                              "delete:categories"
+                            ) && (
+                              <DropdownMenuItem>
+                                <DeleteCategory category={category} />
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
@@ -151,16 +172,21 @@ export default async function CategoriesPage() {
             <h3 className='text-2xl font-bold tracking-tight'>
               Todavía no tenés ninguna categoría
             </h3>
-            <p className='text-sm text-muted-foreground'>
-              Cargá tu primera categoría haciendo click en el siguiente botón
-            </p>
+            {userPermissionsKeys.includes("create:categories") && (
+              <>
+                <p className='text-sm text-muted-foreground'>
+                  Cargá tu primera categoría haciendo click en el siguiente
+                  botón
+                </p>
 
-            <Button className='mt-4' asChild>
-              <Link href='/categories/create-category'>
-                <Icons.circlePlus className='mr-2 h-4 w-4' />
-                Agregar categoría
-              </Link>
-            </Button>
+                <Button className='mt-4' asChild>
+                  <Link href='/categories/create-category'>
+                    <Icons.circlePlus className='mr-2 h-4 w-4' />
+                    Agregar categoría
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getCategories } from "@/data/categories"
 import { getPromotion } from "@/data/promotions"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
@@ -20,8 +21,13 @@ interface EditPromotionPageProps {
 
 const EditPromotionPage = async ({ params }: EditPromotionPageProps) => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "update:promotions")) {
     return redirect("/")
   }
 

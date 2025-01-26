@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { getCustomer } from "@/data/customer"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
@@ -25,9 +26,14 @@ interface ViewCustomerProps {
 
 const ViewCustomer = async ({ params }: ViewCustomerProps) => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
     redirect("/")
+  }
+
+  if (!hasPermission(user, "view:customers")) {
+    return redirect("/")
   }
 
   const { customerId } = params

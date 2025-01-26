@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getIngredients } from "@/data/ingredients"
 import { getRecipe } from "@/data/recipes"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
@@ -20,8 +21,13 @@ interface EditRecipePageProps {
 
 const EditRecipePage = async ({ params }: EditRecipePageProps) => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "update:recipes")) {
     return redirect("/")
   }
 

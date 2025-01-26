@@ -9,11 +9,17 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { hasPermission } from "@/helpers/helpers"
 
 const CreateShopBranchPage = async () => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
+  if (!user) {
+    redirect("/")
+  }
+
+  if (!hasPermission(user, "create:shopBranches")) {
     return redirect("/")
   }
 

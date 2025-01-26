@@ -1,10 +1,13 @@
 import { auth } from "@/lib/auth/auth"
+import { RoleGroup } from "@prisma/client"
 import { redirect } from "next/navigation"
 
 export default async function WelcomePage() {
   const session = await auth()
 
-  if (session?.user.role !== "ADMIN") {
+  const isStaff = session?.user.role?.group === RoleGroup.STAFF
+
+  if (!isStaff) {
     return redirect("/")
   }
 

@@ -2,6 +2,8 @@ import {
   DayOfWeek,
   Ingredient,
   PaymentMethod,
+  ActionKey,
+  SubjectKey,
   PrismaClient,
   ShippingMethod,
 } from "@prisma/client"
@@ -9,6 +11,156 @@ import {
 const prisma = new PrismaClient()
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
+
+const permissions: {
+  name: string
+  actionKey: ActionKey
+  subjectKey: SubjectKey
+}[] = [
+  { name: "Ver Dashboard", actionKey: "view", subjectKey: "analytics" },
+
+  { name: "Ver productos", actionKey: "view", subjectKey: "products" },
+  { name: "Crear productos", actionKey: "create", subjectKey: "products" },
+  { name: "Actualizar productos", actionKey: "update", subjectKey: "products" },
+  { name: "Eliminar productos", actionKey: "delete", subjectKey: "products" },
+
+  { name: "Ver categorías", actionKey: "view", subjectKey: "categories" },
+  { name: "Crear categorías", actionKey: "create", subjectKey: "categories" },
+  {
+    name: "Actualizar categorías",
+    actionKey: "update",
+    subjectKey: "categories",
+  },
+  {
+    name: "Eliminar categorías",
+    actionKey: "delete",
+    subjectKey: "categories",
+  },
+
+  { name: "Ver promociones", actionKey: "view", subjectKey: "promotions" },
+  { name: "Crear promociones", actionKey: "create", subjectKey: "promotions" },
+  {
+    name: "Actualizar promociones",
+    actionKey: "update",
+    subjectKey: "promotions",
+  },
+  {
+    name: "Eliminar promociones",
+    actionKey: "delete",
+    subjectKey: "promotions",
+  },
+
+  { name: "Ver pedidos", actionKey: "view", subjectKey: "orders" },
+  { name: "Crear pedidos", actionKey: "create", subjectKey: "orders" },
+  { name: "Actualizar pedidos", actionKey: "update", subjectKey: "orders" },
+  { name: "Eliminar pedidos", actionKey: "delete", subjectKey: "orders" },
+
+  { name: "Ver clientes", actionKey: "view", subjectKey: "customers" },
+  { name: "Crear clientes", actionKey: "create", subjectKey: "customers" },
+  { name: "Actualizar clientes", actionKey: "update", subjectKey: "customers" },
+  { name: "Eliminar clientes", actionKey: "delete", subjectKey: "customers" },
+
+  { name: "Ver sucursales", actionKey: "view", subjectKey: "shopBranches" },
+  {
+    name: "Crear sucursales",
+    actionKey: "create",
+    subjectKey: "shopBranches",
+  },
+  {
+    name: "Actualizar sucursales",
+    actionKey: "update",
+    subjectKey: "shopBranches",
+  },
+  {
+    name: "Eliminar sucursales",
+    actionKey: "delete",
+    subjectKey: "shopBranches",
+  },
+
+  {
+    name: "Ver configuración de la tienda",
+    actionKey: "view",
+    subjectKey: "shopSettings",
+  },
+  {
+    name: "Actualizar configuración de la tienda",
+    actionKey: "update",
+    subjectKey: "shopSettings",
+  },
+
+  {
+    name: "Ver configuración de envíos",
+    actionKey: "view",
+    subjectKey: "shippingSettings",
+  },
+  {
+    name: "Actualizar configuración de envíos",
+    actionKey: "update",
+    subjectKey: "shippingSettings",
+  },
+
+  {
+    name: "Ver zonas de envío",
+    actionKey: "view",
+    subjectKey: "shippingZones",
+  },
+  {
+    name: "Crear zonas de envío",
+    actionKey: "create",
+    subjectKey: "shippingZones",
+  },
+  {
+    name: "Actualizar zonas de envío",
+    actionKey: "update",
+    subjectKey: "shippingZones",
+  },
+  {
+    name: "Eliminar zonas de envío",
+    actionKey: "delete",
+    subjectKey: "shippingZones",
+  },
+
+  { name: "Ver ingredientes", actionKey: "view", subjectKey: "ingredients" },
+  {
+    name: "Crear ingredientes",
+    actionKey: "create",
+    subjectKey: "ingredients",
+  },
+  {
+    name: "Actualizar ingredientes",
+    actionKey: "update",
+    subjectKey: "ingredients",
+  },
+  {
+    name: "Eliminar ingredientes",
+    actionKey: "delete",
+    subjectKey: "ingredients",
+  },
+
+  { name: "Ver recetas", actionKey: "view", subjectKey: "recipes" },
+  { name: "Crear recetas", actionKey: "create", subjectKey: "recipes" },
+  { name: "Actualizar recetas", actionKey: "update", subjectKey: "recipes" },
+  { name: "Eliminar recetas", actionKey: "delete", subjectKey: "recipes" },
+
+  { name: "Ver roles", actionKey: "view", subjectKey: "roles" },
+  { name: "Crear roles", actionKey: "create", subjectKey: "roles" },
+  { name: "Actualizar roles", actionKey: "update", subjectKey: "roles" },
+  { name: "Eliminar roles", actionKey: "delete", subjectKey: "roles" },
+
+  { name: "Ver permisos", actionKey: "view", subjectKey: "permissions" },
+  { name: "Crear permisos", actionKey: "create", subjectKey: "permissions" },
+  {
+    name: "Actualizar permisos",
+    actionKey: "update",
+    subjectKey: "permissions",
+  },
+  { name: "Eliminar permisos", actionKey: "delete", subjectKey: "permissions" },
+
+  { name: "Ver usuarios", actionKey: "view", subjectKey: "users" },
+  { name: "Crear usuarios", actionKey: "create", subjectKey: "users" },
+  { name: "Actualizar usuarios", actionKey: "update", subjectKey: "users" },
+  { name: "Eliminar usuarios", actionKey: "delete", subjectKey: "users" },
+]
 
 export const ingredientsData: Omit<
   Ingredient,
@@ -942,6 +1094,64 @@ async function main() {
     return
   }
 
+  const permissionRecords = await Promise.all(
+    permissions.map((perm) =>
+      prisma.permission.upsert({
+        where: {
+          actionKey_subjectKey: {
+            actionKey: perm.actionKey,
+            subjectKey: perm.subjectKey,
+          },
+        },
+        update: {},
+        create: perm,
+      })
+    )
+  )
+
+  const permissionMap = Object.fromEntries(
+    permissionRecords.map((perm) => [
+      `${perm.actionKey}:${perm.subjectKey}`,
+      perm.id,
+    ])
+  )
+
+  await prisma.role.upsert({
+    where: { name: "ADMIN" },
+    update: {
+      group: "STAFF",
+      permissions: {
+        connect: permissionRecords.map((perm) => ({ id: perm.id })),
+      },
+    },
+    create: {
+      name: "ADMIN",
+      description: "Administrator with full access",
+      group: "STAFF",
+      permissions: {
+        connect: permissionRecords.map((perm) => ({ id: perm.id })),
+      },
+    },
+  })
+
+  await prisma.role.upsert({
+    where: { name: "USER" },
+    update: {
+      group: "CUSTOMER",
+    },
+    create: {
+      name: "USER",
+      description: "Regular user with limited access",
+      group: "CUSTOMER",
+      permissions: {
+        connect: [
+          { id: permissionMap["view:products"] },
+          { id: permissionMap["view:categories"] },
+        ],
+      },
+    },
+  })
+
   for (const ingredient of ingredientsData) {
     await prisma.ingredient.upsert({
       where: { name: ingredient.name },
@@ -962,7 +1172,7 @@ async function main() {
             label: "Sucursal Agronomía",
             branchType: "RETAIL",
             province: "Ciudad Autónoma de Buenos Aires",
-            municipality: "CABA",
+            municipality: "Comuna 15",
             locality: "Agronomía",
             addressStreet: "Main St",
             addressNumber: 123,

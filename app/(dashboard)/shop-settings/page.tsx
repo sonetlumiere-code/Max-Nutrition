@@ -1,3 +1,4 @@
+// import { hasPermission } from "@/helpers/helpers"
 import { redirect } from "next/navigation"
 
 // const shopSettingsId = process.env.SHOP_SETTINGS_ID
@@ -6,8 +7,13 @@ const ShopSettingsPage = async () => {
   return redirect("/orders")
 
   // const session = await auth()
+  // const user = session?.user
 
-  // if (session?.user.role !== "ADMIN") {
+  // if (!user) {
+  //   return redirect("/")
+  // }
+
+  // if (!hasPermission(user, "view:shopSettings")) {
   //   return redirect("/")
   // }
 

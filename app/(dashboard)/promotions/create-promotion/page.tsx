@@ -8,16 +8,21 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getCategories } from "@/data/categories"
+import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
 const CreatePromotionPage = async () => {
   const session = await auth()
+  const user = session?.user
 
-  if (session?.user.role !== "ADMIN") {
-    return redirect("/")
+  if (!user) {
+    redirect("/")
   }
 
+  if (!hasPermission(user, "create:promotions")) {
+    return redirect("/")
+  }
   const categories = await getCategories()
 
   return (
