@@ -24,11 +24,11 @@ const EditCategoryPage = async ({ params }: EditCategoryPageProps) => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "update:categories")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const { categoryId } = params

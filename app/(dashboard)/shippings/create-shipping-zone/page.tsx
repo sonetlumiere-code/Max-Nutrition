@@ -16,11 +16,11 @@ const CreateShippingZonesPage = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "create:shippingZones")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   return (

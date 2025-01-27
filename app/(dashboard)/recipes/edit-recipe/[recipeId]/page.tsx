@@ -24,11 +24,11 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "update:recipes")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const { recipeId } = params
@@ -46,7 +46,7 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
   ])
 
   if (!recipe) {
-    redirect("/orders")
+    redirect("/welcome")
   }
 
   return (

@@ -25,11 +25,11 @@ const EditRolePage = async ({ params }: EditRolePageProps) => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "update:roles")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const { roleId } = params

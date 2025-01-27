@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
 import { Session } from "next-auth"
+import { getPermissionsKeys } from "@/helpers/helpers"
 
 type SideNavDashboardProps = {
   session: Session | null
@@ -15,10 +16,9 @@ export default function SideNavDashboard({ session }: SideNavDashboardProps) {
   const pathname = usePathname()
   const isActive = (href: string) => pathname === href
 
-  const userPermissionsKeys =
-    session?.user.role?.permissions?.map(
-      (permission) => `${permission.actionKey}:${permission.subjectKey}`
-    ) || []
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
 
   return (
     <div className='hidden border-r bg-muted/40 md:block'>

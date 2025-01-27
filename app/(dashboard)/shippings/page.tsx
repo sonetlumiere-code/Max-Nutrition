@@ -17,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { getShopSettings } from "@/data/shop-settings"
-import { hasPermission } from "@/helpers/helpers"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { ShippingSettings } from "@prisma/client"
@@ -35,15 +35,19 @@ const Shippings = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (
     !hasPermission(user, "view:shippingZones") &&
     !hasPermission(user, "update:shippingSettings")
   ) {
-    return redirect("/")
+    return redirect("/welcome")
   }
+
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
 
   const shopSettings = await getShopSettings({
     where: { id: shopSettingsId },
@@ -86,17 +90,19 @@ const Shippings = async () => {
                       Gestiona y actualiza tus zonas de envío.
                     </CardDescription>
                   </div>
-                  <div className='ml-auto'>
-                    <Link
-                      href='shippings/create-shipping-zone'
-                      className={cn(buttonVariants({ variant: "default" }))}
-                    >
-                      <>
-                        <Icons.circlePlus className='mr-2 h-4 w-4' />
-                        Agregar
-                      </>
-                    </Link>
-                  </div>
+                  {userPermissionsKeys.includes("create:shippingZones") && (
+                    <div className='ml-auto'>
+                      <Link
+                        href='shippings/create-shipping-zone'
+                        className={cn(buttonVariants({ variant: "default" }))}
+                      >
+                        <>
+                          <Icons.circlePlus className='mr-2 h-4 w-4' />
+                          Agregar
+                        </>
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </CardHeader>
               <CardContent>
@@ -109,17 +115,21 @@ const Shippings = async () => {
                 <h3 className='text-2xl font-bold tracking-tight'>
                   Todavía no tenés ninguna zona de envío
                 </h3>
-                <p className='text-sm text-muted-foreground'>
-                  Cargá tu primera zona de envío haciendo click en el siguiente
-                  botón
-                </p>
+                {userPermissionsKeys.includes("create:shippingZones") && (
+                  <>
+                    <p className='text-sm text-muted-foreground'>
+                      Cargá tu primera zona de envío haciendo click en el
+                      siguiente botón
+                    </p>
 
-                <Button className='mt-4' asChild>
-                  <Link href='/shippings/create-shipping-zone'>
-                    <Icons.circlePlus className='mr-2 h-4 w-4' />
-                    Agregar Zona de envío
-                  </Link>
-                </Button>
+                    <Button className='mt-4' asChild>
+                      <Link href='/shippings/create-shipping-zone'>
+                        <Icons.circlePlus className='mr-2 h-4 w-4' />
+                        Agregar Zona de envío
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           )}

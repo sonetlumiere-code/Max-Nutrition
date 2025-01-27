@@ -17,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { getCustomers } from "@/data/customer"
-import { hasPermission } from "@/helpers/helpers"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -28,12 +28,16 @@ export default async function CustomersPage() {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "view:customers")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
+
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
 
   const customers = await getCustomers({
     include: {
@@ -72,17 +76,19 @@ export default async function CustomersPage() {
                   Administra tus clientes y visualiza su información.
                 </CardDescription>
               </div>
-              <div className='ml-auto'>
-                <Link
-                  href='customers/create-customer'
-                  className={cn(buttonVariants({ variant: "default" }))}
-                >
-                  <>
-                    <Icons.circlePlus className='mr-2 h-4 w-4' />
-                    Agregar
-                  </>
-                </Link>
-              </div>
+              {userPermissionsKeys.includes("create:customers") && (
+                <div className='ml-auto'>
+                  <Link
+                    href='customers/create-customer'
+                    className={cn(buttonVariants({ variant: "default" }))}
+                  >
+                    <>
+                      <Icons.circlePlus className='mr-2 h-4 w-4' />
+                      Agregar
+                    </>
+                  </Link>
+                </div>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -95,16 +101,20 @@ export default async function CustomersPage() {
             <h3 className='text-2xl font-bold tracking-tight'>
               Todavía no tenés ningún cliente
             </h3>
-            <p className='text-sm text-muted-foreground'>
-              Cargá tu primer cliente haciendo click en el siguiente botón
-            </p>
+            {userPermissionsKeys.includes("create:customers") && (
+              <>
+                <p className='text-sm text-muted-foreground'>
+                  Cargá tu primer cliente haciendo click en el siguiente botón
+                </p>
 
-            <Button className='mt-4' asChild>
-              <Link href='/customers/create-customer'>
-                <Icons.circlePlus className='mr-2 h-4 w-4' />
-                Agregar cliente
-              </Link>
-            </Button>
+                <Button className='mt-4' asChild>
+                  <Link href='/customers/create-customer'>
+                    <Icons.circlePlus className='mr-2 h-4 w-4' />
+                    Agregar cliente
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

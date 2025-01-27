@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
 import { Session } from "next-auth"
+import { getPermissionsKeys } from "@/helpers/helpers"
 
 type SheetSideNavDashboardProps = {
   session: Session | null
@@ -25,10 +26,9 @@ const SheetSideNavDashboard = ({ session }: SheetSideNavDashboardProps) => {
   const pathname = usePathname()
   const isActive = (href: string) => pathname === href
 
-  const userPermissionsKeys =
-    session?.user.role?.permissions?.map(
-      (permission) => `${permission.actionKey}:${permission.subjectKey}`
-    ) || []
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
 
   return (
     <Sheet>

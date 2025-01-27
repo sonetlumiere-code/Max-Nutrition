@@ -33,7 +33,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getIngredients } from "@/data/ingredients"
-import { hasPermission, translateUnit } from "@/helpers/helpers"
+import {
+  getPermissionsKeys,
+  hasPermission,
+  translateUnit,
+} from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -44,12 +48,16 @@ export default async function IngredientsPage() {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "view:ingredients")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
+
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
 
   const ingredients = await getIngredients({
     orderBy: {
@@ -87,17 +95,19 @@ export default async function IngredientsPage() {
                   Gestiona y actualiza el inventario de los ingredientes.
                 </CardDescription>
               </div>
-              <div className='ml-auto'>
-                <Link
-                  href='ingredients/create-ingredient'
-                  className={cn(buttonVariants({ variant: "default" }))}
-                >
-                  <>
-                    <Icons.circlePlus className='mr-2 h-4 w-4' />
-                    Agregar
-                  </>
-                </Link>
-              </div>
+              {userPermissionsKeys.includes("create:ingredients") && (
+                <div className='ml-auto'>
+                  <Link
+                    href='ingredients/create-ingredient'
+                    className={cn(buttonVariants({ variant: "default" }))}
+                  >
+                    <>
+                      <Icons.circlePlus className='mr-2 h-4 w-4' />
+                      Agregar
+                    </>
+                  </Link>
+                </div>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -137,35 +147,45 @@ export default async function IngredientsPage() {
                       <TableCell className='hidden sm:table-cell'>
                         {ingredient.waste} %
                       </TableCell>
-                      <TableCell className='text-end'>
-                        <DropdownMenu modal={false}>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup='true'
-                              size='icon'
-                              variant='ghost'
-                            >
-                              <Icons.moreHorizontal className='h-4 w-4' />
-                              <span className='sr-only'>Mostrar menú</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align='end'>
-                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                            <Link
-                              href={`ingredients/edit-ingredient/${ingredient.id}`}
-                            >
-                              <DropdownMenuItem>
-                                <Icons.pencil className='w-4 h-4 mr-2' />
-                                Editar
-                              </DropdownMenuItem>
-                            </Link>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              <DeleteIngredient ingredient={ingredient} />
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+                      {(userPermissionsKeys.includes("update:ingredients") ||
+                        userPermissionsKeys.includes("delete:ingredients")) && (
+                        <TableCell className='text-end'>
+                          <DropdownMenu modal={false}>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                aria-haspopup='true'
+                                size='icon'
+                                variant='ghost'
+                              >
+                                <Icons.moreHorizontal className='h-4 w-4' />
+                                <span className='sr-only'>Mostrar menú</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align='end'>
+                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                              {userPermissionsKeys.includes(
+                                "update:ingredients"
+                              ) && (
+                                <Link
+                                  href={`ingredients/edit-ingredient/${ingredient.id}`}
+                                >
+                                  <DropdownMenuItem>
+                                    <Icons.pencil className='w-4 h-4 mr-2' />
+                                    Editar
+                                  </DropdownMenuItem>
+                                </Link>
+                              )}
+                              {userPermissionsKeys.includes(
+                                "delete:ingredients"
+                              ) && (
+                                <DropdownMenuItem>
+                                  <DeleteIngredient ingredient={ingredient} />
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      )}
                     </TableRow>
                   )
                 })}
@@ -185,16 +205,21 @@ export default async function IngredientsPage() {
             <h3 className='text-2xl font-bold tracking-tight'>
               Todavía no tenés ningun ingrediente
             </h3>
-            <p className='text-sm text-muted-foreground'>
-              Cargá tu primer ingrediente haciendo click en el siguiente botón
-            </p>
+            {userPermissionsKeys.includes("create:ingredients") && (
+              <>
+                <p className='text-sm text-muted-foreground'>
+                  Cargá tu primer ingrediente haciendo click en el siguiente
+                  botón
+                </p>
 
-            <Button className='mt-4' asChild>
-              <Link href='/ingredients/create-ingredient'>
-                <Icons.circlePlus className='mr-2 h-4 w-4' />
-                Crear ingrediente
-              </Link>
-            </Button>
+                <Button className='mt-4' asChild>
+                  <Link href='/ingredients/create-ingredient'>
+                    <Icons.circlePlus className='mr-2 h-4 w-4' />
+                    Crear ingrediente
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

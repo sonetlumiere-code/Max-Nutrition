@@ -24,11 +24,11 @@ const EditPromotionPage = async ({ params }: EditPromotionPageProps) => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "update:promotions")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const { promotionId } = params
@@ -42,7 +42,7 @@ const EditPromotionPage = async ({ params }: EditPromotionPageProps) => {
   ])
 
   if (!promotion) {
-    redirect("/orders")
+    redirect("/welcome")
   }
 
   return (

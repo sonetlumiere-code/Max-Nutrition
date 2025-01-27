@@ -8,11 +8,11 @@ export default async function AnalyiticsPage() {
   const user = session?.user
 
   if (!user) {
-    return { error: "No autorizado." }
+    return redirect("/")
   }
 
   if (!hasPermission(session.user, "view:analytics")) {
-    redirect("/")
+    return redirect("/welcome")
   }
 
   return (

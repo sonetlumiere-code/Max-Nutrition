@@ -28,7 +28,7 @@ const EditShopBranchPage = async ({ params }: EditShopBranchProps) => {
   }
 
   if (!hasPermission(user, "update:shopBranches")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const { shopBranchId } = params

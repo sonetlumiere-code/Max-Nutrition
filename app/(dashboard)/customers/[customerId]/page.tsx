@@ -29,11 +29,11 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "view:customers")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const { customerId } = params

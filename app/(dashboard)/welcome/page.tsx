@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { auth } from "@/lib/auth/auth"
 import { RoleGroup } from "@prisma/client"
 import { redirect } from "next/navigation"
@@ -12,10 +13,12 @@ export default async function WelcomePage() {
   }
 
   return (
-    <>
-      <div className='flex items-center'>
-        <h1 className='text-lg font-semibold md:text-2xl'>Bienvenida Xime!</h1>
-      </div>
-    </>
+    <div className='h-full flex items-center justify-center'>
+      <img
+        src='img/mxm-logo.png'
+        alt='MXM Máxima Nutrición'
+        className='opacity-50'
+      />
+    </div>
   )
 }

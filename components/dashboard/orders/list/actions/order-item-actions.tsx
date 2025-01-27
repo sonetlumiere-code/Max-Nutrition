@@ -11,13 +11,17 @@ import {
 } from "@/components/ui/dropdown-menu"
 import EditOrder from "./edit-order/edit-order"
 import { useState } from "react"
-import { PopulatedOrder } from "@/types/types"
+import { PermissionKey, PopulatedOrder } from "@/types/types"
 
 type OrderItemActionsProps = {
   order: PopulatedOrder
+  userPermissionsKeys: PermissionKey[]
 }
 
-const OrderItemActions = ({ order }: OrderItemActionsProps) => {
+const OrderItemActions = ({
+  order,
+  userPermissionsKeys,
+}: OrderItemActionsProps) => {
   const [openEditDialog, setOpenEditDialog] = useState(false)
   // const [openExportDialog, setOpenExportDialog] = useState(false)
 
@@ -32,19 +36,23 @@ const OrderItemActions = ({ order }: OrderItemActionsProps) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => setOpenEditDialog(true)}>
-            <Icons.pencil className='w-4 h-4 mr-2' />
-            Editar
-          </DropdownMenuItem>
+          {userPermissionsKeys.includes("update:orders") && (
+            <DropdownMenuItem onClick={() => setOpenEditDialog(true)}>
+              <Icons.pencil className='w-4 h-4 mr-2' />
+              Editar
+            </DropdownMenuItem>
+          )}
           {/* <DropdownMenuItem onClick={() => setOpenExportDialog(true)}>
             <Icons.file className='w-4 h-4 mr-2' />
             Exportar
           </DropdownMenuItem>
-          <DropdownMenuSeparator /> */}
-          {/* <DropdownMenuItem>
-            <Icons.trash2 className='w-4 h-4 mr-2' />
-            Eliminar
-          </DropdownMenuItem> */}
+          */}
+          {/* {userPermissionsKeys.includes("delete:orders") && (
+            <DropdownMenuItem>
+              <Icons.trash2 className='w-4 h-4 mr-2' />
+              Eliminar
+            </DropdownMenuItem>
+          )} */}
         </DropdownMenuContent>
       </DropdownMenu>
 

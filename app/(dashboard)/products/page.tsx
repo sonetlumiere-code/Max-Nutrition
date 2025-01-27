@@ -24,7 +24,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -36,7 +35,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getProducts } from "@/data/products"
-import { hasPermission } from "@/helpers/helpers"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -47,12 +46,16 @@ export default async function ProductsPage() {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "view:products")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
+
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
 
   const products = await getProducts({
     include: {
@@ -92,17 +95,19 @@ export default async function ProductsPage() {
                   Gestiona y actualiza el inventario de viandas.
                 </CardDescription>
               </div>
-              <div className='ml-auto'>
-                <Link
-                  href='products/create-product'
-                  className={cn(buttonVariants({ variant: "default" }))}
-                >
-                  <>
-                    <Icons.circlePlus className='mr-2 h-4 w-4' />
-                    Agregar
-                  </>
-                </Link>
-              </div>
+              {userPermissionsKeys.includes("create:products") && (
+                <div className='ml-auto'>
+                  <Link
+                    href='products/create-product'
+                    className={cn(buttonVariants({ variant: "default" }))}
+                  >
+                    <>
+                      <Icons.circlePlus className='mr-2 h-4 w-4' />
+                      Agregar
+                    </>
+                  </Link>
+                </div>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -145,33 +150,45 @@ export default async function ProductsPage() {
                     <TableCell className='hidden md:table-cell'>
                       <ShowProductBadge product={product} />
                     </TableCell>
-                    <TableCell className='text-end'>
-                      <DropdownMenu modal={false}>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup='true'
-                            size='icon'
-                            variant='ghost'
-                          >
-                            <Icons.moreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Mostrar menú</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <Link href={`products/edit-product/${product.id}`}>
-                            <DropdownMenuItem>
-                              <Icons.pencil className='w-4 h-4 mr-2' />
-                              Editar
-                            </DropdownMenuItem>
-                          </Link>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>
-                            <DeleteProduct product={product} />
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                    {(userPermissionsKeys.includes("update:products") ||
+                      userPermissionsKeys.includes("delete:products")) && (
+                      <TableCell className='text-end'>
+                        <DropdownMenu modal={false}>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup='true'
+                              size='icon'
+                              variant='ghost'
+                            >
+                              <Icons.moreHorizontal className='h-4 w-4' />
+                              <span className='sr-only'>Mostrar menú</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align='end'>
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            {userPermissionsKeys.includes(
+                              "update:products"
+                            ) && (
+                              <Link
+                                href={`products/edit-product/${product.id}`}
+                              >
+                                <DropdownMenuItem>
+                                  <Icons.pencil className='w-4 h-4 mr-2' />
+                                  Editar
+                                </DropdownMenuItem>
+                              </Link>
+                            )}
+                            {userPermissionsKeys.includes(
+                              "delete:products"
+                            ) && (
+                              <DropdownMenuItem>
+                                <DeleteProduct product={product} />
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
@@ -190,16 +207,20 @@ export default async function ProductsPage() {
             <h3 className='text-2xl font-bold tracking-tight'>
               Todavía no tenés ningún producto
             </h3>
-            <p className='text-sm text-muted-foreground'>
-              Cargá tu primer producto haciendo click en el siguiente botón
-            </p>
+            {userPermissionsKeys.includes("create:products") && (
+              <>
+                <p className='text-sm text-muted-foreground'>
+                  Cargá tu primer producto haciendo click en el siguiente botón
+                </p>
 
-            <Button className='mt-4' asChild>
-              <Link href='/products/create-product'>
-                <Icons.circlePlus className='mr-2 h-4 w-4' />
-                Agregar producto
-              </Link>
-            </Button>
+                <Button className='mt-4' asChild>
+                  <Link href='/products/create-product'>
+                    <Icons.circlePlus className='mr-2 h-4 w-4' />
+                    Agregar producto
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

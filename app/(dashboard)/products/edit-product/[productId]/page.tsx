@@ -25,11 +25,11 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "update:products")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const { productId } = params
@@ -48,7 +48,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
   ])
 
   if (!product) {
-    redirect("/orders")
+    redirect("/welcome")
   }
 
   return (

@@ -17,11 +17,11 @@ const CreateRolePage = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "create:roles")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const permissions = await getPermissions()

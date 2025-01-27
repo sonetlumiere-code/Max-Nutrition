@@ -27,7 +27,7 @@ const CustomerProfileDropdown = ({ session }: ProfileDropdownProps) => {
       <DropdownMenuContent align='end'>
         {isStaff && (
           <>
-            <Link href='/orders'>
+            <Link href='/welcome'>
               <DropdownMenuItem>
                 <Icons.layoutDashboard className='w-4 h-4 mr-2' /> Admin panel
               </DropdownMenuItem>

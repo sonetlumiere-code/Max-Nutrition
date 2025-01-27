@@ -18,11 +18,11 @@ const CreateProductPage = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "create:products")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const [recipes, categories] = await Promise.all([

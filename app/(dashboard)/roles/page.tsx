@@ -32,7 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getRoles } from "@/data/roles"
-import { hasPermission } from "@/helpers/helpers"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -43,17 +43,16 @@ export default async function RolesPage() {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
-  }
-
-  if (!hasPermission(user, "view:roles")) {
     return redirect("/")
   }
 
-  const userPermissionsKeys =
-    user.role?.permissions?.map(
-      (permission) => `${permission.actionKey}:${permission.subjectKey}`
-    ) || []
+  if (!hasPermission(user, "view:roles")) {
+    return redirect("/welcome")
+  }
+
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
 
   const roles = await getRoles({
     include: {

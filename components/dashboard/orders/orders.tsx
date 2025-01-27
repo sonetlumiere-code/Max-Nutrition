@@ -31,6 +31,7 @@ import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 import { exportOrdersToExcel } from "@/actions/orders/export-orders"
 import { useSession } from "next-auth/react"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 
 const fetchOrders = async () => {
   const orders = await getOrders({
@@ -95,10 +96,9 @@ export default function Orders() {
 
   const { data: session } = useSession()
 
-  const userPermissionsKeys =
-    session?.user.role?.permissions?.map(
-      (permission) => `${permission.actionKey}:${permission.subjectKey}`
-    ) || []
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
 
   const {
     data: orders,

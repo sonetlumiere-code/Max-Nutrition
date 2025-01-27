@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 // const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
 const ShopSettingsPage = async () => {
-  return redirect("/orders")
+  return redirect("/welcome")
 
   // const session = await auth()
   // const user = session?.user
@@ -14,7 +14,7 @@ const ShopSettingsPage = async () => {
   // }
 
   // if (!hasPermission(user, "view:shopSettings")) {
-  //   return redirect("/")
+  //   return redirect("/welcome")
   // }
 
   // const settings = await getShopSettings({

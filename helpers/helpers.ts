@@ -16,6 +16,7 @@ import {
   Measurement,
   OrderStatus,
   PaymentMethod,
+  Permission,
   ShippingMethod,
   SubjectKey,
 } from "@prisma/client"
@@ -327,5 +328,14 @@ export function hasPermission(
     user.role?.permissions.some(
       (p) => p.actionKey === actionKey && p.subjectKey === subjectKey
     ) ?? false
+  )
+}
+
+export function getPermissionsKeys(
+  permissions: Permission[] = []
+): PermissionKey[] {
+  return permissions.map(
+    (permission) =>
+      `${permission.actionKey}:${permission.subjectKey}` as PermissionKey
   )
 }

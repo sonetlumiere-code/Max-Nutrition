@@ -22,7 +22,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -34,7 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getPromotions } from "@/data/promotions"
-import { hasPermission } from "@/helpers/helpers"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -45,12 +44,16 @@ const PromotionsPage = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "view:promotions")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
+
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
 
   const promotions = await getPromotions()
   const promotionsLength = promotions?.length || 0
@@ -83,17 +86,19 @@ const PromotionsPage = async () => {
                   Gestiona y actualiza el inventario de las promociones.
                 </CardDescription>
               </div>
-              <div className='ml-auto'>
-                <Link
-                  href='promotions/create-promotion'
-                  className={cn(buttonVariants({ variant: "default" }))}
-                >
-                  <>
-                    <Icons.circlePlus className='mr-2 h-4 w-4' />
-                    Agregar
-                  </>
-                </Link>
-              </div>
+              {userPermissionsKeys.includes("create:promotions") && (
+                <div className='ml-auto'>
+                  <Link
+                    href='promotions/create-promotion'
+                    className={cn(buttonVariants({ variant: "default" }))}
+                  >
+                    <>
+                      <Icons.circlePlus className='mr-2 h-4 w-4' />
+                      Agregar
+                    </>
+                  </Link>
+                </div>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -126,35 +131,45 @@ const PromotionsPage = async () => {
                         <Badge variant='destructive'>Inactiva</Badge>
                       )}
                     </TableCell>
-                    <TableCell className='text-end'>
-                      <DropdownMenu modal={false}>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup='true'
-                            size='icon'
-                            variant='ghost'
-                          >
-                            <Icons.moreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Mostrar menú</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <Link
-                            href={`promotions/edit-promotion/${promotion.id}`}
-                          >
-                            <DropdownMenuItem>
-                              <Icons.pencil className='w-4 h-4 mr-2' />
-                              Editar
-                            </DropdownMenuItem>
-                          </Link>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>
-                            <DeletePromotion promotion={promotion} />
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                    {userPermissionsKeys.includes("update:promotions") ||
+                      (userPermissionsKeys.includes("delete:promotions") && (
+                        <TableCell className='text-end'>
+                          <DropdownMenu modal={false}>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                aria-haspopup='true'
+                                size='icon'
+                                variant='ghost'
+                              >
+                                <Icons.moreHorizontal className='h-4 w-4' />
+                                <span className='sr-only'>Mostrar menú</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align='end'>
+                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                              {userPermissionsKeys.includes(
+                                "update:promotions"
+                              ) && (
+                                <Link
+                                  href={`promotions/edit-promotion/${promotion.id}`}
+                                >
+                                  <DropdownMenuItem>
+                                    <Icons.pencil className='w-4 h-4 mr-2' />
+                                    Editar
+                                  </DropdownMenuItem>
+                                </Link>
+                              )}
+                              {userPermissionsKeys.includes(
+                                "delete:promotions"
+                              ) && (
+                                <DropdownMenuItem>
+                                  <DeletePromotion promotion={promotion} />
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      ))}
                   </TableRow>
                 ))}
               </TableBody>
@@ -174,16 +189,21 @@ const PromotionsPage = async () => {
             <h3 className='text-2xl font-bold tracking-tight'>
               Todavía no tenés ninguna promoción
             </h3>
-            <p className='text-sm text-muted-foreground'>
-              Cargá tu primera promoción haciendo click en el siguiente botón
-            </p>
+            {userPermissionsKeys.includes("create:promotions") && (
+              <>
+                <p className='text-sm text-muted-foreground'>
+                  Cargá tu primera promoción haciendo click en el siguiente
+                  botón
+                </p>
 
-            <Button className='mt-4' asChild>
-              <Link href='/promotions/create-promotion'>
-                <Icons.circlePlus className='mr-2 h-4 w-4' />
-                Agregar promoción
-              </Link>
-            </Button>
+                <Button className='mt-4' asChild>
+                  <Link href='/promotions/create-promotion'>
+                    <Icons.circlePlus className='mr-2 h-4 w-4' />
+                    Agregar promoción
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

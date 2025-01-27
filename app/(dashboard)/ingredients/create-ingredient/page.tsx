@@ -16,11 +16,11 @@ const CreateIngredientPage = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "create:ingredients")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   return (

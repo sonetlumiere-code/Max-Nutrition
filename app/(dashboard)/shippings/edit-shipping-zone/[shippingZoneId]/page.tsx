@@ -23,11 +23,11 @@ const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "update:shippingZones")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const { shippingZoneId } = params
@@ -35,7 +35,7 @@ const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
   const shippingZone = await getShippingZone({ where: { id: shippingZoneId } })
 
   if (!shippingZone) {
-    redirect("/orders")
+    redirect("/welcome")
   }
 
   return (

@@ -21,11 +21,11 @@ const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "update:ingredients")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const { ingredientId } = params
@@ -35,7 +35,7 @@ const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
   })
 
   if (!ingredient) {
-    redirect("/orders")
+    redirect("/welcome")
   }
 
   return (

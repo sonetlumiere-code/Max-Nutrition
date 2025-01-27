@@ -21,7 +21,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -33,7 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getRecipes } from "@/data/recipes"
-import { hasPermission } from "@/helpers/helpers"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -44,12 +43,16 @@ export default async function RecipesPage() {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "view:recipes")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
+
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
 
   const recipes = await getRecipes()
   const recipesLength = recipes?.length || 0
@@ -82,17 +85,19 @@ export default async function RecipesPage() {
                   Gestiona y actualiza el inventario de las recetas.
                 </CardDescription>
               </div>
-              <div className='ml-auto'>
-                <Link
-                  href='recipes/create-recipe'
-                  className={cn(buttonVariants({ variant: "default" }))}
-                >
-                  <>
-                    <Icons.circlePlus className='mr-2 h-4 w-4' />
-                    Agregar
-                  </>
-                </Link>
-              </div>
+              {userPermissionsKeys.includes("create:recipes") && (
+                <div className='ml-auto'>
+                  <Link
+                    href='recipes/create-recipe'
+                    className={cn(buttonVariants({ variant: "default" }))}
+                  >
+                    <>
+                      <Icons.circlePlus className='mr-2 h-4 w-4' />
+                      Agregar
+                    </>
+                  </Link>
+                </div>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -115,33 +120,39 @@ export default async function RecipesPage() {
                     <TableCell className='max-w-28 hidden md:table-cell'>
                       <p className='truncate'>{recipe.description}</p>
                     </TableCell>
-                    <TableCell className='text-end'>
-                      <DropdownMenu modal={false}>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup='true'
-                            size='icon'
-                            variant='ghost'
-                          >
-                            <Icons.moreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Mostrar menú</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <Link href={`recipes/edit-recipe/${recipe.id}`}>
-                            <DropdownMenuItem>
-                              <Icons.pencil className='w-4 h-4 mr-2' />
-                              Editar
-                            </DropdownMenuItem>
-                          </Link>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>
-                            <DeleteRecipe recipe={recipe} />
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                    {(userPermissionsKeys.includes("update:recipes") ||
+                      userPermissionsKeys.includes("delete:recipes")) && (
+                      <TableCell className='text-end'>
+                        <DropdownMenu modal={false}>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup='true'
+                              size='icon'
+                              variant='ghost'
+                            >
+                              <Icons.moreHorizontal className='h-4 w-4' />
+                              <span className='sr-only'>Mostrar menú</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align='end'>
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            {userPermissionsKeys.includes("update:recipes") && (
+                              <Link href={`recipes/edit-recipe/${recipe.id}`}>
+                                <DropdownMenuItem>
+                                  <Icons.pencil className='w-4 h-4 mr-2' />
+                                  Editar
+                                </DropdownMenuItem>
+                              </Link>
+                            )}
+                            {userPermissionsKeys.includes("delete:recipes") && (
+                              <DropdownMenuItem>
+                                <DeleteRecipe recipe={recipe} />
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
@@ -160,16 +171,20 @@ export default async function RecipesPage() {
             <h3 className='text-2xl font-bold tracking-tight'>
               Todavía no tenés ninguna receta
             </h3>
-            <p className='text-sm text-muted-foreground'>
-              Cargá tu primera receta haciendo click en el siguiente botón
-            </p>
+            {userPermissionsKeys.includes("create:recipes") && (
+              <>
+                <p className='text-sm text-muted-foreground'>
+                  Cargá tu primera receta haciendo click en el siguiente botón
+                </p>
 
-            <Button className='mt-4' asChild>
-              <Link href='/recipes/create-recipe'>
-                <Icons.circlePlus className='mr-2 h-4 w-4' />
-                Agregar receta
-              </Link>
-            </Button>
+                <Button className='mt-4' asChild>
+                  <Link href='/recipes/create-recipe'>
+                    <Icons.circlePlus className='mr-2 h-4 w-4' />
+                    Agregar receta
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

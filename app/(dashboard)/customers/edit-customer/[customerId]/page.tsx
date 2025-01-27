@@ -23,11 +23,11 @@ const EditCustomerPage = async ({ params }: EditCustomerPageProps) => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "update:customers")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const { customerId } = params

@@ -17,11 +17,11 @@ const CreateCategoryPage = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "create:categories")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const products = await getProducts()

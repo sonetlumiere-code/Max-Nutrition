@@ -16,11 +16,11 @@ const CreateCustomerPage = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "create:customers")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   return (

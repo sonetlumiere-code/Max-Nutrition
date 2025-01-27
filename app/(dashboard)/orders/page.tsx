@@ -8,11 +8,11 @@ export default async function OrdersPage() {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "view:orders")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   return <Orders />

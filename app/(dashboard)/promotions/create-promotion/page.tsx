@@ -17,11 +17,11 @@ const CreatePromotionPage = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "create:promotions")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
   const categories = await getCategories()
 

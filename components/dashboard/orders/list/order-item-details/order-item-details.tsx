@@ -13,18 +13,26 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import {
+  getPermissionsKeys,
   translateOrderStatus,
   translateShippingMethod,
 } from "@/helpers/helpers"
 import { cn } from "@/lib/utils"
 import { PopulatedOrder } from "@/types/types"
 import OrderItemActions from "../actions/order-item-actions"
+import { useSession } from "next-auth/react"
 
 type OrderItemDetailsProps = {
   order: PopulatedOrder
 }
 
 const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
+  const { data: session } = useSession()
+
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
+
   return (
     <Card className='overflow-hidden'>
       <CardHeader className='flex flex-row items-start bg-muted/50'>
@@ -51,7 +59,13 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
                   Seguir orden
                 </span>
               </Button> */}
-          <OrderItemActions order={order} />
+          {(userPermissionsKeys.includes("update:orders") ||
+            userPermissionsKeys.includes("delete:orders")) && (
+            <OrderItemActions
+              order={order}
+              userPermissionsKeys={userPermissionsKeys}
+            />
+          )}
         </div>
       </CardHeader>
       <CardContent className='p-6 text-sm'>

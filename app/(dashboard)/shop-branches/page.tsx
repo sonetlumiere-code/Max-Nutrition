@@ -31,15 +31,31 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import DeleteShopBranch from "@/components/dashboard/shop-branches/delete-shop-branch/delete-shop-branch"
 import { Badge } from "@/components/ui/badge"
+import { auth } from "@/lib/auth/auth"
+import { redirect } from "next/navigation"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 
 const ShopBranchesPage = async () => {
-  const shopBranches = await getShopBranches()
+  const session = await auth()
+  const user = session?.user
 
+  if (!user) {
+    return redirect("/")
+  }
+
+  if (!hasPermission(user, "view:shopBranches")) {
+    return redirect("/welcome")
+  }
+
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
+
+  const shopBranches = await getShopBranches()
   const shopBranchesLength = shopBranches?.length || 0
 
   return (
@@ -70,17 +86,19 @@ const ShopBranchesPage = async () => {
                   Gestiona y actualiza tus sucursales.
                 </CardDescription>
               </div>
-              <div className='ml-auto'>
-                <Link
-                  href='shop-branches/create-shop-branch'
-                  className={cn(buttonVariants({ variant: "default" }))}
-                >
-                  <>
-                    <Icons.circlePlus className='mr-2 h-4 w-4' />
-                    Agregar
-                  </>
-                </Link>
-              </div>
+              {userPermissionsKeys.includes("create:shopBranches") && (
+                <div className='ml-auto'>
+                  <Link
+                    href='shop-branches/create-shop-branch'
+                    className={cn(buttonVariants({ variant: "default" }))}
+                  >
+                    <>
+                      <Icons.circlePlus className='mr-2 h-4 w-4' />
+                      Agregar
+                    </>
+                  </Link>
+                </div>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -101,35 +119,45 @@ const ShopBranchesPage = async () => {
                     <TableCell>
                       <Badge>{shopBranch.isActive ? "Si" : "No"}</Badge>
                     </TableCell>
-                    <TableCell className='text-end'>
-                      <DropdownMenu modal={false}>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup='true'
-                            size='icon'
-                            variant='ghost'
-                          >
-                            <Icons.moreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Mostrar menú</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <Link
-                            href={`shop-branches/edit-shop-branch/${shopBranch.id}`}
-                          >
-                            <DropdownMenuItem>
-                              <Icons.pencil className='w-4 h-4 mr-2' />
-                              Editar
-                            </DropdownMenuItem>
-                          </Link>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>
-                            <DeleteShopBranch shopBranch={shopBranch} />
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                    {(userPermissionsKeys.includes("update:shopBranches") ||
+                      userPermissionsKeys.includes("delete:shopBranches")) && (
+                      <TableCell className='text-end'>
+                        <DropdownMenu modal={false}>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup='true'
+                              size='icon'
+                              variant='ghost'
+                            >
+                              <Icons.moreHorizontal className='h-4 w-4' />
+                              <span className='sr-only'>Mostrar menú</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align='end'>
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            {userPermissionsKeys.includes(
+                              "update:shopBranches"
+                            ) && (
+                              <Link
+                                href={`shop-branches/edit-shop-branch/${shopBranch.id}`}
+                              >
+                                <DropdownMenuItem>
+                                  <Icons.pencil className='w-4 h-4 mr-2' />
+                                  Editar
+                                </DropdownMenuItem>
+                              </Link>
+                            )}
+                            {userPermissionsKeys.includes(
+                              "delete:shopBranches"
+                            ) && (
+                              <DropdownMenuItem>
+                                <DeleteShopBranch shopBranch={shopBranch} />
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
@@ -142,16 +170,20 @@ const ShopBranchesPage = async () => {
             <h3 className='text-2xl font-bold tracking-tight'>
               Todavía no tenés ninguna sucursal
             </h3>
-            <p className='text-sm text-muted-foreground'>
-              Cargá tu primera sucursal haciendo click en el siguiente botón
-            </p>
+            {userPermissionsKeys.includes("create:shopBranches") && (
+              <>
+                <p className='text-sm text-muted-foreground'>
+                  Cargá tu primera sucursal haciendo click en el siguiente botón
+                </p>
 
-            <Button className='mt-4' asChild>
-              <Link href='shop-branches/create-shop-branch'>
-                <Icons.circlePlus className='mr-2 h-4 w-4' />
-                Agregar sucursal
-              </Link>
-            </Button>
+                <Button className='mt-4' asChild>
+                  <Link href='shop-branches/create-shop-branch'>
+                    <Icons.circlePlus className='mr-2 h-4 w-4' />
+                    Agregar sucursal
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

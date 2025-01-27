@@ -17,11 +17,11 @@ const CreateRecipePage = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "create:recipes")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   const ingredients = await getIngredients({

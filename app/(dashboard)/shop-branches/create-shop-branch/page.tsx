@@ -16,11 +16,11 @@ const CreateShopBranchPage = async () => {
   const user = session?.user
 
   if (!user) {
-    redirect("/")
+    return redirect("/")
   }
 
   if (!hasPermission(user, "create:shopBranches")) {
-    return redirect("/")
+    return redirect("/welcome")
   }
 
   return (
