@@ -44,12 +44,6 @@ export const navItems: {
     permissionKey: "view:ingredients",
   },
   {
-    href: "/customers",
-    label: "Clientes",
-    icon: "users",
-    permissionKey: "view:customers",
-  },
-  {
     href: "/promotions",
     label: "Promociones",
     icon: "badgePercent",
@@ -62,6 +56,18 @@ export const navItems: {
     permissionKey: "view:shippingZones",
   },
   {
+    href: "/customers",
+    label: "Clientes",
+    icon: "users",
+    permissionKey: "view:customers",
+  },
+  {
+    href: "/users",
+    label: "Usuarios",
+    icon: "user",
+    permissionKey: "view:users",
+  },
+  {
     href: "/roles",
     label: "Roles",
     icon: "shield",
@@ -72,12 +78,6 @@ export const navItems: {
   //   label: "Permisos",
   //   icon: "lock",
   //   permissionKey: "view:permissions",
-  // },
-  // {
-  //   href: "/users",
-  //   label: "Usuarios",
-  //   icon: "user",
-  //   permissionKey: "view:users",
   // },
   // {
   //   href: "/settings",

@@ -24,8 +24,12 @@ import {
   SubjectKey,
 } from "@prisma/client"
 
+export type PopulatedSafeUser = Omit<User, "password"> & {
+  role?: PopulatedRole
+}
+
 export type PopulatedUser = User & {
-  role: PopulatedRole
+  role?: PopulatedRole
 }
 
 export type PopulatedRole = Role & {

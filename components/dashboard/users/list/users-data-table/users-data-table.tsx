@@ -1,6 +1,12 @@
 "use client"
 
+import { getPermissionsKeys } from "@/helpers/helpers"
+import { useMediaQuery } from "@/hooks/use-media-query"
+import { PopulatedUser } from "@/types/types"
+import { useSession } from "next-auth/react"
+import { useEffect, useMemo, useState } from "react"
 import {
+  ColumnDef,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -9,7 +15,6 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table"
-import { useEffect, useMemo, useState } from "react"
 import {
   Table,
   TableBody,
@@ -18,14 +23,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
 import { DataTablePagination } from "@/components/ui/data-table-pagination"
+import { Input } from "@/components/ui/input"
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
-import { PopulatedCustomer } from "@/types/types"
-import { ColumnDef } from "@tanstack/react-table"
+import { Icons } from "@/components/icons"
+import { Badge } from "@/components/ui/badge"
+import UserAvatar from "@/components/user-avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,16 +38,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
-import DeleteCustomer from "@/components/dashboard/customers/delete-customer/delete-customer"
-import UserAvatar from "@/components/user-avatar"
-import { useSession } from "next-auth/react"
-import { getPermissionsKeys } from "@/helpers/helpers"
 
-interface OrdersDataTableProps {
-  customers: PopulatedCustomer[]
+interface UsersDataTableProps {
+  users: Omit<PopulatedUser, "password">[]
 }
 
-const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
+const UsersDataTable = ({ users }: UsersDataTableProps) => {
   const [sorting, setSorting] = useState<SortingState>([])
   const [filtering, setFiltering] = useState<string>("")
 
@@ -55,14 +55,14 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
-  const columns: ColumnDef<PopulatedCustomer>[] = useMemo(
+  const columns: ColumnDef<Omit<PopulatedUser, "password">>[] = useMemo(
     () => [
       {
         id: "image",
         meta: "Imagen",
         header: () => <span className='sr-only'>Imagen</span>,
         cell: ({ row }) => {
-          const user = row.original.user
+          const user = row.original
           return (
             <div className='flex justify-center items-center'>
               {user ? (
@@ -89,10 +89,10 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
           </Button>
         ),
         cell: ({ row }) => {
-          const customerName = row.original.name || row.original.user?.name
+          const userName = row.original.name
           return (
             <div className='ml-4'>
-              <div className='font-medium'>{customerName}</div>
+              <div className='font-medium'>{userName}</div>
             </div>
           )
         },
@@ -111,61 +111,64 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
           </Button>
         ),
         cell: ({ row }) => {
-          const customerEmail = row.original.user?.email || "-"
+          const userEmail = row.original.email || "-"
           return (
             <div className='ml-4'>
-              <div className='font-medium'>{customerEmail}</div>
+              <div className='font-medium'>{userEmail}</div>
             </div>
           )
         },
       },
       {
-        id: "phone",
-        meta: "Teléfono",
-        accessorKey: "phone",
+        id: "emailVerified",
+        meta: "Email verificado",
+        accessorKey: "emailVerified",
         header: ({ column }) => (
           <Button
             variant='ghost'
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Teléfono
+            Email verificado
             <Icons.caretSortIcon className='ml-2 h-4 w-4' />
           </Button>
         ),
         cell: ({ row }) => {
-          const customerPhone = row.original.phone
+          const emailVerified = row.original.emailVerified
           return (
-            <>
-              {customerPhone ? (
-                <Button variant='outline' size='default'>
-                  {customerPhone}
-                  <Icons.messageSquareMore className='h-4 w-4 ml-1' />
-                </Button>
-              ) : (
-                "-"
-              )}
-            </>
+            <div className='ml-4'>
+              <div className='font-medium'>
+                {emailVerified ? (
+                  <Badge className='bg-emerald-500 hover:bg-emerald-500/80'>
+                    Verificado
+                  </Badge>
+                ) : (
+                  <Badge variant='destructive'>No verificado</Badge>
+                )}
+              </div>
+            </div>
           )
         },
       },
       {
-        id: "birthdate",
-        meta: "Fecha de nacimiento",
-        accessorKey: "birthdate",
+        id: "role",
+        meta: "Rol",
+        accessorKey: "role.name",
         header: ({ column }) => (
           <Button
             variant='ghost'
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Fecha de nacimiento
+            Rol
             <Icons.caretSortIcon className='ml-2 h-4 w-4' />
           </Button>
         ),
         cell: ({ row }) => {
-          const birthdate = row.original.birthdate?.toLocaleDateString() || "-"
+          const roleName = row.original.role?.name
           return (
             <div className='ml-4'>
-              <div className='font-medium'>{birthdate}</div>
+              <div className='font-medium'>
+                <Badge>{roleName}</Badge>
+              </div>
             </div>
           )
         },
@@ -197,11 +200,8 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
         meta: "Acciones",
         header: () => <p className='text-right'>Acciones</p>,
         cell: ({ row }) => {
-          if (
-            userPermissionsKeys.includes("update:customers") ||
-            userPermissionsKeys.includes("delete:customers")
-          ) {
-            const customer = row.original as PopulatedCustomer
+          if (userPermissionsKeys.includes("update:users")) {
+            const user = row.original
             return (
               <div className='text-right'>
                 <DropdownMenu>
@@ -213,24 +213,12 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='end'>
                     <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                    {userPermissionsKeys.includes("view:customers") && (
-                      <Link href={`customers/${customer.id}`}>
-                        <DropdownMenuItem>
-                          <Icons.eye className='h-4 w-4 mr-2' /> Ver
-                        </DropdownMenuItem>
-                      </Link>
-                    )}
-                    {userPermissionsKeys.includes("update:customers") && (
-                      <Link href={`customers/edit-customer/${customer.id}`}>
+                    {userPermissionsKeys.includes("update:users") && (
+                      <Link href={`users/edit-user/${user.id}`}>
                         <DropdownMenuItem>
                           <Icons.pencil className='h-4 w-4 mr-2' /> Editar
                         </DropdownMenuItem>
                       </Link>
-                    )}
-                    {userPermissionsKeys.includes("delete:customers") && (
-                      <DropdownMenuItem>
-                        <DeleteCustomer customer={customer} />
-                      </DropdownMenuItem>
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -245,7 +233,7 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
   )
 
   const table = useReactTable({
-    data: customers,
+    data: users,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -329,4 +317,4 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
   )
 }
 
-export default CustomersDataTable
+export default UsersDataTable

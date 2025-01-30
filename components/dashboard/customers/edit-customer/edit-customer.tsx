@@ -136,7 +136,7 @@ const EditCustomer = ({ customer }: EditCustomerProps) => {
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className='grid gap-4'>
         <div className='flex justify-between items-center'>
-          <h2 className='font-semibold text-lg'>Agregar Cliente</h2>
+          <h2 className='font-semibold text-lg'>Editar Cliente</h2>
           <Button type='submit' disabled={isSubmitting}>
             {isSubmitting && (
               <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
