@@ -374,12 +374,18 @@ model PromotionCategory {
   @@map("promotion_categories")
 }
 
+enum CategoryGroup {
+  FOOD
+  BAKERY
+}
+
 model Category {
   id        String   @id @default(cuid())
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  group      CategoryGroup
   products   Product[]
   promotions PromotionCategory[]
 

@@ -10,6 +10,7 @@ import {
 import {
   ActionKey,
   Category,
+  CategoryGroup,
   CustomerAddressLabel,
   DayOfWeek,
   Ingredient,
@@ -20,6 +21,17 @@ import {
   ShippingMethod,
   SubjectKey,
 } from "@prisma/client"
+
+export const translateCategoryGroup = (group: CategoryGroup): string => {
+  switch (group) {
+    case CategoryGroup.FOOD:
+      return "Viandas"
+    case CategoryGroup.BAKERY:
+      return "Pastelería"
+    default:
+      return "Desconocido"
+  }
+}
 
 export const translateUnit = (measurement: Measurement): string => {
   switch (measurement) {

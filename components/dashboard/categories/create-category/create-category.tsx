@@ -37,6 +37,7 @@ const CreateCategory = ({ products }: CreateCategoryProps) => {
       name: "",
       productsIds: [],
       promotionsIds: [],
+      group: "FOOD",
     },
   })
 
