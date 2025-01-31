@@ -65,6 +65,7 @@ enum SubjectKey {
   promotions
   orders
   customers
+  customerAddresses
   shopSettings
   shopBranches
   shippingSettings
@@ -270,6 +271,12 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
 model Order {
   id                String   @id @default(cuid())
   customerId        String
@@ -288,6 +295,7 @@ model Order {
   customer          Customer           @relation(fields: [customerId], references: [id])
   items             OrderItem[]
   paymentMethod     PaymentMethod
+  paymentStatus     PaymentStatus      @default(PENDING)
   shippingMethod    ShippingMethod
   shopBranch        ShopBranch?        @relation(fields: [shopBranchId], references: [id])
   status            OrderStatus        @default(PENDING)

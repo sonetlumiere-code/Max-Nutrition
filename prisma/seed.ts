@@ -60,6 +60,27 @@ const permissions: {
   { name: "Actualizar clientes", actionKey: "update", subjectKey: "customers" },
   { name: "Eliminar clientes", actionKey: "delete", subjectKey: "customers" },
 
+  {
+    name: "Ver direcciones de clientes",
+    actionKey: "view",
+    subjectKey: "customerAddresses",
+  },
+  {
+    name: "Crear direcciones de clientes",
+    actionKey: "create",
+    subjectKey: "customerAddresses",
+  },
+  {
+    name: "Actualizar direcciones de clientes",
+    actionKey: "update",
+    subjectKey: "customerAddresses",
+  },
+  {
+    name: "Eliminar direcciones de clientes",
+    actionKey: "delete",
+    subjectKey: "customerAddresses",
+  },
+
   { name: "Ver sucursales", actionKey: "view", subjectKey: "shopBranches" },
   {
     name: "Crear sucursales",
