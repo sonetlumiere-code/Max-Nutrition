@@ -7,12 +7,12 @@ export const navItems: {
   icon: Icon
   permissionKey: PermissionKey
 }[] = [
-  {
-    href: "/shop-branches",
-    label: "Sucursales",
-    icon: "store",
-    permissionKey: "view:shopBranches",
-  },
+  // {
+  //   href: "/shop-branches",
+  //   label: "Sucursales",
+  //   icon: "store",
+  //   permissionKey: "view:shopBranches",
+  // },
   {
     href: "/orders",
     label: "Pedidos",
@@ -61,18 +61,18 @@ export const navItems: {
     icon: "users",
     permissionKey: "view:customers",
   },
-  {
-    href: "/users",
-    label: "Usuarios",
-    icon: "user",
-    permissionKey: "view:users",
-  },
-  {
-    href: "/roles",
-    label: "Roles",
-    icon: "shield",
-    permissionKey: "view:roles",
-  },
+  // {
+  //   href: "/users",
+  //   label: "Usuarios",
+  //   icon: "user",
+  //   permissionKey: "view:users",
+  // },
+  // {
+  //   href: "/roles",
+  //   label: "Roles",
+  //   icon: "shield",
+  //   permissionKey: "view:roles",
+  // },
   // {
   //   href: "/permissions",
   //   label: "Permisos",

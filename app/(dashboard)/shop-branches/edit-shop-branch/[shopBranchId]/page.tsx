@@ -1,16 +1,16 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import EditShopBranch from "@/components/dashboard/shop-branches/edit-shop-branch/edit-shop-branch"
-import { auth } from "@/lib/auth/auth"
+// import {
+//   Breadcrumb,
+//   BreadcrumbItem,
+//   BreadcrumbLink,
+//   BreadcrumbList,
+//   BreadcrumbPage,
+//   BreadcrumbSeparator,
+// } from "@/components/ui/breadcrumb"
+// import EditShopBranch from "@/components/dashboard/shop-branches/edit-shop-branch/edit-shop-branch"
+// import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
-import { getShopBranch } from "@/data/shop-branches"
-import { hasPermission } from "@/helpers/helpers"
+// import { getShopBranch } from "@/data/shop-branches"
+// import { hasPermission } from "@/helpers/helpers"
 
 interface EditShopBranchProps {
   params: {
@@ -19,54 +19,58 @@ interface EditShopBranchProps {
 }
 
 const EditShopBranchPage = async ({ params }: EditShopBranchProps) => {
-  const session = await auth()
+  // NEXT STEP
 
-  const user = session?.user
+  return redirect("/welcome")
 
-  if (!user) {
-    return redirect("/")
-  }
+  // const session = await auth()
 
-  if (!hasPermission(user, "update:shopBranches")) {
-    return redirect("/welcome")
-  }
+  // const user = session?.user
 
-  const { shopBranchId } = params
+  // if (!user) {
+  //   return redirect("/")
+  // }
 
-  const shopBranch = await getShopBranch({
-    where: {
-      id: shopBranchId,
-    },
-    include: {
-      operationalHours: true,
-    },
-  })
+  // if (!hasPermission(user, "update:shopBranches")) {
+  //   return redirect("/welcome")
+  // }
 
-  if (!shopBranch) {
-    redirect("/shop-branches")
-  }
+  // const { shopBranchId } = params
 
-  return (
-    <>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink>Inicio</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href='/shop-branches'>Sucursales</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Editar Sucursal</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+  // const shopBranch = await getShopBranch({
+  //   where: {
+  //     id: shopBranchId,
+  //   },
+  //   include: {
+  //     operationalHours: true,
+  //   },
+  // })
 
-      <EditShopBranch shopBranch={shopBranch} />
-    </>
-  )
+  // if (!shopBranch) {
+  //   redirect("/shop-branches")
+  // }
+
+  // return (
+  //   <>
+  //     <Breadcrumb>
+  //       <BreadcrumbList>
+  //         <BreadcrumbItem>
+  //           <BreadcrumbLink>Inicio</BreadcrumbLink>
+  //         </BreadcrumbItem>
+  //         <BreadcrumbSeparator />
+  //         <BreadcrumbItem>
+  //           <BreadcrumbLink href='/shop-branches'>Sucursales</BreadcrumbLink>
+  //         </BreadcrumbItem>
+  //         <BreadcrumbSeparator />
+  //         <BreadcrumbItem>
+  //           <BreadcrumbPage>Editar Sucursal</BreadcrumbPage>
+  //         </BreadcrumbItem>
+  //       </BreadcrumbList>
+  //     </Breadcrumb>
+
+  //     <EditShopBranch shopBranch={shopBranch} />
+  //   </>
+  // )
 }
 
 export default EditShopBranchPage
