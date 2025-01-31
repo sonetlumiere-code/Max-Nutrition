@@ -131,45 +131,45 @@ const PromotionsPage = async () => {
                         <Badge variant='destructive'>Inactiva</Badge>
                       )}
                     </TableCell>
-                    {userPermissionsKeys.includes("update:promotions") ||
-                      (userPermissionsKeys.includes("delete:promotions") && (
-                        <TableCell className='text-end'>
-                          <DropdownMenu modal={false}>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup='true'
-                                size='icon'
-                                variant='ghost'
+                    {(userPermissionsKeys.includes("update:promotions") ||
+                      userPermissionsKeys.includes("delete:promotions")) && (
+                      <TableCell className='text-end'>
+                        <DropdownMenu modal={false}>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup='true'
+                              size='icon'
+                              variant='ghost'
+                            >
+                              <Icons.moreHorizontal className='h-4 w-4' />
+                              <span className='sr-only'>Mostrar menú</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align='end'>
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            {userPermissionsKeys.includes(
+                              "update:promotions"
+                            ) && (
+                              <Link
+                                href={`promotions/edit-promotion/${promotion.id}`}
                               >
-                                <Icons.moreHorizontal className='h-4 w-4' />
-                                <span className='sr-only'>Mostrar menú</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end'>
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              {userPermissionsKeys.includes(
-                                "update:promotions"
-                              ) && (
-                                <Link
-                                  href={`promotions/edit-promotion/${promotion.id}`}
-                                >
-                                  <DropdownMenuItem>
-                                    <Icons.pencil className='w-4 h-4 mr-2' />
-                                    Editar
-                                  </DropdownMenuItem>
-                                </Link>
-                              )}
-                              {userPermissionsKeys.includes(
-                                "delete:promotions"
-                              ) && (
                                 <DropdownMenuItem>
-                                  <DeletePromotion promotion={promotion} />
+                                  <Icons.pencil className='w-4 h-4 mr-2' />
+                                  Editar
                                 </DropdownMenuItem>
-                              )}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      ))}
+                              </Link>
+                            )}
+                            {userPermissionsKeys.includes(
+                              "delete:promotions"
+                            ) && (
+                              <DropdownMenuItem>
+                                <DeletePromotion promotion={promotion} />
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
