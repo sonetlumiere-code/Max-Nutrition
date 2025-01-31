@@ -48,7 +48,7 @@ const CreateOrderPage = async () => {
     }),
     getCustomers({
       include: {
-        address: true,
+        addresses: true,
       },
     }),
     getShopSettings({

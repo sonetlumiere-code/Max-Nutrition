@@ -59,7 +59,7 @@ const CreateCustomer = () => {
       name: "",
       phone: 0,
       birthdate: undefined,
-      address: [],
+      addresses: [],
     },
   })
 
@@ -73,7 +73,7 @@ const CreateCustomer = () => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "address",
+    name: "addresses",
   })
 
   const onSubmit = async (data: CustomerSchema) => {
@@ -229,7 +229,7 @@ const CreateCustomer = () => {
                       <div className='space-y-3'>
                         <FormField
                           control={control}
-                          name={`address.${index}.label`}
+                          name={`addresses.${index}.label`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Etiqueta</FormLabel>
@@ -260,11 +260,11 @@ const CreateCustomer = () => {
                           )}
                         />
 
-                        {watch(`address.${index}.label`) ===
+                        {watch(`addresses.${index}.label`) ===
                           CustomerAddressLabel.OTHER && (
                           <FormField
                             control={control}
-                            name={`address.${index}.labelString`}
+                            name={`addresses.${index}.labelString`}
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Etiqueta personalizada</FormLabel>
@@ -283,15 +283,18 @@ const CreateCustomer = () => {
 
                         <FormField
                           control={control}
-                          name={`address.${index}.province`}
+                          name={`addresses.${index}.province`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Provincia</FormLabel>
                               <Select
                                 onValueChange={(value) => {
                                   field.onChange(value)
-                                  setValue(`address.${index}.municipality`, "")
-                                  setValue(`address.${index}.locality`, "")
+                                  setValue(
+                                    `addresses.${index}.municipality`,
+                                    ""
+                                  )
+                                  setValue(`addresses.${index}.locality`, "")
                                 }}
                                 defaultValue={field.value || ""}
                                 disabled={isSubmitting}
@@ -316,22 +319,24 @@ const CreateCustomer = () => {
 
                         <FormField
                           control={control}
-                          name={`address.${index}.municipality`}
+                          name={`addresses.${index}.municipality`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>
-                                {watch(`address.${index}.province`) ===
+                                {watch(`addresses.${index}.province`) ===
                                 "Ciudad Autónoma de Buenos Aires"
                                   ? "Comuna"
                                   : "Municipalidad"}
                               </FormLabel>
                               <FormControl>
                                 <MunicipalitySelect
-                                  province={watch(`address.${index}.province`)}
+                                  province={watch(
+                                    `addresses.${index}.province`
+                                  )}
                                   value={field.value}
                                   onChange={(value) => {
                                     field.onChange(value)
-                                    setValue(`address.${index}.locality`, "")
+                                    setValue(`addresses.${index}.locality`, "")
                                   }}
                                   isDisabled={isSubmitting}
                                 />
@@ -343,20 +348,22 @@ const CreateCustomer = () => {
 
                         <FormField
                           control={control}
-                          name={`address.${index}.locality`}
+                          name={`addresses.${index}.locality`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>
-                                {watch(`address.${index}.province`) ===
+                                {watch(`addresses.${index}.province`) ===
                                 "Ciudad Autónoma de Buenos Aires"
                                   ? "Barrio"
                                   : "Localidad"}
                               </FormLabel>
                               <FormControl>
                                 <LocalitySelect
-                                  province={watch(`address.${index}.province`)}
+                                  province={watch(
+                                    `addresses.${index}.province`
+                                  )}
                                   municipality={watch(
-                                    `address.${index}.municipality`
+                                    `addresses.${index}.municipality`
                                   )}
                                   value={field.value}
                                   onChange={field.onChange}
@@ -370,7 +377,7 @@ const CreateCustomer = () => {
 
                         <FormField
                           control={control}
-                          name={`address.${index}.addressGeoRef`}
+                          name={`addresses.${index}.addressGeoRef`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Calle/Avenida</FormLabel>
@@ -380,11 +387,13 @@ const CreateCustomer = () => {
                                   onChange={field.onChange}
                                   disabled={
                                     isSubmitting ||
-                                    !watch(`address.${index}.municipality`)
+                                    !watch(`addresses.${index}.municipality`)
                                   }
-                                  province={watch(`address.${index}.province`)}
+                                  province={watch(
+                                    `addresses.${index}.province`
+                                  )}
                                   municipality={watch(
-                                    `address.${index}.municipality`
+                                    `addresses.${index}.municipality`
                                   )}
                                 />
                               </FormControl>
@@ -396,7 +405,7 @@ const CreateCustomer = () => {
                         <div className='grid grid-cols-3 gap-2'>
                           <FormField
                             control={control}
-                            name={`address.${index}.addressNumber`}
+                            name={`addresses.${index}.addressNumber`}
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Altura</FormLabel>
@@ -415,7 +424,7 @@ const CreateCustomer = () => {
 
                           <FormField
                             control={control}
-                            name={`address.${index}.addressFloor`}
+                            name={`addresses.${index}.addressFloor`}
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Piso</FormLabel>
@@ -434,7 +443,7 @@ const CreateCustomer = () => {
 
                           <FormField
                             control={control}
-                            name={`address.${index}.addressApartment`}
+                            name={`addresses.${index}.addressApartment`}
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Departamento</FormLabel>
@@ -458,7 +467,7 @@ const CreateCustomer = () => {
 
                         <FormField
                           control={control}
-                          name={`address.${index}.postCode`}
+                          name={`addresses.${index}.postCode`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Código postal</FormLabel>

@@ -98,7 +98,7 @@ const CreateOrder = ({
   const { items, customerId, shippingMethod, customerAddressId } = watch()
 
   const selectedCustomer = customers?.find((c) => c.id === customerId)
-  const selectedAddress = selectedCustomer?.address?.find(
+  const selectedAddress = selectedCustomer?.addresses?.find(
     (a) => a.id === customerAddressId
   )
 
@@ -192,7 +192,7 @@ const CreateOrder = ({
               (isSubmitted &&
                 !isValid &&
                 shippingMethod === "DELIVERY" &&
-                (!isValidMinQuantity || !selectedCustomer?.address?.length))
+                (!isValidMinQuantity || !selectedCustomer?.addresses?.length))
             }
           >
             {isSubmitting && (
@@ -499,8 +499,8 @@ const CreateOrder = ({
                 <CardContent>
                   {customerId ? (
                     <>
-                      {selectedCustomer?.address &&
-                      selectedCustomer.address.length > 0 ? (
+                      {selectedCustomer?.addresses &&
+                      selectedCustomer.addresses.length > 0 ? (
                         <FormField
                           control={control}
                           name={"customerAddressId"}
@@ -516,7 +516,7 @@ const CreateOrder = ({
                                   <SelectValue placeholder='' />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {selectedCustomer?.address?.map((a) => (
+                                  {selectedCustomer?.addresses?.map((a) => (
                                     <SelectItem key={a.id} value={a.id}>
                                       {translateAddressLabel(a.label)}
                                     </SelectItem>

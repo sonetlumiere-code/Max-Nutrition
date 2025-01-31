@@ -35,7 +35,7 @@ const EditCustomerPage = async ({ params }: EditCustomerPageProps) => {
   const customer = await getCustomer({
     where: { id: customerId },
     include: {
-      address: true,
+      addresses: true,
     },
   })
 

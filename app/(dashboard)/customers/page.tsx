@@ -44,7 +44,7 @@ export default async function CustomersPage() {
       user: {
         select: { email: true, image: true, name: true, createdAt: true },
       },
-      address: true,
+      addresses: true,
     },
   })
 

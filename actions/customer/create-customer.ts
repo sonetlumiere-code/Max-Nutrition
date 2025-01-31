@@ -27,7 +27,7 @@ export async function createCustomer(values: CustomerSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { birthdate, name, phone, address } = validatedFields.data
+  const { birthdate, name, phone, addresses } = validatedFields.data
 
   try {
     const customer = await prisma.customer.create({
@@ -36,9 +36,9 @@ export async function createCustomer(values: CustomerSchema) {
         birthdate,
         phone,
         name,
-        address: address?.length
+        addresses: addresses?.length
           ? {
-              create: address.map((addr) => ({
+              create: addresses.map((addr) => ({
                 province: addr.province,
                 municipality: addr.municipality,
                 locality: addr.locality,

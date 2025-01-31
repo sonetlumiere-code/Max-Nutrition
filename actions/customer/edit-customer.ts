@@ -33,7 +33,7 @@ export async function editCustomer({
     return { error: "Campos inválidos." }
   }
 
-  const { name, birthdate, phone, address } = validatedFields.data
+  const { name, birthdate, phone, addresses } = validatedFields.data
 
   try {
     const existingAddresses = await prisma.customerAddress.findMany({
@@ -41,7 +41,7 @@ export async function editCustomer({
     })
 
     const incomingAddressIds =
-      address?.map((addr) => addr.id).filter(Boolean) || []
+      addresses?.map((addr) => addr.id).filter(Boolean) || []
     const addressesToDelete = existingAddresses
       .filter((existing) => !incomingAddressIds.includes(existing.id))
       .map((addr) => addr.id)
@@ -52,8 +52,8 @@ export async function editCustomer({
         name,
         birthdate,
         phone,
-        address: {
-          upsert: address?.map((addr) => ({
+        addresses: {
+          upsert: addresses?.map((addr) => ({
             where: { id: addr.id || "" },
             create: {
               province: addr.province,
@@ -83,7 +83,7 @@ export async function editCustomer({
         },
       },
       include: {
-        address: true,
+        addresses: true,
         orders: true,
       },
     })

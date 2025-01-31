@@ -73,7 +73,7 @@ export type PopulatedOrderItem = OrderItem & {
 }
 
 export type PopulatedCustomer = Customer & {
-  address?: CustomerAddress[]
+  addresses?: CustomerAddress[]
   orders?: Order[]
   user?: Partial<User>
 }

@@ -41,7 +41,7 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
         customer: {
           include: {
             user: true,
-            address: true,
+            addresses: true,
           },
         },
         address: true,

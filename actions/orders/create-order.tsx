@@ -89,7 +89,7 @@ export async function createOrder({
         },
         include: {
           user: true,
-          address: true,
+          addresses: true,
         },
       }),
     ])
@@ -178,7 +178,7 @@ export async function createOrder({
         }
       }
 
-      const customerAddress = customer.address?.find(
+      const customerAddress = customer.addresses?.find(
         (address) => address.id === customerAddressId
       )
 

@@ -15,7 +15,7 @@ const CustomerOrdersHistoryPage = async () => {
       userId: session?.user.id,
     },
     include: {
-      address: true,
+      addresses: true,
       user: {
         select: {
           email: true,

@@ -32,7 +32,7 @@ export async function customerEditPersonalInfo(values: CustomerSchema) {
         phone,
       },
       include: {
-        address: true,
+        addresses: true,
         orders: true,
       },
     })

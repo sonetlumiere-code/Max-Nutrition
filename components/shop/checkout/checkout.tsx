@@ -79,7 +79,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
     resolver: zodResolver(orderSchema),
     defaultValues: {
       origin: "SHOP" as const,
-      customerAddressId: customer.address?.[0]?.id || "",
+      customerAddressId: customer.addresses?.[0]?.id || "",
       paymentMethod: PaymentMethod.CASH,
       shippingMethod: ShippingMethod.DELIVERY,
       shopBranchId: shopSettings.branches?.[0].id || "",
@@ -109,8 +109,8 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
   }, [items, setValue])
 
   const selectedAddress = useMemo(
-    () => customer?.address?.find((a) => a.id === customerAddressId),
-    [customer?.address, customerAddressId]
+    () => customer?.addresses?.find((a) => a.id === customerAddressId),
+    [customer?.addresses, customerAddressId]
   )
 
   const { data: shippingZone, isValidating: isValidatingShippingZone } = useSWR(
@@ -304,7 +304,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
 
                   {shippingMethod === ShippingMethod.DELIVERY && (
                     <>
-                      {customer?.address?.length === 0 ? (
+                      {customer?.addresses?.length === 0 ? (
                         <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm p-6'>
                           <div className='flex flex-col items-center gap-1 text-center'>
                             <h3 className='text-base md:text-xl font-bold tracking-tight'>
@@ -355,7 +355,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                                       <SelectValue placeholder='Selecciona tu dirección' />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      {customer?.address?.map((a) => (
+                                      {customer?.addresses?.map((a) => (
                                         <SelectItem key={a.id} value={a.id}>
                                           {translateAddressLabel(a.label)}
                                         </SelectItem>
@@ -414,7 +414,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                         (shippingMethod === "DELIVERY" &&
                           !isValidMinQuantity) ||
                         (shippingMethod === "DELIVERY" &&
-                          !customer?.address?.length) ||
+                          !customer?.addresses?.length) ||
                         (isSubmitted && !isValid)
                       }
                     >

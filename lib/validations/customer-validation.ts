@@ -14,7 +14,7 @@ export const customerSchema = z.object({
       message: "(Código de área) + Número de teléfono",
     })
     .optional(),
-  address: z.array(customerAddressSchema).optional(),
+  addresses: z.array(customerAddressSchema).optional(),
 })
 
 export const customerByUserSchema = customerSchema.extend({

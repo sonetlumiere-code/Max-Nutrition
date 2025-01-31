@@ -41,7 +41,7 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
   const customer = await getCustomer({
     where: { id: customerId },
     include: {
-      address: true,
+      addresses: true,
       user: {
         select: {
           email: true,
@@ -54,7 +54,7 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
     redirect("/customers")
   }
 
-  const customerAddressesLength = customer?.address?.length || 0
+  const customerAddressesLength = customer?.addresses?.length || 0
 
   return (
     <>
@@ -141,7 +141,7 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
               </CardHeader>
               <CardContent>
                 <div className='space-y-4'>
-                  {customer.address?.map((address, i) => (
+                  {customer.addresses?.map((address, i) => (
                     <>
                       <address
                         key={address.id}

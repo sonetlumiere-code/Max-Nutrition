@@ -31,7 +31,7 @@ export default async function CheckoutPage() {
         userId: session?.user.id,
       },
       include: {
-        address: true,
+        addresses: true,
         user: {
           select: {
             email: true,
