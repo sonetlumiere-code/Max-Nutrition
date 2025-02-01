@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils"
 import { PopulatedOrder } from "@/types/types"
 import OrderItemActions from "../actions/order-item-actions"
 import { useSession } from "next-auth/react"
+import { format } from "date-fns"
 
 type OrderItemDetailsProps = {
   order: PopulatedOrder
@@ -49,7 +50,7 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
             </Button>
           </CardTitle>
           <CardDescription>
-            Fecha: {order.createdAt.toLocaleDateString("es-AR")}
+            Fecha: {format(new Date(order.createdAt), "dd/MM/yyyy")}
           </CardDescription>
         </div>
         <div className='ml-auto flex items-center gap-1'>

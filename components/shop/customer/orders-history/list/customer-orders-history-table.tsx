@@ -18,6 +18,7 @@ import {
   translateShippingMethod,
 } from "@/helpers/helpers"
 import CustomerViewOrder from "../view/customer-orders-history-item"
+import { format } from "date-fns"
 
 type CustomerOrdersHistoryTableProps = {
   orders: PopulatedOrder[]
@@ -52,7 +53,7 @@ const CustomerOrdersHistoryTable = ({
           {orders?.map((order) => (
             <TableRow key={order.id}>
               <TableCell className='text-xs md:text-sm'>
-                {order.createdAt.toLocaleDateString("es-AR")}
+                {format(new Date(order.createdAt), "dd/MM/yyyy")}
               </TableCell>
               <TableCell className='hidden sm:table-cell'>
                 <Badge className='text-xs' variant='secondary'>

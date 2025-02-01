@@ -38,6 +38,7 @@ import DeleteCustomer from "@/components/dashboard/customers/delete-customer/del
 import UserAvatar from "@/components/user-avatar"
 import { useSession } from "next-auth/react"
 import { getPermissionsKeys } from "@/helpers/helpers"
+import { format } from "date-fns"
 
 interface OrdersDataTableProps {
   customers: PopulatedCustomer[]
@@ -162,10 +163,14 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
           </Button>
         ),
         cell: ({ row }) => {
-          const birthdate = row.original.birthdate?.toLocaleDateString() || "-"
+          const birthdate = row.original.birthdate
           return (
             <div className='ml-4'>
-              <div className='font-medium'>{birthdate}</div>
+              {birthdate ? (
+                <div className='font-medium'>
+                  {format(birthdate, "dd/MM/yyyy")}
+                </div>
+              ) : null}
             </div>
           )
         },
@@ -184,10 +189,14 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
           </Button>
         ),
         cell: ({ row }) => {
-          const createdAt = row.original.createdAt?.toLocaleDateString() || "-"
+          const createdAt = row.original.createdAt
           return (
             <div className='ml-4'>
-              <div className='font-medium'>{createdAt}</div>
+              {createdAt ? (
+                <div className='font-medium'>
+                  {format(createdAt, "dd/MM/yyyy")}
+                </div>
+              ) : null}
             </div>
           )
         },

@@ -19,6 +19,7 @@ import { getCustomer } from "@/data/customer"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { format } from "date-fns"
 
 interface ViewCustomerProps {
   params: { customerId: string }
@@ -113,7 +114,9 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
                     Fecha de nacimiento
                   </p>
                   <p className='text-sm text-muted-foreground'>
-                    {customer.birthdate?.toLocaleDateString() || "-"}
+                    {customer.birthdate
+                      ? format(new Date(customer.birthdate), "dd/MM/yyyy")
+                      : "-"}
                   </p>
                 </div>
 
@@ -122,7 +125,7 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
                     Fecha de registro
                   </p>
                   <p className='text-sm text-muted-foreground'>
-                    {customer.createdAt.toLocaleDateString()}
+                    {format(new Date(customer.createdAt), "dd/MM/yyyy")}
                   </p>
                 </div>
               </div>

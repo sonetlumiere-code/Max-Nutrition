@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card"
 import { PopulatedCustomer } from "@/types/types"
 import CustomerEditPersonalInfo from "./edit/customer-edit-personal-info"
+import { format } from "date-fns"
 
 type CustomerPersonalInfoProps = {
   customer: PopulatedCustomer
@@ -63,7 +64,9 @@ const CustomerPersonalInfo = ({ customer }: CustomerPersonalInfoProps) => {
               Fecha de nacimiento
             </p>
             <p className='text-sm text-muted-foreground'>
-              {customer.birthdate?.toLocaleDateString("es-AR") || "-"}
+              {customer.birthdate
+                ? format(new Date(customer.birthdate), "dd/MM/yyyy")
+                : "-"}
             </p>
           </div>
 
@@ -72,7 +75,7 @@ const CustomerPersonalInfo = ({ customer }: CustomerPersonalInfoProps) => {
               Fecha de registro
             </p>
             <p className='text-sm text-muted-foreground'>
-              {customer.createdAt.toLocaleDateString("es-AR")}
+              {format(new Date(customer.createdAt), "dd/MM/yyyy")}
             </p>
           </div>
         </div>

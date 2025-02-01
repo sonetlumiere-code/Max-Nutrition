@@ -38,6 +38,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
+import { format } from "date-fns"
 
 interface UsersDataTableProps {
   users: Omit<PopulatedUser, "password">[]
@@ -187,7 +188,10 @@ const UsersDataTable = ({ users }: UsersDataTableProps) => {
           </Button>
         ),
         cell: ({ row }) => {
-          const createdAt = row.original.createdAt?.toLocaleDateString() || "-"
+          const createdAt = row.original.createdAt
+            ? format(new Date(row.original.createdAt), "dd/MM/yyyy")
+            : "-"
+
           return (
             <div className='ml-4'>
               <div className='font-medium'>{createdAt}</div>

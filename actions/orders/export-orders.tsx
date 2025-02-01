@@ -7,6 +7,8 @@ import {
   translateTimePeriod,
   translateUnit,
 } from "@/helpers/helpers"
+import { format } from "date-fns"
+import { es } from "date-fns/locale"
 
 export const exportOrdersToExcel = (
   orders: PopulatedOrder[],
@@ -44,7 +46,7 @@ export const exportOrdersToExcel = (
       Descuento: totalDiscount,
       "Promoción Aplicada": appliedPromotionNames,
       Total: order.total,
-      Fecha: new Date(order.createdAt).toLocaleDateString("es-AR"),
+      Fecha: format(order.createdAt, "dd/MM/yyyy"),
     }
   })
 
@@ -266,12 +268,6 @@ export const exportOrdersToExcel = (
   // Generar archivo y descargarlo
   const fileName = `MaxNutri_WEB_Pedidos_${translateTimePeriod(
     period
-  )}_${new Date()
-    .toLocaleDateString("es-AR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })
-    .replace(/\//g, "-")}.xlsx`
+  )}_${format(new Date(), "dd-MM-yyyy", { locale: es })}.xlsx`
   XLSX.writeFileXLSX(workbook, fileName)
 }

@@ -33,6 +33,7 @@ import {
 } from "@/helpers/helpers"
 import { Icons } from "@/components/icons"
 import { OrderStatus, ShippingMethod } from "@prisma/client"
+import { format } from "date-fns"
 
 interface OrdersDataTableProps {
   orders: PopulatedOrder[]
@@ -154,9 +155,7 @@ const OrdersDataTable = ({
       },
       cell: ({ row }) => {
         const createdAt = row.getValue("createdAt") as Date
-        return (
-          <div className='ml-4'>{createdAt.toLocaleDateString("es-AR")}</div>
-        )
+        return <div className='ml-4'>{format(createdAt, "dd/MM/yyyy")}</div>
       },
     },
     {
