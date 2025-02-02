@@ -74,7 +74,7 @@ const PaymentMethodField = ({
                     />
                     <Label
                       htmlFor={method}
-                      className='flex flex-col items-center justify-between text-center rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary'
+                      className='flex flex-col items-center justify-start text-center rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary h-full'
                     >
                       {paymentMethodIcons[method]}
                       {translatePaymentMethod(method)}

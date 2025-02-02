@@ -19,14 +19,19 @@ const SelectedAddressInfo = ({
         <div className='w-full text-sm space-y-3'>
           <address className='grid gap-0.5 not-italic text-muted-foreground'>
             <span>
-              {selectedAddress?.addressStreet} {selectedAddress?.addressNumber}{" "}
-              {selectedAddress?.addressFloor || ""}{" "}
-              {selectedAddress?.addressApartment}
+              {`${selectedAddress?.addressStreet ?? ""} ${
+                selectedAddress?.addressNumber ?? ""
+              } ${selectedAddress?.addressFloor ?? ""} ${
+                selectedAddress?.addressApartment ?? ""
+              }`.trim()}
             </span>
             <span>
-              {selectedAddress?.province}, {selectedAddress?.municipality},
-              {selectedAddress?.locality}
-            </span>{" "}
+              {`${selectedAddress?.province ?? ""}, ${
+                selectedAddress?.municipality ?? ""
+              }, ${selectedAddress?.locality ?? ""}`
+                .replace(/, ,/g, ",")
+                .trim()}
+            </span>
             <span>Código postal: {selectedAddress?.postCode}</span>
           </address>
 
