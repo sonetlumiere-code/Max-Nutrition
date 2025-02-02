@@ -22,6 +22,7 @@ import { PopulatedOrder } from "@/types/types"
 import OrderItemActions from "../actions/order-item-actions"
 import { useSession } from "next-auth/react"
 import { format } from "date-fns"
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 
 type OrderItemDetailsProps = {
   order: PopulatedOrder
@@ -29,6 +30,8 @@ type OrderItemDetailsProps = {
 
 const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
   const { data: session } = useSession()
+
+  const { copyToClipboard } = useCopyToClipboard()
 
   const userPermissionsKeys = getPermissionsKeys(
     session?.user.role?.permissions
@@ -39,11 +42,12 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
       <CardHeader className='flex flex-row items-start bg-muted/50'>
         <div className='grid gap-0.5'>
           <CardTitle className='group flex items-center gap-2 text-lg'>
-            <small>Orden {order.id}</small>
+            <small>Orden: {order.id}</small>
             <Button
               size='icon'
               variant='outline'
               className='h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100'
+              onClick={() => copyToClipboard(order.id)}
             >
               <Icons.copy className='h-3 w-3' />
               <span className='sr-only'>Copy Order ID</span>
