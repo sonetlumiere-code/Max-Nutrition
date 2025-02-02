@@ -23,6 +23,7 @@ const permissions: {
   { name: "Crear productos", actionKey: "create", subjectKey: "products" },
   { name: "Actualizar productos", actionKey: "update", subjectKey: "products" },
   { name: "Eliminar productos", actionKey: "delete", subjectKey: "products" },
+  // { name: "Exportar productos", actionKey: "export", subjectKey: "products" },
 
   { name: "Ver categorías", actionKey: "view", subjectKey: "categories" },
   { name: "Crear categorías", actionKey: "create", subjectKey: "categories" },
