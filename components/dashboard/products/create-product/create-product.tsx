@@ -369,7 +369,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                       </FormItem>
                     )}
                   />
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name='featured'
                     render={({ field }) => (
@@ -387,7 +387,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                         </FormControl>
                       </FormItem>
                     )}
-                  />
+                  /> */}
                 </div>
               </CardContent>
             </Card>

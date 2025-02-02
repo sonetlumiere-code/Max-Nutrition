@@ -119,6 +119,7 @@ export default async function ProductsPage() {
                   <TableHead className='hidden md:table-cell'>
                     Categorías
                   </TableHead>
+                  <TableHead>Precio</TableHead>
                   <TableHead className='hidden md:table-cell'>
                     Mostrar
                   </TableHead>
@@ -147,6 +148,7 @@ export default async function ProductsPage() {
                         <Badge key={category.id}>{category.name}</Badge>
                       ))}
                     </TableCell>
+                    <TableCell>$ {product.price}</TableCell>
                     <TableCell className='hidden md:table-cell'>
                       <ShowProductBadge product={product} />
                     </TableCell>
