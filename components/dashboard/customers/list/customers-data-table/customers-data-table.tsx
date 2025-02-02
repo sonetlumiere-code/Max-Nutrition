@@ -136,7 +136,7 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
         cell: ({ row }) => {
           const customerPhone = row.original.phone
           return (
-            <>
+            <div className='ml-4'>
               {customerPhone ? (
                 <Button variant='outline' size='default'>
                   {customerPhone}
@@ -145,7 +145,7 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
               ) : (
                 "-"
               )}
-            </>
+            </div>
           )
         },
       },
@@ -170,7 +170,9 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
                 <div className='font-medium'>
                   {format(birthdate, "dd/MM/yyyy")}
                 </div>
-              ) : null}
+              ) : (
+                "-"
+              )}
             </div>
           )
         },
