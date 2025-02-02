@@ -12,6 +12,8 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { PopulatedOrder } from "@/types/types"
+import { cn } from "@/lib/utils"
+import { translateOrderStatus } from "@/helpers/helpers"
 
 interface OrderConfirmedProps {
   order: PopulatedOrder
@@ -30,17 +32,24 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className='space-y-6'>
-          <div className='text-center text-muted-foreground'>
+          <div className='text-center text-muted-foreground space-y-2'>
             <p>
               Gracias por tu compra. Tu pedido ha sido recibido y está siendo
               procesado.
             </p>
-            <p className='font-semibold mt-2'>Número de Pedido: #{order.id}</p>
-            <Badge className='mt-2'>
-              {order.status === "PENDING" && "Pendiente"}
-              {order.status === "ACCEPTED" && "Aceptado"}
-              {order.status === "COMPLETED" && "Completado"}
-              {order.status === "CANCELLED" && "Cancelado"}
+            <p className='font-semibold'>Número de Pedido: {order.id}</p>
+            <Badge
+              className={cn({
+                "bg-amber-500 hover:bg-amber-500/80":
+                  order.status === "PENDING",
+                "bg-sky-500 hover:bg-sky-500/80": order.status === "ACCEPTED",
+                "bg-emerald-500 hover:bg-emerald-500/80":
+                  order.status === "COMPLETED",
+                "bg-destructive hover:bg-destructive/80":
+                  order.status === "CANCELLED",
+              })}
+            >
+              {translateOrderStatus(order.status)}
             </Badge>
           </div>
 
