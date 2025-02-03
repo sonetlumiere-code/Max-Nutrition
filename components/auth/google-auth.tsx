@@ -1,7 +1,7 @@
 "use client"
 
 import { signIn } from "next-auth/react"
-import { useState } from "react"
+import { Dispatch, SetStateAction } from "react"
 import { toast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
@@ -9,11 +9,15 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
 
 type GoogleAuthProps = {
   isSubmitting: boolean
+  isGoogleLoading: boolean
+  setIsGoogleLoading: Dispatch<SetStateAction<boolean>>
 }
 
-const GoogleAuth = ({ isSubmitting }: GoogleAuthProps) => {
-  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
-
+const GoogleAuth = ({
+  isSubmitting,
+  isGoogleLoading,
+  setIsGoogleLoading,
+}: GoogleAuthProps) => {
   const signInWithGoogle = async () => {
     try {
       setIsGoogleLoading(true)
@@ -27,8 +31,6 @@ const GoogleAuth = ({ isSubmitting }: GoogleAuthProps) => {
         description: "Intenta nuevamente más tarde.",
         variant: "destructive",
       })
-    } finally {
-      setIsGoogleLoading(false)
     }
   }
 

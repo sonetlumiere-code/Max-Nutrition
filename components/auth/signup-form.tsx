@@ -25,6 +25,7 @@ const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string>("")
   const [success, setSuccess] = useState<string>("")
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -69,7 +70,7 @@ const SignUpForm = () => {
                   <FormControl>
                     <Input
                       placeholder='nombre'
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || isGoogleLoading}
                       {...field}
                     />
                   </FormControl>
@@ -87,7 +88,7 @@ const SignUpForm = () => {
                   <FormControl>
                     <Input
                       placeholder='email'
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || isGoogleLoading}
                       {...field}
                     />
                   </FormControl>
@@ -109,7 +110,7 @@ const SignUpForm = () => {
                         type={showPassword ? "text" : "password"}
                         autoCapitalize='none'
                         autoComplete='on'
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || isGoogleLoading}
                         {...field}
                       />
                       <span className='absolute inset-y-0 end-1'>
@@ -118,7 +119,7 @@ const SignUpForm = () => {
                           size='icon'
                           variant='ghost'
                           className='hover:bg-transparent'
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || isGoogleLoading}
                           onClick={() => setShowPassword((prev) => !prev)}
                         >
                           <span className='sr-only'></span>
@@ -140,7 +141,7 @@ const SignUpForm = () => {
           <FormError message={error} />
           <FormSuccess message={success} />
 
-          <Button type='submit' disabled={isSubmitting}>
+          <Button type='submit' disabled={isSubmitting || isGoogleLoading}>
             {isSubmitting ? (
               <Icons.spinner className='w-4 h-4 animate-spin' />
             ) : (
@@ -161,7 +162,11 @@ const SignUpForm = () => {
         </div>
       </div>
 
-      <GoogleAuth isSubmitting={isSubmitting} />
+      <GoogleAuth
+        isSubmitting={isSubmitting}
+        isGoogleLoading={isGoogleLoading}
+        setIsGoogleLoading={setIsGoogleLoading}
+      />
     </div>
   )
 }
