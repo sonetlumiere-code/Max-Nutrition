@@ -50,22 +50,41 @@ export const exportOrdersToExcel = (
     }
   })
 
-  // Hoja 2: Resumen de productos totales
+  // Hoja 2: Resumen de productos totales (con y sin sal)
   const productSummary = orders.reduce(
-    (summary: Record<string, number>, order) => {
+    (
+      summary: Record<
+        string,
+        { withSalt: number; withoutSalt: number; total: number }
+      >,
+      order
+    ) => {
       order.items?.forEach((item) => {
         const productName = item.product.name
-        summary[productName] = (summary[productName] || 0) + item.quantity
+        if (!summary[productName]) {
+          summary[productName] = { withSalt: 0, withoutSalt: 0, total: 0 }
+        }
+
+        if (item.withSalt) {
+          summary[productName].withSalt += item.quantity
+        } else {
+          summary[productName].withoutSalt += item.quantity
+        }
+
+        summary[productName].total += item.quantity
       })
+
       return summary
     },
     {}
   )
 
   const productSummaryData = Object.entries(productSummary).map(
-    ([product, quantity]) => ({
+    ([product, { withSalt, withoutSalt, total }]) => ({
       Producto: product,
-      "Cantidad Total": quantity,
+      "Cantidad con Sal": withSalt,
+      "Cantidad sin Sal": withoutSalt,
+      "Cantidad Total": total,
     })
   )
 
