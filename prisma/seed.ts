@@ -23,7 +23,7 @@ const permissions: {
   { name: "Crear productos", actionKey: "create", subjectKey: "products" },
   { name: "Actualizar productos", actionKey: "update", subjectKey: "products" },
   { name: "Eliminar productos", actionKey: "delete", subjectKey: "products" },
-  // { name: "Exportar productos", actionKey: "export", subjectKey: "products" },
+  { name: "Exportar productos", actionKey: "export", subjectKey: "products" },
 
   { name: "Ver categorías", actionKey: "view", subjectKey: "categories" },
   { name: "Crear categorías", actionKey: "create", subjectKey: "categories" },
@@ -35,6 +35,11 @@ const permissions: {
   {
     name: "Eliminar categorías",
     actionKey: "delete",
+    subjectKey: "categories",
+  },
+  {
+    name: "Exportar categorías",
+    actionKey: "export",
     subjectKey: "categories",
   },
 
@@ -50,16 +55,23 @@ const permissions: {
     actionKey: "delete",
     subjectKey: "promotions",
   },
+  {
+    name: "Exportar promociones",
+    actionKey: "export",
+    subjectKey: "promotions",
+  },
 
   { name: "Ver pedidos", actionKey: "view", subjectKey: "orders" },
   { name: "Crear pedidos", actionKey: "create", subjectKey: "orders" },
   { name: "Actualizar pedidos", actionKey: "update", subjectKey: "orders" },
   { name: "Eliminar pedidos", actionKey: "delete", subjectKey: "orders" },
+  { name: "Exportar pedidos", actionKey: "export", subjectKey: "orders" },
 
   { name: "Ver clientes", actionKey: "view", subjectKey: "customers" },
   { name: "Crear clientes", actionKey: "create", subjectKey: "customers" },
   { name: "Actualizar clientes", actionKey: "update", subjectKey: "customers" },
   { name: "Eliminar clientes", actionKey: "delete", subjectKey: "customers" },
+  { name: "Exportar clientes", actionKey: "export", subjectKey: "customers" },
 
   {
     name: "Ver direcciones de clientes",
@@ -81,13 +93,14 @@ const permissions: {
     actionKey: "delete",
     subjectKey: "customerAddresses",
   },
+  {
+    name: "Exportar direcciones de clientes",
+    actionKey: "export",
+    subjectKey: "customerAddresses",
+  },
 
   { name: "Ver sucursales", actionKey: "view", subjectKey: "shopBranches" },
-  {
-    name: "Crear sucursales",
-    actionKey: "create",
-    subjectKey: "shopBranches",
-  },
+  { name: "Crear sucursales", actionKey: "create", subjectKey: "shopBranches" },
   {
     name: "Actualizar sucursales",
     actionKey: "update",
@@ -96,6 +109,11 @@ const permissions: {
   {
     name: "Eliminar sucursales",
     actionKey: "delete",
+    subjectKey: "shopBranches",
+  },
+  {
+    name: "Exportar sucursales",
+    actionKey: "export",
     subjectKey: "shopBranches",
   },
 
@@ -109,6 +127,11 @@ const permissions: {
     actionKey: "update",
     subjectKey: "shopSettings",
   },
+  {
+    name: "Exportar configuración de la tienda",
+    actionKey: "export",
+    subjectKey: "shopSettings",
+  },
 
   {
     name: "Ver configuración de envíos",
@@ -118,6 +141,11 @@ const permissions: {
   {
     name: "Actualizar configuración de envíos",
     actionKey: "update",
+    subjectKey: "shippingSettings",
+  },
+  {
+    name: "Exportar configuración de envíos",
+    actionKey: "export",
     subjectKey: "shippingSettings",
   },
 
@@ -141,47 +169,11 @@ const permissions: {
     actionKey: "delete",
     subjectKey: "shippingZones",
   },
-
-  { name: "Ver ingredientes", actionKey: "view", subjectKey: "ingredients" },
   {
-    name: "Crear ingredientes",
-    actionKey: "create",
-    subjectKey: "ingredients",
+    name: "Exportar zonas de envío",
+    actionKey: "export",
+    subjectKey: "shippingZones",
   },
-  {
-    name: "Actualizar ingredientes",
-    actionKey: "update",
-    subjectKey: "ingredients",
-  },
-  {
-    name: "Eliminar ingredientes",
-    actionKey: "delete",
-    subjectKey: "ingredients",
-  },
-
-  { name: "Ver recetas", actionKey: "view", subjectKey: "recipes" },
-  { name: "Crear recetas", actionKey: "create", subjectKey: "recipes" },
-  { name: "Actualizar recetas", actionKey: "update", subjectKey: "recipes" },
-  { name: "Eliminar recetas", actionKey: "delete", subjectKey: "recipes" },
-
-  { name: "Ver roles", actionKey: "view", subjectKey: "roles" },
-  { name: "Crear roles", actionKey: "create", subjectKey: "roles" },
-  { name: "Actualizar roles", actionKey: "update", subjectKey: "roles" },
-  { name: "Eliminar roles", actionKey: "delete", subjectKey: "roles" },
-
-  { name: "Ver permisos", actionKey: "view", subjectKey: "permissions" },
-  { name: "Crear permisos", actionKey: "create", subjectKey: "permissions" },
-  {
-    name: "Actualizar permisos",
-    actionKey: "update",
-    subjectKey: "permissions",
-  },
-  { name: "Eliminar permisos", actionKey: "delete", subjectKey: "permissions" },
-
-  { name: "Ver usuarios", actionKey: "view", subjectKey: "users" },
-  { name: "Crear usuarios", actionKey: "create", subjectKey: "users" },
-  { name: "Actualizar usuarios", actionKey: "update", subjectKey: "users" },
-  { name: "Eliminar usuarios", actionKey: "delete", subjectKey: "users" },
 ]
 
 export const ingredientsData: Omit<
