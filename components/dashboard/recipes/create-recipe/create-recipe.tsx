@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { getBaseMeasurement, translateUnit } from "@/helpers/helpers"
 import { RecipeSchema, recipeSchema } from "@/lib/validations/recipe-validation"
@@ -109,7 +110,7 @@ const CreateRecipe = ({
                   <FormItem>
                     <FormLabel>Descripción</FormLabel>
                     <FormControl>
-                      <Input
+                      <Textarea
                         placeholder='Describa la receta'
                         disabled={isSubmitting}
                         {...field}
