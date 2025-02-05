@@ -27,3 +27,5 @@ export const recipeSchema = z
       })
     }
   })
+
+export type RecipeSchema = z.infer<typeof recipeSchema>

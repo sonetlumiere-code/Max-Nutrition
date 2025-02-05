@@ -11,8 +11,7 @@ import {
 } from "@/components/ui/form"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { userSchema } from "@/lib/validations/user-validation"
+import { UserSchema, userSchema } from "@/lib/validations/user-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Role } from "@prisma/client"
 import {
@@ -27,8 +26,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { editUser } from "@/actions/users/edit-user"
 import { toast } from "@/components/ui/use-toast"
-
-type UserSchema = z.infer<typeof userSchema>
 
 type EditUserProps = {
   user: PopulatedSafeUser

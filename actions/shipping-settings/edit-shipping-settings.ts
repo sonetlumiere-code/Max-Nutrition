@@ -3,11 +3,11 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { shippingSettingsSchema } from "@/lib/validations/shipping-settings-validation"
+import {
+  ShippingSettingsSchema,
+  shippingSettingsSchema,
+} from "@/lib/validations/shipping-settings-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type ShippingSettingsSchema = z.infer<typeof shippingSettingsSchema>
 
 export async function editShippingSettings({
   id,

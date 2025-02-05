@@ -3,12 +3,12 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { partialOrderSchema } from "@/lib/validations/order-validation"
+import {
+  PartialOrderSchema,
+  partialOrderSchema,
+} from "@/lib/validations/order-validation"
 import { ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type PartialOrderSchema = z.infer<typeof partialOrderSchema>
 
 export async function editOrder({
   id,

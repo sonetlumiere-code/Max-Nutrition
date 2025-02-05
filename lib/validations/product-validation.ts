@@ -39,3 +39,9 @@ export const productSchema = z.object({
     .array(z.string())
     .min(1, { message: "Debes seleccionar al menos una categoría." }),
 })
+
+export type ProductSchema = z.infer<typeof productSchema>
+
+export const partialProductSchema = productSchema.partial()
+
+export type PartialProductSchema = z.infer<typeof partialProductSchema>

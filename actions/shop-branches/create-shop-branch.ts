@@ -3,13 +3,13 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { shopBranchSchema } from "@/lib/validations/shop-branch-validation"
+import {
+  ShopBranchSchema,
+  shopBranchSchema,
+} from "@/lib/validations/shop-branch-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
-
-type ShopBranchSchema = z.infer<typeof shopBranchSchema>
 
 export async function createShopBranch(values: ShopBranchSchema) {
   if (!shopSettingsId) {

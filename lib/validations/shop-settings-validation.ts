@@ -6,3 +6,5 @@ export const shopSettingsSchema = z.object({
   branches: z.array(shopBranchSchema).optional(),
   allowedPaymentMethods: z.array(z.nativeEnum(PaymentMethod)),
 })
+
+export type ShopSettingsSchema = z.infer<typeof shopSettingsSchema>

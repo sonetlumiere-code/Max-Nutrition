@@ -3,11 +3,8 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { recipeSchema } from "@/lib/validations/recipe-validation"
+import { RecipeSchema, recipeSchema } from "@/lib/validations/recipe-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type RecipeSchema = z.infer<typeof recipeSchema>
 
 export async function createRecipe(values: RecipeSchema) {
   const session = await auth()

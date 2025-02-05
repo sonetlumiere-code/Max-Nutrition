@@ -1,11 +1,10 @@
 "use client"
 
-import { roleSchema } from "@/lib/validations/role-validation"
+import { RoleSchema, roleSchema } from "@/lib/validations/role-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Permission, SubjectKey } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import {
   Form,
   FormControl,
@@ -22,8 +21,6 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { toast } from "@/components/ui/use-toast"
 import { createRole } from "@/actions/roles/create-role"
 import { translateSubject } from "@/helpers/helpers"
-
-type RoleShema = z.infer<typeof roleSchema>
 
 type CreateRoleProps = {
   permissions: Permission[] | null
@@ -45,7 +42,7 @@ const CreateRole = ({ permissions }: CreateRoleProps) => {
     return acc
   }, {} as Record<SubjectKey, { id: string; name: string }[]>)
 
-  const form = useForm<RoleShema>({
+  const form = useForm<RoleSchema>({
     resolver: zodResolver(roleSchema),
     defaultValues: {
       name: "",
@@ -59,7 +56,7 @@ const CreateRole = ({ permissions }: CreateRoleProps) => {
     formState: { isSubmitting },
   } = form
 
-  const onSubmit = async (data: RoleShema) => {
+  const onSubmit = async (data: RoleSchema) => {
     const res = await createRole(data)
 
     if (res.success) {

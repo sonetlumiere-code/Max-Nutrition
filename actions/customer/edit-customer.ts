@@ -3,11 +3,11 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { customerSchema } from "@/lib/validations/customer-validation"
+import {
+  CustomerSchema,
+  customerSchema,
+} from "@/lib/validations/customer-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type CustomerSchema = z.infer<typeof customerSchema>
 
 export async function editCustomer({
   id,

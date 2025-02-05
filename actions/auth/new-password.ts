@@ -2,13 +2,15 @@
 
 import { getPasswordResetToken } from "@/data/password-reset-token"
 import { getUser } from "@/data/user"
-import { newPasswordSchema } from "@/lib/validations/new-password-validation"
-import { z } from "zod"
+import {
+  NewPasswordSchema,
+  newPasswordSchema,
+} from "@/lib/validations/new-password-validation"
 import bcrypt from "bcryptjs"
 import prisma from "@/lib/db/db"
 
 export const newPassword = async (
-  values: z.infer<typeof newPasswordSchema>,
+  values: NewPasswordSchema,
   token?: string | null
 ) => {
   if (!token) {

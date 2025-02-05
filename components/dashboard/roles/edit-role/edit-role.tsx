@@ -1,11 +1,10 @@
 "use client"
 
-import { roleSchema } from "@/lib/validations/role-validation"
+import { RoleSchema, roleSchema } from "@/lib/validations/role-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Permission, SubjectKey } from "@prisma/client"
 import { useRouter } from "next/navigation"
-import { useForm, Controller } from "react-hook-form"
-import { z } from "zod"
+import { useForm } from "react-hook-form"
 import {
   Form,
   FormControl,
@@ -23,8 +22,6 @@ import { PopulatedRole } from "@/types/types"
 import { editRole } from "@/actions/roles/edit-role"
 import { toast } from "@/components/ui/use-toast"
 import { translateSubject } from "@/helpers/helpers"
-
-type RoleShema = z.infer<typeof roleSchema>
 
 type EditRoleProps = {
   role: PopulatedRole
@@ -58,7 +55,7 @@ const EditRole = ({ role, permissions }: EditRoleProps) => {
     return acc
   }, {} as Record<string, string[]>)
 
-  const form = useForm<RoleShema>({
+  const form = useForm<RoleSchema>({
     resolver: zodResolver(roleSchema),
     defaultValues: {
       name: role.name,
@@ -72,7 +69,7 @@ const EditRole = ({ role, permissions }: EditRoleProps) => {
     formState: { isSubmitting },
   } = form
 
-  const onSubmit = async (data: RoleShema) => {
+  const onSubmit = async (data: RoleSchema) => {
     const res = await editRole({ id: role.id, values: data })
 
     if (res.success) {

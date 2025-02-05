@@ -14,12 +14,14 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import { shippingZoneSchema } from "@/lib/validations/shipping-zone-validation"
+import {
+  ShippingZoneSchema,
+  shippingZoneSchema,
+} from "@/lib/validations/shipping-zone-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ShippingZone } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import useSWR from "swr"
 import {
   Select,
@@ -32,8 +34,6 @@ import {
 } from "@/components/ui/select"
 import { Locality, Municipality, Province } from "@/types/georef-types"
 import { useMemo } from "react"
-
-type ShippingZoneSchema = z.infer<typeof shippingZoneSchema>
 
 const apiGeoRef = process.env.NEXT_PUBLIC_API_GEOREF
 

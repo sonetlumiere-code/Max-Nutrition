@@ -10,10 +10,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { customerSchema } from "@/lib/validations/customer-validation"
+import {
+  CustomerSchema,
+  customerSchema,
+} from "@/lib/validations/customer-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
 import {
   Card,
   CardContent,
@@ -45,8 +47,6 @@ import { translateAddressLabel } from "@/helpers/helpers"
 import MunicipalitySelect from "@/components/municipality-select"
 import AsyncSelectAddress from "@/components/async-search-address"
 import LocalitySelect from "@/components/locality-select"
-
-type CustomerSchema = z.infer<typeof customerSchema>
 
 const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
 

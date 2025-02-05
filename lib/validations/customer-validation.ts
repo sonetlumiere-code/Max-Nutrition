@@ -20,3 +20,5 @@ export const customerSchema = z.object({
 export const customerByUserSchema = customerSchema.extend({
   userId: z.string().min(1, { message: "Debes ingresar un usuario." }),
 })
+
+export type CustomerSchema = z.infer<typeof customerSchema>

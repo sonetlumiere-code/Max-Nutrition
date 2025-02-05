@@ -3,11 +3,11 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { productSchema } from "@/lib/validations/product-validation"
+import {
+  ProductSchema,
+  productSchema,
+} from "@/lib/validations/product-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type ProductSchema = z.infer<typeof productSchema>
 
 export async function createProduct(values: ProductSchema) {
   const session = await auth()

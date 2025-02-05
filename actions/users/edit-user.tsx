@@ -3,11 +3,8 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { userSchema } from "@/lib/validations/user-validation"
+import { UserSchema, userSchema } from "@/lib/validations/user-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type UserSchema = z.infer<typeof userSchema>
 
 export async function editUser({
   id,

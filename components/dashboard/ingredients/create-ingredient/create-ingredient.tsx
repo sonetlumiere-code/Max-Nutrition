@@ -22,14 +22,14 @@ import {
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
 import { translateUnit } from "@/helpers/helpers"
-import { ingredientSchema } from "@/lib/validations/ingredient-validation"
+import {
+  IngredientSchema,
+  ingredientSchema,
+} from "@/lib/validations/ingredient-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Measurement } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-type IngredientSchema = z.infer<typeof ingredientSchema>
 
 const CreateIngredient = () => {
   const router = useRouter()

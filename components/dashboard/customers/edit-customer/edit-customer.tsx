@@ -10,10 +10,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { customerSchema } from "@/lib/validations/customer-validation"
+import {
+  CustomerSchema,
+  customerSchema,
+} from "@/lib/validations/customer-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
 import {
   Card,
   CardContent,
@@ -46,8 +48,6 @@ import LocalitySelect from "@/components/locality-select"
 import { PopulatedCustomer } from "@/types/types"
 import { editCustomer } from "@/actions/customer/edit-customer"
 import { toast } from "@/components/ui/use-toast"
-
-type CustomerSchema = z.infer<typeof customerSchema>
 
 type EditCustomerProps = {
   customer: PopulatedCustomer

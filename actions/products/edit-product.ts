@@ -3,13 +3,11 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { productSchema } from "@/lib/validations/product-validation"
+import {
+  partialProductSchema,
+  PartialProductSchema,
+} from "@/lib/validations/product-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-const partialProductSchema = productSchema.partial()
-
-type PartialProductSchema = z.infer<typeof partialProductSchema>
 
 export async function editProduct({
   id,

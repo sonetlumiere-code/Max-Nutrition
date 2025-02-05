@@ -3,18 +3,15 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { roleSchema } from "@/lib/validations/role-validation"
+import { RoleSchema, roleSchema } from "@/lib/validations/role-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type RoleShema = z.infer<typeof roleSchema>
 
 export async function editRole({
   id,
   values,
 }: {
   id: string
-  values: RoleShema
+  values: RoleSchema
 }) {
   const session = await auth()
   const user = session?.user

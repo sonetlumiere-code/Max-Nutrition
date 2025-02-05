@@ -8,3 +8,5 @@ export const loginSchema = z.object({
     message: "Mínimo 6 caracteres son requeridos.",
   }),
 })
+
+export type LoginSchema = z.infer<typeof loginSchema>

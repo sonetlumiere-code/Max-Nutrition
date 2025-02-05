@@ -9,3 +9,5 @@ export const shippingSettingsSchema = z.object({
     .number()
     .min(0, { message: "El valor debe ser numerico, mínimo 0." }),
 })
+
+export type ShippingSettingsSchema = z.infer<typeof shippingSettingsSchema>

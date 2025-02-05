@@ -2,12 +2,14 @@
 
 import { createCategory } from "@/actions/categories/create-category"
 import { toast } from "@/components/ui/use-toast"
-import { categorySchema } from "@/lib/validations/category-validation"
+import {
+  CategorySchema,
+  categorySchema,
+} from "@/lib/validations/category-validation"
 import { PopulatedProduct } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
@@ -21,8 +23,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { MultiSelect } from "@/components/multi-select"
-
-type CategorySchema = z.infer<typeof categorySchema>
 
 type CreateCategoryProps = {
   products: PopulatedProduct[] | null

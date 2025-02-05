@@ -3,11 +3,11 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { ingredientSchema } from "@/lib/validations/ingredient-validation"
+import {
+  IngredientSchema,
+  ingredientSchema,
+} from "@/lib/validations/ingredient-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type IngredientSchema = z.infer<typeof ingredientSchema>
 
 export async function editIngredient({
   id,

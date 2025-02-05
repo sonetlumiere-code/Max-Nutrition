@@ -3,18 +3,18 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { shopSettingsSchema } from "@/lib/validations/shop-settings-validation"
+import {
+  ShopSettingsSchema,
+  shopSettingsSchema,
+} from "@/lib/validations/shop-settings-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type SettingsSchema = z.infer<typeof shopSettingsSchema>
 
 export async function editSettings({
   id,
   values,
 }: {
   id: string
-  values: SettingsSchema
+  values: ShopSettingsSchema
 }) {
   const session = await auth()
   const user = session?.user

@@ -3,11 +3,11 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { categorySchema } from "@/lib/validations/category-validation"
+import {
+  CategorySchema,
+  categorySchema,
+} from "@/lib/validations/category-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type CategorySchema = z.infer<typeof categorySchema>
 
 export async function createCategory(values: CategorySchema) {
   const session = await auth()

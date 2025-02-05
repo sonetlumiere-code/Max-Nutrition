@@ -32,15 +32,15 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/use-toast"
-import { productSchema } from "@/lib/validations/product-validation"
+import {
+  ProductSchema,
+  productSchema,
+} from "@/lib/validations/product-validation"
 import { PopulatedProduct, PopulatedRecipe } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Category } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-type ProductSchema = z.infer<typeof productSchema>
 
 type EditProductProps = {
   product: PopulatedProduct

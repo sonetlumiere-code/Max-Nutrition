@@ -6,12 +6,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { partialOrderSchema } from "@/lib/validations/order-validation"
+import {
+  PartialOrderSchema,
+  partialOrderSchema,
+} from "@/lib/validations/order-validation"
 import { PopulatedOrder } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Dispatch, SetStateAction } from "react"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import {
   Select,
   SelectContent,
@@ -31,8 +33,6 @@ type EditOrderFormProps = {
   order: PopulatedOrder
   setOpen: Dispatch<SetStateAction<boolean>>
 }
-
-type PartialOrderSchema = z.infer<typeof partialOrderSchema>
 
 const EditOrderForm = ({ order, setOpen }: EditOrderFormProps) => {
   const form = useForm({

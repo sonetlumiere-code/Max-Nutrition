@@ -7,3 +7,5 @@ export const shippingZoneSchema = z.object({
   cost: z.coerce.number(),
   isActive: z.boolean(),
 })
+
+export type ShippingZoneSchema = z.infer<typeof shippingZoneSchema>

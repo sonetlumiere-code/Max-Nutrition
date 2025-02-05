@@ -1,7 +1,6 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { loginSchema } from "@/lib/validations/login-validation"
+import { LoginSchema, loginSchema } from "@/lib/validations/login-validation"
 import { login } from "@/actions/auth/login"
 import { Icons } from "@/components/icons"
 import GoogleAuth from "@/components/auth/google-auth"
@@ -39,7 +38,7 @@ const LoginForm = ({ redirectTo }: LoginFormProps) => {
       ? "El email ya se encuentra registrado."
       : ""
 
-  const form = useForm<z.infer<typeof loginSchema>>({
+  const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -52,7 +51,7 @@ const LoginForm = ({ redirectTo }: LoginFormProps) => {
     formState: { isSubmitting },
   } = form
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
+  async function onSubmit(values: LoginSchema) {
     setError("")
     setSuccess("")
 

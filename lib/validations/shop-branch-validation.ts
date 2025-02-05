@@ -39,3 +39,9 @@ export const shopBranchSchema = z.object({
   isActive: z.boolean().optional().default(true),
   operationalHours: z.array(operationalHoursSchema).optional(),
 })
+
+export type ShopBranchSchema = z.infer<typeof shopBranchSchema>
+
+export const partialShopBranchSchema = shopBranchSchema.partial()
+
+export type PartialShopBranchSchema = z.infer<typeof partialShopBranchSchema>

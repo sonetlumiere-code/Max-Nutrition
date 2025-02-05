@@ -1,7 +1,6 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { signupSchema } from "@/lib/validations/signup-validation"
+import { SignupSchema, signupSchema } from "@/lib/validations/signup-validation"
 import { signUp } from "@/actions/auth/signup"
 import { Icons } from "@/components/icons"
 import GoogleAuth from "@/components/auth/google-auth"
@@ -27,7 +26,7 @@ const SignUpForm = () => {
   const [success, setSuccess] = useState<string>("")
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
 
-  const form = useForm<z.infer<typeof signupSchema>>({
+  const form = useForm<SignupSchema>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       name: "",
@@ -41,7 +40,7 @@ const SignUpForm = () => {
     handleSubmit,
   } = form
 
-  async function onSubmit(values: z.infer<typeof signupSchema>) {
+  async function onSubmit(values: SignupSchema) {
     setError("")
     setSuccess("")
 

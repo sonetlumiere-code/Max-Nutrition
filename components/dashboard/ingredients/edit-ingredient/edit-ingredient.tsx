@@ -12,9 +12,11 @@ import {
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { ingredientSchema } from "@/lib/validations/ingredient-validation"
+import {
+  IngredientSchema,
+  ingredientSchema,
+} from "@/lib/validations/ingredient-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { editIngredient } from "@/actions/ingredients/edit-ingredient"
@@ -28,8 +30,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { translateUnit } from "@/helpers/helpers"
-
-type IngredientSchema = z.infer<typeof ingredientSchema>
 
 type EditIngredientProps = {
   ingredient: Ingredient

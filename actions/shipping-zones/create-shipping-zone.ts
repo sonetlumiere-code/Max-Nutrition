@@ -3,13 +3,13 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { shippingZoneSchema } from "@/lib/validations/shipping-zone-validation"
+import {
+  ShippingZoneSchema,
+  shippingZoneSchema,
+} from "@/lib/validations/shipping-zone-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
-
-type ShippingZoneSchema = z.infer<typeof shippingZoneSchema>
 
 export async function createShippingZone(values: ShippingZoneSchema) {
   if (!shopSettingsId) {

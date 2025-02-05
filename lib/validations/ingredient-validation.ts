@@ -22,3 +22,5 @@ export const ingredientSchema = z.object({
   fats: z.coerce.number(),
   fiber: z.coerce.number(),
 })
+
+export type IngredientSchema = z.infer<typeof ingredientSchema>

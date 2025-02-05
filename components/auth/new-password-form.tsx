@@ -1,7 +1,6 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -19,7 +18,10 @@ import FormSuccess from "@/components/auth/form-success"
 import { useState } from "react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { newPasswordSchema } from "@/lib/validations/new-password-validation"
+import {
+  NewPasswordSchema,
+  newPasswordSchema,
+} from "@/lib/validations/new-password-validation"
 import { useSearchParams } from "next/navigation"
 import { newPassword } from "@/actions/auth/new-password"
 
@@ -31,7 +33,7 @@ const NewPasswordForm = () => {
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
 
-  const form = useForm<z.infer<typeof newPasswordSchema>>({
+  const form = useForm<NewPasswordSchema>({
     resolver: zodResolver(newPasswordSchema),
     defaultValues: {
       password: "",
@@ -43,7 +45,7 @@ const NewPasswordForm = () => {
     formState: { isSubmitting },
   } = form
 
-  async function onSubmit(values: z.infer<typeof newPasswordSchema>) {
+  async function onSubmit(values: NewPasswordSchema) {
     setError("")
     setSuccess("")
 

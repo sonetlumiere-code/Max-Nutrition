@@ -11,3 +11,5 @@ export const signupSchema = z.object({
     .string()
     .min(6, { message: "Mínimo 6 caracteres son requeridos." }),
 })
+
+export type SignupSchema = z.infer<typeof signupSchema>

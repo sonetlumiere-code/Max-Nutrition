@@ -4,16 +4,15 @@ import { signIn } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
 import { sendVerificationEmail } from "@/lib/mail/mail"
 import { generateVerificationToken } from "@/lib/token/token"
-import { loginSchema } from "@/lib/validations/login-validation"
+import { LoginSchema, loginSchema } from "@/lib/validations/login-validation"
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
 import { AuthError } from "next-auth"
-import { z } from "zod"
 
 export const login = async ({
   values,
   redirectTo,
 }: {
-  values: z.infer<typeof loginSchema>
+  values: LoginSchema
   redirectTo?: string
 }) => {
   const validatedFields = loginSchema.safeParse(values)

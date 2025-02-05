@@ -35,7 +35,10 @@ import {
   translatePaymentMethod,
   translateShippingMethod,
 } from "@/helpers/helpers"
-import { promotionSchema } from "@/lib/validations/promotion-validation"
+import {
+  PromotionSchema,
+  promotionSchema,
+} from "@/lib/validations/promotion-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Category,
@@ -45,9 +48,6 @@ import {
 } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
-
-type PromotionSchema = z.infer<typeof promotionSchema>
 
 const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
   const router = useRouter()

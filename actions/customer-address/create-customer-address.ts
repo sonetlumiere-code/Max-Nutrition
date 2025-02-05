@@ -3,12 +3,12 @@
 import { getCustomer } from "@/data/customer"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
+import {
+  CustomerAddressSchema,
+  customerAddressSchema,
+} from "@/lib/validations/customer-address-validation"
 import { CustomerAddressLabel } from "@prisma/client"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
-
-type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
 export async function createCustomerAddress(values: CustomerAddressSchema) {
   const session = await auth()

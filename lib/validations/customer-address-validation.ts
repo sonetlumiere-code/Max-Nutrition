@@ -31,3 +31,5 @@ export const customerAddressSchema = z
       path: ["labelString"],
     }
   )
+
+export type CustomerAddressSchema = z.infer<typeof customerAddressSchema>

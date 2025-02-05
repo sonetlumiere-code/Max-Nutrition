@@ -20,15 +20,15 @@ import {
 } from "@/components/ui/popover"
 import { toast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
-import { customerSchema } from "@/lib/validations/customer-validation"
+import {
+  CustomerSchema,
+  customerSchema,
+} from "@/lib/validations/customer-validation"
 import { PopulatedCustomer } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { Dispatch, SetStateAction } from "react"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-type CustomerSchema = z.infer<typeof customerSchema>
 
 type CustomerEditPersonalInfoFormProps = {
   customer: PopulatedCustomer

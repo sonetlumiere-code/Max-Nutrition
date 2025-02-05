@@ -61,3 +61,5 @@ export const promotionSchema = z
       })
     }
   })
+
+export type PromotionSchema = z.infer<typeof promotionSchema>

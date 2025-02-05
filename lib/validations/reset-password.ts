@@ -5,3 +5,5 @@ export const resetPasswordSchema = z.object({
     message: "El email es requerido.",
   }),
 })
+
+export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>

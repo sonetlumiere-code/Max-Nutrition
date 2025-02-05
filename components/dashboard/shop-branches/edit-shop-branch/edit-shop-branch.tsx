@@ -18,10 +18,12 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { toast } from "@/components/ui/use-toast"
-import { shopBranchSchema } from "@/lib/validations/shop-branch-validation"
+import {
+  ShopBranchSchema,
+  shopBranchSchema,
+} from "@/lib/validations/shop-branch-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { useRouter } from "next/navigation"
 import { Icons } from "@/components/icons"
 import { Switch } from "@/components/ui/switch"
@@ -43,8 +45,6 @@ import { translateDayOfWeek } from "@/helpers/helpers"
 type EditShopBranchProps = {
   shopBranch: PopulatedShopBranch
 }
-
-type ShopBranchSchema = z.infer<typeof shopBranchSchema>
 
 const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
 

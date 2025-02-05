@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
 import { toast } from "@/components/ui/use-toast"
-import { shopSettingsSchema } from "@/lib/validations/shop-settings-validation"
+import {
+  ShopSettingsSchema,
+  shopSettingsSchema,
+} from "@/lib/validations/shop-settings-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ShopSettings } from "@prisma/client"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-type ShopSettingsSchema = z.infer<typeof shopSettingsSchema>
 
 type EditShopSettingsProps = {
   settings: ShopSettings

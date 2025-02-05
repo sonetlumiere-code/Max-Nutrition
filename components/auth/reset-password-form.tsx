@@ -1,7 +1,6 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -17,7 +16,10 @@ import { Icons } from "@/components/icons"
 import FormError from "@/components/auth/form-error"
 import FormSuccess from "@/components/auth/form-success"
 import { useState } from "react"
-import { resetPasswordSchema } from "@/lib/validations/reset-password"
+import {
+  ResetPasswordSchema,
+  resetPasswordSchema,
+} from "@/lib/validations/reset-password"
 import { resetPassword } from "@/actions/auth/reset-password"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -26,7 +28,7 @@ const ResetPasswordForm = () => {
   const [error, setError] = useState<string>("")
   const [success, setSuccess] = useState<string>("")
 
-  const form = useForm<z.infer<typeof resetPasswordSchema>>({
+  const form = useForm<ResetPasswordSchema>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       email: "",
@@ -38,7 +40,7 @@ const ResetPasswordForm = () => {
     formState: { isSubmitting },
   } = form
 
-  async function onSubmit(values: z.infer<typeof resetPasswordSchema>) {
+  async function onSubmit(values: ResetPasswordSchema) {
     setError("")
     setSuccess("")
 

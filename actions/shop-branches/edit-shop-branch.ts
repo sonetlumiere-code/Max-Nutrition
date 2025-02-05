@@ -3,15 +3,13 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import prisma from "@/lib/db/db"
-import { shopBranchSchema } from "@/lib/validations/shop-branch-validation"
+import {
+  partialShopBranchSchema,
+  PartialShopBranchSchema,
+} from "@/lib/validations/shop-branch-validation"
 import { revalidatePath } from "next/cache"
-import { z } from "zod"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
-
-const partialShopBranchSchema = shopBranchSchema.partial()
-
-type PartialShopBranchSchema = z.infer<typeof partialShopBranchSchema>
 
 export async function editShopBranch({
   id,

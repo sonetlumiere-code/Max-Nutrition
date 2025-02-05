@@ -15,14 +15,14 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import { categorySchema } from "@/lib/validations/category-validation"
+import {
+  CategorySchema,
+  categorySchema,
+} from "@/lib/validations/category-validation"
 import { PopulatedCategory, PopulatedProduct } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-type CategorySchema = z.infer<typeof categorySchema>
 
 type EditCategoryProps = {
   category: PopulatedCategory

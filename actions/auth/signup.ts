@@ -1,13 +1,12 @@
 "use server"
 
-import { signupSchema } from "@/lib/validations/signup-validation"
-import { z } from "zod"
+import { SignupSchema, signupSchema } from "@/lib/validations/signup-validation"
 import bcrypt from "bcryptjs"
 import prisma from "@/lib/db/db"
 import { generateVerificationToken } from "@/lib/token/token"
 import { sendVerificationEmail } from "@/lib/mail/mail"
 
-export const signUp = async (values: z.infer<typeof signupSchema>) => {
+export const signUp = async (values: SignupSchema) => {
   const validatedFields = signupSchema.safeParse(values)
 
   if (!validatedFields.success) {

@@ -2,12 +2,14 @@
 
 import { editCustomerAddress } from "@/actions/customer-address/edit-customer-address"
 import { toast } from "@/components/ui/use-toast"
-import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
+import {
+  CustomerAddressSchema,
+  customerAddressSchema,
+} from "@/lib/validations/customer-address-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CustomerAddressLabel, CustomerAddress } from "@prisma/client"
 import { Dispatch, SetStateAction } from "react"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import {
   Form,
   FormControl,
@@ -32,8 +34,6 @@ import MunicipalitySelect from "@/components/municipality-select"
 import LocalitySelect from "@/components/locality-select"
 import AsyncSelectAddress from "@/components/async-search-address"
 import { ScrollArea } from "@/components/ui/scroll-area"
-
-type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
 type CustomerEditAddressFormProps = {
   address: CustomerAddress

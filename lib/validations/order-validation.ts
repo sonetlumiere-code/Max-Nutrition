@@ -67,3 +67,5 @@ export const orderSchema = coreOrderSchema
 export const partialOrderSchema = coreOrderSchema.partial()
 
 export type OrderSchema = z.infer<typeof orderSchema>
+
+export type PartialOrderSchema = z.infer<typeof partialOrderSchema>

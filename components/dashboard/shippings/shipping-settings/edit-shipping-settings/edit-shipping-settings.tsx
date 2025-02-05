@@ -23,13 +23,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { translateShippingMethod } from "@/helpers/helpers"
-import { shippingSettingsSchema } from "@/lib/validations/shipping-settings-validation"
+import {
+  ShippingSettingsSchema,
+  shippingSettingsSchema,
+} from "@/lib/validations/shipping-settings-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ShippingMethod, ShippingSettings } from "@prisma/client"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-type ShippingSettingsSchema = z.infer<typeof shippingSettingsSchema>
 
 type EditShippingSettingsProps = {
   shippingSettings: ShippingSettings

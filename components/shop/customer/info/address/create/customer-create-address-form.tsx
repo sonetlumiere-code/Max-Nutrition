@@ -26,14 +26,14 @@ import {
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
 import { translateAddressLabel } from "@/helpers/helpers"
-import { customerAddressSchema } from "@/lib/validations/customer-address-validation"
+import {
+  CustomerAddressSchema,
+  customerAddressSchema,
+} from "@/lib/validations/customer-address-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CustomerAddressLabel } from "@prisma/client"
 import { Dispatch, SetStateAction } from "react"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-type CustomerAddressSchema = z.infer<typeof customerAddressSchema>
 
 type CustomerCreateAddressFormProps = {
   setOpen: Dispatch<SetStateAction<boolean>>
