@@ -188,7 +188,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                                     <Input
                                       type='number'
                                       min={0}
-                                      step={0.1}
+                                      step={0.01}
                                       placeholder='Cantidad'
                                       disabled={isSubmitting}
                                       {...field}

@@ -11,7 +11,7 @@ export const recipeSchema = z
           .min(1, { message: "Selecciona el ingrediente." }),
         quantity: z.coerce
           .number()
-          .min(0.1, { message: "Ingresa la cantidad." }),
+          .min(0.01, { message: "Ingresa la cantidad." }),
       })
     ),
   })
