@@ -38,7 +38,7 @@ export async function editRecipe({
       data: {
         name,
         description,
-        ingredients: {
+        recipeIngredients: {
           deleteMany: {},
           create: ingredients.map((ingredient) => ({
             ingredientId: ingredient.ingredientId,
@@ -47,7 +47,7 @@ export async function editRecipe({
         },
       },
       include: {
-        ingredients: true,
+        recipeIngredients: true,
       },
     })
 

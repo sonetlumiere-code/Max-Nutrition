@@ -42,7 +42,7 @@ const fetchOrders = async () => {
             include: {
               recipe: {
                 include: {
-                  ingredients: {
+                  recipeIngredients: {
                     include: {
                       ingredient: true,
                     },

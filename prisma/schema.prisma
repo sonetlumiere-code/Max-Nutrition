@@ -224,7 +224,7 @@ model Recipe {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  ingredients RecipeIngredient[]
+  recipeIngredients RecipeIngredient[]
   product     Product?
 
   @@map("recipes")

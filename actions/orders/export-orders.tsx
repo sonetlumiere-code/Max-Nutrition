@@ -97,7 +97,7 @@ export const exportOrdersToExcel = (
       const product = item.product
       const recipe = product.recipe
 
-      recipe?.ingredients?.forEach((ingredientEntry) => {
+      recipe?.recipeIngredients?.forEach((ingredientEntry) => {
         const ingredient = ingredientEntry.ingredient
         const baseQuantity = ingredientEntry.quantity * item.quantity
 
@@ -165,7 +165,7 @@ export const exportOrdersToExcel = (
           ingredientTotals: [],
         }
 
-        recipe.ingredients?.forEach((ingredientEntry) => {
+        recipe.recipeIngredients?.forEach((ingredientEntry) => {
           const ingredient = ingredientEntry.ingredient
           const baseQuantity = ingredientEntry.quantity * item.quantity
 
@@ -191,7 +191,7 @@ export const exportOrdersToExcel = (
       } else {
         recipeSummary[product.id].totalQuantitySold += item.quantity
 
-        recipe.ingredients?.forEach((ingredientEntry) => {
+        recipe.recipeIngredients?.forEach((ingredientEntry) => {
           const ingredient = ingredientEntry.ingredient
           const baseQuantity = ingredientEntry.quantity * item.quantity
 

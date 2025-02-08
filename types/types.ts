@@ -38,7 +38,7 @@ export type PopulatedRole = Role & {
 }
 
 export type PopulatedRecipe = Recipe & {
-  ingredients?: PopulatedRecipeIngredient[]
+  recipeIngredients?: PopulatedRecipeIngredient[]
   product?: Product
 }
 

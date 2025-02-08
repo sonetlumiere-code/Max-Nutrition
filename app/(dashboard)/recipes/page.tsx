@@ -62,7 +62,7 @@ export default async function RecipesPage() {
 
   const recipes = await getRecipes({
     include: {
-      ingredients: {
+      recipeIngredients: {
         include: {
           ingredient: true,
         },
@@ -158,9 +158,9 @@ export default async function RecipesPage() {
                     </TableCell>
                     <TableCell>
                       $
-                      {calculateRecipeCostWithWaste(recipe.ingredients).toFixed(
-                        2
-                      )}
+                      {calculateRecipeCostWithWaste(
+                        recipe.recipeIngredients
+                      ).toFixed(2)}
                     </TableCell>
                     {(userPermissionsKeys.includes("update:recipes") ||
                       userPermissionsKeys.includes("delete:recipes")) && (

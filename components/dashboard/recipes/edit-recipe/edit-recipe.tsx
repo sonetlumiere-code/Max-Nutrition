@@ -48,7 +48,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
     defaultValues: {
       name: recipe.name,
       description: recipe.description || "",
-      ingredients: recipe.ingredients,
+      ingredients: recipe.recipeIngredients,
     },
   })
 

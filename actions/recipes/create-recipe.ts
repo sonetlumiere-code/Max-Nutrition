@@ -31,7 +31,7 @@ export async function createRecipe(values: RecipeSchema) {
       data: {
         name,
         description,
-        ingredients: {
+        recipeIngredients: {
           create: ingredients.map((ingredient) => ({
             ingredientId: ingredient.ingredientId,
             quantity: ingredient.quantity,
@@ -39,7 +39,7 @@ export async function createRecipe(values: RecipeSchema) {
         },
       },
       include: {
-        ingredients: true,
+        recipeIngredients: true,
       },
     })
 

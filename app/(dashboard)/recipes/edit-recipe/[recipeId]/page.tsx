@@ -36,7 +36,7 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
   const [recipe, ingredients] = await Promise.all([
     getRecipe({
       where: { id: recipeId },
-      include: { ingredients: true },
+      include: { recipeIngredients: true },
     }),
     getIngredients({
       orderBy: {
