@@ -209,7 +209,7 @@ model Ingredient {
   updatedAt            DateTime @updatedAt
 
   measurement Measurement
-  recipes     RecipeIngredient[]
+  recipeIngredients     RecipeIngredient[]
 
   @@map("ingredients")
 }

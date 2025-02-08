@@ -40,7 +40,6 @@ import {
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { PopulatedRecipeIngredient } from "@/types/types"
-import { RecipeIngredient } from "@prisma/client"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
