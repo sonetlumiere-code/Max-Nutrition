@@ -260,7 +260,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
               </fieldset>
 
               <p className='text-xs text-end'>
-                Costo de la receta: ${recipeCost}
+                Costo de la receta: <b>${recipeCost.toFixed(2)}</b>
               </p>
             </div>
           </CardContent>
