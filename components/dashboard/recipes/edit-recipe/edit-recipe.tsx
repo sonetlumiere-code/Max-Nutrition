@@ -24,8 +24,8 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import {
+  calculateIngredientData,
   getBaseMeasurement,
-  getMeasurementConversionFactor,
   translateUnit,
 } from "@/helpers/helpers"
 import { RecipeSchema, recipeSchema } from "@/lib/validations/recipe-validation"
@@ -84,15 +84,17 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
     }
   }
 
-  const recipeCost = watch("ingredients").reduce((acc, curr) => {
+  const recipeCostWithWaste = watch("ingredients").reduce((acc, curr) => {
     const ingredient = ingredients?.find((i) => i.id === curr.ingredientId)
     if (!ingredient) return acc
-    const conversionFactor = getMeasurementConversionFactor(
-      ingredient.measurement
-    )
-    const costPerBaseUnit =
-      ingredient.price / (ingredient.amountPerMeasurement * conversionFactor)
-    return acc + costPerBaseUnit * curr.quantity
+
+    const { cost } = calculateIngredientData({
+      ingredient,
+      quantity: curr.quantity,
+      withWaste: true,
+    })
+
+    return acc + cost
   }, 0)
 
   return (
@@ -260,7 +262,8 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
               </fieldset>
 
               <p className='text-xs text-end'>
-                Costo de la receta: <b>${recipeCost.toFixed(2)}</b>
+                Costo de la receta c/desperdicio:{" "}
+                <b>${recipeCostWithWaste.toFixed(2)}</b>
               </p>
             </div>
           </CardContent>

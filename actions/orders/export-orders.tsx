@@ -102,14 +102,18 @@ export const exportOrdersToExcel = (
         const baseQuantity = ingredientEntry.quantity * item.quantity
 
         if (ingredient) {
-          const { adjustedQuantity, totalQuantity, cost, waste } =
-            calculateIngredientData(ingredient, baseQuantity)
+          const { adjustedQuantity, totalQuantity, cost } =
+            calculateIngredientData({
+              ingredient,
+              quantity: baseQuantity,
+              withWaste: true,
+            })
 
           if (ingredientTotals[ingredient.id]) {
             ingredientTotals[ingredient.id].baseQuantity += adjustedQuantity
             ingredientTotals[ingredient.id].totalQuantity += totalQuantity
             ingredientTotals[ingredient.id].cost += cost
-            ingredientTotals[ingredient.id].waste = waste
+            ingredientTotals[ingredient.id].waste = ingredient.waste
           } else {
             ingredientTotals[ingredient.id] = {
               ingredientId: ingredient.id,
@@ -118,7 +122,7 @@ export const exportOrdersToExcel = (
               baseQuantity: adjustedQuantity,
               totalQuantity,
               cost,
-              waste,
+              waste: ingredient.waste,
             }
           }
         }
@@ -166,8 +170,12 @@ export const exportOrdersToExcel = (
           const baseQuantity = ingredientEntry.quantity * item.quantity
 
           if (ingredient) {
-            const { adjustedQuantity, totalQuantity, cost, waste } =
-              calculateIngredientData(ingredient, baseQuantity)
+            const { adjustedQuantity, totalQuantity, cost } =
+              calculateIngredientData({
+                ingredient,
+                quantity: baseQuantity,
+                withWaste: true,
+              })
 
             recipeSummary[product.id].ingredientTotals.push({
               ingredientId: ingredient.id,
@@ -175,7 +183,7 @@ export const exportOrdersToExcel = (
               baseQuantity: adjustedQuantity,
               totalQuantity,
               cost,
-              waste,
+              waste: ingredient.waste,
               measurement: ingredient.measurement,
             })
           }
@@ -188,8 +196,12 @@ export const exportOrdersToExcel = (
           const baseQuantity = ingredientEntry.quantity * item.quantity
 
           if (ingredient) {
-            const { adjustedQuantity, totalQuantity, cost, waste } =
-              calculateIngredientData(ingredient, baseQuantity)
+            const { adjustedQuantity, totalQuantity, cost } =
+              calculateIngredientData({
+                ingredient,
+                quantity: baseQuantity,
+                withWaste: true,
+              })
 
             const existingIngredient = recipeSummary[
               product.id
@@ -201,7 +213,7 @@ export const exportOrdersToExcel = (
               existingIngredient.baseQuantity += adjustedQuantity
               existingIngredient.totalQuantity += totalQuantity
               existingIngredient.cost += cost
-              existingIngredient.waste = waste
+              existingIngredient.waste = ingredient.waste
             } else {
               recipeSummary[product.id].ingredientTotals.push({
                 ingredientId: ingredient.id,
@@ -209,7 +221,7 @@ export const exportOrdersToExcel = (
                 baseQuantity: adjustedQuantity,
                 totalQuantity,
                 cost,
-                waste,
+                waste: ingredient.waste,
                 measurement: ingredient.measurement,
               })
             }

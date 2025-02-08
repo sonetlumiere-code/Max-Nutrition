@@ -298,10 +298,15 @@ export function getBaseMeasurement(measurement: Measurement): BaseMeasurement {
   }
 }
 
-export const calculateIngredientData = (
-  ingredient: Ingredient,
+export const calculateIngredientData = ({
+  ingredient,
+  quantity,
+  withWaste = true,
+}: {
+  ingredient: Ingredient
   quantity: number
-) => {
+  withWaste: boolean
+}) => {
   const baseMeasurement = getBaseMeasurement(ingredient.measurement)
 
   const conversionRate =
@@ -313,8 +318,9 @@ export const calculateIngredientData = (
   const adjustedPrice =
     ingredient.price / (ingredient.amountPerMeasurement || 1)
 
-  const wasteMultiplier = 1 + ingredient.waste / 100
-  const totalQuantity = adjustedQuantity * wasteMultiplier
+  const totalQuantity = withWaste
+    ? adjustedQuantity * (1 + ingredient.waste / 100)
+    : adjustedQuantity
 
   const cost = totalQuantity * adjustedPrice
 
@@ -323,7 +329,6 @@ export const calculateIngredientData = (
     adjustedPrice,
     totalQuantity,
     cost,
-    waste: ingredient.waste,
   }
 }
 

@@ -32,9 +32,15 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getRecipes } from "@/data/recipes"
-import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
+import {
+  calculateIngredientData,
+  getPermissionsKeys,
+  hasPermission,
+} from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
+import { PopulatedRecipeIngredient } from "@/types/types"
+import { RecipeIngredient } from "@prisma/client"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -54,8 +60,35 @@ export default async function RecipesPage() {
     session?.user.role?.permissions
   )
 
-  const recipes = await getRecipes()
+  const recipes = await getRecipes({
+    include: {
+      ingredients: {
+        include: {
+          ingredient: true,
+        },
+      },
+    },
+  })
+
   const recipesLength = recipes?.length || 0
+
+  const calculateRecipeCostWithWaste = (
+    recipeIngredients: PopulatedRecipeIngredient[] | undefined
+  ) => {
+    if (!recipeIngredients) return 0
+
+    return recipeIngredients.reduce((acc, curr) => {
+      const { ingredient, quantity } = curr
+
+      const { cost } = calculateIngredientData({
+        ingredient,
+        quantity,
+        withWaste: true,
+      })
+
+      return acc + cost
+    }, 0)
+  }
 
   return (
     <>
@@ -108,6 +141,9 @@ export default async function RecipesPage() {
                   <TableHead className='hidden md:table-cell'>
                     Descripción
                   </TableHead>
+                  <TableHead className='hidden md:table-cell'>
+                    Costo c/ desperdicio
+                  </TableHead>
                   <TableHead className='text-end'>
                     <span>Acciones</span>
                   </TableHead>
@@ -119,6 +155,12 @@ export default async function RecipesPage() {
                     <TableCell>{recipe.name}</TableCell>
                     <TableCell className='max-w-28 hidden md:table-cell'>
                       <p className='truncate'>{recipe.description}</p>
+                    </TableCell>
+                    <TableCell>
+                      $
+                      {calculateRecipeCostWithWaste(recipe.ingredients).toFixed(
+                        2
+                      )}
                     </TableCell>
                     {(userPermissionsKeys.includes("update:recipes") ||
                       userPermissionsKeys.includes("delete:recipes")) && (
