@@ -23,7 +23,11 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import { getBaseMeasurement, translateUnit } from "@/helpers/helpers"
+import {
+  getBaseMeasurement,
+  getMeasurementConversionFactor,
+  translateUnit,
+} from "@/helpers/helpers"
 import { RecipeSchema, recipeSchema } from "@/lib/validations/recipe-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Ingredient } from "@prisma/client"
@@ -77,6 +81,17 @@ const CreateRecipe = ({
       })
     }
   }
+
+  const recipeCost = watch("ingredients").reduce((acc, curr) => {
+    const ingredient = ingredients?.find((i) => i.id === curr.ingredientId)
+    if (!ingredient) return acc
+    const conversionFactor = getMeasurementConversionFactor(
+      ingredient.measurement
+    )
+    const costPerBaseUnit =
+      ingredient.price / (ingredient.amountPerMeasurement * conversionFactor)
+    return acc + costPerBaseUnit * curr.quantity
+  }, 0)
 
   return (
     <Form {...form}>
@@ -241,6 +256,10 @@ const CreateRecipe = ({
                   )}
                 </div>
               </fieldset>
+
+              <p className='text-xs text-end'>
+                Costo de la receta: ${recipeCost}
+              </p>
             </div>
           </CardContent>
           <CardFooter>
