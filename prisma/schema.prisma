@@ -179,6 +179,7 @@ model CustomerAddress {
   label    CustomerAddressLabel
   order    Order[]
 
+  @@unique([customerId, label, labelString])
   @@map("customer_addresses")
 }
 

@@ -25,12 +25,14 @@ import { Icons } from "@/components/icons"
 
 type CustomerEditAddressProps = {
   address: CustomerAddress
+  customerAddresses: CustomerAddress[]
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const CustomerEditAddress = ({
   address,
+  customerAddresses,
   open,
   setOpen,
 }: CustomerEditAddressProps) => {
@@ -44,7 +46,11 @@ const CustomerEditAddress = ({
             <DialogTitle>Editar dirección</DialogTitle>
             <DialogDescription>Editar dirección</DialogDescription>
             <div className='py-4'>
-              <CustomerEditAddressForm address={address} setOpen={setOpen} />
+              <CustomerEditAddressForm
+                address={address}
+                setOpen={setOpen}
+                customerAddresses={customerAddresses}
+              />
             </div>
           </DialogHeader>
         </DialogContent>
@@ -60,7 +66,11 @@ const CustomerEditAddress = ({
           <DrawerDescription>Editar dirección</DrawerDescription>
         </DrawerHeader>
         <div className='p-4'>
-          <CustomerEditAddressForm address={address} setOpen={setOpen} />
+          <CustomerEditAddressForm
+            address={address}
+            setOpen={setOpen}
+            customerAddresses={customerAddresses}
+          />
         </div>
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>

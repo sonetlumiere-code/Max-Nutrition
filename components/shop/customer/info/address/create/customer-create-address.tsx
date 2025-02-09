@@ -23,12 +23,17 @@ import {
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { ReactNode, useState } from "react"
 import CustomerCreateAddressForm from "./customer-create-address-form"
+import { PopulatedCustomer } from "@/types/types"
 
 type CustomerCreateAddressProps = {
   children: ReactNode
+  customer: PopulatedCustomer
 }
 
-const CustomerCreateAddress = ({ children }: CustomerCreateAddressProps) => {
+const CustomerCreateAddress = ({
+  children,
+  customer,
+}: CustomerCreateAddressProps) => {
   const [open, setOpen] = useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
@@ -43,7 +48,10 @@ const CustomerCreateAddress = ({ children }: CustomerCreateAddressProps) => {
               Agregá una dirección donde recibirás los pedidos
             </DialogDescription>
             <div className='py-4'>
-              <CustomerCreateAddressForm setOpen={setOpen} />
+              <CustomerCreateAddressForm
+                setOpen={setOpen}
+                customer={customer}
+              />
             </div>
             {/* <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
@@ -69,7 +77,7 @@ const CustomerCreateAddress = ({ children }: CustomerCreateAddressProps) => {
           </DrawerDescription>
         </DrawerHeader>
         <div className='p-4'>
-          <CustomerCreateAddressForm setOpen={setOpen} />
+          <CustomerCreateAddressForm setOpen={setOpen} customer={customer} />
         </div>
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>

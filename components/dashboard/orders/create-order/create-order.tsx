@@ -519,6 +519,7 @@ const CreateOrder = ({
                                   {selectedCustomer?.addresses?.map((a) => (
                                     <SelectItem key={a.id} value={a.id}>
                                       {translateAddressLabel(a.label)}
+                                      {` (${a.addressStreet} ${a.addressNumber})`}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>

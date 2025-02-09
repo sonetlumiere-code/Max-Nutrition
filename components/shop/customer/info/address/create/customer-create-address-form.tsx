@@ -30,6 +30,7 @@ import {
   CustomerAddressSchema,
   customerAddressSchema,
 } from "@/lib/validations/customer-address-validation"
+import { PopulatedCustomer } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CustomerAddressLabel } from "@prisma/client"
 import { Dispatch, SetStateAction } from "react"
@@ -37,12 +38,14 @@ import { useForm } from "react-hook-form"
 
 type CustomerCreateAddressFormProps = {
   setOpen: Dispatch<SetStateAction<boolean>>
+  customer: PopulatedCustomer
 }
 
 const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
 
 const CustomerCreateAddressForm = ({
   setOpen,
+  customer,
 }: CustomerCreateAddressFormProps) => {
   const form = useForm<CustomerAddressSchema>({
     resolver: zodResolver(customerAddressSchema),
@@ -55,7 +58,7 @@ const CustomerCreateAddressForm = ({
       addressFloor: 0,
       addressApartment: "",
       postCode: "",
-      label: CustomerAddressLabel.HOME,
+      label: undefined,
       labelString: "",
     },
   })
@@ -118,7 +121,15 @@ const CustomerCreateAddressForm = ({
                     <SelectContent>
                       {Object.entries(CustomerAddressLabel).map(
                         ([key, value]) => (
-                          <SelectItem key={key} value={value}>
+                          <SelectItem
+                            key={key}
+                            value={value}
+                            disabled={
+                              customer.addresses?.some(
+                                (address) => address.label === value
+                              ) && value !== "OTHER"
+                            }
+                          >
                             {translateAddressLabel(value)}
                           </SelectItem>
                         )

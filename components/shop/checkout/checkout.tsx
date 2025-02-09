@@ -319,7 +319,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                               Registrá tu dirección a continuación.
                             </p>
 
-                            <CustomerCreateAddress>
+                            <CustomerCreateAddress customer={customer}>
                               <Button type='button'>Agregar dirección</Button>
                             </CustomerCreateAddress>
                           </div>
@@ -335,7 +335,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                               </div>
                               <div className='ml-auto'>
                                 {customer && (
-                                  <CustomerCreateAddress>
+                                  <CustomerCreateAddress customer={customer}>
                                     <Button type='button'>
                                       Agregar dirección
                                     </Button>
@@ -363,6 +363,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                                       {customer?.addresses?.map((a) => (
                                         <SelectItem key={a.id} value={a.id}>
                                           {translateAddressLabel(a.label)}
+                                          {` (${a.addressStreet} ${a.addressNumber})`}
                                         </SelectItem>
                                       ))}
                                     </SelectContent>

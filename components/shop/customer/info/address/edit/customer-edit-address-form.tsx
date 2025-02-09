@@ -38,6 +38,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 type CustomerEditAddressFormProps = {
   address: CustomerAddress
   setOpen: Dispatch<SetStateAction<boolean>>
+  customerAddresses: CustomerAddress[]
 }
 
 const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
@@ -45,6 +46,7 @@ const provinces = ["Ciudad Autónoma de Buenos Aires", "Buenos Aires"] as const
 const CustomerEditAddressForm = ({
   address,
   setOpen,
+  customerAddresses,
 }: CustomerEditAddressFormProps) => {
   const form = useForm<CustomerAddressSchema>({
     resolver: zodResolver(customerAddressSchema),
@@ -133,7 +135,15 @@ const CustomerEditAddressForm = ({
                     <SelectContent>
                       {Object.entries(CustomerAddressLabel).map(
                         ([key, value]) => (
-                          <SelectItem key={key} value={value}>
+                          <SelectItem
+                            key={key}
+                            value={value}
+                            disabled={
+                              customerAddresses?.some(
+                                (address) => address.label === value
+                              ) && value !== "OTHER"
+                            }
+                          >
                             {translateAddressLabel(value)}
                           </SelectItem>
                         )

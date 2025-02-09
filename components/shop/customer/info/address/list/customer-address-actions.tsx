@@ -17,9 +17,13 @@ import DeleteCustomerAddress from "../delete/delete-customer-address"
 
 type CustomerAddressActionsProps = {
   address: CustomerAddress
+  customerAddresses: CustomerAddress[]
 }
 
-const CustomerAddressActions = ({ address }: CustomerAddressActionsProps) => {
+const CustomerAddressActions = ({
+  address,
+  customerAddresses,
+}: CustomerAddressActionsProps) => {
   const [openEditDialog, setOpenEditDialog] = useState(false)
 
   return (
@@ -46,6 +50,7 @@ const CustomerAddressActions = ({ address }: CustomerAddressActionsProps) => {
 
       <CustomerEditAddress
         address={address}
+        customerAddresses={customerAddresses}
         open={openEditDialog}
         setOpen={setOpenEditDialog}
       />

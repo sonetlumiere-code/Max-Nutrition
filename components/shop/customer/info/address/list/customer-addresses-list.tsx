@@ -11,10 +11,12 @@ import { CustomerAddressLabel, CustomerAddress } from "@prisma/client"
 import { Icons } from "@/components/icons"
 
 type CustomerAddressesListProps = {
-  addresses: CustomerAddress[]
+  customerAddresses: CustomerAddress[]
 }
 
-const CustomerAddressesList = ({ addresses }: CustomerAddressesListProps) => {
+const CustomerAddressesList = ({
+  customerAddresses,
+}: CustomerAddressesListProps) => {
   return (
     <Table>
       <TableHeader>
@@ -31,7 +33,7 @@ const CustomerAddressesList = ({ addresses }: CustomerAddressesListProps) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {addresses.map((address) => (
+        {customerAddresses.map((address) => (
           <TableRow key={address.id}>
             <TableCell>
               {getAddressLabelWithIcon(address.label, address.labelString)}
@@ -47,7 +49,10 @@ const CustomerAddressesList = ({ addresses }: CustomerAddressesListProps) => {
               {address.postCode}
             </TableCell>
             <TableCell className='text-end'>
-              <CustomerAddressActions address={address} />
+              <CustomerAddressActions
+                address={address}
+                customerAddresses={customerAddresses}
+              />
             </TableCell>
           </TableRow>
         ))}
