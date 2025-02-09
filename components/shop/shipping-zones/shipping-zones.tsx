@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import {
   Drawer,
   DrawerClose,
@@ -21,7 +22,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { ShippingZone } from "@prisma/client"
@@ -33,14 +33,59 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import SearchInput from "@/components/search-input"
 
 type ShippingZonesProps = {
-  children: ReactNode
+  children: React.ReactNode
   shippingZones: ShippingZone[]
 }
 
 const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
+  const [search, setSearch] = useState("")
+
+  const filteredZones = shippingZones.filter((zone) =>
+    zone.locality.toLowerCase().includes(search.toLowerCase())
+  )
+
+  const renderTable = () => (
+    <>
+      <div className='p-2'>
+        <SearchInput
+          placeholder='Buscar localidad...'
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Localidad</TableHead>
+            <TableHead className='text-right'>Costo</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredZones.length > 0 ? (
+            filteredZones.map((zone) => (
+              <TableRow key={zone.id}>
+                <TableCell className='text-xs md:text-sm'>
+                  {zone.locality}
+                </TableCell>
+                <TableCell className='text-right'>${zone.cost}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={2} className='text-center py-4'>
+                No se encontraron resultados
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </>
+  )
 
   if (isDesktop) {
     return (
@@ -52,26 +97,7 @@ const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
             <DialogDescription>Zonas de envío disponibles</DialogDescription>
           </DialogHeader>
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Zona</TableHead>
-                <TableHead className='text-right'>Costo</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {shippingZones.map((shippingZone) => (
-                <TableRow key={shippingZone.id}>
-                  <TableCell className='text-xs md:text-sm'>
-                    {shippingZone.locality}
-                  </TableCell>
-                  <TableCell className='text-right'>
-                    ${shippingZone.cost}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          {renderTable()}
 
           <DialogFooter className='flex flex-col'>
             <DialogClose asChild>
@@ -95,28 +121,7 @@ const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
             <DrawerDescription>Zonas de envío disponibles</DrawerDescription>
           </DrawerHeader>
 
-          <div className='space-y-3 p-4'>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Localidad</TableHead>
-                  <TableHead className='text-right'>Costo</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {shippingZones.map((shippingZone) => (
-                  <TableRow key={shippingZone.id}>
-                    <TableCell className='text-xs md:text-sm'>
-                      {shippingZone.locality}
-                    </TableCell>
-                    <TableCell className='text-right'>
-                      ${shippingZone.cost}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <div className='space-y-3 p-4'>{renderTable()}</div>
 
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             <DrawerClose asChild>

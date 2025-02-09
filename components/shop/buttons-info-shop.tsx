@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic"
 import { getPromotions } from "@/data/promotions"
-import { Icons } from "../icons"
-import { Card, CardContent } from "../ui/card"
+import { Icons } from "@/components/icons"
+import { Card, CardContent } from "@/components/ui/card"
 import { getShippingZones } from "@/data/shipping-zones"
 import ShippingZones from "./shipping-zones/shipping-zones"
 
