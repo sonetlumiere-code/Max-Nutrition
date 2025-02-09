@@ -134,7 +134,11 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
 
             <div className='flex justify-between'>
               <span className='text-muted-foreground'>Envío</span>
-              <span>${order.shippingCost || 0}</span>
+              <span>
+                {order.shippingCost
+                  ? `$${order.shippingCost.toFixed(2)}`
+                  : "Gratis"}
+              </span>
             </div>
 
             <div className='flex justify-between font-bold'>
