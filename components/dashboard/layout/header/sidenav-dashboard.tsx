@@ -7,6 +7,7 @@ import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
 import { Session } from "next-auth"
 import { getPermissionsKeys } from "@/helpers/helpers"
+import { Separator } from "@/components/ui/separator"
 
 type SideNavDashboardProps = {
   session: Session | null
@@ -22,7 +23,7 @@ export default function SideNavDashboard({ session }: SideNavDashboardProps) {
 
   return (
     <div className='hidden border-r bg-muted/40 md:block'>
-      <div className='flex h-full max-h-screen flex-col gap-2'>
+      <div className='flex h-full max-h-screen flex-col'>
         <div className='flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6'>
           <Link href='/' className='flex items-center gap-2 font-semibold'>
             <span className='sr-only'>HOME</span>
@@ -39,7 +40,7 @@ export default function SideNavDashboard({ session }: SideNavDashboardProps) {
           </Button> */}
         </div>
         <div className='flex-1'>
-          <nav className='grid items-start px-2 font-medium lg:px-4'>
+          <nav className='grid gap-1 items-start p-2 font-medium lg:p-4'>
             {navItems
               .filter((item) =>
                 userPermissionsKeys?.includes(item.permissionKey)
@@ -61,8 +62,8 @@ export default function SideNavDashboard({ session }: SideNavDashboardProps) {
                   </Link>
                 )
               })}
-            <hr />
           </nav>
+          <Separator />
         </div>
         {/* <div className='mt-auto p-4'>
           <OpenShopCard />
