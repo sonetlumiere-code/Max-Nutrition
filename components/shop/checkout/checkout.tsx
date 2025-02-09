@@ -50,6 +50,7 @@ import Summary from "@/components/shared/summary"
 import SelectedAddressInfo from "@/components/shared/selected-address-info"
 import AllowedDelivery from "@/components/shared/allowed-delivery"
 import ShopBranchField from "@/components/shared/shop-branch-field"
+import LoadingOverlay from "@/components/loading-overlay"
 
 type CheckoutProps = {
   customer: PopulatedCustomer
@@ -57,6 +58,7 @@ type CheckoutProps = {
 }
 
 const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false)
   const [isFulfilled, setIsFulfilled] = useState(false)
 
   const { items, setOpen, clearCart } = useCart()
@@ -136,6 +138,8 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
       return
     }
 
+    setIsPlacingOrder(true)
+
     const res = await createOrder({ values: data, sendEmail: true })
 
     if (res.success) {
@@ -152,6 +156,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
       })
       router.push(`/order-confirmed/${res.order.id}`)
     } else if (res.error) {
+      setIsPlacingOrder(false)
       toast({
         variant: "destructive",
         title: "Error creando pedido",
@@ -430,6 +435,8 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
           </form>
         </Form>
       )}
+
+      {isPlacingOrder && <LoadingOverlay message='Procesando tu pedido...' />}
     </>
   )
 }

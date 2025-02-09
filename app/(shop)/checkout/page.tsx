@@ -72,8 +72,8 @@ export default async function CheckoutPage() {
   }
 
   return (
-    <div className='space-y-6 w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
-      <div className='flex items-start'>
+    <div className='w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
+      <div className='flex items-start mb-6'>
         <Link
           href='/shop'
           className={cn(buttonVariants({ variant: "ghost" }), "")}
