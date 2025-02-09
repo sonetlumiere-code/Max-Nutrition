@@ -173,6 +173,9 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
                       {order.address?.locality}
                     </span>{" "}
                     <span>Código postal: {order.address?.postCode}</span>
+                    {order.address.notes ? (
+                      <span>Notas adicionales: {order.address.notes}</span>
+                    ) : null}
                   </address>
                 ) : (
                   <span className='text-muted-foreground'>

@@ -169,6 +169,10 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
                 {order.address.province}
                 <br />
                 Código postal: {order.address.postCode}
+                <br />
+                {order.address.notes ? (
+                  <>Notas adicionales: {order.address.notes}</>
+                ) : null}
               </p>
             )}
           </div>

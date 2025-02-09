@@ -16,7 +16,11 @@ const CustomerInfoPage = async () => {
       userId: session?.user.id,
     },
     include: {
-      addresses: true,
+      addresses: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
       user: {
         select: {
           email: true,
