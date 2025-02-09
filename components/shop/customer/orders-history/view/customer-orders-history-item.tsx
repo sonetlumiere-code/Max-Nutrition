@@ -68,8 +68,9 @@ const CustomerViewOrder = ({
           <DrawerTitle>Detalle de pedido</DrawerTitle>
           <DrawerDescription>Información de tu orden</DrawerDescription>
         </DrawerHeader>
-
-        <CustomerViewOrderDetail order={order} />
+        <div className='p-2'>
+          <CustomerViewOrderDetail order={order} />
+        </div>
 
         <DrawerFooter className='border-t-2 lg:border-t-0'>
           <DrawerClose asChild>

@@ -17,14 +17,14 @@ type CustomerViewOrderDetailProps = {
 
 const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
   return (
-    <div className='grid gap-3 p-4'>
-      <div className='font-semibold'>Detalles de la orden</div>
-      <ScrollArea className='h-[42vh]'>
+    <div className='grid gap-3'>
+      {/* <div className='font-semibold'>Detalles de la orden</div> */}
+      <ScrollArea className='h-[42vh] p-3'>
         <Table>
           <TableBody>
             {order.items?.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>
+                <TableCell className='w-16'>
                   <img
                     src={
                       item.product?.image
@@ -109,7 +109,6 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
             <span>${order.total.toFixed(2)}</span>
           </li>
         </ul>
-
         <Separator className='my-4' />
         <div className='flex justify-between'>
           <div className='grid gap-3 text-sm'>
