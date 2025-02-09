@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import {
   translatePaymentMethod,
@@ -145,7 +146,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                       <FormItem>
                         <FormLabel>Descripción</FormLabel>
                         <FormControl>
-                          <Input
+                          <Textarea
                             placeholder='Descripción de la promoción'
                             disabled={isSubmitting}
                             {...field}

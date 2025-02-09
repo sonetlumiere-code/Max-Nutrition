@@ -36,10 +36,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
         />
       </div>
       <CardHeader className='text-start p-2'>
-        <CardTitle className='text-base md:text-lg font-medium line-clamp-2 leading-5'>
+        <CardTitle className='text-base md:text-lg font-medium line-clamp-2'>
           {product.name}
         </CardTitle>
-        <CardDescription className='mt-1 line-clamp-2 leading-4'>
+        <CardDescription className='mt-1 line-clamp-2'>
           {product.description}
         </CardDescription>
       </CardHeader>

@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import {
   ProductSchema,
@@ -149,7 +150,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                       <FormItem>
                         <FormLabel>Descripción</FormLabel>
                         <FormControl>
-                          <Input
+                          <Textarea
                             placeholder='Describa el producto'
                             disabled={isSubmitting}
                             {...field}
