@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { translateAddressLabel } from "@/helpers/helpers"
 import {
@@ -60,6 +61,7 @@ const CustomerCreateAddressForm = ({
       postCode: "",
       label: undefined,
       labelString: "",
+      notes: "",
     },
   })
 
@@ -338,6 +340,24 @@ const CustomerCreateAddressForm = ({
                       type='number'
                       step='1'
                       placeholder='Código postal'
+                      disabled={isSubmitting}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name='notes'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notas adicionales</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder=''
                       disabled={isSubmitting}
                       {...field}
                     />

@@ -34,6 +34,7 @@ import MunicipalitySelect from "@/components/municipality-select"
 import LocalitySelect from "@/components/locality-select"
 import AsyncSelectAddress from "@/components/async-search-address"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Textarea } from "@/components/ui/textarea"
 
 type CustomerEditAddressFormProps = {
   address: CustomerAddress
@@ -80,6 +81,7 @@ const CustomerEditAddressForm = ({
       postCode: address.postCode,
       label: address.label,
       labelString: address.labelString || "",
+      notes: address.notes || "",
     },
   })
 
@@ -352,6 +354,24 @@ const CustomerEditAddressForm = ({
                       type='number'
                       step='1'
                       placeholder='Código postal'
+                      disabled={isSubmitting}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name='notes'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notas adicionales</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder=''
                       disabled={isSubmitting}
                       {...field}
                     />

@@ -40,6 +40,7 @@ export async function createCustomerAddress(values: CustomerAddressSchema) {
     postCode,
     label,
     labelString,
+    notes,
   } = validatedFields.data
 
   try {
@@ -56,6 +57,7 @@ export async function createCustomerAddress(values: CustomerAddressSchema) {
         postCode,
         label,
         labelString: label === CustomerAddressLabel.OTHER ? labelString : "",
+        notes,
       },
     })
 

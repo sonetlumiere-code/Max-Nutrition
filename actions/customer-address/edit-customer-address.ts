@@ -43,6 +43,7 @@ export async function editCustomerAddress(
     postCode,
     label,
     labelString,
+    notes,
   } = validatedFields.data
 
   try {
@@ -62,6 +63,7 @@ export async function editCustomerAddress(
         postCode,
         label,
         labelString: label === CustomerAddressLabel.OTHER ? labelString : "",
+        notes,
       },
     })
 

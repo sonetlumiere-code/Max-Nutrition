@@ -20,6 +20,7 @@ export const customerAddressSchema = z
       .optional()
       .transform((value) => value?.toUpperCase() || ""),
     postCode: z.string().min(1, { message: "Ingresa tu código postal." }),
+    notes: z.string().optional(),
   })
   .refine(
     (data) =>
