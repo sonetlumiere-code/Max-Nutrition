@@ -16,10 +16,11 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { getCustomer } from "@/data/customer"
-import { hasPermission } from "@/helpers/helpers"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { format } from "date-fns"
+import CustomersOrdersTable from "@/components/dashboard/customers/view-customer/customer-orders-table/customer-orders-table"
 
 interface ViewCustomerProps {
   params: { customerId: string }
@@ -37,6 +38,10 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
     return redirect("/welcome")
   }
 
+  const userPermissionsKeys = getPermissionsKeys(
+    session?.user.role?.permissions
+  )
+
   const { customerId } = params
 
   const customer = await getCustomer({
@@ -48,6 +53,24 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
           email: true,
         },
       },
+      orders: {
+        take: 10,
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          items: {
+            include: {
+              product: true,
+            },
+          },
+          customer: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      },
     },
   })
 
@@ -55,6 +78,7 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
     redirect("/customers")
   }
 
+  const customerOrdersLength = customer?.orders?.length || 0
   const customerAddressesLength = customer?.addresses?.length || 0
 
   return (
@@ -131,6 +155,40 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
               </div>
             </CardContent>
           </Card>
+
+          {customerOrdersLength > 0 ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Pedidos</CardTitle>
+                <CardDescription className='hidden md:block'>
+                  Ultimos 10 pedidos
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <CustomersOrdersTable
+                  customer={customer}
+                  userPermissionsKeys={userPermissionsKeys}
+                />
+              </CardContent>
+              <CardFooter>
+                <div className='text-xs text-muted-foreground'>
+                  Mostrando <strong>{customerOrdersLength}</strong> pedido
+                  {customerOrdersLength !== 1 ? "s" : ""}
+                </div>
+              </CardFooter>
+            </Card>
+          ) : (
+            <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
+              <div className='flex flex-col items-center gap-1 text-center'>
+                <h3 className='text-2xl font-bold tracking-tight'>
+                  Sin pedidos
+                </h3>
+                <p className='text-sm text-muted-foreground'>
+                  El cliente aún no realizó ningún pedido
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
