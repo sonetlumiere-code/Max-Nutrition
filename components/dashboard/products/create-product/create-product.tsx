@@ -33,7 +33,10 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import { translateProductRecipeType } from "@/helpers/helpers"
+import {
+  calculateIngredientData,
+  translateProductRecipeType,
+} from "@/helpers/helpers"
 import {
   ProductSchema,
   productSchema,
@@ -110,6 +113,26 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
     }
   }
 
+  const recipesCostWithWaste = watch("recipes").reduce((acc, { recipeId }) => {
+    const recipeIngredients =
+      recipes?.find((recipe) => recipe.id === recipeId)?.recipeIngredients || []
+
+    const recipeCost = recipeIngredients.reduce((recipeAcc, curr) => {
+      const ingredient = curr.ingredient
+      if (!ingredient) return recipeAcc
+
+      const { cost } = calculateIngredientData({
+        ingredient: ingredient,
+        quantity: curr.quantity,
+        withWaste: true,
+      })
+
+      return recipeAcc + cost
+    }, 0)
+
+    return acc + recipeCost
+  }, 0)
+
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className='grid gap-4'>
@@ -170,6 +193,212 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                 </div>
               </CardContent>
             </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Categorías</CardTitle>
+                <CardDescription>Categorías del producto</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name='categoriesIds'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Categorías</FormLabel>
+                      <MultiSelect
+                        options={
+                          categories?.map((category) => ({
+                            value: category.id,
+                            label: category.name,
+                          })) || []
+                        }
+                        selected={field.value || []}
+                        onChange={field.onChange}
+                        disabled={isSubmitting}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Recetas</CardTitle>
+                <CardDescription>Recetas del producto</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='space-y-3'>
+                  <fieldset className='border p-5 rounded-md'>
+                    <legend>
+                      <Label className='mx-2'>Recetas</Label>
+                    </legend>
+                    <div className='space-y-3'>
+                      {fields.map((field, index) => {
+                        const selectedIngredient = recipes?.find(
+                          (recipe) =>
+                            recipe.id === watch(`recipes.${index}.recipeId`)
+                        )
+
+                        return (
+                          <div
+                            key={field.id}
+                            className='grid grid-cols-11 gap-3'
+                          >
+                            <FormField
+                              control={control}
+                              name={`recipes.${index}.recipeId`}
+                              render={({ field }) => (
+                                <FormItem className='col-span-5'>
+                                  <FormLabel className='text-xs'>
+                                    Receta
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Select
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                      disabled={isSubmitting}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder='Selecciona una receta' />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {recipes?.map(({ id, name }) => (
+                                          <SelectItem
+                                            key={id}
+                                            value={id}
+                                            disabled={watch("recipes").some(
+                                              (i) => i.recipeId === id
+                                            )}
+                                          >
+                                            {name}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </FormControl>
+                                  <FormMessage className='text-xs' />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={control}
+                              name={`recipes.${index}.type`}
+                              render={({ field }) => (
+                                <FormItem className='col-span-5'>
+                                  <FormLabel className='text-xs'>
+                                    Tipo
+                                  </FormLabel>
+
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={
+                                      field.value?.toString() || "false"
+                                    }
+                                    disabled={isSubmitting}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder='' />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {Object.entries(ProductRecipeType).map(
+                                        ([key, value]) => (
+                                          <SelectItem key={key} value={value}>
+                                            {translateProductRecipeType(value)}
+                                          </SelectItem>
+                                        )
+                                      )}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <FormMessage className='text-xs' />
+                                </FormItem>
+                              )}
+                            />
+
+                            <div className='flex justify-between mt-8'>
+                              <Button
+                                type='button'
+                                size='icon'
+                                variant='ghost'
+                                onClick={() => remove(index)}
+                                disabled={isSubmitting || fields.length === 1}
+                              >
+                                <Icons.x className='w-3 h-3' />
+                              </Button>
+                            </div>
+                          </div>
+                        )
+                      })}
+
+                      <Button
+                        type='button'
+                        variant='ghost'
+                        onClick={() =>
+                          append({ recipeId: "", type: ProductRecipeType.BASE })
+                        }
+                        disabled={isSubmitting}
+                      >
+                        <Icons.plus className='w-4 h-4 mr-1' />
+                        <small>Agregar Receta</small>
+                      </Button>
+
+                      {errors.recipes?.root?.message && (
+                        <div className='text-destructive text-sm'>
+                          {errors.recipes.root.message}
+                        </div>
+                      )}
+                    </div>
+                  </fieldset>
+
+                  <p className='text-xs text-end'>
+                    Costo de la sumatoria de recetas c/desperdicio:{" "}
+                    <b>${recipesCostWithWaste.toFixed(2)}</b>
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
+            <Card className='overflow-hidden'>
+              <CardHeader>
+                <CardTitle className='text-xl'>Imagen</CardTitle>
+                <CardDescription>Imagen del producto</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='grid gap-2'>
+                  <img
+                    alt='Product image'
+                    className='aspect-square w-full rounded-md object-cover'
+                    src={
+                      imageFile?.length > 0
+                        ? URL.createObjectURL(imageFile[0])
+                        : "/img/no-image.jpg"
+                    }
+                  />
+                  <div className='grid grid-cols-3 gap-2'>
+                    <label className='flex aspect-square w-full items-center justify-center rounded-md border border-dashed cursor-pointer'>
+                      <Icons.upload className='h-4 w-4 text-muted-foreground' />
+                      <span className='sr-only'>Upload</span>
+                      <input
+                        type='file'
+                        disabled={isSubmitting}
+                        className='hidden'
+                        onChange={(event) => {
+                          form.setValue("imageFile", event.target.files)
+                        }}
+                      />
+                    </label>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className='text-xl'>Precio</CardTitle>
@@ -218,198 +447,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                 </div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className='text-xl'>Categorías</CardTitle>
-                <CardDescription>Categorías del producto</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <FormField
-                  control={form.control}
-                  name='categoriesIds'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Categorías</FormLabel>
-                      <MultiSelect
-                        options={
-                          categories?.map((category) => ({
-                            value: category.id,
-                            label: category.name,
-                          })) || []
-                        }
-                        selected={field.value || []}
-                        onChange={field.onChange}
-                        disabled={isSubmitting}
-                      />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className='text-xl'>Recetas</CardTitle>
-                <CardDescription>Recetas del producto</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <fieldset className='border p-5 rounded-md'>
-                  <legend>
-                    <Label className='mx-2'>Recetas</Label>
-                  </legend>
-                  <div className='space-y-3'>
-                    {fields.map((field, index) => {
-                      const selectedIngredient = recipes?.find(
-                        (recipe) =>
-                          recipe.id === watch(`recipes.${index}.recipeId`)
-                      )
 
-                      return (
-                        <div key={field.id} className='grid grid-cols-11 gap-3'>
-                          <FormField
-                            control={control}
-                            name={`recipes.${index}.recipeId`}
-                            render={({ field }) => (
-                              <FormItem className='col-span-4'>
-                                <FormLabel className='text-xs'>
-                                  Receta
-                                </FormLabel>
-                                <FormControl>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                    disabled={isSubmitting}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder='Selecciona una receta' />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {recipes?.map(({ id, name }) => (
-                                        <SelectItem
-                                          key={id}
-                                          value={id}
-                                          disabled={watch("recipes").some(
-                                            (i) => i.recipeId === id
-                                          )}
-                                        >
-                                          {name}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </FormControl>
-                                <FormMessage className='text-xs' />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={control}
-                            name={`recipes.${index}.type`}
-                            render={({ field }) => (
-                              <FormItem className='col-span-4'>
-                                <FormLabel className='text-xs'>Tipo</FormLabel>
-
-                                <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={
-                                    field.value?.toString() || "false"
-                                  }
-                                  disabled={isSubmitting}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder='' />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {Object.entries(ProductRecipeType).map(
-                                      ([key, value]) => (
-                                        <SelectItem key={key} value={value}>
-                                          {translateProductRecipeType(value)}
-                                        </SelectItem>
-                                      )
-                                    )}
-                                  </SelectContent>
-                                </Select>
-
-                                <FormMessage className='text-xs' />
-                              </FormItem>
-                            )}
-                          />
-
-                          <div className='flex justify-between mt-8'>
-                            <Button
-                              type='button'
-                              size='icon'
-                              variant='ghost'
-                              onClick={() => remove(index)}
-                              disabled={isSubmitting || fields.length === 1}
-                            >
-                              <Icons.x className='w-3 h-3' />
-                            </Button>
-                          </div>
-                        </div>
-                      )
-                    })}
-
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      onClick={() =>
-                        append({ recipeId: "", type: ProductRecipeType.BASE })
-                      }
-                      disabled={isSubmitting}
-                    >
-                      <Icons.plus className='w-4 h-4 mr-1' />
-                      <small>Agregar Receta</small>
-                    </Button>
-
-                    {errors.recipes?.root?.message && (
-                      <div className='text-destructive text-sm'>
-                        {errors.recipes.root.message}
-                      </div>
-                    )}
-                  </div>
-                </fieldset>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
-            <Card className='overflow-hidden'>
-              <CardHeader>
-                <CardTitle className='text-xl'>Imagen</CardTitle>
-                <CardDescription>Imagen del producto</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='grid gap-2'>
-                  <img
-                    alt='Product image'
-                    className='aspect-square w-full rounded-md object-cover'
-                    src={
-                      imageFile?.length > 0
-                        ? URL.createObjectURL(imageFile[0])
-                        : "/img/no-image.jpg"
-                    }
-                  />
-                  <div className='grid grid-cols-3 gap-2'>
-                    <label className='flex aspect-square w-full items-center justify-center rounded-md border border-dashed cursor-pointer'>
-                      <Icons.upload className='h-4 w-4 text-muted-foreground' />
-                      <span className='sr-only'>Upload</span>
-                      <input
-                        type='file'
-                        disabled={isSubmitting}
-                        className='hidden'
-                        onChange={(event) => {
-                          form.setValue("imageFile", event.target.files)
-                        }}
-                      />
-                    </label>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
             <Card>
               <CardHeader>
                 <CardTitle className='text-xl'>Disponibilidad</CardTitle>

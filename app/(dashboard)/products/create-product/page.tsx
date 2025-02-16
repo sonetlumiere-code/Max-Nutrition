@@ -28,9 +28,9 @@ const CreateProductPage = async () => {
   const [recipes, categories] = await Promise.all([
     getRecipes({
       include: {
-        productRecipes: {
+        recipeIngredients: {
           include: {
-            product: true,
+            ingredient: true,
           },
         },
       },

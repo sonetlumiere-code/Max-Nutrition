@@ -44,7 +44,11 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
     }),
     getRecipes({
       include: {
-        productRecipes: true,
+        recipeIngredients: {
+          include: {
+            ingredient: true,
+          },
+        },
       },
     }),
     getCategories(),
