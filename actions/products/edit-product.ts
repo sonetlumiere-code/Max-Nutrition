@@ -42,7 +42,7 @@ export async function editProduct({
     featured,
     stock,
     show,
-    recipeId,
+    recipes,
     categoriesIds,
   } = validatedFields.data
 
@@ -58,7 +58,13 @@ export async function editProduct({
         stock,
         show,
         image,
-        recipeId,
+        productRecipes: {
+          deleteMany: {},
+          create: recipes?.map(({ recipeId, type }) => ({
+            recipe: { connect: { id: recipeId } },
+            type,
+          })),
+        },
         categories: {
           set: categoriesIds?.map((id) => ({ id })) || [],
         },

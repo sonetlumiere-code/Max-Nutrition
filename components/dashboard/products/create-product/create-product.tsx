@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -32,15 +33,16 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
+import { translateProductRecipeType } from "@/helpers/helpers"
 import {
   ProductSchema,
   productSchema,
 } from "@/lib/validations/product-validation"
 import { PopulatedRecipe } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Category } from "@prisma/client"
+import { Category, ProductRecipeType } from "@prisma/client"
 import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
+import { useFieldArray, useForm } from "react-hook-form"
 
 type CreateProductProps = {
   recipes: PopulatedRecipe[] | null
@@ -62,7 +64,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
       show: true,
       image: "",
       categoriesIds: [],
-      recipeId: "",
+      recipes: [{ recipeId: "", type: ProductRecipeType.BASE }],
     },
   })
 
@@ -70,8 +72,13 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
     control,
     watch,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = form
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "recipes",
+  })
 
   const imageFile = watch("imageFile")
 
@@ -242,49 +249,129 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className='text-xl'>Receta</CardTitle>
-                <CardDescription>Receta del producto</CardDescription>
+                <CardTitle className='text-xl'>Recetas</CardTitle>
+                <CardDescription>Recetas del producto</CardDescription>
               </CardHeader>
               <CardContent>
-                <FormField
-                  control={form.control}
-                  name='recipeId'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Receta</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value || ""}
-                        disabled={isSubmitting}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder='Selecciona una receta' />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {recipes?.map((recipe) => (
-                            <SelectItem
-                              key={recipe.id}
-                              value={recipe.id}
-                              disabled={!!recipe.product}
+                <fieldset className='border p-5 rounded-md'>
+                  <legend>
+                    <Label className='mx-2'>Recetas</Label>
+                  </legend>
+                  <div className='space-y-3'>
+                    {fields.map((field, index) => {
+                      const selectedIngredient = recipes?.find(
+                        (recipe) =>
+                          recipe.id === watch(`recipes.${index}.recipeId`)
+                      )
+
+                      return (
+                        <div key={field.id} className='grid grid-cols-11 gap-3'>
+                          <FormField
+                            control={control}
+                            name={`recipes.${index}.recipeId`}
+                            render={({ field }) => (
+                              <FormItem className='col-span-4'>
+                                <FormLabel className='text-xs'>
+                                  Receta
+                                </FormLabel>
+                                <FormControl>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    disabled={isSubmitting}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder='Selecciona una receta' />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {recipes?.map(({ id, name }) => (
+                                        <SelectItem
+                                          key={id}
+                                          value={id}
+                                          disabled={watch("recipes").some(
+                                            (i) => i.recipeId === id
+                                          )}
+                                        >
+                                          {name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </FormControl>
+                                <FormMessage className='text-xs' />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={control}
+                            name={`recipes.${index}.type`}
+                            render={({ field }) => (
+                              <FormItem className='col-span-4'>
+                                <FormLabel className='text-xs'>Tipo</FormLabel>
+
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={
+                                    field.value?.toString() || "false"
+                                  }
+                                  disabled={isSubmitting}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder='' />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {Object.entries(ProductRecipeType).map(
+                                      ([key, value]) => (
+                                        <SelectItem key={key} value={value}>
+                                          {translateProductRecipeType(value)}
+                                        </SelectItem>
+                                      )
+                                    )}
+                                  </SelectContent>
+                                </Select>
+
+                                <FormMessage className='text-xs' />
+                              </FormItem>
+                            )}
+                          />
+
+                          <div className='flex justify-between mt-8'>
+                            <Button
+                              type='button'
+                              size='icon'
+                              variant='ghost'
+                              onClick={() => remove(index)}
+                              disabled={isSubmitting || fields.length === 1}
                             >
-                              {recipe.product ? (
-                                <div className='flex'>
-                                  <p>{recipe.name}</p>
-                                  {/* <Badge>{recipe.product?.name}</Badge> */}
-                                </div>
-                              ) : (
-                                <p>{recipe.name}</p>
-                              )}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                              <Icons.x className='w-3 h-3' />
+                            </Button>
+                          </div>
+                        </div>
+                      )
+                    })}
+
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      onClick={() =>
+                        append({ recipeId: "", type: ProductRecipeType.BASE })
+                      }
+                      disabled={isSubmitting}
+                    >
+                      <Icons.plus className='w-4 h-4 mr-1' />
+                      <small>Agregar Receta</small>
+                    </Button>
+
+                    {errors.recipes?.root?.message && (
+                      <div className='text-destructive text-sm'>
+                        {errors.recipes.root.message}
+                      </div>
+                    )}
+                  </div>
+                </fieldset>
               </CardContent>
             </Card>
           </div>

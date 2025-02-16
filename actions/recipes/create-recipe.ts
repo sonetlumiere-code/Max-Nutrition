@@ -32,9 +32,9 @@ export async function createRecipe(values: RecipeSchema) {
         name,
         description,
         recipeIngredients: {
-          create: ingredients.map((ingredient) => ({
-            ingredientId: ingredient.ingredientId,
-            quantity: ingredient.quantity,
+          create: ingredients.map(({ ingredientId, quantity }) => ({
+            ingredient: { connect: { id: ingredientId } },
+            quantity,
           })),
         },
       },

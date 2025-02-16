@@ -18,6 +18,7 @@ import {
   OrderStatus,
   PaymentMethod,
   Permission,
+  ProductRecipeType,
   ShippingMethod,
   SubjectKey,
 } from "@prisma/client"
@@ -60,6 +61,17 @@ export const translateAddressLabel = (value: CustomerAddressLabel) => {
       return "Trabajo"
     default:
       return "Otro"
+  }
+}
+
+export const translateProductRecipeType = (value: ProductRecipeType) => {
+  switch (value) {
+    case ProductRecipeType.BASE:
+      return "Principal"
+    case ProductRecipeType.GARRISON:
+      return "Guarnición"
+    case ProductRecipeType.SAUCE:
+      return "Salsa"
   }
 }
 
@@ -307,6 +319,7 @@ export const calculateIngredientData = ({
   quantity: number
   withWaste: boolean
 }) => {
+  console.log(ingredient)
   const baseMeasurement = getBaseMeasurement(ingredient.measurement)
 
   const conversionRate =

@@ -36,7 +36,7 @@ export async function createProduct(values: ProductSchema) {
     featured,
     stock,
     show,
-    recipeId,
+    recipes,
     categoriesIds,
   } = validatedFields.data
 
@@ -51,7 +51,12 @@ export async function createProduct(values: ProductSchema) {
         featured,
         stock,
         show,
-        ...(recipeId ? { recipe: { connect: { id: recipeId } } } : {}),
+        productRecipes: {
+          create: recipes.map(({ recipeId, type }) => ({
+            recipe: { connect: { id: recipeId } },
+            type,
+          })),
+        },
         categories: {
           connect:
             categoriesIds?.map((categoryId) => ({ id: categoryId })) || [],

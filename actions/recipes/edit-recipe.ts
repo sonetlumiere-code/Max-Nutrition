@@ -40,9 +40,9 @@ export async function editRecipe({
         description,
         recipeIngredients: {
           deleteMany: {},
-          create: ingredients.map((ingredient) => ({
-            ingredientId: ingredient.ingredientId,
-            quantity: ingredient.quantity,
+          create: ingredients.map(({ ingredientId, quantity }) => ({
+            ingredient: { connect: { id: ingredientId } },
+            quantity,
           })),
         },
       },

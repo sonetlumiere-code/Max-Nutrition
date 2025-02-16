@@ -36,6 +36,7 @@ import {
   calculateIngredientData,
   getPermissionsKeys,
   hasPermission,
+  translateProductRecipeType,
 } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
@@ -73,10 +74,12 @@ export default async function RecipesPage() {
 
   const calculateRecipeCostWithWaste = (
     recipeIngredients: PopulatedRecipeIngredient[] | undefined
-  ) => {
+  ): number => {
     if (!recipeIngredients) return 0
 
     return recipeIngredients.reduce((acc, curr) => {
+      if (!curr.ingredient) return acc
+
       const { ingredient, quantity } = curr
 
       const { cost } = calculateIngredientData({

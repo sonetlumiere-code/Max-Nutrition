@@ -37,11 +37,14 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
   const [product, recipes, categories] = await Promise.all([
     getProduct({
       where: { id: productId },
-      include: { categories: true },
+      include: {
+        categories: true,
+        productRecipes: true,
+      },
     }),
     getRecipes({
       include: {
-        product: true,
+        productRecipes: true,
       },
     }),
     getCategories(),

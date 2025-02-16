@@ -31,7 +31,7 @@ import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 import { exportOrdersToExcel } from "@/actions/orders/export-orders"
 import { useSession } from "next-auth/react"
-import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
+import { getPermissionsKeys } from "@/helpers/helpers"
 
 const fetchOrders = async () => {
   const orders = await getOrders({
@@ -40,11 +40,15 @@ const fetchOrders = async () => {
         include: {
           product: {
             include: {
-              recipe: {
+              productRecipes: {
                 include: {
-                  recipeIngredients: {
+                  recipe: {
                     include: {
-                      ingredient: true,
+                      recipeIngredients: {
+                        include: {
+                          ingredient: true,
+                        },
+                      },
                     },
                   },
                 },
