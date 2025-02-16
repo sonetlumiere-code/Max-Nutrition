@@ -281,7 +281,7 @@ export const exportOrdersToExcel = (
       recipeDetailsData.push({
         Producto: "Ingrediente",
         "Cantidad Vendida": "Cantidad Base",
-        Desperdicio: "Desperdicio",
+        "Desperdicio (%)": "Desperdicio (%)",
         "Cantidad Total": "Cantidad Total",
         Unidad: "Unidad",
         Costo: "Costo",
@@ -290,7 +290,7 @@ export const exportOrdersToExcel = (
         recipeDetailsData.push({
           Producto: ingredient.name,
           "Cantidad Vendida": ingredient.baseQuantity.toFixed(2),
-          Desperdicio: `${ingredient.waste.toFixed(0)}%`,
+          "Desperdicio (%)": `${ingredient.waste.toFixed(0)}%`,
           "Cantidad Total": ingredient.totalQuantity.toFixed(2),
           Unidad: translateUnit(getBaseMeasurement(ingredient.measurement)),
           Costo: `$${ingredient.cost.toFixed(2)}`,
@@ -299,7 +299,7 @@ export const exportOrdersToExcel = (
       recipeDetailsData.push({
         Producto: "",
         "Cantidad Vendida": "",
-        Desperdicio: "",
+        "Desperdicio (%)": "",
         "Cantidad Total": "",
         Unidad: "",
         Costo: "",
