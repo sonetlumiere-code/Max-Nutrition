@@ -270,27 +270,6 @@ export function calculatePromotions({
   }
 }
 
-export function getMeasurementConversionFactor(
-  measurement: Measurement
-): number {
-  switch (measurement) {
-    case Measurement.UNIT:
-      return 1 // No division needed for unit price
-    case Measurement.GRAM:
-      return 1 // Grams are the base unit, no division needed
-    case Measurement.MILLIGRAM:
-      return 0.001 // 1 milligram = 0.001 grams
-    case Measurement.KILOGRAM:
-      return 1000 // 1 kilogram = 1000 grams
-    case Measurement.MILLILITER:
-      return 1 // Milliliters are the base unit, no division needed
-    case Measurement.LITER:
-      return 1000 // 1 liter = 1000 milliliters
-    default:
-      throw new Error(`Unknown measurement unit: ${measurement}`)
-  }
-}
-
 export function getBaseMeasurement(measurement: Measurement): BaseMeasurement {
   switch (measurement) {
     case Measurement.UNIT:
@@ -310,38 +289,42 @@ export function getBaseMeasurement(measurement: Measurement): BaseMeasurement {
   }
 }
 
+export const conversionFactors: Record<Measurement, number> = {
+  KILOGRAM: 1000, // 1 kilogram = 1000 grams
+  GRAM: 1, // Base unit
+  MILLIGRAM: 0.001, // 1 milligram = 0.001 grams
+  LITER: 1000, // 1 liter = 1000 milliliters
+  MILLILITER: 1, // Base unit
+  UNIT: 1, // Units are counted as-is
+}
+
 export const calculateIngredientData = ({
   ingredient,
-  quantity,
+  quantity, // This value is assumed to be in the base unit already.
   withWaste = true,
 }: {
   ingredient: Ingredient
   quantity: number
-  withWaste: boolean
+  withWaste?: boolean
 }) => {
-  console.log(ingredient)
   const baseMeasurement = getBaseMeasurement(ingredient.measurement)
 
-  const conversionRate =
-    getMeasurementConversionFactor(baseMeasurement) /
-    getMeasurementConversionFactor(ingredient.measurement)
+  // Compute the price per base unit
+  const conversionFactor = conversionFactors[ingredient.measurement] || 1
+  const pricePerBaseUnit =
+    ingredient.price / (ingredient.amountPerMeasurement * conversionFactor)
 
-  const adjustedQuantity = quantity * conversionRate
+  // Calculate total quantity including waste
+  const totalQuantity = quantity * (withWaste ? 1 + ingredient.waste / 100 : 1)
 
-  const adjustedPrice =
-    ingredient.price / (ingredient.amountPerMeasurement || 1)
-
-  const totalQuantity = withWaste
-    ? adjustedQuantity * (1 + ingredient.waste / 100)
-    : adjustedQuantity
-
-  const cost = totalQuantity * adjustedPrice
+  // Calculate cost using the per–base-unit price
+  const cost = totalQuantity * pricePerBaseUnit
 
   return {
-    adjustedQuantity,
-    adjustedPrice,
-    totalQuantity,
-    cost,
+    adjustedQuantity: quantity, // Given in base unit
+    totalQuantity, // Including waste
+    cost, // Total cost in base unit price
+    baseMeasurement, // The base unit (GRAM, MILLILITER, or UNIT)
   }
 }
 
