@@ -52,9 +52,9 @@ export async function createProduct(values: ProductSchema) {
         stock,
         show,
         productRecipes: {
-          create: recipes.map(({ recipeId, type }) => ({
+          create: recipes.map(({ recipeId, typeId }) => ({
             recipe: { connect: { id: recipeId } },
-            type,
+            type: { connect: { id: typeId } },
           })),
         },
         categories: {

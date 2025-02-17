@@ -34,10 +34,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import {
-  calculateIngredientData,
-  translateProductRecipeType,
-} from "@/helpers/helpers"
+import { calculateIngredientData } from "@/helpers/helpers"
 import {
   ProductSchema,
   productSchema,
@@ -52,16 +49,25 @@ type EditProductProps = {
   product: PopulatedProduct
   recipes: PopulatedRecipe[] | null
   categories: Category[] | null
+  productRecipeTypes: ProductRecipeType[] | null
 }
 
-const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
+const EditProduct = ({
+  product,
+  recipes,
+  categories,
+  productRecipeTypes,
+}: EditProductProps) => {
   const router = useRouter()
 
   const form = useForm<ProductSchema>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       ...product,
-      recipes: product.productRecipes,
+      recipes: product.productRecipes?.map(({ recipeId, typeId }) => ({
+        recipeId: recipeId,
+        typeId: typeId || "",
+      })),
       categoriesIds: product.categories?.map((category) => category.id),
     },
   })
@@ -284,7 +290,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
 
                             <FormField
                               control={control}
-                              name={`recipes.${index}.type`}
+                              name={`recipes.${index}.typeId`}
                               render={({ field }) => (
                                 <FormItem className='col-span-5'>
                                   <FormLabel className='text-xs'>
@@ -304,10 +310,10 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      {Object.entries(ProductRecipeType).map(
-                                        ([key, value]) => (
-                                          <SelectItem key={key} value={value}>
-                                            {translateProductRecipeType(value)}
+                                      {productRecipeTypes?.map(
+                                        ({ id, name }) => (
+                                          <SelectItem key={id} value={id}>
+                                            {name}
                                           </SelectItem>
                                         )
                                       )}
@@ -337,9 +343,7 @@ const EditProduct = ({ product, recipes, categories }: EditProductProps) => {
                       <Button
                         type='button'
                         variant='ghost'
-                        onClick={() =>
-                          append({ recipeId: "", type: ProductRecipeType.BASE })
-                        }
+                        onClick={() => append({ recipeId: "", typeId: "" })}
                         disabled={isSubmitting}
                       >
                         <Icons.plus className='w-4 h-4 mr-1' />

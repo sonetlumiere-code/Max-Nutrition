@@ -60,9 +60,9 @@ export async function editProduct({
         image,
         productRecipes: {
           deleteMany: {},
-          create: recipes?.map(({ recipeId, type }) => ({
+          create: recipes?.map(({ recipeId, typeId }) => ({
             recipe: { connect: { id: recipeId } },
-            type,
+            type: { connect: { id: typeId } },
           })),
         },
         categories: {

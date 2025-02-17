@@ -44,6 +44,7 @@ const fetchOrders = async () => {
                 include: {
                   recipe: {
                     include: {
+                      productRecipes: true,
                       recipeIngredients: {
                         include: {
                           ingredient: true,

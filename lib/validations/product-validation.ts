@@ -1,4 +1,3 @@
-import { ProductRecipeType } from "@prisma/client"
 import { z } from "zod"
 
 const MAX_FILE_SIZE = 400000
@@ -39,11 +38,7 @@ export const productSchema = z.object({
     .array(
       z.object({
         recipeId: z.string().min(1, { message: "Selecciona la receta." }),
-        type: z.nativeEnum(ProductRecipeType, {
-          errorMap: () => {
-            return { message: "Selecciona el tipo de receta." }
-          },
-        }),
+        typeId: z.string().min(1, { message: "Selecciona el tipo de receta." }),
       })
     )
     .min(1, { message: "Debes seleccionar al menos una receta." }),

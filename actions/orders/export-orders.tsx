@@ -4,7 +4,6 @@ import {
   calculateIngredientData,
   getBaseMeasurement,
   translatePaymentMethod,
-  translateProductRecipeType,
   translateShippingMethod,
   translateTimePeriod,
   translateUnit,
@@ -168,13 +167,14 @@ export const exportOrdersToExcel = (
     order.items?.forEach((item) => {
       const product = item.product
       product.productRecipes?.forEach((productRecipe) => {
-        const recipeType = productRecipe.type
-        const key = `${product.id}-${recipeType}`
+        const recipeTypeName =
+          productRecipe.type?.name || "Tipo de receta no especificada"
+        const key = `${product.id}-${recipeTypeName}`
         if (!recipeGroups[key]) {
           recipeGroups[key] = {
             productId: product.id,
             productName: product.name,
-            productRecipeType: translateProductRecipeType(recipeType),
+            productRecipeType: recipeTypeName,
             totalQuantityForGroup: 0,
             ingredientTotals: {},
           }

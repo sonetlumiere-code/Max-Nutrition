@@ -33,10 +33,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import {
-  calculateIngredientData,
-  translateProductRecipeType,
-} from "@/helpers/helpers"
+import { calculateIngredientData } from "@/helpers/helpers"
 import {
   ProductSchema,
   productSchema,
@@ -50,9 +47,14 @@ import { useFieldArray, useForm } from "react-hook-form"
 type CreateProductProps = {
   recipes: PopulatedRecipe[] | null
   categories: Category[] | null
+  productRecipeTypes: ProductRecipeType[] | null
 }
 
-const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
+const CreateProduct = ({
+  recipes,
+  categories,
+  productRecipeTypes,
+}: CreateProductProps) => {
   const router = useRouter()
 
   const form = useForm<ProductSchema>({
@@ -67,7 +69,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
       show: true,
       image: "",
       categoriesIds: [],
-      recipes: [{ recipeId: "", type: ProductRecipeType.BASE }],
+      recipes: [{ recipeId: "", typeId: "" }],
     },
   })
 
@@ -285,7 +287,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
 
                             <FormField
                               control={control}
-                              name={`recipes.${index}.type`}
+                              name={`recipes.${index}.typeId`}
                               render={({ field }) => (
                                 <FormItem className='col-span-5'>
                                   <FormLabel className='text-xs'>
@@ -305,10 +307,10 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      {Object.entries(ProductRecipeType).map(
-                                        ([key, value]) => (
-                                          <SelectItem key={key} value={value}>
-                                            {translateProductRecipeType(value)}
+                                      {productRecipeTypes?.map(
+                                        ({ id, name }) => (
+                                          <SelectItem key={id} value={id}>
+                                            {name}
                                           </SelectItem>
                                         )
                                       )}
@@ -338,9 +340,7 @@ const CreateProduct = ({ recipes, categories }: CreateProductProps) => {
                       <Button
                         type='button'
                         variant='ghost'
-                        onClick={() =>
-                          append({ recipeId: "", type: ProductRecipeType.BASE })
-                        }
+                        onClick={() => append({ recipeId: "", typeId: "" })}
                         disabled={isSubmitting}
                       >
                         <Icons.plus className='w-4 h-4 mr-1' />

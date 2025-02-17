@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getCategories } from "@/data/categories"
+import { getProductRecipeTypes } from "@/data/product-recipe-types"
 import { getProduct } from "@/data/products"
 import { getRecipes } from "@/data/recipes"
 import { hasPermission } from "@/helpers/helpers"
@@ -34,12 +35,16 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
 
   const { productId } = params
 
-  const [product, recipes, categories] = await Promise.all([
+  const [product, recipes, categories, productRecipeTypes] = await Promise.all([
     getProduct({
       where: { id: productId },
       include: {
         categories: true,
-        productRecipes: true,
+        productRecipes: {
+          include: {
+            type: true,
+          },
+        },
       },
     }),
     getRecipes({
@@ -52,6 +57,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
       },
     }),
     getCategories(),
+    getProductRecipeTypes(),
   ])
 
   if (!product) {
@@ -80,6 +86,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
         product={product}
         recipes={recipes}
         categories={categories}
+        productRecipeTypes={productRecipeTypes}
       />
     </>
   )

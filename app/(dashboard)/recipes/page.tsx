@@ -36,7 +36,6 @@ import {
   calculateIngredientData,
   getPermissionsKeys,
   hasPermission,
-  translateProductRecipeType,
 } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"

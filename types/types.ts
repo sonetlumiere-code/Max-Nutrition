@@ -23,6 +23,7 @@ import {
   ActionKey,
   SubjectKey,
   ProductRecipe,
+  ProductRecipeType,
 } from "@prisma/client"
 
 export type PopulatedSafeUser = Omit<User, "password"> & {
@@ -87,6 +88,7 @@ export type PopulatedRecipeIngredient = RecipeIngredient & {
 export type PopulatedProductRecipe = ProductRecipe & {
   recipe?: PopulatedRecipe
   product?: PopulatedProduct
+  type?: ProductRecipeType
 }
 
 export type Variation = {

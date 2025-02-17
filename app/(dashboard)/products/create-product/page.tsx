@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { getCategories } from "@/data/categories"
+import { getProductRecipeTypes } from "@/data/product-recipe-types"
 import { getRecipes } from "@/data/recipes"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
@@ -25,7 +26,7 @@ const CreateProductPage = async () => {
     return redirect("/welcome")
   }
 
-  const [recipes, categories] = await Promise.all([
+  const [recipes, categories, productRecipeTypes] = await Promise.all([
     getRecipes({
       include: {
         recipeIngredients: {
@@ -36,6 +37,7 @@ const CreateProductPage = async () => {
       },
     }),
     getCategories(),
+    getProductRecipeTypes(),
   ])
 
   return (
@@ -56,7 +58,11 @@ const CreateProductPage = async () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <CreateProduct recipes={recipes} categories={categories} />
+      <CreateProduct
+        recipes={recipes}
+        categories={categories}
+        productRecipeTypes={productRecipeTypes}
+      />
     </>
   )
 }

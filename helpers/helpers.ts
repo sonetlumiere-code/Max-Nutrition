@@ -64,17 +64,6 @@ export const translateAddressLabel = (value: CustomerAddressLabel) => {
   }
 }
 
-export const translateProductRecipeType = (value: ProductRecipeType) => {
-  switch (value) {
-    case ProductRecipeType.BASE:
-      return "Principal"
-    case ProductRecipeType.GARRISON:
-      return "Guarnición"
-    case ProductRecipeType.SAUCE:
-      return "Salsa"
-  }
-}
-
 export function translateOrderStatus(status: OrderStatus): string {
   switch (status) {
     case OrderStatus.PENDING:

@@ -6,6 +6,7 @@ import {
   SubjectKey,
   PrismaClient,
   ShippingMethod,
+  ProductRecipeType,
 } from "@prisma/client"
 
 const prisma = new PrismaClient()
@@ -174,12 +175,29 @@ const permissions: {
     actionKey: "export",
     subjectKey: "shippingZones",
   },
+  {
+    name: "Crear tipo de receta",
+    actionKey: "create",
+    subjectKey: "productRecipeTypes",
+  },
+  {
+    name: "Actualizar tipo de receta",
+    actionKey: "update",
+    subjectKey: "productRecipeTypes",
+  },
+  {
+    name: "Eliminar tipo de receta",
+    actionKey: "delete",
+    subjectKey: "productRecipeTypes",
+  },
+  {
+    name: "Exportar tipo de receta",
+    actionKey: "export",
+    subjectKey: "productRecipeTypes",
+  },
 ]
 
-export const ingredientsData: Omit<
-  Ingredient,
-  "id" | "createdAt" | "updatedAt"
->[] = [
+const ingredientsData: Omit<Ingredient, "id" | "createdAt" | "updatedAt">[] = [
   {
     name: "Aceite",
     waste: 0,
@@ -1092,6 +1110,14 @@ export const ingredientsData: Omit<
   },
 ]
 
+const productRecipesTypes: Omit<ProductRecipeType, "id">[] = [
+  { name: "Principal" },
+  { name: "Guarnición" },
+  { name: "Salsa" },
+  { name: "Relleno" },
+  { name: "Masa" },
+]
+
 const operationalHours = [
   { dayOfWeek: DayOfWeek.MONDAY, startTime: "09:00", endTime: "17:00" },
   { dayOfWeek: DayOfWeek.TUESDAY, startTime: "09:00", endTime: "17:00" },
@@ -1171,6 +1197,14 @@ async function main() {
       where: { name: ingredient.name },
       update: ingredient,
       create: ingredient,
+    })
+  }
+
+  for (const type of productRecipesTypes) {
+    await prisma.productRecipeType.upsert({
+      where: { name: type.name },
+      update: type,
+      create: type,
     })
   }
 

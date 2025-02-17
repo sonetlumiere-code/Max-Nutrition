@@ -76,6 +76,7 @@ enum SubjectKey {
   roles
   permissions
   users
+  productRecipeTypes
 }
 
 model Permission {
@@ -265,20 +266,24 @@ model Product {
   @@map("products")
 }
 
-enum ProductRecipeType {
-  BASE
-  SAUCE
-  GARRISON
+model ProductRecipeType {
+  id   String @id @default(cuid())
+  name String @unique
+
+  productRecipes ProductRecipe[]
+
+  @@map("product_recipe_types")
 }
 
 model ProductRecipe {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   productId String
   recipeId  String
+  typeId    String?
 
-  product Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
-  recipe  Recipe            @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  type    ProductRecipeType
+  product Product            @relation(fields: [productId], references: [id], onDelete: Cascade)
+  recipe  Recipe             @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  type    ProductRecipeType? @relation(fields: [typeId], references: [id], onDelete: SetNull)
 
   @@unique([productId, recipeId])
   @@map("product_recipes")
