@@ -284,7 +284,15 @@ const EditCustomer = ({ customer }: EditCustomerProps) => {
                                 <SelectContent>
                                   {Object.entries(CustomerAddressLabel).map(
                                     ([key, value]) => (
-                                      <SelectItem key={key} value={value}>
+                                      <SelectItem
+                                        key={key}
+                                        value={value}
+                                        disabled={
+                                          watch("addresses")?.some(
+                                            (address) => address.label === value
+                                          ) && value !== "OTHER"
+                                        }
+                                      >
                                         {translateAddressLabel(value)}
                                       </SelectItem>
                                     )
@@ -544,7 +552,7 @@ const EditCustomer = ({ customer }: EditCustomerProps) => {
                         addressFloor: 0,
                         addressGeoRef: undefined as any,
                         addressNumber: 0,
-                        label: CustomerAddressLabel.HOME,
+                        label: CustomerAddressLabel.OTHER,
                         labelString: "",
                         locality: "",
                         municipality: "",
