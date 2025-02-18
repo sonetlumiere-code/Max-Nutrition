@@ -36,7 +36,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, orderLink }) => {
           <Container className='mx-auto my-[40px] max-w-[465px] p-[20px] border border-solid border-[#eaeaea] rounded'>
             <Section className='mt-[32px] text-center'>
               <Img
-                src={`${baseUrl}/img/mxm-logo.png`}
+                src={`${baseUrl}/img/logo-mxm.svg`}
                 alt='Logo'
                 className='mx-auto'
                 width='120'

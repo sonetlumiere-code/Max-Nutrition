@@ -28,7 +28,7 @@ export default function SideNavDashboard({ session }: SideNavDashboardProps) {
           <Link href='/' className='flex items-center gap-2 font-semibold'>
             <span className='sr-only'>HOME</span>
             <img
-              src='img/mxm-logo.png'
+              src='img/logo-mxm.svg'
               alt='MXM Máxima Nutrición'
               className='mx-auto py-4'
             />

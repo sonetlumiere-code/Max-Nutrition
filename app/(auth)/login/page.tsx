@@ -38,7 +38,7 @@ export default function LoginPage({
           <Link href='/' className='block'>
             <span className='sr-only'>HOME</span>
             <img
-              src='img/mxm-logo.png'
+              src='img/logo-mxm.svg'
               alt='MXM Máxima Nutrición'
               className='mx-auto py-4'
             />
