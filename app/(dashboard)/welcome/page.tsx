@@ -15,7 +15,7 @@ export default async function WelcomePage() {
   return (
     <div className='h-full flex items-center justify-center'>
       <img
-        src='img/mxm-logo.png'
+        src='img/logo-mxm.svg'
         alt='MXM Máxima Nutrición'
         className='opacity-50'
       />

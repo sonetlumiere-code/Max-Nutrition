@@ -26,7 +26,7 @@ const NewVerificationPage = () => {
           <Link href='/' className='block'>
             <span className='sr-only'>HOME</span>
             <Image
-              src='/img/mxm-logo.png'
+              src='/img/logo-mxm.svg'
               alt='Máxima Nutrición logo'
               height={36}
               width={120}
