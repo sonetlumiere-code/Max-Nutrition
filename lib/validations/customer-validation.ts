@@ -10,7 +10,7 @@ export const customerSchema = z.object({
     .gte(1000000000, {
       message: "(Código de área) + Número de teléfono.",
     })
-    .lte(9999999999, {
+    .lte(999999999999999, {
       message: "(Código de área) + Número de teléfono",
     })
     .optional(),
