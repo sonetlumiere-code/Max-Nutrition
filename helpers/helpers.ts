@@ -103,7 +103,7 @@ export function translateShippingMethod(
     case ShippingMethod.DELIVERY:
       return "Envío a domicilio"
     case ShippingMethod.TAKE_AWAY:
-      return "Retiro por sucursal"
+      return "Retiro por local"
     default:
       return "Otro"
   }
