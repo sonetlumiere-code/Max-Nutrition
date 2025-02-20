@@ -149,7 +149,6 @@ const permissions: {
     actionKey: "export",
     subjectKey: "shippingSettings",
   },
-
   {
     name: "Ver zonas de envío",
     actionKey: "view",
@@ -197,6 +196,12 @@ const permissions: {
     actionKey: "export",
     subjectKey: "ingredients",
   },
+
+  { name: "Ver recetas", actionKey: "view", subjectKey: "recipes" },
+  { name: "Crear recetas", actionKey: "create", subjectKey: "recipes" },
+  { name: "Actualizar recetas", actionKey: "update", subjectKey: "recipes" },
+  { name: "Eliminar recetas", actionKey: "delete", subjectKey: "recipes" },
+  { name: "Exportar recetas", actionKey: "export", subjectKey: "recipes" },
 
   { name: "Ver roles", actionKey: "view", subjectKey: "roles" },
   { name: "Crear roles", actionKey: "create", subjectKey: "roles" },
