@@ -100,6 +100,22 @@ const permissions: {
     subjectKey: "customerAddresses",
   },
 
+  {
+    name: "Ver configuración de la tienda",
+    actionKey: "view",
+    subjectKey: "shopSettings",
+  },
+  {
+    name: "Actualizar configuración de la tienda",
+    actionKey: "update",
+    subjectKey: "shopSettings",
+  },
+  {
+    name: "Exportar configuración de la tienda",
+    actionKey: "export",
+    subjectKey: "shopSettings",
+  },
+
   { name: "Ver sucursales", actionKey: "view", subjectKey: "shopBranches" },
   { name: "Crear sucursales", actionKey: "create", subjectKey: "shopBranches" },
   {
@@ -116,22 +132,6 @@ const permissions: {
     name: "Exportar sucursales",
     actionKey: "export",
     subjectKey: "shopBranches",
-  },
-
-  {
-    name: "Ver configuración de la tienda",
-    actionKey: "view",
-    subjectKey: "shopSettings",
-  },
-  {
-    name: "Actualizar configuración de la tienda",
-    actionKey: "update",
-    subjectKey: "shopSettings",
-  },
-  {
-    name: "Exportar configuración de la tienda",
-    actionKey: "export",
-    subjectKey: "shopSettings",
   },
 
   {
@@ -175,6 +175,51 @@ const permissions: {
     actionKey: "export",
     subjectKey: "shippingZones",
   },
+
+  { name: "Ver ingredientes", actionKey: "view", subjectKey: "ingredients" },
+  {
+    name: "Crear ingredientes",
+    actionKey: "create",
+    subjectKey: "ingredients",
+  },
+  {
+    name: "Actualizar ingredientes",
+    actionKey: "update",
+    subjectKey: "ingredients",
+  },
+  {
+    name: "Eliminar ingredientes",
+    actionKey: "delete",
+    subjectKey: "ingredients",
+  },
+  {
+    name: "Exportar ingredientes",
+    actionKey: "export",
+    subjectKey: "ingredients",
+  },
+
+  { name: "Ver roles", actionKey: "view", subjectKey: "roles" },
+  { name: "Crear roles", actionKey: "create", subjectKey: "roles" },
+  { name: "Actualizar roles", actionKey: "update", subjectKey: "roles" },
+  { name: "Eliminar roles", actionKey: "delete", subjectKey: "roles" },
+  { name: "Exportar roles", actionKey: "export", subjectKey: "roles" },
+
+  { name: "Ver permisos", actionKey: "view", subjectKey: "permissions" },
+  { name: "Crear permisos", actionKey: "create", subjectKey: "permissions" },
+  {
+    name: "Actualizar permisos",
+    actionKey: "update",
+    subjectKey: "permissions",
+  },
+  { name: "Eliminar permisos", actionKey: "delete", subjectKey: "permissions" },
+  { name: "Exportar permisos", actionKey: "export", subjectKey: "permissions" },
+
+  { name: "Ver usuarios", actionKey: "view", subjectKey: "users" },
+  { name: "Crear usuarios", actionKey: "create", subjectKey: "users" },
+  { name: "Actualizar usuarios", actionKey: "update", subjectKey: "users" },
+  { name: "Eliminar usuarios", actionKey: "delete", subjectKey: "users" },
+  { name: "Exportar usuarios", actionKey: "export", subjectKey: "users" },
+
   {
     name: "Crear tipo de receta",
     actionKey: "create",
