@@ -102,7 +102,6 @@ export const exportOrdersToExcel = (
         recipe?.recipeIngredients?.forEach((ingredientEntry) => {
           const ingredient = ingredientEntry.ingredient
           if (ingredient) {
-            // Get per–product recipe quantity (assumed to be in the base unit already)
             const perProductQuantity = ingredientEntry.quantity
             const { adjustedQuantity, totalQuantity, cost, baseMeasurement } =
               calculateIngredientData({
@@ -316,24 +315,53 @@ export const exportOrdersToExcel = (
   })
 
   // ------------------------------
-  // Create the workbook and add sheets.
+  // Hoja 5: Bolsones (Total de productos por cada cliente)
+  // ------------------------------
+  const uniqueCustomers = Array.from(
+    new Set(orders.map((order) => order.customer?.name || "N/A"))
+  )
+  const uniqueProducts = Array.from(
+    new Set(
+      orders.flatMap(
+        (order) => order.items?.map((item) => item.product.name) || []
+      )
+    )
+  )
+
+  const bagsData = uniqueCustomers.map((customer) => {
+    const row: Record<string, any> = { "Nombre Cliente": customer }
+    uniqueProducts.forEach((product) => {
+      row[product] = orders
+        .filter((order) => (order.customer?.name || "N/A") === customer)
+        .flatMap((order) => order.items || [])
+        .filter((item) => item.product.name === product)
+        .reduce((sum, item) => sum + item.quantity, 0)
+    })
+    return row
+  })
+
+  // ------------------------------
+  // Crear el workbook y agregar hojas.
   // ------------------------------
   const ws1 = XLSX.utils.json_to_sheet(customerOrdersData)
   const ws2 = XLSX.utils.json_to_sheet(productSummaryData)
   const ws3 = XLSX.utils.json_to_sheet(ingredientSummaryData)
   const ws4 = XLSX.utils.json_to_sheet(recipeDetailsData)
+  const ws5 = XLSX.utils.json_to_sheet(bagsData)
 
   const wscols = Array(15).fill({ wch: 15 })
   ws1["!cols"] = wscols
   ws2["!cols"] = wscols
   ws3["!cols"] = wscols
   ws4["!cols"] = wscols
+  ws5["!cols"] = wscols
 
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, ws1, "Pedidos Detallados")
   XLSX.utils.book_append_sheet(workbook, ws2, "Resumen Productos")
   XLSX.utils.book_append_sheet(workbook, ws3, "Resumen Ingredientes")
   XLSX.utils.book_append_sheet(workbook, ws4, "Detalle Recetas")
+  XLSX.utils.book_append_sheet(workbook, ws5, "Bolsones")
 
   const fileName = `MaxNutri_WEB_Pedidos_${translateTimePeriod(
     period
