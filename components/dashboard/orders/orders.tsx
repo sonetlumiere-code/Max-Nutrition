@@ -176,7 +176,7 @@ export default function Orders() {
 
     const ordersToExport = Object.values(groupedAndFilteredOrders)
       .flat()
-      .filter((order) => order.status !== OrderStatus.CANCELLED)
+      .filter((order) => order.status === OrderStatus.PENDING)
 
     exportOrdersToExcel(ordersToExport, selectedTab)
   }
