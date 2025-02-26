@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { ConfirmationProvider } from "@/components/confirmation-provider"
 import { ReactNode } from "react"
 import { SessionProvider } from "next-auth/react"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -38,10 +39,12 @@ export default function RootLayout({
         )}
       >
         <SessionProvider>
-          <ConfirmationProvider>
-            {children}
-            <Toaster />
-          </ConfirmationProvider>
+          <TooltipProvider>
+            <ConfirmationProvider>
+              {children}
+              <Toaster />
+            </ConfirmationProvider>
+          </TooltipProvider>
         </SessionProvider>
       </body>
     </html>

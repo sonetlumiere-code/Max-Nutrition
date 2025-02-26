@@ -34,6 +34,12 @@ import {
 import { Icons } from "@/components/icons"
 import { OrderStatus, ShippingMethod } from "@prisma/client"
 import { format } from "date-fns"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface OrdersDataTableProps {
   orders: PopulatedOrder[]
@@ -75,9 +81,23 @@ const OrdersDataTable = ({
       ),
       cell: ({ row }) => {
         const customer = row.original.customer as PopulatedCustomer
+        const isNewCustomer = customer.orders?.length === 1
+
         return (
           <div className='ml-4'>
-            <div className='font-medium'>{customer?.name}</div>
+            <div className='font-medium flex items-center'>
+              {customer?.name}{" "}
+              {isNewCustomer && (
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Icons.dot className='text-blue-500' />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Nuevo cliente</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
             <div className='hidden text-sm text-muted-foreground md:inline'>
               {customer?.user?.email}
             </div>

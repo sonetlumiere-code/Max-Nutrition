@@ -66,6 +66,7 @@ const fetchOrders = async () => {
               image: true,
             },
           },
+          orders: true,
         },
       },
       address: true,

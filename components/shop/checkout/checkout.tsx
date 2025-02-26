@@ -148,11 +148,11 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
       toast({
         title: "Pedido realizado",
         description: "Tu pedido se ha realizado correctamente.",
-        action: (
-          <ToastAction altText='Ver pedidos'>
-            <Link href='/customer-orders-history'>Ver</Link>
-          </ToastAction>
-        ),
+        // action: (
+        //   <ToastAction altText='Ver pedidos'>
+        //     <Link href='/customer-orders-history'>Ver</Link>
+        //   </ToastAction>
+        // ),
       })
       router.push(`/order-confirmed/${res.order.id}`)
     } else if (res.error) {
