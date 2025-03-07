@@ -138,7 +138,20 @@ const CustomersDataTable = ({ customers }: OrdersDataTableProps) => {
           return (
             <div className='ml-4'>
               {customerPhone ? (
-                <Button variant='outline' size='default'>
+                <Button
+                  variant='outline'
+                  size='default'
+                  onClick={() => {
+                    const message = encodeURIComponent(
+                      "Hola te escribo de Máxima Nutrición"
+                    )
+                    const phoneNumber = String(customerPhone).replace(/\D/g, "")
+                    window.open(
+                      `https://wa.me/${phoneNumber}?text=${message}`,
+                      "_blank"
+                    )
+                  }}
+                >
                   {customerPhone}
                   <Icons.messageSquareMore className='h-4 w-4 ml-1' />
                 </Button>

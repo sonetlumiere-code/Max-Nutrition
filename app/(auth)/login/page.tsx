@@ -9,7 +9,8 @@ import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Ingresar a mi cuenta - Máxima nutrición",
-  description: "Ingresa a tu cuenta.",
+  description:
+    "Inicia sesión para gestionar tus pedidos, ver tu historial de compras y acceder a los productos. Fácil, rápido y seguro.",
 }
 
 type LoginPageSearchParams = {
@@ -40,7 +41,7 @@ export default function LoginPage({
             <img
               src='img/logo-mxm.svg'
               alt='MXM Máxima Nutrición'
-              className='mx-auto py-4'
+              className='mx-auto py-4 max-w-40'
             />
           </Link>
           {/* <h1 className='text-2xl font-semibold tracking-tight'>

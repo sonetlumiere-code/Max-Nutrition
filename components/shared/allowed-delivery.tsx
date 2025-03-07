@@ -24,16 +24,7 @@ const AllowedDelivery = ({
           </AlertDescription>
         </Alert>
       ) : (
-        <Alert variant='success'>
-          <Icons.circleCheck className='h-4 w-4' />
-          <AlertTitle className='leading-5'>
-            Envío a domicilio habilitado
-          </AlertTitle>
-          <AlertDescription className='leading-4'>
-            Alcanzaste la cantidad mínima de {minProductsQuantityForDelivery}{" "}
-            productos para habilitar envío a domicilio.
-          </AlertDescription>
-        </Alert>
+        ""
       )}
     </>
   )
