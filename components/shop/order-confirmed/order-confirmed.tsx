@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { PopulatedOrder } from "@/types/types"
 import { cn } from "@/lib/utils"
-import { translateOrderStatus } from "@/helpers/helpers"
+import { getRouteByShopCategory, translateOrderStatus } from "@/helpers/helpers"
 
 interface OrderConfirmedProps {
   order: PopulatedOrder
@@ -194,12 +194,24 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
           </div>
         </CardContent>
         <CardFooter className='flex flex-col space-y-4 sm:flex-row sm:justify-between sm:space-x-4 sm:space-y-0'>
-          <Button asChild className='w-full sm:w-auto'>
-            <Link href='/customer-orders-history'>Ver Mis Pedidos</Link>
-          </Button>
-          <Button asChild variant='outline' className='w-full sm:w-auto'>
-            <Link href='/shop'>Seguir Comprando</Link>
-          </Button>
+          {order.shop && (
+            <>
+              <Button asChild className='w-full sm:w-auto'>
+                <Link
+                  href={`${getRouteByShopCategory(
+                    order.shop?.shopCategory
+                  )}/customer-orders-history`}
+                >
+                  Ver Mis Pedidos
+                </Link>
+              </Button>
+              <Button asChild variant='outline' className='w-full sm:w-auto'>
+                <Link href={getRouteByShopCategory(order.shop?.shopCategory)}>
+                  Seguir Comprando
+                </Link>
+              </Button>
+            </>
+          )}
         </CardFooter>
       </Card>
     </div>
