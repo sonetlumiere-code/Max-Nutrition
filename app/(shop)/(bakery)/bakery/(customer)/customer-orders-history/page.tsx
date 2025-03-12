@@ -1,26 +1,26 @@
 import { Icons } from "@/components/icons"
-import CustomerAddresses from "@/components/shop/customer/info/address/list/customer-addresses"
-import CustomerPersonalInfo from "@/components/shop/customer/info/personal-info/customer-personal-info"
+import CustomerOrdersHistory from "@/components/shop/customer/orders-history/customer-orders-history"
 import { buttonVariants } from "@/components/ui/button"
 import { getCustomer } from "@/data/customer"
+import { getRouteByShopCategory } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
+import { DEFAULT_REDIRECT } from "@/routes"
+import { ShopCategory } from "@prisma/client"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
-const CustomerInfoPage = async () => {
+const BakeryCustomerOrdersHistoryPage = async () => {
   const session = await auth()
+
+  const shopCategory = ShopCategory.BAKERY
 
   const customer = await getCustomer({
     where: {
       userId: session?.user.id,
     },
     include: {
-      addresses: {
-        orderBy: {
-          createdAt: "asc",
-        },
-      },
+      addresses: true,
       user: {
         select: {
           email: true,
@@ -28,11 +28,15 @@ const CustomerInfoPage = async () => {
         },
       },
       orders: {
+        take: 10,
         orderBy: {
           createdAt: "desc",
         },
         include: {
           address: true,
+          appliedPromotions: true,
+          shopBranch: true,
+          shop: true,
           items: {
             include: {
               product: true,
@@ -44,14 +48,14 @@ const CustomerInfoPage = async () => {
   })
 
   if (!customer) {
-    redirect("/shop")
+    redirect(DEFAULT_REDIRECT)
   }
 
   return (
     <div className='space-y-6 w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
       <div className='flex items-start'>
         <Link
-          href='/shop'
+          href={getRouteByShopCategory(shopCategory)}
           className={cn(buttonVariants({ variant: "ghost" }), "")}
         >
           <>
@@ -61,14 +65,9 @@ const CustomerInfoPage = async () => {
         </Link>
       </div>
 
-      {customer && (
-        <>
-          <CustomerPersonalInfo customer={customer} />
-          <CustomerAddresses customer={customer} />
-        </>
-      )}
+      {customer?.orders && <CustomerOrdersHistory orders={customer?.orders} />}
     </div>
   )
 }
 
-export default CustomerInfoPage
+export default BakeryCustomerOrdersHistoryPage

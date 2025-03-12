@@ -25,6 +25,7 @@ import {
   LineItem,
   PopulatedCategory,
   PopulatedCustomer,
+  PopulatedShopBranch,
   PopulatedShopSettings,
 } from "@/types/types"
 import {
@@ -34,10 +35,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { PaymentMethod, ShippingMethod } from "@prisma/client"
+import { ShopCategory, PaymentMethod, ShippingMethod } from "@prisma/client"
 import {
   translateAddressLabel,
   translateShippingMethod,
+  translateShopCategory,
 } from "@/helpers/helpers"
 import { usePromotion } from "@/hooks/use-promotion"
 import PaymentMethodField from "@/components/shared/payment-method-field"
@@ -59,16 +61,18 @@ type CreateOrderProps = {
   categories: PopulatedCategory[]
   customers: PopulatedCustomer[]
   shopSettings: PopulatedShopSettings
+  shopBranches: PopulatedShopBranch[]
 }
 
 const CreateOrder = ({
   categories,
   customers,
   shopSettings,
+  shopBranches,
 }: CreateOrderProps) => {
   const router = useRouter()
 
-  const { shippingSettings, allowedPaymentMethods, branches } = shopSettings
+  const { shippingSettings, allowedPaymentMethods } = shopSettings
 
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
@@ -77,7 +81,8 @@ const CreateOrder = ({
       customerId: "",
       paymentMethod: PaymentMethod.CASH,
       shippingMethod: ShippingMethod.DELIVERY,
-      shopBranchId: shopSettings.branches?.[0].id || "",
+      shopCategory: ShopCategory.FOOD,
+      shopBranchId: shopBranches?.[0].id || "",
       items: [],
     },
   })
@@ -95,7 +100,8 @@ const CreateOrder = ({
     name: "items",
   })
 
-  const { items, customerId, shippingMethod, customerAddressId } = watch()
+  const { items, customerId, shippingMethod, customerAddressId, shopCategory } =
+    watch()
 
   const selectedCustomer = customers?.find((c) => c.id === customerId)
   const selectedAddress = selectedCustomer?.addresses?.find(
@@ -116,8 +122,11 @@ const CreateOrder = ({
   const shippingCost = shippingZone?.cost || 0
 
   const products = useMemo(
-    () => categories.flatMap((category) => category.products),
-    [categories]
+    () =>
+      categories
+        .filter((category) => category.shopCategory === shopCategory)
+        .flatMap((category) => category.products),
+    [categories, shopCategory]
   )
 
   const lineItems: LineItem[] = items
@@ -136,6 +145,7 @@ const CreateOrder = ({
 
   const { promotions, appliedPromotions } = usePromotion({
     items: lineItems,
+    shopCategory,
   })
 
   const placeOrder = async (data: OrderSchema) => {
@@ -206,8 +216,48 @@ const CreateOrder = ({
           <div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
             <Card>
               <CardHeader>
+                <CardTitle className='text-xl'>Tienda</CardTitle>
+                <CardDescription>Selecciona la Tienda</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name='shopCategory'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tienda</FormLabel>
+                      <Select
+                        onValueChange={(value) => {
+                          field.onChange(value)
+                          setValue("items", [])
+                        }}
+                        defaultValue={field.value}
+                        disabled={isSubmitting}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder='' />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.values(ShopCategory).map((group) => (
+                            <SelectItem key={group} value={group}>
+                              {translateShopCategory(group)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
                 <CardTitle className='text-xl'>Cliente</CardTitle>
-                <CardDescription>Cliente</CardDescription>
+                <CardDescription>Selecciona al Cliente</CardDescription>
               </CardHeader>
               <CardContent>
                 <FormField
@@ -247,7 +297,7 @@ const CreateOrder = ({
             <Card>
               <CardHeader>
                 <CardTitle className='text-xl'>Productos</CardTitle>
-                <CardDescription>Productos</CardDescription>
+                <CardDescription>Selecciona los Productos</CardDescription>
               </CardHeader>
               <CardContent>
                 <fieldset className='border p-5 rounded-md'>
@@ -367,7 +417,7 @@ const CreateOrder = ({
                         append({
                           productId: "",
                           quantity: 1,
-                          variation: { withSalt: true },
+                          variation: { withSalt: false },
                         })
                       }
                       disabled={isSubmitting}
@@ -391,9 +441,13 @@ const CreateOrder = ({
               <Card>
                 <CardHeader>
                   <CardTitle className='text-xl'>Promociones</CardTitle>
+                  <CardDescription>Promociones aplicadas</CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-3'>
-                  <AppliedPromotions items={lineItems} />
+                  <AppliedPromotions
+                    items={lineItems}
+                    shopCategory={shopCategory}
+                  />
                 </CardContent>
               </Card>
             )}
@@ -403,7 +457,7 @@ const CreateOrder = ({
             <Card>
               <CardHeader>
                 <CardTitle className='text-xl'>Método de pago</CardTitle>
-                <CardDescription>Método de pago</CardDescription>
+                <CardDescription>Selecciona el Método de pago</CardDescription>
               </CardHeader>
               <CardContent>
                 <PaymentMethodField
@@ -411,6 +465,7 @@ const CreateOrder = ({
                   items={lineItems}
                   allowedPaymentMethods={allowedPaymentMethods}
                   isSubmitting={isSubmitting}
+                  shopCategory={shopCategory}
                 />
               </CardContent>
             </Card>
@@ -418,7 +473,7 @@ const CreateOrder = ({
             <Card>
               <CardHeader>
                 <CardTitle className='text-xl'>Envío</CardTitle>
-                <CardDescription>Método de envío</CardDescription>
+                <CardDescription>Seleccinoa el Método de envío</CardDescription>
               </CardHeader>
               <CardContent>
                 <FormField
@@ -478,10 +533,10 @@ const CreateOrder = ({
                       }
                     />
                   ) : shippingMethod === ShippingMethod.TAKE_AWAY ? (
-                    branches && (
+                    shopBranches && (
                       <ShopBranchField
                         control={control}
-                        branches={branches}
+                        branches={shopBranches}
                         isSubmitting={isSubmitting}
                       />
                     )
@@ -569,7 +624,11 @@ const CreateOrder = ({
                 <CardDescription>Total del pedido</CardDescription>
               </CardHeader>
               <CardContent>
-                <Summary items={lineItems} shippingCost={shippingCost} />
+                <Summary
+                  items={lineItems}
+                  shippingCost={shippingCost}
+                  shopCategory={shopCategory}
+                />
               </CardContent>
             </Card>
           </div>

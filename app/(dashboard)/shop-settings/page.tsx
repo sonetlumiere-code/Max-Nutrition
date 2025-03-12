@@ -19,13 +19,6 @@ const ShopSettingsPage = async () => {
 
   // const settings = await getShopSettings({
   //   where: { id: shopSettingsId },
-  //   include: {
-  //     branches: {
-  //       include: {
-  //         operationalHours: true,
-  //       },
-  //     },
-  //   },
   // })
 
   // return (

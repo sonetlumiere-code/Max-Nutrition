@@ -35,6 +35,7 @@ import { toast } from "@/components/ui/use-toast"
 import {
   translatePaymentMethod,
   translateShippingMethod,
+  translateShopCategory,
 } from "@/helpers/helpers"
 import {
   PromotionSchema,
@@ -47,6 +48,7 @@ import {
   PaymentMethod,
   PromotionDiscountType,
   ShippingMethod,
+  ShopCategory,
 } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useFieldArray, useForm } from "react-hook-form"
@@ -67,6 +69,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
       isActive: promotion.isActive,
       discountType: promotion.discountType,
       discount: promotion.discount,
+      shopCategory: promotion.shopCategory,
       categories: promotion.categories,
       allowedPaymentMethods: promotion.allowedPaymentMethods,
       allowedShippingMethods: promotion.allowedShippingMethods,
@@ -362,6 +365,44 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                           aria-readonly
                         />
                       </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Tienda</CardTitle>
+                <CardDescription>
+                  Tienda donde la promoción es aplicable
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={control}
+                  name={"shopCategory"}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tienda</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isSubmitting}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder='' />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.values(ShopCategory).map((group) => (
+                            <SelectItem key={group} value={group}>
+                              {translateShopCategory(group)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />

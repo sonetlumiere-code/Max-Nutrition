@@ -9,8 +9,6 @@ import {
 } from "@/lib/validations/shop-branch-validation"
 import { revalidatePath } from "next/cache"
 
-const shopSettingsId = process.env.SHOP_SETTINGS_ID
-
 export async function editShopBranch({
   id,
   values,
@@ -18,10 +16,6 @@ export async function editShopBranch({
   id: string
   values: PartialShopBranchSchema
 }) {
-  if (!shopSettingsId) {
-    return { error: "Es necesario el ID de la configuración de tienda." }
-  }
-
   const session = await auth()
   const user = session?.user
 
@@ -63,7 +57,6 @@ export async function editShopBranch({
     const updatedShopBranch = await prisma.shopBranch.update({
       where: { id },
       data: {
-        shopSettingsId,
         addressNumber,
         addressStreet: addressGeoRef?.calle.nombre,
         branchType,

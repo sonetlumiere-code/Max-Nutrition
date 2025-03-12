@@ -8,9 +8,16 @@ import {
 } from "@/helpers/helpers"
 import { usePromotion } from "@/hooks/use-promotion"
 import { LineItem } from "@/types/types"
+import { ShopCategory } from "@prisma/client"
 
-const AppliedPromotions = ({ items }: { items: LineItem[] }) => {
-  const { appliedPromotions } = usePromotion({ items })
+const AppliedPromotions = ({
+  items,
+  shopCategory,
+}: {
+  items: LineItem[]
+  shopCategory: ShopCategory
+}) => {
+  const { appliedPromotions } = usePromotion({ items, shopCategory })
 
   return (
     <>

@@ -7,6 +7,9 @@ import {
   PrismaClient,
   ShippingMethod,
   ProductRecipeType,
+  ShopBranch,
+  Shop,
+  ShopCategory,
 } from "@prisma/client"
 
 const prisma = new PrismaClient()
@@ -98,6 +101,28 @@ const permissions: {
     name: "Exportar direcciones de clientes",
     actionKey: "export",
     subjectKey: "customerAddresses",
+  },
+
+  { name: "Ver tiendas", actionKey: "view", subjectKey: "shops" },
+  {
+    name: "Crear tiendas",
+    actionKey: "create",
+    subjectKey: "shops",
+  },
+  {
+    name: "Actualizar tiendas",
+    actionKey: "update",
+    subjectKey: "shops",
+  },
+  {
+    name: "Eliminar tiendas",
+    actionKey: "delete",
+    subjectKey: "shops",
+  },
+  {
+    name: "Exportar tiendas",
+    actionKey: "export",
+    subjectKey: "shops",
   },
 
   {
@@ -244,6 +269,25 @@ const permissions: {
     name: "Exportar tipo de receta",
     actionKey: "export",
     subjectKey: "productRecipeTypes",
+  },
+]
+
+const shops: Omit<Shop, "id" | "createdAt" | "updatedAt">[] = [
+  {
+    name: "Viandas",
+    key: "foods",
+    title: "Tienda de viandas",
+    description: "Ecommerce de viandas.",
+    shopCategory: ShopCategory.FOOD,
+    isActive: true,
+  },
+  {
+    name: "Pastelería",
+    key: "bakery",
+    title: "Tienda de pastelería",
+    description: "Ecommerce de pastelería.",
+    shopCategory: ShopCategory.BAKERY,
+    isActive: true,
   },
 ]
 
@@ -1168,7 +1212,7 @@ const productRecipesTypes: Omit<ProductRecipeType, "id">[] = [
   { name: "Masa" },
 ]
 
-const operationalHours = [
+const branchesOperationalHours = [
   { dayOfWeek: DayOfWeek.MONDAY, startTime: "09:00", endTime: "17:00" },
   { dayOfWeek: DayOfWeek.TUESDAY, startTime: "09:00", endTime: "17:00" },
   { dayOfWeek: DayOfWeek.WEDNESDAY, startTime: "09:00", endTime: "17:00" },
@@ -1176,6 +1220,43 @@ const operationalHours = [
   { dayOfWeek: DayOfWeek.FRIDAY, startTime: "09:00", endTime: "17:00" },
   { dayOfWeek: DayOfWeek.SATURDAY, startTime: "10:00", endTime: "14:00" },
   { dayOfWeek: DayOfWeek.SUNDAY, startTime: null, endTime: null }, // Closed
+]
+
+const shopsOperationalHours = [
+  { dayOfWeek: DayOfWeek.MONDAY, startTime: null, endTime: null },
+  { dayOfWeek: DayOfWeek.TUESDAY, startTime: null, endTime: null },
+  { dayOfWeek: DayOfWeek.WEDNESDAY, startTime: null, endTime: null },
+  { dayOfWeek: DayOfWeek.THURSDAY, startTime: null, endTime: null },
+  { dayOfWeek: DayOfWeek.FRIDAY, startTime: "00:00", endTime: "23:59" },
+  { dayOfWeek: DayOfWeek.SATURDAY, startTime: "00:00", endTime: "23:59" },
+  { dayOfWeek: DayOfWeek.SUNDAY, startTime: "00:00", endTime: "23:59" },
+]
+
+const shopBranches: Omit<
+  ShopBranch,
+  "id" | "createdAt" | "updatedAt" | "shopSettingsId"
+>[] = [
+  {
+    label: "Sucursal Agronomía",
+    branchType: "RETAIL",
+    province: "Ciudad Autónoma de Buenos Aires",
+    municipality: "Comuna 15",
+    locality: "Agronomía",
+    addressStreet: "Main St",
+    addressNumber: 123,
+    addressFloor: null,
+    addressApartment: null,
+    postCode: null,
+    phoneNumber: "+54 11 1234 5678",
+    email: null,
+    latitude: null,
+    longitude: null,
+    managerName: null,
+    timezone: "America/Argentina/Buenos_Aires",
+    isActive: true,
+    description: "Retail branch located in Agronomía.",
+    image: null,
+  },
 ]
 
 async function main() {
@@ -1264,35 +1345,6 @@ async function main() {
     create: {
       id: shopSettingsId,
       allowedPaymentMethods: [PaymentMethod.CASH, PaymentMethod.BANK_TRANSFER],
-      branches: {
-        create: [
-          {
-            label: "Sucursal Agronomía",
-            branchType: "RETAIL",
-            province: "Ciudad Autónoma de Buenos Aires",
-            municipality: "Comuna 15",
-            locality: "Agronomía",
-            addressStreet: "Main St",
-            addressNumber: 123,
-            phoneNumber: "+54 11 1234 5678",
-            email: null,
-            latitude: null,
-            longitude: null,
-            managerName: null,
-            timezone: "America/Argentina/Buenos_Aires",
-            isActive: true,
-            description: "Retail branch located in Agronomía.",
-            image: null,
-            operationalHours: {
-              create: operationalHours?.map((hours) => ({
-                dayOfWeek: hours.dayOfWeek,
-                startTime: hours.startTime || null,
-                endTime: hours.endTime || null,
-              })),
-            },
-          },
-        ],
-      },
       shippingSettings: {
         create: {
           allowedShippingMethods: [
@@ -1304,6 +1356,57 @@ async function main() {
       },
     },
   })
+
+  const createdBranches = []
+  for (const branch of shopBranches) {
+    const createdBranch = await prisma.shopBranch.upsert({
+      where: { label: branch.label },
+      update: {},
+      create: {
+        label: branch.label,
+        branchType: branch.branchType,
+        province: branch.province,
+        municipality: branch.municipality,
+        locality: branch.locality,
+        addressStreet: branch.addressStreet,
+        addressNumber: branch.addressNumber,
+        phoneNumber: branch.phoneNumber,
+        email: branch.email,
+        latitude: branch.latitude,
+        longitude: branch.longitude,
+        managerName: branch.managerName,
+        timezone: branch.timezone,
+        isActive: branch.isActive,
+        description: branch.description,
+        image: branch.image,
+        operationalHours: {
+          create: branchesOperationalHours.map((hours) => ({
+            dayOfWeek: hours.dayOfWeek,
+            startTime: hours.startTime || null,
+            endTime: hours.endTime || null,
+          })),
+        },
+      },
+    })
+    createdBranches.push(createdBranch)
+  }
+
+  for (const shopData of shops) {
+    await prisma.shop.upsert({
+      where: { name: shopData.name },
+      update: {},
+      create: {
+        ...shopData,
+        operationalHours: {
+          create: shopsOperationalHours.map((hours) => ({
+            dayOfWeek: hours.dayOfWeek,
+            startTime: hours.startTime || null,
+            endTime: hours.endTime || null,
+          })),
+        },
+      },
+    })
+  }
 }
 
 main()

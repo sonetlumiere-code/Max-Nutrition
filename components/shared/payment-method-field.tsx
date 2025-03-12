@@ -14,7 +14,7 @@ import { translatePaymentMethod } from "@/helpers/helpers"
 import { usePromotion } from "@/hooks/use-promotion"
 import { OrderSchema } from "@/lib/validations/order-validation"
 import { LineItem } from "@/types/types"
-import { PaymentMethod } from "@prisma/client"
+import { PaymentMethod, ShopCategory } from "@prisma/client"
 import { Control } from "react-hook-form"
 
 interface PaymentMethodFieldProps {
@@ -22,6 +22,7 @@ interface PaymentMethodFieldProps {
   items: LineItem[]
   allowedPaymentMethods: PaymentMethod[]
   isSubmitting: boolean
+  shopCategory: ShopCategory
 }
 
 const paymentMethodIcons: Record<PaymentMethod, JSX.Element> = {
@@ -37,9 +38,11 @@ const PaymentMethodField = ({
   items,
   allowedPaymentMethods,
   isSubmitting,
+  shopCategory,
 }: PaymentMethodFieldProps) => {
   const { appliedPromotions, isLoadingPromotions } = usePromotion({
     items,
+    shopCategory,
   })
 
   return (

@@ -21,11 +21,15 @@ const OrderItemInfo = ({ order }: OrderInfoProps) => {
             <li key={item.id} className='flex items-center justify-between'>
               <span className='text-muted-foreground'>
                 {item.product?.name}{" "}
-                {item.withSalt ? (
-                  <Badge variant='secondary'>Con sal</Badge>
-                ) : (
-                  <Badge variant='secondary'>Sin sal</Badge>
-                )}{" "}
+                {order.shop?.shopCategory === "FOOD" && (
+                  <>
+                    {item.withSalt ? (
+                      <Badge variant='secondary'>Con sal</Badge>
+                    ) : (
+                      <Badge variant='secondary'>Sin sal</Badge>
+                    )}{" "}
+                  </>
+                )}
                 x <span>{item.quantity}</span>
               </span>
               <span>${item.product?.price * item.quantity}</span>

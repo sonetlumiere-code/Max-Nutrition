@@ -26,7 +26,7 @@ export async function deleteShopBranch({ id }: { id: string }) {
 
     return { success: shopBranch }
   } catch (error) {
-    console.log(error)
+    console.log("Error deleting shop branch:", error)
     return { error: "Hubo un error al eliminar la sucursal." }
   }
 }

@@ -74,9 +74,11 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
                   </div>
                   <div>
                     <p className='font-medium'>{item.product.name}</p>
-                    <Badge variant='secondary' className='mt-1'>
-                      {item.withSalt ? "Con sal" : "Sin sal"}
-                    </Badge>
+                    {order.shop?.shopCategory === "FOOD" && (
+                      <Badge variant='secondary' className='mt-1'>
+                        {item.withSalt ? "Con sal" : "Sin sal"}
+                      </Badge>
+                    )}
                     <p className='text-sm text-muted-foreground mt-1'>
                       Cantidad: {item.quantity}
                     </p>

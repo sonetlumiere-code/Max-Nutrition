@@ -26,6 +26,7 @@ import {
   Eye,
   EyeOff,
   File,
+  GitBranch,
   Globe,
   Home,
   Info,
@@ -91,6 +92,7 @@ export const Icons = {
   eye: Eye,
   eyeOff: EyeOff,
   file: File,
+  gitBranch: GitBranch,
   globe: Globe,
   google: ({ ...props }: LucideProps) => (
     <svg

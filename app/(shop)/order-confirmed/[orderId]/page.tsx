@@ -6,6 +6,8 @@ import Link from "next/link"
 import { Icons } from "@/components/icons"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { DEFAULT_REDIRECT } from "@/routes"
+import { getRouteByShopCategory } from "@/helpers/helpers"
 
 interface PageProps {
   params: { orderId: string }
@@ -15,7 +17,7 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
   const { orderId } = params
 
   if (!orderId) {
-    redirect("/shop")
+    redirect(DEFAULT_REDIRECT)
   }
 
   const session = await auth()
@@ -33,6 +35,7 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
         },
       },
       include: {
+        shop: true,
         items: {
           include: {
             product: true,
@@ -49,15 +52,15 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
       },
     })
 
-    if (!order) {
-      redirect("/shop")
+    if (!order || !order.shop) {
+      redirect(DEFAULT_REDIRECT)
     }
 
     return (
       <div className='space-y-6 w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
         <div className='flex items-start'>
           <Link
-            href='/shop'
+            href={getRouteByShopCategory(order.shop.shopCategory)}
             className={cn(buttonVariants({ variant: "ghost" }), "")}
           >
             <>
@@ -72,6 +75,6 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
     )
   } catch (error) {
     console.error("Error fetching order data:", error)
-    redirect("/shop")
+    redirect(DEFAULT_REDIRECT)
   }
 }

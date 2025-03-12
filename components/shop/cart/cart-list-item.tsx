@@ -6,7 +6,8 @@ import { TableCell, TableRow } from "@/components/ui/table"
 import { LineItem } from "@/types/types"
 
 const CartListItem = ({ cartItem }: { cartItem: LineItem }) => {
-  const { decrementQuantity, incrementQuantity, removeItem } = useCart()
+  const { decrementQuantity, incrementQuantity, removeItem, shopCategory } =
+    useCart()
 
   return (
     <TableRow>
@@ -23,9 +24,11 @@ const CartListItem = ({ cartItem }: { cartItem: LineItem }) => {
         <div className='space-y-2'>
           <h3>{cartItem.product.name}</h3>
           <div className='flex gap-2'>
-            <Badge variant='secondary'>
-              {cartItem.variation.withSalt ? "Con sal" : "Sin sal"}
-            </Badge>
+            {shopCategory === "FOOD" && (
+              <Badge variant='secondary'>
+                {cartItem.variation.withSalt ? "Con sal" : "Sin sal"}
+              </Badge>
+            )}
             <p className='text-muted-foreground'>${cartItem.product.price}</p>
           </div>
         </div>

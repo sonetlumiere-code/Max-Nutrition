@@ -23,6 +23,15 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { MultiSelect } from "@/components/multi-select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { ShopCategory } from "@prisma/client"
+import { translateShopCategory } from "@/helpers/helpers"
 
 type CreateCategoryProps = {
   products: PopulatedProduct[] | null
@@ -37,7 +46,7 @@ const CreateCategory = ({ products }: CreateCategoryProps) => {
       name: "",
       productsIds: [],
       promotionsIds: [],
-      group: "FOOD",
+      shopCategory: "FOOD",
     },
   })
 
@@ -87,6 +96,35 @@ const CreateCategory = ({ products }: CreateCategoryProps) => {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name={"shopCategory"}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tienda</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isSubmitting}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.values(ShopCategory).map((group) => (
+                          <SelectItem key={group} value={group}>
+                            {translateShopCategory(group)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

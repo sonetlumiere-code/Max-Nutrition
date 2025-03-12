@@ -130,6 +130,7 @@ const LoginForm = ({ redirectTo }: LoginFormProps) => {
                     variant='link'
                     asChild
                     className='px-0 font-normal'
+                    disabled={isSubmitting || isGoogleLoading}
                   >
                     <Link href='/reset-password'>
                       ¿Olvidaste tu contraseña?
@@ -168,6 +169,7 @@ const LoginForm = ({ redirectTo }: LoginFormProps) => {
         isSubmitting={isSubmitting}
         isGoogleLoading={isGoogleLoading}
         setIsGoogleLoading={setIsGoogleLoading}
+        redirectTo={redirectTo}
       />
     </div>
   )

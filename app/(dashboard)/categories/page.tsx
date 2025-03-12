@@ -32,7 +32,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getCategories } from "@/data/categories"
-import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
+import {
+  getPermissionsKeys,
+  hasPermission,
+  translateShopCategory,
+} from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -105,6 +109,7 @@ export default async function CategoriesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Nombre</TableHead>
+                  <TableHead>Tienda</TableHead>
                   <TableHead className='text-end'>
                     <span>Acciones</span>
                   </TableHead>
@@ -114,6 +119,9 @@ export default async function CategoriesPage() {
                 {categories?.map((category) => (
                   <TableRow key={category.id}>
                     <TableCell>{category.name}</TableCell>
+                    <TableCell>
+                      {translateShopCategory(category.shopCategory)}
+                    </TableCell>
                     {(userPermissionsKeys.includes("update:categories") ||
                       userPermissionsKeys.includes("delete:categories")) && (
                       <TableCell className='text-end'>

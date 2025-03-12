@@ -7,9 +7,10 @@ import { cn } from "@/lib/utils"
 import { useCart } from "@/components/cart-provider"
 
 const CartCostPreview = () => {
-  const { items, getSubtotalPrice } = useCart()
+  const { items, getSubtotalPrice, shopCategory } = useCart()
   const { isLoadingPromotions, appliedPromotions, finalPrice } = usePromotion({
     items,
+    shopCategory,
   })
 
   return (

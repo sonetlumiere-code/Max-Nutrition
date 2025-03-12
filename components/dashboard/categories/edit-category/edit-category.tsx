@@ -23,6 +23,15 @@ import { PopulatedCategory, PopulatedProduct } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { ShopCategory } from "@prisma/client"
+import { translateShopCategory } from "@/helpers/helpers"
 
 type EditCategoryProps = {
   category: PopulatedCategory
@@ -86,6 +95,35 @@ const EditCategory = ({ category, products }: EditCategoryProps) => {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name={"shopCategory"}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tienda</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isSubmitting}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.values(ShopCategory).map((group) => (
+                          <SelectItem key={group} value={group}>
+                            {translateShopCategory(group)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

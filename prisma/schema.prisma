@@ -67,6 +67,7 @@ enum SubjectKey {
   orders
   customers
   customerAddresses
+  shops
   shopSettings
   shopBranches
   shippingSettings
@@ -244,6 +245,7 @@ model RecipeIngredient {
   recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
   @@unique([recipeId, ingredientId])
+  @@map("recipe_ingredients")
 }
 
 model Product {
@@ -311,6 +313,7 @@ model Order {
   shippingCost      Float
   taxCost           Float?
   notes             String?
+  shopId            String
   shopBranchId      String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -322,6 +325,7 @@ model Order {
   paymentMethod     PaymentMethod
   paymentStatus     PaymentStatus      @default(PENDING)
   shippingMethod    ShippingMethod
+  shop              Shop               @relation(fields: [shopId], references: [id])
   shopBranch        ShopBranch?        @relation(fields: [shopBranchId], references: [id])
   status            OrderStatus        @default(PENDING)
 
@@ -382,6 +386,7 @@ model Promotion {
   allowedPaymentMethods  PaymentMethod[]
   allowedShippingMethods ShippingMethod[]
   categories             PromotionCategory[]
+  shopCategory           ShopCategory
   discountType           PromotionDiscountType
 
   @@map("promotions")
@@ -407,7 +412,7 @@ model PromotionCategory {
   @@map("promotion_categories")
 }
 
-enum CategoryGroup {
+enum ShopCategory {
   FOOD
   BAKERY
 }
@@ -418,11 +423,28 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  group      CategoryGroup
-  products   Product[]
-  promotions PromotionCategory[]
+  shopCategory ShopCategory
+  products     Product[]
+  promotions   PromotionCategory[]
 
   @@map("categories")
+}
+
+model Shop {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  name        String   @unique
+  title       String?
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  shopCategory     ShopCategory       @unique
+  operationalHours OperationalHours[]
+  orders           Order[]
+
+  @@map("shops")
 }
 
 model ShopSettings {
@@ -431,7 +453,6 @@ model ShopSettings {
   updatedAt DateTime @updatedAt
 
   allowedPaymentMethods PaymentMethod[]
-  branches              ShopBranch[]
   shippingSettings      ShippingSettings?
   shippingZones         ShippingZone[]
 
@@ -440,7 +461,7 @@ model ShopSettings {
 
 model ShopBranch {
   id               String   @id @default(cuid())
-  label            String
+  label            String   @unique
   province         String
   municipality     String
   locality         String
@@ -458,35 +479,36 @@ model ShopBranch {
   description      String?
   timezone         String?
   isActive         Boolean  @default(true)
-  shopSettingsId   String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
   branchType       BranchType         @default(RETAIL)
   operationalHours OperationalHours[]
-  shopSettings     ShopSettings       @relation(fields: [shopSettingsId], references: [id], onDelete: Cascade)
-  Order            Order[]
+  orders           Order[]
 
   @@map("shop_branches")
-}
-
-enum BranchType {
-  RETAIL
 }
 
 model OperationalHours {
   id           Int      @id @default(autoincrement())
   startTime    String?  @db.VarChar(5) // Stores time in HH:MM format
   endTime      String?  @db.VarChar(5) // Stores time in HH:MM format
-  shopBranchId String
+  shopId       String?
+  shopBranchId String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  shop       Shop?       @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shopBranch ShopBranch? @relation(fields: [shopBranchId], references: [id], onDelete: Cascade)
   dayOfWeek  DayOfWeek
-  shopBranch ShopBranch @relation(fields: [shopBranchId], references: [id], onDelete: Cascade)
 
   @@unique([dayOfWeek, shopBranchId])
+  @@unique([dayOfWeek, shopId])
   @@map("operational_hours")
+}
+
+enum BranchType {
+  RETAIL
 }
 
 enum DayOfWeek {

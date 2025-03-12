@@ -4,7 +4,7 @@ import { BranchType } from "@prisma/client"
 import { addressGeoRefSchema } from "./address-georef-validation"
 
 export const shopBranchSchema = z.object({
-  id: z.string().optional(), // Opcional durante la creación
+  id: z.string().optional(),
   label: z
     .string()
     .min(1, { message: "El nombre de la sucursal es obligatorio." }),

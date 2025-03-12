@@ -33,14 +33,15 @@ export async function editCategory({
     return { error: "Campos inválidos." }
   }
 
-  const { name, productsIds, promotionsIds, group } = validatedFields.data
+  const { name, productsIds, promotionsIds, shopCategory } =
+    validatedFields.data
 
   try {
     const updatedCategory = await prisma.category.update({
       where: { id },
       data: {
         name,
-        group,
+        shopCategory,
         products: {
           set: productsIds?.map((productId) => ({ id: productId })) || [],
         },

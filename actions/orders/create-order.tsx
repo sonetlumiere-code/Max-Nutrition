@@ -9,11 +9,12 @@ import prisma from "@/lib/db/db"
 import { sendOrderDetailsEmail } from "@/lib/mail/mail"
 import { OrderSchema, orderSchema } from "@/lib/validations/order-validation"
 import { PopulatedOrder, PopulatedProduct } from "@/types/types"
-import { Role, ShippingMethod } from "@prisma/client"
+import { ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { checkPromotion } from "../promotions/check-promotion"
 import { getShopBranch } from "@/data/shop-branches"
-import { hasPermission } from "@/helpers/helpers"
+import { getRouteByShopCategory, hasPermission } from "@/helpers/helpers"
+import { getShop } from "@/data/shops"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
@@ -48,8 +49,17 @@ export async function createOrder({
     shippingMethod,
     paymentMethod,
     items,
+    shopCategory,
     shopBranchId,
   } = validatedFields.data
+
+  const shop = await getShop({
+    where: { shopCategory, isActive: true },
+  })
+
+  if (!shop) {
+    return { error: "Tienda no encontrada." }
+  }
 
   if (origin === "DASHBOARD" && !hasPermission(user, "create:orders")) {
     return {
@@ -115,6 +125,7 @@ export async function createOrder({
 
     const { appliedPromotions, finalPrice } = await checkPromotion({
       items: populatedItems,
+      shopCategory,
     })
 
     let promotionsData = []
@@ -215,6 +226,7 @@ export async function createOrder({
         subtotal,
         total,
         shopBranchId: shippingMethod === "TAKE_AWAY" ? shopBranchId : null,
+        shopId: shop.id,
         items: {
           create: items.map((item) => ({
             productId: item.productId,
@@ -251,12 +263,13 @@ export async function createOrder({
       sendOrderDetailsEmail({
         email: customer.user?.email || "",
         order: order as PopulatedOrder,
-        orderLink: "customer-orders-history",
+        orderLink: `${getRouteByShopCategory(
+          shopCategory
+        )}/customer-orders-history`,
       })
     }
 
     revalidatePath("/orders")
-    revalidatePath("/customer-orders-history")
 
     return { success: "La orden se creó exitosamente.", order }
   } catch (error) {

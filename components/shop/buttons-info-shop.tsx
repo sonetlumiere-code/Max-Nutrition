@@ -4,15 +4,21 @@ import { Icons } from "@/components/icons"
 import { Card, CardContent } from "@/components/ui/card"
 import { getShippingZones } from "@/data/shipping-zones"
 import ShippingZones from "./shipping-zones/shipping-zones"
+import { ShopCategory } from "@prisma/client"
 
 const Promotions = dynamic(() => import("./promotions/promotions"), {
   ssr: false,
 })
 
-const ButtonsInfoShop = async () => {
+const ButtonsInfoShop = async ({
+  shopCategory,
+}: {
+  shopCategory: ShopCategory
+}) => {
   const [promotions, shippingZones] = await Promise.all([
     getPromotions({
       where: {
+        shopCategory,
         isActive: true,
       },
     }),

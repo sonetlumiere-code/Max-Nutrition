@@ -25,19 +25,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ToastAction } from "@/components/ui/toast"
 import { toast } from "@/components/ui/use-toast"
 import { getShippingZone } from "@/data/shipping-zones"
 import {
+  getRouteByShopCategory,
   translateAddressLabel,
   translateShippingMethod,
 } from "@/helpers/helpers"
 import { usePromotion } from "@/hooks/use-promotion"
 import { OrderSchema, orderSchema } from "@/lib/validations/order-validation"
-import { PopulatedCustomer, PopulatedShopSettings } from "@/types/types"
+import {
+  PopulatedCustomer,
+  PopulatedShopBranch,
+  PopulatedShopSettings,
+} from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PaymentMethod, ShippingMethod } from "@prisma/client"
-import Link from "next/link"
+import { ShopCategory, PaymentMethod, ShippingMethod } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -55,27 +58,35 @@ import LoadingOverlay from "@/components/loading-overlay"
 type CheckoutProps = {
   customer: PopulatedCustomer
   shopSettings: PopulatedShopSettings
+  shopBranches: PopulatedShopBranch[] | null
+  shopCategory: ShopCategory
 }
 
-const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
+const Checkout = ({
+  customer,
+  shopSettings,
+  shopBranches,
+  shopCategory,
+}: CheckoutProps) => {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
   const [isFulfilled, setIsFulfilled] = useState(false)
 
   const { items, setOpen, clearCart } = useCart()
   const { promotions, appliedPromotions } = usePromotion({
     items,
+    shopCategory,
   })
   const router = useRouter()
 
-  const { branches, shippingSettings, allowedPaymentMethods } = shopSettings
+  const { shippingSettings, allowedPaymentMethods } = shopSettings
 
   useEffect(() => {
     if (!isFulfilled) {
       if (!items.length || !customer) {
-        router.replace("/shop")
+        router.replace(getRouteByShopCategory(shopCategory))
       }
     }
-  }, [items, customer, router, isFulfilled])
+  }, [items, customer, router, isFulfilled, shopCategory])
 
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
@@ -84,7 +95,8 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
       customerAddressId: customer.addresses?.[0]?.id || "",
       paymentMethod: PaymentMethod.CASH,
       shippingMethod: ShippingMethod.DELIVERY,
-      shopBranchId: shopSettings.branches?.[0].id || "",
+      shopCategory,
+      shopBranchId: shopBranches?.[0].id || "",
       items: [],
     },
   })
@@ -140,7 +152,10 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
 
     setIsPlacingOrder(true)
 
-    const res = await createOrder({ values: data, sendEmail: true })
+    const res = await createOrder({
+      values: data,
+      sendEmail: true,
+    })
 
     if (res.success) {
       setIsFulfilled(true)
@@ -148,11 +163,6 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
       toast({
         title: "Pedido realizado",
         description: "Tu pedido se ha realizado correctamente.",
-        // action: (
-        //   <ToastAction altText='Ver pedidos'>
-        //     <Link href='/customer-orders-history'>Ver</Link>
-        //   </ToastAction>
-        // ),
       })
       router.push(`/order-confirmed/${res.order.id}`)
     } else if (res.error) {
@@ -225,7 +235,10 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                         <CardTitle className='text-xl'>Promociones</CardTitle>
                       </CardHeader>
                       <CardContent className='space-y-3'>
-                        <AppliedPromotions items={items} />
+                        <AppliedPromotions
+                          items={items}
+                          shopCategory={shopCategory}
+                        />
                       </CardContent>
                     </Card>
                   )}
@@ -294,10 +307,10 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                               }
                             />
                           ) : shippingMethod === ShippingMethod.TAKE_AWAY ? (
-                            branches && (
+                            shopBranches && (
                               <ShopBranchField
                                 control={control}
-                                branches={branches}
+                                branches={shopBranches}
                                 isSubmitting={isSubmitting}
                               />
                             )
@@ -397,6 +410,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                         items={items}
                         allowedPaymentMethods={allowedPaymentMethods}
                         isSubmitting={isSubmitting}
+                        shopCategory={shopCategory}
                       />
                     </CardContent>
                   </Card>
@@ -409,7 +423,11 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                     <CardTitle className='text-xl'>Total del pedido</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <Summary items={items} shippingCost={shippingCost} />
+                    <Summary
+                      items={items}
+                      shippingCost={shippingCost}
+                      shopCategory={shopCategory}
+                    />
                   </CardContent>
                   <CardFooter>
                     <Button

@@ -61,7 +61,7 @@ const SheetSideNavDashboard = ({ session }: SheetSideNavDashboardProps) => {
                 <SheetClose asChild key={item.href}>
                   <Link
                     href={item.href}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                    className={`flex items-center gap-3 rounded-lg px-3 py-1.5 ${
                       isActive(item.href)
                         ? "bg-muted text-primary"
                         : "text-muted-foreground"
