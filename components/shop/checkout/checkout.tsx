@@ -39,7 +39,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { PaymentMethod, ShippingMethod } from "@prisma/client"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
 import useSWR from "swr"
 import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
@@ -60,6 +60,9 @@ type CheckoutProps = {
 const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
   const [isFulfilled, setIsFulfilled] = useState(false)
+  const [isBottomVisible, setIsBottomVisible] = useState(false)
+
+  const totalSectionRef = useRef<HTMLDivElement>(null)
 
   const { items, setOpen, clearCart } = useCart()
   const { promotions, appliedPromotions } = usePromotion({
@@ -180,12 +183,35 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
     )
   })()
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsBottomVisible(entry.isIntersecting)
+      },
+      { threshold: 0.5 }
+    )
+
+    if (totalSectionRef.current) {
+      observer.observe(totalSectionRef.current)
+    }
+
+    return () => {
+      if (totalSectionRef.current) {
+        observer.unobserve(totalSectionRef.current)
+      }
+    }
+  }, [])
+
+  const totalAmount =
+    items.reduce((acc, item) => acc + item.product.price * item.quantity, 0) +
+    shippingCost
+
   return (
     <>
       {items.length > 0 && (
         <Form {...form}>
           <form onSubmit={handleSubmit(placeOrder)}>
-            <div className='flex flex-col gap-8 max-w-4xl mx-auto'>
+            <div className='flex flex-col gap-8 max-w-4xl mx-auto pb-5'>
               <div className='grid gap-6'>
                 <div>
                   <h1 className='text-xl md:text-2xl font-bold'>Checkout</h1>
@@ -404,7 +430,7 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
               </div>
 
               <div className='grid gap-6'>
-                <Card>
+                <Card ref={totalSectionRef}>
                   <CardHeader>
                     <CardTitle className='text-xl'>Total del pedido</CardTitle>
                   </CardHeader>
@@ -433,6 +459,34 @@ const Checkout = ({ customer, shopSettings }: CheckoutProps) => {
                 </Card>
               </div>
             </div>
+
+            {!isBottomVisible && (
+              <div className='fixed bottom-0 left-0 right-0 bg-background border-t shadow-md z-10 py-3'>
+                <div className='max-w-3xl mx-auto px-4 flex items-center justify-between'>
+                  <div className='flex items-center gap-2'>
+                    <span className='text-sm text-muted-foreground'>
+                      Total:
+                    </span>
+                    <span className='text-lg font-bold'>
+                      ${Math.round(totalAmount)}
+                    </span>
+                  </div>
+                  <Button
+                    size='sm'
+                    variant='outline'
+                    type='button'
+                    onClick={() =>
+                      totalSectionRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                      })
+                    }
+                  >
+                    <Icons.arrowDown className='h-4 w-4 mr-2' />
+                    Ver detalles
+                  </Button>
+                </div>
+              </div>
+            )}
           </form>
         </Form>
       )}

@@ -6,6 +6,7 @@ import {
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons"
 import {
+  ArrowDown,
   BadgePercent,
   Bell,
   Box,
@@ -59,6 +60,7 @@ import {
   Upload,
   User,
   Users,
+  WalletMinimal,
   Wheat,
   WheatOff,
   X,
@@ -88,10 +90,12 @@ export const Icons = {
   dot: Dot,
   doubleArrowLeftIcon: DoubleArrowLeftIcon,
   doubleArrowRightIcon: DoubleArrowRightIcon,
+  arrowDown: ArrowDown,
   eye: Eye,
   eyeOff: EyeOff,
   file: File,
   globe: Globe,
+  walletMinimal: WalletMinimal,
   google: ({ ...props }: LucideProps) => (
     <svg
       className='mr-2 h-4 w-4'

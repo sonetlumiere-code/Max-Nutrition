@@ -17,7 +17,7 @@ export default async function WelcomePage() {
       <img
         src='img/logo-mxm.svg'
         alt='MXM Máxima Nutrición'
-        className='opacity-50'
+        className='opacity-30 w-96'
       />
     </div>
   )

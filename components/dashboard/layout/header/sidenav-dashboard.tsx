@@ -30,7 +30,7 @@ export default function SideNavDashboard({ session }: SideNavDashboardProps) {
             <img
               src='img/logo-mxm.svg'
               alt='MXM Máxima Nutrición'
-              className='mx-auto py-4'
+              className='mx-auto py-4 w-24'
             />
           </Link>
 

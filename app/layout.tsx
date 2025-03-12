@@ -13,8 +13,9 @@ const fontSans = FontSans({
   variable: "--font-sans",
 })
 export const metadata: Metadata = {
-  title: "Máxima Nutrición",
-  description: "Comida saludable, directamente a tu casa.",
+  title: "Máxima Nutrición - Viandas para celiacos sin tacc",
+  description:
+    "TODO SIN GLUTEN. Viandas para celiacos y sin tacc. Solucioná tus comidas con opciones ricas y saludables hechas por una nutricionista.",
   icons: {
     icon: [
       {

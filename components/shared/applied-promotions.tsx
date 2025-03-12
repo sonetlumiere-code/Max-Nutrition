@@ -8,6 +8,13 @@ import {
 } from "@/helpers/helpers"
 import { usePromotion } from "@/hooks/use-promotion"
 import { LineItem } from "@/types/types"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion"
+import { Badge } from "../ui/badge"
 
 const AppliedPromotions = ({ items }: { items: LineItem[] }) => {
   const { appliedPromotions } = usePromotion({ items })
@@ -16,44 +23,52 @@ const AppliedPromotions = ({ items }: { items: LineItem[] }) => {
     <>
       {appliedPromotions.length > 0 ? (
         appliedPromotions.map((promotion) => (
-          <Alert key={promotion.id}>
+          <Alert key={promotion.id} variant='success'>
             <Icons.badgePercent className='h-4 w-4' />
-            <AlertTitle>
-              <div className='flex justify-between'>
-                <span>¡Promoción aplicada!</span>
-                <span className='text-sm text-muted-foreground'>
-                  x {promotion.appliedTimes}
+            <AlertTitle className='w-full'>
+              <div className='flex items-center justify-between mb-1'>
+                <span className='font-medium'>
+                  ¡Promoción aplicada! ({promotion.name})
                 </span>
+                <Badge variant='outline'>x {promotion.appliedTimes}</Badge>
               </div>
+              <Accordion type='single' collapsible className='w-full'>
+                <AccordionItem value='item-1' className='border-b-0'>
+                  <AccordionTrigger className='py-1 text-sm font-normal text-muted-foreground bg-muted/50 px-2 rounded-t-md'>
+                    Ver detalles
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className='flex flex-col gap-1 text-sm text-muted-foreground bg-muted/50 p-2 rounded-b-md'>
+                      <span>{promotion.description}</span>
+                      <span className='flex items-center'>
+                        <Icons.walletMinimal className='h-4 w-4 mr-2' />
+                        {new Intl.ListFormat("es", {
+                          style: "long",
+                          type: "conjunction",
+                        }).format(
+                          promotion.allowedPaymentMethods.map(
+                            translatePaymentMethod
+                          )
+                        )}
+                        {"."}
+                      </span>
+                      <span className='flex items-center'>
+                        <Icons.truck className='h-4 w-4 mr-2' />
+                        {new Intl.ListFormat("es", {
+                          style: "long",
+                          type: "conjunction",
+                        }).format(
+                          promotion.allowedShippingMethods.map(
+                            translateShippingMethod
+                          )
+                        )}
+                        {"."}
+                      </span>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </AlertTitle>
-            <AlertDescription>
-              <div className='flex flex-col text-sm text-muted-foreground'>
-                <span>{promotion.name}</span>
-                <span>{promotion.description}</span>
-                <span>
-                  Métodos de pago habilitados:{" "}
-                  {new Intl.ListFormat("es", {
-                    style: "long",
-                    type: "conjunction",
-                  }).format(
-                    promotion.allowedPaymentMethods.map(translatePaymentMethod)
-                  )}
-                  {"."}
-                </span>
-                <span>
-                  Métodos de envío habilitados:{" "}
-                  {new Intl.ListFormat("es", {
-                    style: "long",
-                    type: "conjunction",
-                  }).format(
-                    promotion.allowedShippingMethods.map(
-                      translateShippingMethod
-                    )
-                  )}
-                  {"."}
-                </span>
-              </div>
-            </AlertDescription>
           </Alert>
         ))
       ) : (
