@@ -34,6 +34,7 @@ export async function createPromotion(values: PromotionSchema) {
     discount,
     isActive,
     categories,
+    shopCategory,
     allowedPaymentMethods,
     allowedShippingMethods,
   } = validatedFields.data
@@ -48,6 +49,7 @@ export async function createPromotion(values: PromotionSchema) {
         isActive,
         allowedPaymentMethods,
         allowedShippingMethods,
+        shopCategory,
         categories: {
           create: categories.map((category) => ({
             categoryId: category.categoryId,

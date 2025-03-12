@@ -3,11 +3,17 @@
 import { useCart } from "@/components/cart-provider"
 import { toast } from "@/components/ui/use-toast"
 import { useGetCategories } from "./use-get-categories"
+import { ShopCategory } from "@prisma/client"
 
-const useSyncCart = () => {
+type useSyncCartProps = {
+  shopCategory: ShopCategory
+}
+
+const useSyncCart = ({ shopCategory }: useSyncCartProps) => {
   const { items, setItems } = useCart()
 
   useGetCategories({
+    shopCategory,
     onSuccess: (categories) => {
       if (!categories) return
 

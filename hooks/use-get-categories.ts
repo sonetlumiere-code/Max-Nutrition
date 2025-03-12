@@ -2,10 +2,18 @@
 
 import { getCategories } from "@/data/categories"
 import { PopulatedCategory } from "@/types/types"
+import { ShopCategory } from "@prisma/client"
 import useSWR from "swr"
 
-const fetchCategories = async () => {
+const fetchCategories = async ({
+  shopCategory,
+}: {
+  shopCategory: ShopCategory
+}) => {
   const categories = await getCategories({
+    where: {
+      shopCategory,
+    },
     include: {
       products: {
         where: {
@@ -23,9 +31,11 @@ const fetchCategories = async () => {
 }
 
 export const useGetCategories = ({
+  shopCategory,
   fallbackData,
   onSuccess,
 }: {
+  shopCategory: ShopCategory
   fallbackData?: PopulatedCategory[] | null
   onSuccess?: (categories: PopulatedCategory[]) => void
 }) => {
@@ -33,7 +43,7 @@ export const useGetCategories = ({
     data: categories = fallbackData,
     error,
     isLoading: isLoadingCategories,
-  } = useSWR("categories", fetchCategories, {
+  } = useSWR("categories", () => fetchCategories({ shopCategory }), {
     fallbackData,
     revalidateOnMount: false,
     revalidateIfStale: false,

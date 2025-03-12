@@ -24,6 +24,7 @@ import {
   SubjectKey,
   ProductRecipe,
   ProductRecipeType,
+  Shop,
 } from "@prisma/client"
 
 export type PopulatedSafeUser = Omit<User, "password"> & {
@@ -37,6 +38,10 @@ export type PopulatedUser = User & {
 export type PopulatedRole = Role & {
   permissions: Permission[]
   users: PopulatedUser[]
+}
+
+export type PopulatedShop = Shop & {
+  operationalHours?: OperationalHours[]
 }
 
 export type PopulatedRecipe = Recipe & {
@@ -63,6 +68,7 @@ export type PopulatedPromotion = Promotion & {
 }
 
 export type PopulatedOrder = Order & {
+  shop?: Shop
   items?: PopulatedOrderItem[]
   customer?: PopulatedCustomer
   address?: CustomerAddress
@@ -105,7 +111,6 @@ export interface IngredientTotal {
 }
 
 export type PopulatedShopSettings = ShopSettings & {
-  branches?: PopulatedShopBranch[]
   shippingSettings?: ShippingSettings
   shippingZones?: ShippingZone[]
 }

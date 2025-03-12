@@ -51,7 +51,7 @@ export default function SideNavDashboard({ session }: SideNavDashboardProps) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                    className={`flex items-center gap-3 rounded-lg px-3 py-1.5 ${
                       isActive(item.href)
                         ? "bg-muted text-primary"
                         : "text-muted-foreground"

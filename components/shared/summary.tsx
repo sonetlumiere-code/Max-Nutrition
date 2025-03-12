@@ -4,16 +4,19 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { usePromotion } from "@/hooks/use-promotion"
 import { LineItem } from "@/types/types"
+import { ShopCategory } from "@prisma/client"
 
 type SummaryProps = {
   items: LineItem[]
   shippingCost: number
+  shopCategory: ShopCategory
 }
 
-const Summary = ({ items, shippingCost }: SummaryProps) => {
+const Summary = ({ items, shippingCost, shopCategory }: SummaryProps) => {
   const { appliedPromotions, isLoadingPromotions, subtotalPrice, finalPrice } =
     usePromotion({
       items,
+      shopCategory,
     })
 
   return (

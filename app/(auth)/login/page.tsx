@@ -23,7 +23,7 @@ export default function LoginPage({
   return (
     <div className='container flex h-screen w-screen flex-col items-center justify-center'>
       <Link
-        href='/'
+        href={`${redirectTo}`}
         className={cn(
           buttonVariants({ variant: "ghost" }),
           "absolute left-4 top-4 md:left-8 md:top-8"
@@ -56,7 +56,7 @@ export default function LoginPage({
         </Suspense>
         <p className='px-8 text-center text-sm text-muted-foreground'>
           <Link
-            href='/signup'
+            href={`/signup?redirectTo=${redirectTo}`}
             className='hover:text-brand underline underline-offset-4'
           >
             ¿Aún no tenés cuenta? Registrate

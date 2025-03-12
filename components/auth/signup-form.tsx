@@ -20,7 +20,11 @@ import FormError from "@/components/auth/form-error"
 import FormSuccess from "@/components/auth/form-success"
 import { useState } from "react"
 
-const SignUpForm = () => {
+type SignUpFormProps = {
+  redirectTo?: string
+}
+
+const SignUpForm = ({ redirectTo }: SignUpFormProps) => {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string>("")
   const [success, setSuccess] = useState<string>("")
@@ -165,6 +169,7 @@ const SignUpForm = () => {
         isSubmitting={isSubmitting}
         isGoogleLoading={isGoogleLoading}
         setIsGoogleLoading={setIsGoogleLoading}
+        redirectTo={redirectTo}
       />
     </div>
   )

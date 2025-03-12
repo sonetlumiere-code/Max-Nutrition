@@ -31,7 +31,7 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
   const [quantity, setQuantity] = useState(1)
   const [variations, setVariations] = useState({ withSalt: true })
 
-  const { addItem } = useCart()
+  const { addItem, shopCategory } = useCart()
 
   useEffect(() => {
     if (open) {
@@ -74,23 +74,25 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        <RadioGroup
-          value={variations.withSalt ? "true" : "false"}
-          onValueChange={(value) =>
-            setVariations({ withSalt: value === "true" })
-          }
-          className='p-4'
-        >
-          {[
-            { value: "true", label: "Con Sal" },
-            { value: "false", label: "Sin Sal" },
-          ].map((option) => (
-            <div className='flex items-center space-x-2' key={option.value}>
-              <RadioGroupItem value={option.value} id={option.value} />
-              <Label htmlFor={option.value}>{option.label}</Label>
-            </div>
-          ))}
-        </RadioGroup>
+        {shopCategory === "FOOD" && (
+          <RadioGroup
+            value={variations.withSalt ? "true" : "false"}
+            onValueChange={(value) =>
+              setVariations({ withSalt: value === "true" })
+            }
+            className='p-4'
+          >
+            {[
+              { value: "true", label: "Con Sal" },
+              { value: "false", label: "Sin Sal" },
+            ].map((option) => (
+              <div className='flex items-center space-x-2' key={option.value}>
+                <RadioGroupItem value={option.value} id={option.value} />
+                <Label htmlFor={option.value}>{option.label}</Label>
+              </div>
+            ))}
+          </RadioGroup>
+        )}
 
         <div className='flex items-center justify-between'>
           <h3 className='font-bold'>Tu pedido</h3>

@@ -32,7 +32,7 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
   const [quantity, setQuantity] = useState(1)
   const [variations, setVariations] = useState({ withSalt: true })
 
-  const { addItem } = useCart()
+  const { addItem, shopCategory } = useCart()
 
   useEffect(() => {
     if (open) {
@@ -75,23 +75,25 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
           </DrawerDescription>
         </DrawerHeader>
 
-        <RadioGroup
-          value={variations.withSalt ? "true" : "false"} // Convert boolean to string
-          onValueChange={
-            (value) => setVariations({ withSalt: value === "true" }) // Convert string back to boolean
-          }
-          className='p-4'
-        >
-          {[
-            { value: "true", label: "Con Sal" },
-            { value: "false", label: "Sin Sal" },
-          ].map((option) => (
-            <div className='flex items-center space-x-2' key={option.value}>
-              <RadioGroupItem value={option.value} id={option.value} />
-              <Label htmlFor={option.value}>{option.label}</Label>
-            </div>
-          ))}
-        </RadioGroup>
+        {shopCategory === "FOOD" && (
+          <RadioGroup
+            value={variations.withSalt ? "true" : "false"}
+            onValueChange={(value) =>
+              setVariations({ withSalt: value === "true" })
+            }
+            className='p-4'
+          >
+            {[
+              { value: "true", label: "Con Sal" },
+              { value: "false", label: "Sin Sal" },
+            ].map((option) => (
+              <div className='flex items-center space-x-2' key={option.value}>
+                <RadioGroupItem value={option.value} id={option.value} />
+                <Label htmlFor={option.value}>{option.label}</Label>
+              </div>
+            ))}
+          </RadioGroup>
+        )}
 
         <DrawerFooter>
           <hr />

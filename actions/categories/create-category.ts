@@ -27,13 +27,14 @@ export async function createCategory(values: CategorySchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { name, productsIds, promotionsIds, group } = validatedFields.data
+  const { name, productsIds, promotionsIds, shopCategory } =
+    validatedFields.data
 
   try {
     const newCategory = await prisma.category.create({
       data: {
         name,
-        group,
+        shopCategory,
         products: {
           connect: productsIds?.map((productId) => ({ id: productId })) || [],
         },

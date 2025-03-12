@@ -25,7 +25,7 @@ interface OrderDetailsProps {
 const baseUrl = process.env.BASE_URL
 
 const OrderDetails: React.FC<OrderDetailsProps> = ({ order, orderLink }) => {
-  const previewText = `Detalles de tu pedido en Máxima Nutrición`
+  const previewText = "Detalles de tu pedido en Máxima Nutrición"
 
   return (
     <Html>
@@ -128,7 +128,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, orderLink }) => {
                         colSpan={6}
                       >
                         <Text>{item.product.name}</Text>
-                        <Text>{item.withSalt ? "Con sal" : "Sin sal"}</Text>
+                        {order.shop?.shopCategory === "FOOD" && (
+                          <Text>{item.withSalt ? "Con sal" : "Sin sal"}</Text>
+                        )}
                       </td>
                       <td
                         align='center'

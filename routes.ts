@@ -1,35 +1,28 @@
-/**
- * An array of routes that are accesible to the public
- * These routes do not require authentication
- * @type {string[]}
- */
+enum ShopRoutes {
+  FOODS = "/foods",
+  BAKERY = "/bakery",
+}
 
-export const publicRoutes: string[] = ["/", "/new-verification", "/shop"]
+const shopRoutes: string[] = Object.values(ShopRoutes)
 
-/**
- * An array of routes that are used for authentication
- * These routes will redirect logged in users to /shop
- * @type {string[]}
- */
+const publicRoutes: string[] = ["/", "/new-verification", ...shopRoutes]
 
-export const authRoutes: string[] = [
+const authRoutes: string[] = [
   "/login",
   "/signup",
   "/reset-password",
   "/new-password",
 ]
 
-/**
- * The prefix for API authentication routes
- * Routes that start with this prefix are used for API authentication purposes
- * @type {string}
- */
+const apiAuthPrefix: string = "/api/auth"
 
-export const apiAuthPrefix: string = "/api/auth"
+const DEFAULT_REDIRECT: string = ShopRoutes.FOODS
 
-/**
- * The default redirect path after logging in
- * @type {string}
- */
-
-export const DEFAULT_LOGIN_REDIRECT: string = "/shop"
+export {
+  ShopRoutes,
+  shopRoutes,
+  publicRoutes,
+  authRoutes,
+  apiAuthPrefix,
+  DEFAULT_REDIRECT,
+}

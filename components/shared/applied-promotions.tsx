@@ -15,9 +15,16 @@ import {
   AccordionTrigger,
 } from "../ui/accordion"
 import { Badge } from "../ui/badge"
+import { ShopCategory } from "@prisma/client"
 
-const AppliedPromotions = ({ items }: { items: LineItem[] }) => {
-  const { appliedPromotions } = usePromotion({ items })
+const AppliedPromotions = ({
+  items,
+  shopCategory,
+}: {
+  items: LineItem[]
+  shopCategory: ShopCategory
+}) => {
+  const { appliedPromotions } = usePromotion({ items, shopCategory })
 
   return (
     <>

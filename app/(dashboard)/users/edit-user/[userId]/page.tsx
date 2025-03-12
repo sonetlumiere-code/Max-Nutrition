@@ -1,16 +1,16 @@
-// import EditUser from "@/components/dashboard/users/edit-user/edit-user"
-// import {
-//   Breadcrumb,
-//   BreadcrumbItem,
-//   BreadcrumbLink,
-//   BreadcrumbList,
-//   BreadcrumbPage,
-//   BreadcrumbSeparator,
-// } from "@/components/ui/breadcrumb"
-// import { getRoles } from "@/data/roles"
-// import { getSafeUser } from "@/data/user"
-// import { hasPermission } from "@/helpers/helpers"
-// import { auth } from "@/lib/auth/auth"
+import EditUser from "@/components/dashboard/users/edit-user/edit-user"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { getRoles } from "@/data/roles"
+import { getSafeUser } from "@/data/user"
+import { hasPermission } from "@/helpers/helpers"
+import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 
 interface EditUserPageProps {
@@ -20,55 +20,54 @@ interface EditUserPageProps {
 }
 
 const EditUserPage = async ({ params }: EditUserPageProps) => {
-  return redirect("/welcome")
-  // const session = await auth()
-  // const user = session?.user
+  const session = await auth()
+  const user = session?.user
 
-  // if (!user) {
-  //   return redirect("/")
-  // }
+  if (!user) {
+    return redirect("/")
+  }
 
-  // if (!hasPermission(user, "update:users")) {
-  //   return redirect("/welcome")
-  // }
+  if (!hasPermission(user, "update:users")) {
+    return redirect("/welcome")
+  }
 
-  // const { userId } = params
+  const { userId } = params
 
-  // const [userById, roles] = await Promise.all([
-  //   getSafeUser({
-  //     where: { id: userId },
-  //     include: {
-  //       role: true,
-  //     },
-  //   }),
-  //   getRoles(),
-  // ])
+  const [userById, roles] = await Promise.all([
+    getSafeUser({
+      where: { id: userId },
+      include: {
+        role: true,
+      },
+    }),
+    getRoles(),
+  ])
 
-  // if (!userById || !roles) {
-  //   redirect("/users")
-  // }
+  if (!userById || !roles) {
+    redirect("/users")
+  }
 
-  // return (
-  //   <>
-  //     <Breadcrumb>
-  //       <BreadcrumbList>
-  //         <BreadcrumbItem>
-  //           <BreadcrumbLink>Inicio</BreadcrumbLink>
-  //         </BreadcrumbItem>
-  //         <BreadcrumbSeparator />
-  //         <BreadcrumbItem>
-  //           <BreadcrumbLink href='/users'>Usuarios</BreadcrumbLink>
-  //         </BreadcrumbItem>
-  //         <BreadcrumbSeparator />
-  //         <BreadcrumbItem>
-  //           <BreadcrumbPage>Editar Usuario</BreadcrumbPage>
-  //         </BreadcrumbItem>
-  //       </BreadcrumbList>
-  //     </Breadcrumb>
+  return (
+    <>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink>Inicio</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href='/users'>Usuarios</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Editar Usuario</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-  //     <EditUser user={userById} roles={roles} />
-  //   </>
-  // )
+      <EditUser user={userById} roles={roles} />
+    </>
+  )
 }
 
 export default EditUserPage

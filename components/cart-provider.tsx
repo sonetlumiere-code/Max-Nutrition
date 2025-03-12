@@ -13,6 +13,7 @@ import {
   useMemo,
 } from "react"
 import { LineItem, PopulatedProduct, Variation } from "@/types/types"
+import { ShopCategory } from "@prisma/client"
 
 type CartProviderState = {
   items: LineItem[]
@@ -29,14 +30,15 @@ type CartProviderState = {
   decrementQuantity: (id: string) => void
   open: boolean
   setOpen: (value: boolean) => void
+  shopCategory: ShopCategory
 }
 
 const LOCAL_STORAGE_KEYS = {
-  GUEST_CART: "cart_guest",
-  USER_CART: (userId: string) => `cart_${userId}`,
+  CART: (userId: string | null, shopCategory: string) =>
+    userId ? `cart_${userId}_${shopCategory}` : `cart_guest_${shopCategory}`,
 }
 
-const initialState: CartProviderState = {
+const initialState: Omit<CartProviderState, "shopCategory"> = {
   items: [],
   setItems: () => null,
   addItem: () => null,
@@ -49,11 +51,14 @@ const initialState: CartProviderState = {
   setOpen: () => null,
 }
 
-const CartProviderContext = createContext<CartProviderState>(initialState)
+const CartProviderContext = createContext<CartProviderState | undefined>(
+  undefined
+)
 
 type CartProviderProps = {
   children: ReactNode
   session: Session | null
+  shopCategory: ShopCategory
 }
 
 const parseJSON = (value: string | null): any => {
@@ -64,71 +69,26 @@ const parseJSON = (value: string | null): any => {
   }
 }
 
-const mergeCarts = (
-  userCart: LineItem[],
-  guestCart: LineItem[]
-): LineItem[] => {
-  const cartMap = new Map<string, LineItem>()
+export function CartProvider({
+  children,
+  session,
+  shopCategory,
+}: CartProviderProps) {
+  const storageKey = LOCAL_STORAGE_KEYS.CART(
+    session?.user.id || null,
+    shopCategory
+  )
 
-  ;[...userCart, ...guestCart].forEach((item) => {
-    const key = `${item.product.id}-${JSON.stringify(item.variation)}`
-    if (cartMap.has(key)) {
-      const existing = cartMap.get(key)!
-      cartMap.set(key, {
-        ...existing,
-        quantity: existing.quantity + item.quantity,
-      })
-    } else {
-      cartMap.set(key, item)
-    }
-  })
-
-  return Array.from(cartMap.values())
-}
-
-export function CartProvider({ children, session }: CartProviderProps) {
   const [items, setItems] = useState<LineItem[]>(() => {
     if (typeof window === "undefined") return initialState.items
-
-    const guestCart = parseJSON(
-      localStorage.getItem(LOCAL_STORAGE_KEYS.GUEST_CART)
-    )
-
-    if (session?.user.id) {
-      const userCart = parseJSON(
-        localStorage.getItem(LOCAL_STORAGE_KEYS.USER_CART(session.user.id))
-      )
-      return mergeCarts(userCart, guestCart)
-    }
-
-    return guestCart
+    return parseJSON(localStorage.getItem(storageKey))
   })
 
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    if (session?.user.id) {
-      localStorage.setItem(
-        LOCAL_STORAGE_KEYS.USER_CART(session.user.id),
-        JSON.stringify(items)
-      )
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.GUEST_CART)
-    } else {
-      localStorage.setItem(LOCAL_STORAGE_KEYS.GUEST_CART, JSON.stringify(items))
-    }
-  }, [items, session?.user.id])
-
-  useEffect(() => {
-    if (session?.user.id) {
-      const guestCart = parseJSON(
-        localStorage.getItem(LOCAL_STORAGE_KEYS.GUEST_CART)
-      )
-      if (guestCart.length) {
-        setItems((prevItems) => mergeCarts(prevItems, guestCart))
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.GUEST_CART)
-      }
-    }
-  }, [session?.user.id])
+    localStorage.setItem(storageKey, JSON.stringify(items))
+  }, [items, storageKey])
 
   const addItem = (
     product: PopulatedProduct,
@@ -198,6 +158,7 @@ export function CartProvider({ children, session }: CartProviderProps) {
     decrementQuantity,
     open,
     setOpen,
+    shopCategory,
   }
 
   return (
@@ -209,10 +170,8 @@ export function CartProvider({ children, session }: CartProviderProps) {
 
 export const useCart = () => {
   const context = useContext(CartProviderContext)
-
   if (!context) {
     throw new Error("useCart must be used within a CartProvider")
   }
-
   return context
 }

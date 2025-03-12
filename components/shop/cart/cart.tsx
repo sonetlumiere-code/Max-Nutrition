@@ -25,13 +25,14 @@ import CartContent from "./cart-content"
 import Link from "next/link"
 import useSyncCart from "@/hooks/use-sync-cart"
 import { Icons } from "@/components/icons"
+import { getRouteByShopCategory } from "@/helpers/helpers"
 
 const Cart = () => {
-  const { items, open, setOpen } = useCart()
-
-  useSyncCart()
-
+  const { items, open, setOpen, shopCategory } = useCart()
+  const route = getRouteByShopCategory(shopCategory)
   const isDesktop = useMediaQuery("(min-width: 768px)")
+
+  useSyncCart({ shopCategory })
 
   if (isDesktop) {
     return (
@@ -53,14 +54,16 @@ const Cart = () => {
               <DialogClose asChild>
                 {items.length >= 1 ? (
                   <Button type='button' asChild>
-                    <Link href='/checkout'>Continuar con el pedido</Link>
+                    <Link href={`${route}/checkout`}>
+                      Continuar con el pedido
+                    </Link>
                   </Button>
                 ) : null}
               </DialogClose>
 
               <DialogClose asChild>
                 <Button type='button' variant='outline' asChild>
-                  <Link href='/shop'>
+                  <Link href={route}>
                     <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver a
                     tienda
                   </Link>
@@ -92,14 +95,16 @@ const Cart = () => {
             <DrawerClose asChild>
               {items.length >= 1 ? (
                 <Button type='button' asChild>
-                  <Link href='/checkout'>Continuar con el pedido</Link>
+                  <Link href={`${route}/checkout`}>
+                    Continuar con el pedido
+                  </Link>
                 </Button>
               ) : null}
             </DrawerClose>
 
             <DrawerClose asChild>
               <Button type='button' variant='outline' asChild>
-                <Link href='/shop'>
+                <Link href={route}>
                   <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver a
                   tienda
                 </Link>

@@ -7,6 +7,9 @@ import { buttonVariants } from "@/components/ui/button"
 import dynamic from "next/dynamic"
 import { redirect } from "next/navigation"
 import { getShopSettings } from "@/data/shop-settings"
+import { getShopBranches } from "@/data/shop-branches"
+import { ShopRoutes } from "@/routes"
+import { ShopCategory } from "@prisma/client"
 
 const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
   ssr: false,
@@ -14,18 +17,19 @@ const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
-export default async function CheckoutPage() {
+export default async function BakeryCheckoutPage() {
   if (!shopSettingsId) {
-    return <span>Es necesario el ID de la configuración de tienda.</span>
+    console.warn("Es necesario el ID de la configuración de tienda")
+    redirect(ShopRoutes.BAKERY)
   }
 
   const session = await auth()
 
   if (!session) {
-    redirect("/shop")
+    redirect(ShopRoutes.BAKERY)
   }
 
-  const [customer, shopSettings] = await Promise.all([
+  const [customer, shopSettings, shopBranches] = await Promise.all([
     getCustomer({
       where: {
         userId: session?.user.id,
@@ -57,25 +61,25 @@ export default async function CheckoutPage() {
       where: { id: shopSettingsId },
       include: {
         shippingSettings: true,
-        branches: {
-          where: { isActive: true },
-          include: {
-            operationalHours: true,
-          },
-        },
+      },
+    }),
+    getShopBranches({
+      where: { isActive: true },
+      include: {
+        operationalHours: true,
       },
     }),
   ])
 
   if (!customer || !shopSettings) {
-    redirect("/shop")
+    redirect(ShopRoutes.BAKERY)
   }
 
   return (
     <div className='w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
       <div className='flex items-start mb-6'>
         <Link
-          href='/shop'
+          href={ShopRoutes.BAKERY}
           className={cn(buttonVariants({ variant: "ghost" }), "")}
         >
           <>
@@ -85,7 +89,12 @@ export default async function CheckoutPage() {
         </Link>
       </div>
 
-      <Checkout customer={customer} shopSettings={shopSettings} />
+      <Checkout
+        customer={customer}
+        shopSettings={shopSettings}
+        shopBranches={shopBranches}
+        shopCategory={ShopCategory.BAKERY}
+      />
     </div>
   )
 }

@@ -1,4 +1,9 @@
-import { OrderStatus, PaymentMethod, ShippingMethod } from "@prisma/client"
+import {
+  ShopCategory,
+  OrderStatus,
+  PaymentMethod,
+  ShippingMethod,
+} from "@prisma/client"
 import { z } from "zod"
 
 const coreOrderSchema = z.object({
@@ -8,6 +13,7 @@ const coreOrderSchema = z.object({
   paymentMethod: z.nativeEnum(PaymentMethod),
   shippingMethod: z.nativeEnum(ShippingMethod),
   status: z.nativeEnum(OrderStatus).optional(),
+  shopCategory: z.nativeEnum(ShopCategory),
   shopBranchId: z.string().optional(),
   notes: z.string().optional(),
   items: z

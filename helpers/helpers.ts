@@ -1,3 +1,4 @@
+import { ShopRoutes } from "@/routes"
 import { ExtendedUser } from "@/types/next-auth"
 import {
   BaseMeasurement,
@@ -10,7 +11,7 @@ import {
 import {
   ActionKey,
   Category,
-  CategoryGroup,
+  ShopCategory,
   CustomerAddressLabel,
   DayOfWeek,
   Ingredient,
@@ -18,16 +19,15 @@ import {
   OrderStatus,
   PaymentMethod,
   Permission,
-  ProductRecipeType,
   ShippingMethod,
   SubjectKey,
 } from "@prisma/client"
 
-export const translateCategoryGroup = (group: CategoryGroup): string => {
+export const translateShopCategory = (group: ShopCategory): string => {
   switch (group) {
-    case CategoryGroup.FOOD:
+    case ShopCategory.FOOD:
       return "Viandas"
-    case CategoryGroup.BAKERY:
+    case ShopCategory.BAKERY:
       return "Pastelería"
     default:
       return "Desconocido"
@@ -157,6 +157,10 @@ export function translateSubject(subject: SubjectKey): string {
       return "Pedidos"
     case "customers":
       return "Clientes"
+    case "customerAddresses":
+      return "Direcciones de clientes"
+    case "shops":
+      return "Tiendas"
     case "shopSettings":
       return "Configuraciones de tienda"
     case "shopBranches":
@@ -169,6 +173,8 @@ export function translateSubject(subject: SubjectKey): string {
       return "Ingredientes"
     case "recipes":
       return "Recetas"
+    case "productRecipeTypes":
+      return "Tipos de recetas"
     case "roles":
       return "Roles"
     case "permissions":
@@ -361,4 +367,14 @@ export function excludeFromList<
     T,
     K
   >[]
+}
+
+export function getRouteByShopCategory(shopCategory: ShopCategory) {
+  switch (shopCategory) {
+    case ShopCategory.FOOD:
+      return ShopRoutes.FOODS
+
+    case ShopCategory.BAKERY:
+      return ShopRoutes.BAKERY
+  }
 }

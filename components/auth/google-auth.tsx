@@ -5,24 +5,26 @@ import { Dispatch, SetStateAction } from "react"
 import { toast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
+import { DEFAULT_REDIRECT } from "@/routes"
 
 type GoogleAuthProps = {
   isSubmitting: boolean
   isGoogleLoading: boolean
   setIsGoogleLoading: Dispatch<SetStateAction<boolean>>
+  redirectTo?: string
 }
 
 const GoogleAuth = ({
   isSubmitting,
   isGoogleLoading,
   setIsGoogleLoading,
+  redirectTo,
 }: GoogleAuthProps) => {
   const signInWithGoogle = async () => {
     try {
       setIsGoogleLoading(true)
       await signIn("google", {
-        callbackUrl: DEFAULT_LOGIN_REDIRECT,
+        callbackUrl: redirectTo || DEFAULT_REDIRECT,
       })
     } catch (error) {
       console.error(error)

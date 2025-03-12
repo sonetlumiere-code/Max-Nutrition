@@ -2,6 +2,7 @@ import {
   PaymentMethod,
   PromotionDiscountType,
   ShippingMethod,
+  ShopCategory,
 } from "@prisma/client"
 import { z } from "zod"
 
@@ -17,6 +18,7 @@ export const promotionSchema = z
       .min(0, { message: "El descuento debe ser mayor o igual a 0." }),
 
     isActive: z.boolean(),
+    shopCategory: z.nativeEnum(ShopCategory),
     categories: z.array(
       z.object({
         categoryId: z.string().min(1, { message: "Selecciona una categoría." }),

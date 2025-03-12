@@ -56,7 +56,6 @@ export async function createShopBranch(values: ShopBranchSchema) {
   try {
     const shopBranch = await prisma.shopBranch.create({
       data: {
-        shopSettingsId,
         addressNumber,
         addressStreet: addressGeoRef.calle.nombre,
         branchType,

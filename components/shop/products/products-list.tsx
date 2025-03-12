@@ -3,7 +3,7 @@
 import { PopulatedCategory } from "@/types/types"
 import { useGetCategories } from "@/hooks/use-get-categories"
 import { useState } from "react"
-import { Product } from "@prisma/client"
+import { ShopCategory, Product } from "@prisma/client"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import DialogProductDetail from "./dialog-product-detail"
 import DrawerProductDetail from "./drawer-product-detail"
@@ -11,8 +11,10 @@ import ProductCard from "./product-card"
 
 const ProductsList = ({
   initialCategories,
+  shopCategory,
 }: {
   initialCategories: PopulatedCategory[] | null
+  shopCategory: ShopCategory
 }) => {
   const [productDetail, setProductDetail] = useState<{
     open: boolean
@@ -23,6 +25,7 @@ const ProductsList = ({
   })
 
   const { categories } = useGetCategories({
+    shopCategory,
     fallbackData: initialCategories,
   })
 

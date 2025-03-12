@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link"
 import dynamic from "next/dynamic"
-import { cn } from "@/lib/utils"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import CustomerProfileDropdown from "./customer-profile-dropdown"
-import { Session } from "next-auth"
 import { getPromotions } from "@/data/promotions"
+import CustomerProfileDropdown from "./customer-profile-dropdown"
+import AuthButton from "./auth-button"
+import { Session } from "next-auth"
+import { ShopCategory } from "@prisma/client"
 
 const CartHeaderButton = dynamic(() => import("./cart-header-button"), {
   ssr: false,
@@ -21,11 +22,16 @@ const Promotions = dynamic(
 
 type HeaderShopProps = {
   session: Session | null
+  shopCategory: ShopCategory
 }
 
-export default async function HeaderShop({ session }: HeaderShopProps) {
+export default async function HeaderShop({
+  session,
+  shopCategory,
+}: HeaderShopProps) {
   const promotions = await getPromotions({
     where: {
+      shopCategory,
       isActive: true,
     },
   })
@@ -62,15 +68,14 @@ export default async function HeaderShop({ session }: HeaderShopProps) {
             )}
             <CartHeaderButton />
           </div>
+
           {session?.user ? (
-            <CustomerProfileDropdown session={session} />
+            <CustomerProfileDropdown
+              session={session}
+              shopCategory={shopCategory}
+            />
           ) : (
-            <Link
-              href='/login'
-              className={cn(buttonVariants({ variant: "outline" }), "")}
-            >
-              <Icons.user className='w-5 h-5 mr-2' /> Ingresar
-            </Link>
+            <AuthButton />
           )}
         </div>
       </header>

@@ -33,7 +33,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getPromotions } from "@/data/promotions"
-import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
+import {
+  getPermissionsKeys,
+  hasPermission,
+  translateShopCategory,
+} from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -109,6 +113,7 @@ const PromotionsPage = async () => {
                   <TableHead className='hidden md:table-cell'>
                     Descripción
                   </TableHead>
+                  <TableHead className='hidden md:table-cell'>Tienda</TableHead>
                   <TableHead className='hidden md:table-cell'>Estado</TableHead>
                   <TableHead className='text-end'>
                     <span>Acciones</span>
@@ -121,6 +126,9 @@ const PromotionsPage = async () => {
                     <TableCell>{promotion.name}</TableCell>
                     <TableCell className='max-w-28 hidden md:table-cell'>
                       <p className='truncate'>{promotion.description}</p>
+                    </TableCell>
+                    <TableCell>
+                      {translateShopCategory(promotion.shopCategory)}
                     </TableCell>
                     <TableCell className='hidden md:table-cell'>
                       {promotion.isActive ? (

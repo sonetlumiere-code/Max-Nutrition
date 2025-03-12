@@ -8,15 +8,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import UserAvatar from "@/components/user-avatar"
-import { RoleGroup } from "@prisma/client"
+import { getRouteByShopCategory } from "@/helpers/helpers"
+import { ShopCategory, RoleGroup } from "@prisma/client"
 import { Session } from "next-auth"
 import Link from "next/link"
 
 type ProfileDropdownProps = {
   session: Session | null
+  shopCategory: ShopCategory
 }
 
-const CustomerProfileDropdown = ({ session }: ProfileDropdownProps) => {
+const CustomerProfileDropdown = ({
+  session,
+  shopCategory,
+}: ProfileDropdownProps) => {
   const isStaff = session?.user.role?.group === RoleGroup.STAFF
 
   return (
@@ -35,12 +40,16 @@ const CustomerProfileDropdown = ({ session }: ProfileDropdownProps) => {
             <DropdownMenuSeparator />
           </>
         )}
-        <Link href='/customer-info'>
+        <Link href={`${getRouteByShopCategory(shopCategory)}/customer-info`}>
           <DropdownMenuItem>
             <Icons.user className='w-4 h-4 mr-2' /> Perfil
           </DropdownMenuItem>
         </Link>
-        <Link href='/customer-orders-history'>
+        <Link
+          href={`${getRouteByShopCategory(
+            shopCategory
+          )}/customer-orders-history`}
+        >
           <DropdownMenuItem>
             <Icons.scrollText className='w-4 h-4 mr-2' /> Pedidos
           </DropdownMenuItem>
