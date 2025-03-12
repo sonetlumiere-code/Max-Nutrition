@@ -7,6 +7,7 @@ import { sendWelcomeEmail } from "../mail/mail"
 import authConfig from "./auth.config"
 import { createCustomerByUser } from "@/actions/onboarding/create-customer-by-user"
 import { PopulatedRole } from "@/types/types"
+import { SubjectKey } from "@prisma/client"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
@@ -67,7 +68,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       if (!existingUser) return token
 
-      token.role = existingUser.role
+      if (existingUser.role) {
+        const { name, group, permissions } = existingUser.role
+
+        const roleData = {
+          name,
+          group,
+          permissions: permissions.map(({ actionKey, subjectKey }) => ({
+            actionKey,
+            subjectKey,
+          })),
+        }
+
+        token.role = roleData
+      }
 
       return token
     },
