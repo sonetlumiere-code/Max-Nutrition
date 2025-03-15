@@ -76,9 +76,9 @@ const parseJSON = (value: string | null): any => {
 export function CartProvider({ children, session, shop }: CartProviderProps) {
   const { shopCategory } = shop
 
-  const storageKey = LOCAL_STORAGE_KEYS.CART(
-    session?.user.id || null,
-    shopCategory
+  const storageKey = useMemo(
+    () => LOCAL_STORAGE_KEYS.CART(session?.user.id || null, shopCategory),
+    [session?.user.id, shopCategory]
   )
 
   const [items, setItems] = useState<LineItem[]>(() => {
@@ -91,6 +91,38 @@ export function CartProvider({ children, session, shop }: CartProviderProps) {
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(items))
   }, [items, storageKey])
+
+  useEffect(() => {
+    if (session?.user.id) {
+      const userKey = LOCAL_STORAGE_KEYS.CART(session.user.id, shopCategory)
+      const guestKey = LOCAL_STORAGE_KEYS.CART(null, shopCategory)
+
+      const userItems = parseJSON(localStorage.getItem(userKey))
+      const guestItems = parseJSON(localStorage.getItem(guestKey))
+
+      if (guestItems.length > 0) {
+        const mergedItems = [...userItems]
+
+        guestItems.forEach((guestItem: LineItem) => {
+          const existingItem = mergedItems.find(
+            (i) =>
+              i.product.id === guestItem.product.id &&
+              JSON.stringify(i.variation) ===
+                JSON.stringify(guestItem.variation)
+          )
+          if (existingItem) {
+            existingItem.quantity += guestItem.quantity
+          } else {
+            mergedItems.push(guestItem)
+          }
+        })
+
+        localStorage.setItem(userKey, JSON.stringify(mergedItems))
+        localStorage.removeItem(guestKey)
+        setItems(mergedItems)
+      }
+    }
+  }, [session?.user.id, shopCategory])
 
   const addItem = (
     product: PopulatedProduct,
