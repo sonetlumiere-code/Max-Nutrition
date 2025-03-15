@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth/auth"
 import { RoleGroup } from "@prisma/client"
 import { redirect } from "next/navigation"
 
-export default async function WelcomePage() {
+export default async function DashboardPage() {
   const session = await auth()
 
   const isStaff = session?.user.role?.group === RoleGroup.STAFF
