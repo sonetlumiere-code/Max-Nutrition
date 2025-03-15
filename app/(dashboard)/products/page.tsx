@@ -38,6 +38,7 @@ import { getProducts } from "@/data/products"
 import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 

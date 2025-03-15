@@ -1,4 +1,5 @@
 // import { hasPermission } from "@/helpers/helpers"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
 // const shopSettingsId = process.env.SHOP_SETTINGS_ID

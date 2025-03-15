@@ -12,6 +12,7 @@ import { getPromotion } from "@/data/promotions"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 interface EditPromotionPageProps {
   params: {

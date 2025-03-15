@@ -10,6 +10,7 @@ import {
 import { getShippingZone } from "@/data/shipping-zones"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
 interface EditShippingZonePageProps {

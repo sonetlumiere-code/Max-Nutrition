@@ -11,6 +11,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import EditShop from "@/components/dashboard/shops/edit-shop/edit-shop"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 interface EditShopPageProps {
   params: {

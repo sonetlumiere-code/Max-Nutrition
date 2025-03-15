@@ -436,6 +436,7 @@ model Shop {
   name        String   @unique
   title       String?
   description String?
+  bannerImage String?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
