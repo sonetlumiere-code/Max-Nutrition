@@ -8,8 +8,8 @@ import dynamic from "next/dynamic"
 import { redirect } from "next/navigation"
 import { getShopSettings } from "@/data/shop-settings"
 import { getShopBranches } from "@/data/shop-branches"
-import { ShopRoutes } from "@/routes"
-import { ShopCategory } from "@prisma/client"
+import { DEFAULT_REDIRECT } from "@/routes"
+import { getShop } from "@/data/shops"
 
 const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
   ssr: false,
@@ -17,16 +17,32 @@ const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
-export default async function BakeryCheckoutPage() {
+interface CheckoutPageProps {
+  params: {
+    shopKey: string
+  }
+}
+
+export default async function CheckoutPage({ params }: CheckoutPageProps) {
+  const { shopKey } = params
+
+  const shop = await getShop({
+    where: { key: shopKey, isActive: true },
+  })
+
+  if (!shop) {
+    redirect(DEFAULT_REDIRECT)
+  }
+
   if (!shopSettingsId) {
     console.warn("Es necesario el ID de la configuración de tienda")
-    redirect(ShopRoutes.BAKERY)
+    redirect(`/${shop.key}` || DEFAULT_REDIRECT)
   }
 
   const session = await auth()
 
   if (!session) {
-    redirect(ShopRoutes.BAKERY)
+    redirect(`/${shop.key}` || DEFAULT_REDIRECT)
   }
 
   const [customer, shopSettings, shopBranches] = await Promise.all([
@@ -72,14 +88,14 @@ export default async function BakeryCheckoutPage() {
   ])
 
   if (!customer || !shopSettings) {
-    redirect(ShopRoutes.BAKERY)
+    redirect(`/${shop.key}` || DEFAULT_REDIRECT)
   }
 
   return (
     <div className='w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
       <div className='flex items-start mb-6'>
         <Link
-          href={ShopRoutes.BAKERY}
+          href={`/${shop.key}` || DEFAULT_REDIRECT}
           className={cn(buttonVariants({ variant: "ghost" }), "")}
         >
           <>
@@ -93,7 +109,7 @@ export default async function BakeryCheckoutPage() {
         customer={customer}
         shopSettings={shopSettings}
         shopBranches={shopBranches}
-        shopCategory={ShopCategory.BAKERY}
+        shop={shop}
       />
     </div>
   )

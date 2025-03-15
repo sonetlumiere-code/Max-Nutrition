@@ -368,13 +368,3 @@ export function excludeFromList<
     K
   >[]
 }
-
-export function getRouteByShopCategory(shopCategory: ShopCategory) {
-  switch (shopCategory) {
-    case ShopCategory.FOOD:
-      return ShopRoutes.FOODS
-
-    case ShopCategory.BAKERY:
-      return ShopRoutes.BAKERY
-  }
-}

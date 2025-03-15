@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { PopulatedOrder } from "@/types/types"
 import { cn } from "@/lib/utils"
-import { getRouteByShopCategory, translateOrderStatus } from "@/helpers/helpers"
+import { translateOrderStatus } from "@/helpers/helpers"
 
 interface OrderConfirmedProps {
   order: PopulatedOrder
@@ -197,18 +197,12 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
           {order.shop && (
             <>
               <Button asChild className='w-full sm:w-auto'>
-                <Link
-                  href={`${getRouteByShopCategory(
-                    order.shop?.shopCategory
-                  )}/customer-orders-history`}
-                >
+                <Link href={`/${order.shop.key}/customer-orders-history`}>
                   Ver Mis Pedidos
                 </Link>
               </Button>
               <Button asChild variant='outline' className='w-full sm:w-auto'>
-                <Link href={getRouteByShopCategory(order.shop?.shopCategory)}>
-                  Seguir Comprando
-                </Link>
+                <Link href={`/${order.shop.key}`}>Seguir Comprando</Link>
               </Button>
             </>
           )}

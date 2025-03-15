@@ -6,8 +6,9 @@ import { TableCell, TableRow } from "@/components/ui/table"
 import { LineItem } from "@/types/types"
 
 const CartListItem = ({ cartItem }: { cartItem: LineItem }) => {
-  const { decrementQuantity, incrementQuantity, removeItem, shopCategory } =
-    useCart()
+  const { decrementQuantity, incrementQuantity, removeItem, shop } = useCart()
+
+  const { shopCategory } = shop
 
   return (
     <TableRow>

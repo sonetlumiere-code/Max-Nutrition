@@ -2,18 +2,33 @@ import { Icons } from "@/components/icons"
 import CustomerOrdersHistory from "@/components/shop/customer/orders-history/customer-orders-history"
 import { buttonVariants } from "@/components/ui/button"
 import { getCustomer } from "@/data/customer"
-import { getRouteByShopCategory } from "@/helpers/helpers"
+import { getShop } from "@/data/shops"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { DEFAULT_REDIRECT } from "@/routes"
-import { ShopCategory } from "@prisma/client"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
-const BakeryCustomerOrdersHistoryPage = async () => {
+interface CustomerOrdersHistoryPageProps {
+  params: {
+    shopKey: string
+  }
+}
+
+const CustomerOrdersHistoryPage = async ({
+  params,
+}: CustomerOrdersHistoryPageProps) => {
   const session = await auth()
 
-  const shopCategory = ShopCategory.BAKERY
+  const { shopKey } = params
+
+  const shop = await getShop({
+    where: { key: shopKey, isActive: true },
+  })
+
+  if (!shop) {
+    redirect(DEFAULT_REDIRECT)
+  }
 
   const customer = await getCustomer({
     where: {
@@ -55,7 +70,7 @@ const BakeryCustomerOrdersHistoryPage = async () => {
     <div className='space-y-6 w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
       <div className='flex items-start'>
         <Link
-          href={getRouteByShopCategory(shopCategory)}
+          href={`/${shop.key}`}
           className={cn(buttonVariants({ variant: "ghost" }), "")}
         >
           <>
@@ -70,4 +85,4 @@ const BakeryCustomerOrdersHistoryPage = async () => {
   )
 }
 
-export default BakeryCustomerOrdersHistoryPage
+export default CustomerOrdersHistoryPage

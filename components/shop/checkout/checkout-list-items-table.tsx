@@ -13,7 +13,8 @@ import { Badge } from "@/components/ui/badge"
 import { useCart } from "@/components/cart-provider"
 
 const CheckoutListItems = () => {
-  const { items, shopCategory } = useCart()
+  const { items, shop } = useCart()
+  const { shopCategory } = shop
 
   return (
     <Table>

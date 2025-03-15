@@ -28,7 +28,6 @@ import {
 import { toast } from "@/components/ui/use-toast"
 import { getShippingZone } from "@/data/shipping-zones"
 import {
-  getRouteByShopCategory,
   translateAddressLabel,
   translateShippingMethod,
 } from "@/helpers/helpers"
@@ -36,11 +35,12 @@ import { usePromotion } from "@/hooks/use-promotion"
 import { OrderSchema, orderSchema } from "@/lib/validations/order-validation"
 import {
   PopulatedCustomer,
+  PopulatedShop,
   PopulatedShopBranch,
   PopulatedShopSettings,
 } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ShopCategory, PaymentMethod, ShippingMethod } from "@prisma/client"
+import { PaymentMethod, ShippingMethod } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
@@ -58,21 +58,23 @@ import LoadingOverlay from "@/components/loading-overlay"
 type CheckoutProps = {
   customer: PopulatedCustomer
   shopSettings: PopulatedShopSettings
+  shop: PopulatedShop
   shopBranches: PopulatedShopBranch[] | null
-  shopCategory: ShopCategory
 }
 
 const Checkout = ({
   customer,
   shopSettings,
+  shop,
   shopBranches,
-  shopCategory,
 }: CheckoutProps) => {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
   const [isFulfilled, setIsFulfilled] = useState(false)
   const [isBottomVisible, setIsBottomVisible] = useState(false)
 
   const totalSectionRef = useRef<HTMLDivElement>(null)
+
+  const { shopCategory } = shop
 
   const { items, setOpen, clearCart } = useCart()
   const { promotions, appliedPromotions } = usePromotion({
@@ -86,10 +88,10 @@ const Checkout = ({
   useEffect(() => {
     if (!isFulfilled) {
       if (!items.length || !customer) {
-        router.replace(getRouteByShopCategory(shopCategory))
+        router.replace(`/${shop.key}`)
       }
     }
-  }, [items, customer, router, isFulfilled, shopCategory])
+  }, [items, customer, router, isFulfilled, shop])
 
   const form = useForm<OrderSchema>({
     resolver: zodResolver(orderSchema),
@@ -201,13 +203,14 @@ const Checkout = ({
       { threshold: 0.5 }
     )
 
-    if (totalSectionRef.current) {
-      observer.observe(totalSectionRef.current)
+    const currentRef = totalSectionRef.current
+    if (currentRef) {
+      observer.observe(currentRef)
     }
 
     return () => {
-      if (totalSectionRef.current) {
-        observer.unobserve(totalSectionRef.current)
+      if (currentRef) {
+        observer.unobserve(currentRef)
       }
     }
   }, [])

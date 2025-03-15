@@ -31,7 +31,8 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
   const [quantity, setQuantity] = useState(1)
   const [variations, setVariations] = useState({ withSalt: true })
 
-  const { addItem, shopCategory } = useCart()
+  const { addItem, shop } = useCart()
+  const { shopCategory } = shop
 
   useEffect(() => {
     if (open) {

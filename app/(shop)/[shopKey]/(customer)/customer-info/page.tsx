@@ -1,26 +1,46 @@
 import { Icons } from "@/components/icons"
-import CustomerOrdersHistory from "@/components/shop/customer/orders-history/customer-orders-history"
+import CustomerAddresses from "@/components/shop/customer/info/address/list/customer-addresses"
+import CustomerPersonalInfo from "@/components/shop/customer/info/personal-info/customer-personal-info"
 import { buttonVariants } from "@/components/ui/button"
 import { getCustomer } from "@/data/customer"
-import { getRouteByShopCategory } from "@/helpers/helpers"
+import { getShop } from "@/data/shops"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { DEFAULT_REDIRECT } from "@/routes"
-import { ShopCategory } from "@prisma/client"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
-const FoodsCustomerOrdersHistoryPage = async () => {
+interface CustomerInfoPageProps {
+  params: {
+    shopKey: string
+  }
+}
+
+const CustomerInfoPage = async ({ params }: CustomerInfoPageProps) => {
   const session = await auth()
 
-  const shopCategory = ShopCategory.FOOD
+  const { shopKey } = params
+
+  const shop = await getShop({
+    where: { key: shopKey, isActive: true },
+  })
+
+  if (!shop) {
+    redirect(DEFAULT_REDIRECT)
+  }
+
+  const { shopCategory } = shop
 
   const customer = await getCustomer({
     where: {
       userId: session?.user.id,
     },
     include: {
-      addresses: true,
+      addresses: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
       user: {
         select: {
           email: true,
@@ -28,14 +48,11 @@ const FoodsCustomerOrdersHistoryPage = async () => {
         },
       },
       orders: {
-        take: 10,
         orderBy: {
           createdAt: "desc",
         },
         include: {
           address: true,
-          appliedPromotions: true,
-          shopBranch: true,
           items: {
             include: {
               product: true,
@@ -54,7 +71,7 @@ const FoodsCustomerOrdersHistoryPage = async () => {
     <div className='space-y-6 w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
       <div className='flex items-start'>
         <Link
-          href={getRouteByShopCategory(shopCategory)}
+          href={`/${shop.key}`}
           className={cn(buttonVariants({ variant: "ghost" }), "")}
         >
           <>
@@ -64,9 +81,14 @@ const FoodsCustomerOrdersHistoryPage = async () => {
         </Link>
       </div>
 
-      {customer?.orders && <CustomerOrdersHistory orders={customer?.orders} />}
+      {customer && (
+        <>
+          <CustomerPersonalInfo customer={customer} />
+          <CustomerAddresses customer={customer} />
+        </>
+      )}
     </div>
   )
 }
 
-export default FoodsCustomerOrdersHistoryPage
+export default CustomerInfoPage

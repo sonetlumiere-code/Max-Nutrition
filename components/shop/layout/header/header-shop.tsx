@@ -7,7 +7,7 @@ import { getPromotions } from "@/data/promotions"
 import CustomerProfileDropdown from "./customer-profile-dropdown"
 import AuthButton from "./auth-button"
 import { Session } from "next-auth"
-import { ShopCategory } from "@prisma/client"
+import { PopulatedShop } from "@/types/types"
 
 const CartHeaderButton = dynamic(() => import("./cart-header-button"), {
   ssr: false,
@@ -22,16 +22,13 @@ const Promotions = dynamic(
 
 type HeaderShopProps = {
   session: Session | null
-  shopCategory: ShopCategory
+  shop: PopulatedShop
 }
 
-export default async function HeaderShop({
-  session,
-  shopCategory,
-}: HeaderShopProps) {
+export default async function HeaderShop({ session, shop }: HeaderShopProps) {
   const promotions = await getPromotions({
     where: {
-      shopCategory,
+      shopCategory: shop.shopCategory,
       isActive: true,
     },
   })
@@ -70,10 +67,7 @@ export default async function HeaderShop({
           </div>
 
           {session?.user ? (
-            <CustomerProfileDropdown
-              session={session}
-              shopCategory={shopCategory}
-            />
+            <CustomerProfileDropdown session={session} shop={shop} />
           ) : (
             <AuthButton />
           )}

@@ -5,7 +5,12 @@ enum ShopRoutes {
 
 const shopRoutes: string[] = Object.values(ShopRoutes)
 
-const publicRoutes: string[] = ["/", "/new-verification", ...shopRoutes]
+const publicRoutes: string[] = [
+  "/",
+  "/new-verification",
+  "/home",
+  ...shopRoutes,
+]
 
 const authRoutes: string[] = [
   "/login",

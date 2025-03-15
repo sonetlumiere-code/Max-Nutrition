@@ -13,7 +13,7 @@ import { ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { checkPromotion } from "../promotions/check-promotion"
 import { getShopBranch } from "@/data/shop-branches"
-import { getRouteByShopCategory, hasPermission } from "@/helpers/helpers"
+import { hasPermission } from "@/helpers/helpers"
 import { getShop } from "@/data/shops"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
@@ -263,9 +263,7 @@ export async function createOrder({
       sendOrderDetailsEmail({
         email: customer.user?.email || "",
         order: order as PopulatedOrder,
-        orderLink: `${getRouteByShopCategory(
-          shopCategory
-        )}/customer-orders-history`,
+        orderLink: `/${shop.key}/customer-orders-history`,
       })
     }
 

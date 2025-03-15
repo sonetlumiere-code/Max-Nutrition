@@ -1,9 +1,10 @@
+import { getShop } from "@/data/shops"
 import dynamic from "next/dynamic"
 import { getCategories } from "@/data/categories"
 import ButtonsInfoShop from "@/components/shop/buttons-info-shop"
 import ProductsList from "@/components/shop/products/products-list"
 import BannerShop from "@/components/shop/banner-shop"
-import { ShopCategory } from "@prisma/client"
+import { redirect } from "next/navigation"
 
 const CartFixedButton = dynamic(
   () => import("@/components/shop/cart/cart-fixed-button"),
@@ -12,8 +13,24 @@ const CartFixedButton = dynamic(
   }
 )
 
-const FoodsShopPage = async () => {
-  const shopCategory = ShopCategory.FOOD
+interface ShopPageProps {
+  params: {
+    shopKey: string
+  }
+}
+
+const ShopPage = async ({ params }: ShopPageProps) => {
+  const { shopKey } = params
+
+  const shop = await getShop({
+    where: { key: shopKey, isActive: true },
+  })
+
+  if (!shop) {
+    redirect("/home")
+  }
+
+  const { shopCategory } = shop
 
   const categories = await getCategories({
     where: { shopCategory },
@@ -35,7 +52,13 @@ const FoodsShopPage = async () => {
       <BannerShop
         title='Comida saludable, directamente a tu casa'
         description='Y lo mejor ¡Todo sin gluten!'
-        img='/img/foods-banner.jpg'
+        img={
+          shopCategory === "FOOD"
+            ? "/img/foods-banner.jpg"
+            : shopCategory === "BAKERY"
+            ? "/img/bakery-banner.jpg"
+            : ""
+        }
       />
 
       <ButtonsInfoShop shopCategory={shopCategory} />
@@ -59,4 +82,4 @@ const FoodsShopPage = async () => {
   )
 }
 
-export default FoodsShopPage
+export default ShopPage

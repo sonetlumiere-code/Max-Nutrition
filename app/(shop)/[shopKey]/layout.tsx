@@ -1,26 +1,43 @@
 import { CartProvider } from "@/components/cart-provider"
 import Cart from "@/components/shop/cart/cart"
 import HeaderShop from "@/components/shop/layout/header/header-shop"
+import { getShop } from "@/data/shops"
 import { auth } from "@/lib/auth/auth"
-import { ShopCategory } from "@prisma/client"
+import { redirect } from "next/navigation"
 import { ReactNode } from "react"
 
-interface BakeryShopLayoutProps {
+interface ShopLayoutProps {
   children: ReactNode
+  params: {
+    shopKey: string
+  }
 }
 
-export default async function BakeryShopLayout({
+export default async function ShopLayout({
   children,
-}: BakeryShopLayoutProps) {
+  params,
+}: ShopLayoutProps) {
   const session = await auth()
-  const shopCategory = ShopCategory.BAKERY
+  const { shopKey } = params
+
+  const shop = await getShop({
+    where: { key: shopKey, isActive: true },
+    include: {
+      operationalHours: true,
+    },
+  })
+
+  if (!shop) {
+    console.log("Tienda no encontrada.")
+    redirect("/home")
+  }
 
   return (
-    <CartProvider session={session} shopCategory={shopCategory}>
+    <CartProvider session={session} shop={shop}>
       <Cart />
 
       <div className='grid min-h-screen grid-rows-[auto_1fr_auto]'>
-        <HeaderShop session={session} shopCategory={shopCategory} />
+        <HeaderShop session={session} shop={shop} />
         <main className='flex flex-col w-full mx-auto pb-16'>{children}</main>
         <footer className='h-20 bg-gray-200 flex items-center justify-center p-4'>
           <p className='text-sm text-muted-foreground'>

@@ -25,14 +25,13 @@ import CartContent from "./cart-content"
 import Link from "next/link"
 import useSyncCart from "@/hooks/use-sync-cart"
 import { Icons } from "@/components/icons"
-import { getRouteByShopCategory } from "@/helpers/helpers"
 
 const Cart = () => {
-  const { items, open, setOpen, shopCategory } = useCart()
-  const route = getRouteByShopCategory(shopCategory)
+  const { items, open, setOpen, shop } = useCart()
+
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
-  useSyncCart({ shopCategory })
+  useSyncCart({ shopCategory: shop.shopCategory })
 
   if (isDesktop) {
     return (
@@ -54,7 +53,7 @@ const Cart = () => {
               <DialogClose asChild>
                 {items.length >= 1 ? (
                   <Button type='button' asChild>
-                    <Link href={`${route}/checkout`}>
+                    <Link href={`/${shop.key}/checkout`}>
                       Continuar con el pedido
                     </Link>
                   </Button>
@@ -63,7 +62,7 @@ const Cart = () => {
 
               <DialogClose asChild>
                 <Button type='button' variant='outline' asChild>
-                  <Link href={route}>
+                  <Link href={`/${shop.key}/checkout`}>
                     <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver a
                     tienda
                   </Link>
@@ -95,7 +94,7 @@ const Cart = () => {
             <DrawerClose asChild>
               {items.length >= 1 ? (
                 <Button type='button' asChild>
-                  <Link href={`${route}/checkout`}>
+                  <Link href={`/${shop.key}/checkout`}>
                     Continuar con el pedido
                   </Link>
                 </Button>
@@ -104,7 +103,7 @@ const Cart = () => {
 
             <DrawerClose asChild>
               <Button type='button' variant='outline' asChild>
-                <Link href={route}>
+                <Link href={`/${shop.key}/checkout`}>
                   <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver a
                   tienda
                 </Link>

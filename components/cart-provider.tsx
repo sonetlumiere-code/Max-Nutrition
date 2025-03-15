@@ -12,8 +12,12 @@ import {
   SetStateAction,
   useMemo,
 } from "react"
-import { LineItem, PopulatedProduct, Variation } from "@/types/types"
-import { ShopCategory } from "@prisma/client"
+import {
+  LineItem,
+  PopulatedProduct,
+  PopulatedShop,
+  Variation,
+} from "@/types/types"
 
 type CartProviderState = {
   items: LineItem[]
@@ -30,7 +34,7 @@ type CartProviderState = {
   decrementQuantity: (id: string) => void
   open: boolean
   setOpen: (value: boolean) => void
-  shopCategory: ShopCategory
+  shop: PopulatedShop
 }
 
 const LOCAL_STORAGE_KEYS = {
@@ -38,7 +42,7 @@ const LOCAL_STORAGE_KEYS = {
     userId ? `cart_${userId}_${shopCategory}` : `cart_guest_${shopCategory}`,
 }
 
-const initialState: Omit<CartProviderState, "shopCategory"> = {
+const initialState: Omit<CartProviderState, "shop"> = {
   items: [],
   setItems: () => null,
   addItem: () => null,
@@ -58,7 +62,7 @@ const CartProviderContext = createContext<CartProviderState | undefined>(
 type CartProviderProps = {
   children: ReactNode
   session: Session | null
-  shopCategory: ShopCategory
+  shop: PopulatedShop
 }
 
 const parseJSON = (value: string | null): any => {
@@ -69,11 +73,9 @@ const parseJSON = (value: string | null): any => {
   }
 }
 
-export function CartProvider({
-  children,
-  session,
-  shopCategory,
-}: CartProviderProps) {
+export function CartProvider({ children, session, shop }: CartProviderProps) {
+  const { shopCategory } = shop
+
   const storageKey = LOCAL_STORAGE_KEYS.CART(
     session?.user.id || null,
     shopCategory
@@ -158,7 +160,7 @@ export function CartProvider({
     decrementQuantity,
     open,
     setOpen,
-    shopCategory,
+    shop,
   }
 
   return (
