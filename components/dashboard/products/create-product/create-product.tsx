@@ -78,6 +78,7 @@ const CreateProduct = ({
     watch,
     handleSubmit,
     formState: { isSubmitting, errors },
+    setValue,
   } = form
 
   const { fields, append, remove } = useFieldArray({
@@ -381,20 +382,40 @@ const CreateProduct = ({
                         : "/img/no-image.jpg"
                     }
                   />
-                  <div className='grid grid-cols-3 gap-2'>
-                    <label className='flex aspect-square w-full items-center justify-center rounded-md border border-dashed cursor-pointer'>
-                      <Icons.upload className='h-4 w-4 text-muted-foreground' />
-                      <span className='sr-only'>Upload</span>
-                      <input
-                        type='file'
-                        disabled={isSubmitting}
-                        className='hidden'
-                        onChange={(event) => {
-                          form.setValue("imageFile", event.target.files)
-                        }}
-                      />
-                    </label>
-                  </div>
+                  <FormField
+                    name='imageFile'
+                    render={() => (
+                      <FormItem>
+                        <FormLabel className='grid grid-cols-3 gap-2'>
+                          <label
+                            className='flex aspect-square w-full cursor-pointer items-center justify-center rounded-md border border-dashed'
+                            htmlFor='image-upload'
+                          >
+                            <Icons.upload className='h-4 w-4 text-muted-foreground' />
+                            <span className='sr-only'>Subir una imagen</span>
+                          </label>
+                          <input
+                            id='image-upload'
+                            type='file'
+                            disabled={isSubmitting}
+                            className='hidden'
+                            accept='image/*'
+                            onChange={(event) => {
+                              const files = event.target.files
+                              if (files?.length) {
+                                setValue("imageFile", files, {
+                                  shouldValidate: true,
+                                })
+                              }
+                            }}
+                          />
+                        </FormLabel>
+                        <FormControl>
+                          <FormMessage />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </CardContent>
             </Card>

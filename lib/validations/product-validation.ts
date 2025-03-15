@@ -24,7 +24,7 @@ export const productSchema = z.object({
     .refine(
       (files) =>
         files?.length === 0 ? true : files?.[0]?.size <= MAX_FILE_SIZE,
-      { message: "La imagen es requerida." }
+      { message: `La imagen debe pesar menos de ${MAX_FILE_SIZE / 100000}MB.` }
     )
     .refine(
       (files) =>
