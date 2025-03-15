@@ -42,7 +42,6 @@ export const productSchema = z.object({
       })
     )
     .min(1, { message: "Debes seleccionar al menos una receta." }),
-
   categoriesIds: z
     .array(z.string())
     .min(1, { message: "Debes seleccionar al menos una categoría." }),

@@ -276,18 +276,22 @@ const shops: Omit<Shop, "id" | "createdAt" | "updatedAt">[] = [
   {
     name: "Viandas",
     key: "foods",
-    title: "Tienda de viandas",
-    description: "Ecommerce de viandas.",
-    bannerImage: "",
+    title: "Comida saludable, directamente a tu casa",
+    description: "Y lo mejor ¡Todo sin gluten!",
+    message:
+      "Elige entre nuestra variedad semanal de platos. Cambiamos el menú cada lunes, así que si te gusta algo, pídelo antes de que acabe el domingo.",
+    bannerImage: "MaxNutrition/foods-banner_fxspi8",
     shopCategory: ShopCategory.FOOD,
     isActive: true,
   },
   {
     name: "Pastelería",
     key: "bakery",
-    title: "Tienda de pastelería",
-    description: "Ecommerce de pastelería.",
-    bannerImage: "",
+    title: "Pastelería saludable, directamente a tu casa",
+    description: "Y lo mejor ¡Todo sin gluten!",
+    message:
+      "Elige entre nuestra variedad semanal de pastelería. Cambiamos el menú cada lunes, así que si te gusta algo, pídelo antes de que acabe el domingo.",
+    bannerImage: "MaxNutrition/bakery-banner_esgsm9",
     shopCategory: ShopCategory.BAKERY,
     isActive: true,
   },

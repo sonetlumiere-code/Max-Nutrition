@@ -24,7 +24,16 @@ export async function createShop(values: ShopSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { name, key, title, description, shopCategory } = validatedFields.data
+  const {
+    name,
+    key,
+    title,
+    description,
+    message,
+    isActive,
+    bannerImage,
+    shopCategory,
+  } = validatedFields.data
 
   try {
     const shop = await prisma.shop.create({
@@ -33,6 +42,9 @@ export async function createShop(values: ShopSchema) {
         key,
         title,
         description,
+        message,
+        isActive,
+        bannerImage,
         shopCategory,
       },
     })

@@ -50,25 +50,22 @@ const ShopPage = async ({ params }: ShopPageProps) => {
   return (
     <>
       <BannerShop
-        title='Comida saludable, directamente a tu casa'
-        description='Y lo mejor ¡Todo sin gluten!'
+        title={shop.title || "Comida saludable, directamente a tu casa"}
+        description={shop.description || "Y lo mejor ¡Todo sin gluten!"}
         img={
-          shopCategory === "FOOD"
-            ? "/img/foods-banner.jpg"
-            : shopCategory === "BAKERY"
-            ? "/img/bakery-banner.jpg"
-            : ""
+          shop.bannerImage
+            ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${shop.bannerImage}`
+            : "/img/foods-banner.jpg"
         }
       />
 
       <ButtonsInfoShop shopCategory={shopCategory} />
 
-      <div className='flex items-center justify-between mb-8 bg-emerald-100 p-4 rounded-md w-full max-w-3xl mx-auto'>
-        <p className='text-sm text-muted-foreground'>
-          Elige entre nuestra variedad semanal de platos. Cambiamos el menú cada
-          lunes, así que si te gusta algo, pídelo antes de que acabe el domingo.
-        </p>
-      </div>
+      {shop.message && (
+        <div className='flex items-center justify-between mb-8 bg-emerald-100 p-4 rounded-md w-full max-w-3xl mx-auto'>
+          <p className='text-sm text-muted-foreground'>{shop.message}</p>
+        </div>
+      )}
 
       <div className='w-full max-w-3xl mx-auto p-4'>
         <ProductsList
