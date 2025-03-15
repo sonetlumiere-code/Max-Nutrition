@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import UserAvatar from "@/components/user-avatar"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { PopulatedShop } from "@/types/types"
 import { RoleGroup } from "@prisma/client"
 import { Session } from "next-auth"
@@ -29,7 +30,7 @@ const CustomerProfileDropdown = ({ session, shop }: ProfileDropdownProps) => {
       <DropdownMenuContent align='end'>
         {isStaff && (
           <>
-            <Link href='/welcome'>
+            <Link href={DEFAULT_REDIRECT_DASHBOARD}>
               <DropdownMenuItem>
                 <Icons.layoutDashboard className='w-4 h-4 mr-2' /> Admin panel
               </DropdownMenuItem>

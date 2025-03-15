@@ -46,6 +46,7 @@ const EditShop = ({ shop }: EditShopProps) => {
       name: shop.name,
       description: shop.description || "",
       title: shop.title || "",
+      message: shop.message || "",
       shopCategory: shop.shopCategory,
       isActive: shop.isActive,
       operationalHours: shop.operationalHours?.map((hour) => ({
