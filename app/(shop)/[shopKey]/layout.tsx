@@ -29,7 +29,7 @@ export default async function ShopLayout({
 
   if (!shop) {
     console.log("Tienda no encontrada.")
-    redirect("/home")
+    redirect("/")
   }
 
   return (

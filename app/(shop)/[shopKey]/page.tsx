@@ -27,7 +27,7 @@ const ShopPage = async ({ params }: ShopPageProps) => {
   })
 
   if (!shop) {
-    redirect("/home")
+    redirect("/")
   }
 
   const { shopCategory } = shop
