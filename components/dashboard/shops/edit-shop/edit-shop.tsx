@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { editShop } from "@/actions/shops/edit-shop"
@@ -27,6 +28,9 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { translateDayOfWeek } from "@/helpers/helpers"
 import { PopulatedShop } from "@/types/types"
+import uploadImage from "@/actions/cloudinary/upload-image"
+import deleteImage from "@/actions/cloudinary/delete-image"
+import { Textarea } from "@/components/ui/textarea"
 
 type EditShopProps = {
   shop: PopulatedShop
@@ -57,11 +61,25 @@ const EditShop = ({ shop }: EditShopProps) => {
     handleSubmit,
     formState: { isSubmitting },
     watch,
+    setValue,
   } = form
 
+  const bannerImageFile = watch("bannerImageFile")
   const operationalHours = watch("operationalHours")
 
   const onSubmit = async (data: ShopSchema) => {
+    if (data.bannerImageFile?.length) {
+      const formData = new FormData()
+      formData.append("imageFile", data.bannerImageFile[0])
+      const uploadRes = await uploadImage(formData)
+      data.bannerImage = uploadRes.public_id || ""
+      data.bannerImageFile = []
+
+      if (shop.bannerImage && uploadRes.public_id) {
+        deleteImage(shop.bannerImage.split("/")[1])
+      }
+    }
+
     const res = await editShop({ id: shop.id, values: data })
 
     if (res.success) {
@@ -105,13 +123,13 @@ const EditShop = ({ shop }: EditShopProps) => {
                 <div className='space-y-3'>
                   <FormField
                     control={control}
-                    name='name'
+                    name='title'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Nombre</FormLabel>
+                        <FormLabel>Titulo</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder='Nombre de la tienda'
+                            placeholder='Título de la tienda'
                             disabled={isSubmitting}
                             {...field}
                           />
@@ -138,42 +156,28 @@ const EditShop = ({ shop }: EditShopProps) => {
                       </FormItem>
                     )}
                   />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
-            <Card>
-              <CardHeader>
-                <CardTitle className='text-xl'>Disponibilidad</CardTitle>
-                <CardDescription>
-                  Configura la disponibilidad de la tienda
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='space-y-6'>
+
                   <FormField
-                    control={form.control}
-                    name='isActive'
+                    control={control}
+                    name='message'
                     render={({ field }) => (
-                      <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                        <div className='space-y-0.5'>
-                          <FormLabel>Activa</FormLabel>
-                        </div>
+                      <FormItem>
+                        <FormLabel>Mensaje</FormLabel>
                         <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
+                          <Textarea
+                            placeholder='Mensaje de la tienda'
                             disabled={isSubmitting}
-                            aria-readonly
+                            {...field}
                           />
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
               </CardContent>
             </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className='text-xl'>Horarios</CardTitle>
@@ -228,6 +232,101 @@ const EditShop = ({ shop }: EditShopProps) => {
                     />
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+          </div>
+          <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
+            <Card className='overflow-hidden'>
+              <CardHeader>
+                <CardTitle className='text-xl'>Imagen del banner</CardTitle>
+                <CardDescription>
+                  Imagen del banner de la tienda
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='grid gap-2'>
+                  <img
+                    alt={
+                      bannerImageFile?.length > 0
+                        ? "Image to upload"
+                        : "Shop image"
+                    }
+                    className='aspect-square w-full rounded-md object-cover'
+                    src={
+                      bannerImageFile?.length > 0
+                        ? URL.createObjectURL(bannerImageFile[0])
+                        : shop.bannerImage
+                        ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${shop.bannerImage}`
+                        : "/img/no-image.jpg"
+                    }
+                  />
+                  <FormField
+                    name='bannerImageFile'
+                    render={() => (
+                      <FormItem>
+                        <FormLabel className='grid grid-cols-3 gap-2'>
+                          <label
+                            className='flex aspect-square w-full cursor-pointer items-center justify-center rounded-md border border-dashed'
+                            htmlFor='image-upload'
+                          >
+                            <Icons.upload className='h-4 w-4 text-muted-foreground' />
+                            <span className='sr-only'>Subir una imagen</span>
+                          </label>
+                          <input
+                            id='image-upload'
+                            type='file'
+                            disabled={isSubmitting}
+                            className='hidden'
+                            accept='image/*'
+                            onChange={(event) => {
+                              const files = event.target.files
+                              if (files?.length) {
+                                setValue("bannerImageFile", files, {
+                                  shouldValidate: true,
+                                })
+                              }
+                            }}
+                          />
+                        </FormLabel>
+                        <FormControl>
+                          <FormMessage />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className='text-xl'>Disponibilidad</CardTitle>
+                <CardDescription>
+                  Configura la disponibilidad de la tienda
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='space-y-6'>
+                  <FormField
+                    control={form.control}
+                    name='isActive'
+                    render={({ field }) => (
+                      <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                        <div className='space-y-0.5'>
+                          <FormLabel>Activa</FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            disabled={isSubmitting}
+                            aria-readonly
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -88,6 +88,7 @@ export default async function ShopsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Nombre</TableHead>
+                  <TableHead className='hidden md:table-cell'>Título</TableHead>
                   <TableHead className='hidden md:table-cell'>
                     Descripción
                   </TableHead>
@@ -100,7 +101,10 @@ export default async function ShopsPage() {
                 {shops?.map((shop) => (
                   <TableRow key={shop.id}>
                     <TableCell>{shop.name}</TableCell>
-                    <TableCell className='max-w-28 hidden md:table-cell'>
+                    <TableCell className='max-w-40 hidden md:table-cell'>
+                      {shop.title}
+                    </TableCell>
+                    <TableCell className='max-w-32 hidden md:table-cell'>
                       {shop.description}
                     </TableCell>
                     <TableCell className='max-w-28 hidden md:table-cell'>
@@ -162,20 +166,20 @@ export default async function ShopsPage() {
             <h3 className='text-2xl font-bold tracking-tight'>
               Todavía no tenés ninguna tienda
             </h3>
-            {userPermissionsKeys.includes("create:customers") && (
+            {/* {userPermissionsKeys.includes("create:shops") && (
               <>
                 <p className='text-sm text-muted-foreground'>
-                  Cargá tu primer cliente haciendo click en el siguiente botón
+                  Cargá tu primera tienda haciendo click en el siguiente botón
                 </p>
 
                 <Button className='mt-4' asChild>
-                  <Link href='/customers/create-customer'>
+                  <Link href='/shops/create-shop'>
                     <Icons.circlePlus className='mr-2 h-4 w-4' />
-                    Agregar cliente
+                    Agregar tienda
                   </Link>
                 </Button>
               </>
-            )}
+            )} */}
           </div>
         </div>
       )}

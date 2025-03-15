@@ -50,8 +50,8 @@ const ShopPage = async ({ params }: ShopPageProps) => {
   return (
     <>
       <BannerShop
-        title={shop.title || "Comida saludable, directamente a tu casa"}
-        description={shop.description || "Y lo mejor ¡Todo sin gluten!"}
+        title={shop.title}
+        description={shop.description}
         img={
           shop.bannerImage
             ? `${process.env.NEXT_PUBLIC_CLOUDINARY_BASE_URL}/${shop.bannerImage}`
