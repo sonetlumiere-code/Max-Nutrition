@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import CreateCustomer from "@/components/dashboard/customers/create-customer/create-customer"
 import { hasPermission } from "@/helpers/helpers"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const CreateCustomerPage = async () => {
   const session = await auth()
@@ -20,7 +21,7 @@ const CreateCustomerPage = async () => {
   }
 
   if (!hasPermission(user, "create:customers")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

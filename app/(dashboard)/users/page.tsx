@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import UsersDataTable from "@/components/dashboard/users/list/users-data-table/users-data-table"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const UsersPage = async () => {
   const session = await auth()
@@ -28,7 +29,7 @@ const UsersPage = async () => {
   }
 
   if (!hasPermission(user, "view:users")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const users = await getSafeUsers({

@@ -39,6 +39,7 @@ import {
 } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -51,7 +52,7 @@ export default async function CategoriesPage() {
   }
 
   if (!hasPermission(user, "view:categories")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const userPermissionsKeys = getPermissionsKeys(

@@ -12,6 +12,7 @@ import { getRole } from "@/data/roles"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 interface EditRolePageProps {
   params: {
@@ -28,7 +29,7 @@ const EditRolePage = async ({ params }: EditRolePageProps) => {
   }
 
   if (!hasPermission(user, "update:roles")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const { roleId } = params

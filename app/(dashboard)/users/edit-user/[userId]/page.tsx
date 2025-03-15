@@ -12,6 +12,7 @@ import { getSafeUser } from "@/data/user"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 interface EditUserPageProps {
   params: {
@@ -28,7 +29,7 @@ const EditUserPage = async ({ params }: EditUserPageProps) => {
   }
 
   if (!hasPermission(user, "update:users")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const { userId } = params

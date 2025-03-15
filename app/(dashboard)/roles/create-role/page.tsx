@@ -11,6 +11,7 @@ import { getPermissions } from "@/data/permissions"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const CreateRolePage = async () => {
   const session = await auth()
@@ -21,7 +22,7 @@ const CreateRolePage = async () => {
   }
 
   if (!hasPermission(user, "create:roles")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const permissions = await getPermissions()

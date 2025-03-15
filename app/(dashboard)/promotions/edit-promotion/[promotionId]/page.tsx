@@ -28,7 +28,7 @@ const EditPromotionPage = async ({ params }: EditPromotionPageProps) => {
   }
 
   if (!hasPermission(user, "update:promotions")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const { promotionId } = params
@@ -42,7 +42,7 @@ const EditPromotionPage = async ({ params }: EditPromotionPageProps) => {
   ])
 
   if (!promotion) {
-    redirect("/welcome")
+    redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

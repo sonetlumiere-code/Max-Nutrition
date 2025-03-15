@@ -38,6 +38,7 @@ import { Badge } from "@/components/ui/badge"
 import { auth } from "@/lib/auth/auth"
 import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const ShopBranchesPage = async () => {
   const session = await auth()
@@ -48,7 +49,7 @@ const ShopBranchesPage = async () => {
   }
 
   if (!hasPermission(user, "view:shopBranches")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const userPermissionsKeys = getPermissionsKeys(

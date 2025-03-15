@@ -12,6 +12,7 @@ import { getProducts } from "@/data/products"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 interface EditCategoryPageProps {
   params: {
@@ -28,7 +29,7 @@ const EditCategoryPage = async ({ params }: EditCategoryPageProps) => {
   }
 
   if (!hasPermission(user, "update:categories")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const { categoryId } = params

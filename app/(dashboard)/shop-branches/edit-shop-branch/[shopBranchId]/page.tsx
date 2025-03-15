@@ -11,6 +11,7 @@ import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { getShopBranch } from "@/data/shop-branches"
 import { hasPermission } from "@/helpers/helpers"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 interface EditShopBranchProps {
   params: {
@@ -28,7 +29,7 @@ const EditShopBranchPage = async ({ params }: EditShopBranchProps) => {
   }
 
   if (!hasPermission(user, "update:shopBranches")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const { shopBranchId } = params

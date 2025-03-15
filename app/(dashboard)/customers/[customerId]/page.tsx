@@ -21,6 +21,7 @@ import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { format } from "date-fns"
 import CustomersOrdersTable from "@/components/dashboard/customers/view-customer/customer-orders-table/customer-orders-table"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 interface ViewCustomerProps {
   params: { customerId: string }
@@ -35,7 +36,7 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
   }
 
   if (!hasPermission(user, "view:customers")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const userPermissionsKeys = getPermissionsKeys(

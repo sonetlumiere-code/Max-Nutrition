@@ -10,6 +10,7 @@ import {
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const CreateIngredientPage = async () => {
   const session = await auth()
@@ -20,7 +21,7 @@ const CreateIngredientPage = async () => {
   }
 
   if (!hasPermission(user, "create:ingredients")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

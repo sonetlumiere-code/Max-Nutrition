@@ -42,6 +42,7 @@ import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const PromotionsPage = async () => {
   const session = await auth()
@@ -52,7 +53,7 @@ const PromotionsPage = async () => {
   }
 
   if (!hasPermission(user, "view:promotions")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const userPermissionsKeys = getPermissionsKeys(

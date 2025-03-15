@@ -50,7 +50,7 @@ export default async function ProductsPage() {
   }
 
   if (!hasPermission(user, "view:products")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const userPermissionsKeys = getPermissionsKeys(

@@ -11,6 +11,7 @@ import { getCategories } from "@/data/categories"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const CreatePromotionPage = async () => {
   const session = await auth()
@@ -21,7 +22,7 @@ const CreatePromotionPage = async () => {
   }
 
   if (!hasPermission(user, "create:promotions")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
   const categories = await getCategories()
 

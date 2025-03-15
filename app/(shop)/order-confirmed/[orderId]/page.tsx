@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Icons } from "@/components/icons"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { DEFAULT_REDIRECT } from "@/routes"
+import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 
 interface PageProps {
   params: { orderId: string }
@@ -16,7 +16,7 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
   const { orderId } = params
 
   if (!orderId) {
-    redirect(DEFAULT_REDIRECT)
+    redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   const session = await auth()
@@ -52,7 +52,7 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
     })
 
     if (!order || !order.shop) {
-      redirect(DEFAULT_REDIRECT)
+      redirect(DEFAULT_REDIRECT_SHOP)
     }
 
     return (
@@ -74,6 +74,6 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
     )
   } catch (error) {
     console.error("Error fetching order data:", error)
-    redirect(DEFAULT_REDIRECT)
+    redirect(DEFAULT_REDIRECT_SHOP)
   }
 }

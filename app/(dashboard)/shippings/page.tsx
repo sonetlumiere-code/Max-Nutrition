@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils"
 import { ShippingSettings } from "@prisma/client"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
@@ -42,7 +43,7 @@ const Shippings = async () => {
     !hasPermission(user, "view:shippingZones") &&
     !hasPermission(user, "update:shippingSettings")
   ) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const userPermissionsKeys = getPermissionsKeys(

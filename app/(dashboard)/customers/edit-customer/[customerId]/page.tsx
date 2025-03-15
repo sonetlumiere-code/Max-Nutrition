@@ -11,6 +11,7 @@ import { getCustomer } from "@/data/customer"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 interface EditCustomerPageProps {
   params: {
@@ -27,7 +28,7 @@ const EditCustomerPage = async ({ params }: EditCustomerPageProps) => {
   }
 
   if (!hasPermission(user, "update:customers")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const { customerId } = params

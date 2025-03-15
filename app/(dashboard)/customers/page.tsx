@@ -22,6 +22,7 @@ import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 export default async function CustomersPage() {
   const session = await auth()
@@ -32,7 +33,7 @@ export default async function CustomersPage() {
   }
 
   if (!hasPermission(user, "view:customers")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const userPermissionsKeys = getPermissionsKeys(

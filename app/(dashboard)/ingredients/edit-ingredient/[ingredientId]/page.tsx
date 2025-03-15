@@ -25,7 +25,7 @@ const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
   }
 
   if (!hasPermission(user, "update:ingredients")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const { ingredientId } = params
@@ -35,7 +35,7 @@ const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
   })
 
   if (!ingredient) {
-    redirect("/welcome")
+    redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

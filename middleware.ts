@@ -1,6 +1,6 @@
 import authConfig from "@/lib/auth/auth.config"
 import {
-  DEFAULT_REDIRECT,
+  DEFAULT_REDIRECT_SHOP,
   apiAuthPrefix,
   authRoutes,
   publicRoutes,
@@ -24,7 +24,7 @@ export default auth((req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return Response.redirect(new URL(DEFAULT_REDIRECT, nextUrl))
+      return Response.redirect(new URL(DEFAULT_REDIRECT_SHOP, nextUrl))
     }
     return
   }

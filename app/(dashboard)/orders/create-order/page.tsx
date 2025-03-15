@@ -14,6 +14,7 @@ import { getShopSettings } from "@/data/shop-settings"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
@@ -30,7 +31,7 @@ const CreateOrderPage = async () => {
   }
 
   if (!hasPermission(user, "create:orders")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const [categories, customers, shopSettings, shopBranches] = await Promise.all(

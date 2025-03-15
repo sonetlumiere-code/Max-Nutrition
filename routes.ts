@@ -21,7 +21,8 @@ const authRoutes: string[] = [
 
 const apiAuthPrefix: string = "/api/auth"
 
-const DEFAULT_REDIRECT: string = ShopRoutes.FOODS
+const DEFAULT_REDIRECT_SHOP: string = ShopRoutes.FOODS
+const DEFAULT_REDIRECT_DASHBOARD: string = "/welcome"
 
 export {
   ShopRoutes,
@@ -29,5 +30,6 @@ export {
   publicRoutes,
   authRoutes,
   apiAuthPrefix,
-  DEFAULT_REDIRECT,
+  DEFAULT_REDIRECT_SHOP,
+  DEFAULT_REDIRECT_DASHBOARD,
 }

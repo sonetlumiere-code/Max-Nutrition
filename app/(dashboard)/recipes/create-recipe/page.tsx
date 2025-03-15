@@ -11,6 +11,7 @@ import { getIngredients } from "@/data/ingredients"
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const CreateRecipePage = async () => {
   const session = await auth()
@@ -21,7 +22,7 @@ const CreateRecipePage = async () => {
   }
 
   if (!hasPermission(user, "create:recipes")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const ingredients = await getIngredients({

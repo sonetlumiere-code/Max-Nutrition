@@ -30,7 +30,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
   }
 
   if (!hasPermission(user, "update:products")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const { productId } = params
@@ -61,7 +61,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
   ])
 
   if (!product) {
-    redirect("/welcome")
+    redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

@@ -37,6 +37,7 @@ import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 export default async function RolesPage() {
   const session = await auth()
@@ -47,7 +48,7 @@ export default async function RolesPage() {
   }
 
   if (!hasPermission(user, "view:roles")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const userPermissionsKeys = getPermissionsKeys(

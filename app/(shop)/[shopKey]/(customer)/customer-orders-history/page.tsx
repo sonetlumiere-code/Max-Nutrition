@@ -5,7 +5,7 @@ import { getCustomer } from "@/data/customer"
 import { getShop } from "@/data/shops"
 import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
-import { DEFAULT_REDIRECT } from "@/routes"
+import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -27,7 +27,7 @@ const CustomerOrdersHistoryPage = async ({
   })
 
   if (!shop) {
-    redirect(DEFAULT_REDIRECT)
+    redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   const customer = await getCustomer({
@@ -63,7 +63,7 @@ const CustomerOrdersHistoryPage = async ({
   })
 
   if (!customer) {
-    redirect(DEFAULT_REDIRECT)
+    redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   return (

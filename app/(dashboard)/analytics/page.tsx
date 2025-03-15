@@ -1,5 +1,6 @@
 import { hasPermission } from "@/helpers/helpers"
 import { auth } from "@/lib/auth/auth"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
 export default async function AnalyiticsPage() {
@@ -12,7 +13,7 @@ export default async function AnalyiticsPage() {
   }
 
   if (!hasPermission(session.user, "view:analytics")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

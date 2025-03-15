@@ -27,7 +27,7 @@ const EditShopPage = async ({ params }: EditShopPageProps) => {
   }
 
   if (!hasPermission(user, "update:shops")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const { shopId } = params
@@ -40,7 +40,7 @@ const EditShopPage = async ({ params }: EditShopPageProps) => {
   })
 
   if (!shop) {
-    redirect("/welcome")
+    redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

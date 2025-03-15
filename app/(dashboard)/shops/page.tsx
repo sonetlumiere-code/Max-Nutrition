@@ -37,6 +37,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 export default async function ShopsPage() {
   const session = await auth()
@@ -47,7 +48,7 @@ export default async function ShopsPage() {
   }
 
   if (!hasPermission(user, "view:shops")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const userPermissionsKeys = getPermissionsKeys(

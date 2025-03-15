@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { hasPermission } from "@/helpers/helpers"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const CreateShopBranchPage = async () => {
   const session = await auth()
@@ -20,7 +21,7 @@ const CreateShopBranchPage = async () => {
   }
 
   if (!hasPermission(user, "create:shopBranches")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

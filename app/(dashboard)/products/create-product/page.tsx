@@ -23,7 +23,7 @@ const CreateProductPage = async () => {
   }
 
   if (!hasPermission(user, "create:products")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const [recipes, categories, productRecipeTypes] = await Promise.all([

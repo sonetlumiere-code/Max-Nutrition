@@ -5,7 +5,7 @@ import prisma from "@/lib/db/db"
 import { sendVerificationEmail } from "@/lib/mail/mail"
 import { generateVerificationToken } from "@/lib/token/token"
 import { LoginSchema, loginSchema } from "@/lib/validations/login-validation"
-import { DEFAULT_REDIRECT } from "@/routes"
+import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import { AuthError } from "next-auth"
 
 export const login = async ({
@@ -50,7 +50,7 @@ export const login = async ({
     await signIn("credentials", {
       email,
       password,
-      redirectTo: redirectTo ? `/${redirectTo}` : DEFAULT_REDIRECT,
+      redirectTo: redirectTo ? `/${redirectTo}` : DEFAULT_REDIRECT_SHOP,
     })
   } catch (error) {
     if (error instanceof AuthError) {

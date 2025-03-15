@@ -42,6 +42,7 @@ import { cn } from "@/lib/utils"
 import { PopulatedRecipeIngredient } from "@/types/types"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 export default async function RecipesPage() {
   const session = await auth()
@@ -52,7 +53,7 @@ export default async function RecipesPage() {
   }
 
   if (!hasPermission(user, "view:recipes")) {
-    return redirect("/welcome")
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   const userPermissionsKeys = getPermissionsKeys(

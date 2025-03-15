@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction } from "react"
 import { toast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { DEFAULT_REDIRECT } from "@/routes"
+import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 
 type GoogleAuthProps = {
   isSubmitting: boolean
@@ -24,7 +24,7 @@ const GoogleAuth = ({
     try {
       setIsGoogleLoading(true)
       await signIn("google", {
-        callbackUrl: redirectTo || DEFAULT_REDIRECT,
+        callbackUrl: redirectTo || DEFAULT_REDIRECT_SHOP,
       })
     } catch (error) {
       console.error(error)
