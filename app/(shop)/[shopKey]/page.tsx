@@ -5,6 +5,10 @@ import ButtonsInfoShop from "@/components/shop/buttons-info-shop"
 import ProductsList from "@/components/shop/products/products-list"
 import BannerShop from "@/components/shop/banner-shop"
 import { redirect } from "next/navigation"
+import {
+  getOperationalHoursMessage,
+  isShopCurrentlyAvailable,
+} from "@/helpers/helpers"
 
 const CartFixedButton = dynamic(
   () => import("@/components/shop/cart/cart-fixed-button"),
@@ -24,6 +28,7 @@ const ShopPage = async ({ params }: ShopPageProps) => {
 
   const shop = await getShop({
     where: { key: shopKey, isActive: true },
+    include: { operationalHours: true },
   })
 
   if (!shop) {
@@ -47,6 +52,8 @@ const ShopPage = async ({ params }: ShopPageProps) => {
     },
   })
 
+  const isShopAvailable = isShopCurrentlyAvailable(shop.operationalHours)
+
   return (
     <>
       <BannerShop
@@ -67,6 +74,18 @@ const ShopPage = async ({ params }: ShopPageProps) => {
         </div>
       )}
 
+      {shop.operationalHours && !isShopAvailable && (
+        <div className='flex items-center justify-between mb-8 bg-red-100 p-4 rounded-md w-full max-w-3xl mx-auto'>
+          <p className='text-sm text-muted-foreground'>
+            {`La tienda no está disponible en este momento. `}
+
+            {`Podrás realizar pedidos ${getOperationalHoursMessage(
+              shop.operationalHours
+            )}.`}
+          </p>
+        </div>
+      )}
+
       <div className='w-full max-w-3xl mx-auto p-4'>
         <ProductsList
           initialCategories={categories}
@@ -74,7 +93,7 @@ const ShopPage = async ({ params }: ShopPageProps) => {
         />
       </div>
 
-      <CartFixedButton />
+      {isShopAvailable && <CartFixedButton />}
     </>
   )
 }

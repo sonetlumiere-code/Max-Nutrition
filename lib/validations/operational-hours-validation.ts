@@ -52,11 +52,26 @@ export const operationalHoursSchema = z
       }),
   })
   .superRefine((data, ctx) => {
-    if (data.startTime && data.endTime) {
-      const [startHours, startMinutes] = data.startTime.split(":").map(Number)
-      const [endHours, endMinutes] = data.endTime.split(":").map(Number)
+    const { startTime, endTime } = data
 
-      // Compare times to ensure endTime is after startTime
+    if (startTime && !endTime) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Si se proporciona una hora de inicio, también debe proporcionar una hora de finalización.",
+        path: ["endTime"],
+      })
+    } else if (!startTime && endTime) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "Si se proporciona una hora de finalización, también debe proporcionar una hora de inicio.",
+        path: ["startTime"],
+      })
+    } else if (startTime && endTime) {
+      const [startHours, startMinutes] = startTime.split(":").map(Number)
+      const [endHours, endMinutes] = endTime.split(":").map(Number)
+
       if (
         endHours < startHours ||
         (endHours === startHours && endMinutes <= startMinutes)
@@ -68,12 +83,5 @@ export const operationalHoursSchema = z
           path: ["endTime"],
         })
       }
-    } else if (data.startTime && !data.endTime) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message:
-          "Si se proporciona una hora de inicio, también debe proporcionar una hora de finalización.",
-        path: ["endTime"],
-      })
     }
   })

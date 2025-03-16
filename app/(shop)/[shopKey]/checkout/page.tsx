@@ -10,6 +10,7 @@ import { getShopSettings } from "@/data/shop-settings"
 import { getShopBranches } from "@/data/shop-branches"
 import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import { getShop } from "@/data/shops"
+import { isShopCurrentlyAvailable } from "@/helpers/helpers"
 
 const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
   ssr: false,
@@ -37,6 +38,12 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   if (!shopSettingsId) {
     console.warn("Es necesario el ID de la configuración de tienda")
     redirect(`/${shop.key}` || DEFAULT_REDIRECT_SHOP)
+  }
+
+  const isShopAvailable = isShopCurrentlyAvailable(shop.operationalHours)
+
+  if (!isShopAvailable) {
+    redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   const session = await auth()

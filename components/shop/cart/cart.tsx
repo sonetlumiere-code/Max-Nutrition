@@ -25,13 +25,15 @@ import CartContent from "./cart-content"
 import Link from "next/link"
 import useSyncCart from "@/hooks/use-sync-cart"
 import { Icons } from "@/components/icons"
+import { isShopCurrentlyAvailable } from "@/helpers/helpers"
 
 const Cart = () => {
   const { items, open, setOpen, shop } = useCart()
-
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   useSyncCart({ shopCategory: shop.shopCategory })
+
+  const isShopAvailable = isShopCurrentlyAvailable(shop.operationalHours)
 
   if (isDesktop) {
     return (
@@ -51,13 +53,14 @@ const Cart = () => {
 
             <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
-                {items.length >= 1 ? (
-                  <Button type='button' asChild>
-                    <Link href={`/${shop.key}/checkout`}>
-                      Continuar con el pedido
-                    </Link>
-                  </Button>
-                ) : null}
+                {isShopAvailable &&
+                  (items.length >= 1 ? (
+                    <Button type='button' asChild>
+                      <Link href={`/${shop.key}/checkout`}>
+                        Continuar con el pedido
+                      </Link>
+                    </Button>
+                  ) : null)}
               </DialogClose>
 
               <DialogClose asChild>
@@ -92,13 +95,14 @@ const Cart = () => {
 
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             <DrawerClose asChild>
-              {items.length >= 1 ? (
-                <Button type='button' asChild>
-                  <Link href={`/${shop.key}/checkout`}>
-                    Continuar con el pedido
-                  </Link>
-                </Button>
-              ) : null}
+              {isShopAvailable &&
+                (items.length >= 1 ? (
+                  <Button type='button' asChild>
+                    <Link href={`/${shop.key}/checkout`}>
+                      Continuar con el pedido
+                    </Link>
+                  </Button>
+                ) : null)}
             </DrawerClose>
 
             <DrawerClose asChild>

@@ -25,6 +25,7 @@ import {
   ProductRecipe,
   ProductRecipeType,
   Shop,
+  DayOfWeek,
 } from "@prisma/client"
 
 export type PopulatedSafeUser = Omit<User, "password"> & {
@@ -145,3 +146,10 @@ export const BaseMeasurement = {
 export type BaseMeasurement = keyof typeof BaseMeasurement
 
 export type PermissionKey = `${ActionKey}:${SubjectKey}`
+
+export type HourGroup = {
+  startDay: DayOfWeek
+  endDay: DayOfWeek
+  startTime: string
+  endTime: string
+}

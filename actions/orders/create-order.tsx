@@ -13,7 +13,7 @@ import { ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import { checkPromotion } from "../promotions/check-promotion"
 import { getShopBranch } from "@/data/shop-branches"
-import { hasPermission } from "@/helpers/helpers"
+import { hasPermission, isShopCurrentlyAvailable } from "@/helpers/helpers"
 import { getShop } from "@/data/shops"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
@@ -59,6 +59,12 @@ export async function createOrder({
 
   if (!shop) {
     return { error: "Tienda no encontrada." }
+  }
+
+  const isShopAvailable = isShopCurrentlyAvailable(shop.operationalHours)
+
+  if (!isShopAvailable) {
+    return { error: "Tienda no disponible. Horario no operacional." }
   }
 
   if (origin === "DASHBOARD" && !hasPermission(user, "create:orders")) {
