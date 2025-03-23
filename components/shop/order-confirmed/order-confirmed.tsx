@@ -13,7 +13,10 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { PopulatedOrder } from "@/types/types"
 import { cn } from "@/lib/utils"
-import { translateOrderStatus } from "@/helpers/helpers"
+import {
+  translateOrderStatus,
+  translateShippingMethod,
+} from "@/helpers/helpers"
 
 interface OrderConfirmedProps {
   order: PopulatedOrder
@@ -56,7 +59,7 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
           <Separator />
 
           <div className='space-y-2'>
-            <h3 className='font-semibold'>Resumen del Pedido:</h3>
+            <h3 className='font-semibold'>Resumen del Pedido</h3>
             {order.items?.map((item: any, index: number) => (
               <div key={index} className='flex items-center justify-between'>
                 <div className='flex items-center space-x-4'>
@@ -152,16 +155,14 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
           <Separator />
 
           <div className='space-y-2'>
-            <h3 className='font-semibold'>Detalles de Envío:</h3>
-            <div className='flex items-center space-x-2 text-muted-foreground'>
-              <Truck className='h-5 w-5' />
-              <p>
-                {order.shippingMethod === "DELIVERY"
-                  ? "Envío a domicilio"
-                  : "Retiro en local"}
-              </p>
+            <div className='flex justify-between'>
+              <h3 className='font-semibold'>Detalles de Envío</h3>
+              <div className='flex items-center space-x-2 text-muted-foreground'>
+                <Truck className='h-5 w-5' />
+                <p>{translateShippingMethod(order.shippingMethod)}</p>
+              </div>
             </div>
-            {order.shippingMethod === "DELIVERY" && order.address && (
+            {order.shippingMethod === "DELIVERY" && order.address ? (
               <p className='text-sm text-muted-foreground'>
                 {order.address.addressStreet} {order.address.addressNumber}{" "}
                 {order.address.addressFloor || ""}{" "}
@@ -176,21 +177,27 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
                   <>Notas adicionales: {order.address.notes}</>
                 ) : null}
               </p>
-            )}
+            ) : order.shippingMethod === "TAKE_AWAY" ? (
+              <span className='text-muted-foreground'>
+                {order.shopBranch?.label || "Sucursal no especificada"}
+              </span>
+            ) : null}
           </div>
 
           <Separator />
 
           <div className='space-y-2'>
-            <h3 className='font-semibold'>Método de Pago:</h3>
-            <p className='text-muted-foreground'>
-              {order.paymentMethod === "CASH" && "Efectivo"}
-              {order.paymentMethod === "CREDIT_CARD" && "Tarjeta de crédito"}
-              {order.paymentMethod === "DEBIT_CARD" && "Tarjeta de débito"}
-              {order.paymentMethod === "BANK_TRANSFER" &&
-                "Transferencia bancaria"}
-              {order.paymentMethod === "MERCADO_PAGO" && "Mercado Pago"}
-            </p>
+            <div className='flex justify-between'>
+              <h3 className='font-semibold'>Método de Pago</h3>
+              <p className='text-muted-foreground'>
+                {order.paymentMethod === "CASH" && "Efectivo"}
+                {order.paymentMethod === "CREDIT_CARD" && "Tarjeta de crédito"}
+                {order.paymentMethod === "DEBIT_CARD" && "Tarjeta de débito"}
+                {order.paymentMethod === "BANK_TRANSFER" &&
+                  "Transferencia bancaria"}
+                {order.paymentMethod === "MERCADO_PAGO" && "Mercado Pago"}
+              </p>
+            </div>
           </div>
         </CardContent>
         <CardFooter className='flex flex-col space-y-4 sm:flex-row sm:justify-between sm:space-x-4 sm:space-y-0'>

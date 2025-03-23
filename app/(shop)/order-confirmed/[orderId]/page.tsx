@@ -35,6 +35,7 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
       },
       include: {
         shop: true,
+        shopBranch: true,
         items: {
           include: {
             product: true,
