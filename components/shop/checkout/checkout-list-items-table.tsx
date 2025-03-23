@@ -9,12 +9,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
 import { useCart } from "@/components/cart-provider"
 
 const CheckoutListItems = () => {
-  const { items, shop } = useCart()
-  const { shopCategory } = shop
+  const {
+    items,
+    // shop: { shopCategory },
+  } = useCart()
 
   return (
     <Table>
@@ -44,7 +45,7 @@ const CheckoutListItems = () => {
               <p className='text-sm'>{item.product.name}</p>
             </TableCell>
             <TableCell className='whitespace-nowrap'>
-              {shopCategory === "FOOD" && (
+              {/* {shopCategory === "FOOD" && (
                 <>
                   {item.variation.withSalt ? (
                     <Badge variant='secondary'>Con sal</Badge>
@@ -52,7 +53,7 @@ const CheckoutListItems = () => {
                     <Badge variant='secondary'>Sin sal</Badge>
                   )}
                 </>
-              )}
+              )} */}
             </TableCell>
             <TableCell className='hidden md:table-cell'>
               ${item.product?.price}

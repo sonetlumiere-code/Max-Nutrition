@@ -101,6 +101,7 @@ export type PopulatedProductRecipe = ProductRecipe & {
 export type Variation = {
   withSalt: boolean
 }
+
 export interface IngredientTotal {
   ingredientId: string
   name: string

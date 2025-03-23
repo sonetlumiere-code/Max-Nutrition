@@ -467,7 +467,9 @@ export function isShopCurrentlyAvailable(
     hour12: false,
   })
   const formattedTime = timeFormatter.format(now)
-  const [currentHour, currentMinute] = formattedTime.split(":").map(Number)
+  const [rawHour, currentMinute] = formattedTime.split(":").map(Number)
+  // Adjust hour if it equals 24, converting to 0 (for times after midnight)
+  const currentHour = rawHour === 24 ? 0 : rawHour
 
   // Get the weekday name in English (e.g. "Monday")
   const dayFormatter = new Intl.DateTimeFormat("en-US", {

@@ -71,6 +71,7 @@ const fetchOrders = async () => {
       },
       address: true,
       appliedPromotions: true,
+      shop: true,
       shopBranch: true,
     },
     orderBy: {

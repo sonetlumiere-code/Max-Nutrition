@@ -55,6 +55,7 @@ export async function createOrder({
 
   const shop = await getShop({
     where: { shopCategory, isActive: true },
+    include: { operationalHours: true },
   })
 
   if (!shop) {

@@ -13,8 +13,6 @@ import { Button } from "@/components/ui/button"
 import { useCart } from "@/components/cart-provider"
 import { Product } from "@prisma/client"
 import { toast } from "@/components/ui/use-toast"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
 import { Icons } from "@/components/icons"
 
 interface DialogProductDetailProps {
@@ -31,8 +29,10 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
   const [quantity, setQuantity] = useState(1)
   const [variations, setVariations] = useState({ withSalt: true })
 
-  const { addItem, shop } = useCart()
-  const { shopCategory } = shop
+  const {
+    addItem,
+    // shop: { shopCategory },
+  } = useCart()
 
   useEffect(() => {
     if (open) {
@@ -75,7 +75,7 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        {shopCategory === "FOOD" && (
+        {/* {shopCategory === "FOOD" && (
           <RadioGroup
             value={variations.withSalt ? "true" : "false"}
             onValueChange={(value) =>
@@ -93,7 +93,7 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
               </div>
             ))}
           </RadioGroup>
-        )}
+        )} */}
 
         <div className='flex items-center justify-between'>
           <h3 className='font-bold'>Tu pedido</h3>

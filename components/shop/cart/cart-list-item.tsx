@@ -1,14 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 import { useCart } from "@/components/cart-provider"
 import { QuantityInput } from "@/components/shared/quantity-input"
-import { Badge } from "@/components/ui/badge"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { LineItem } from "@/types/types"
 
 const CartListItem = ({ cartItem }: { cartItem: LineItem }) => {
-  const { decrementQuantity, incrementQuantity, removeItem, shop } = useCart()
-
-  const { shopCategory } = shop
+  const {
+    decrementQuantity,
+    incrementQuantity,
+    removeItem,
+    // shop: { shopCategory },
+  } = useCart()
 
   return (
     <TableRow>
@@ -25,11 +27,11 @@ const CartListItem = ({ cartItem }: { cartItem: LineItem }) => {
         <div className='space-y-2'>
           <h3>{cartItem.product.name}</h3>
           <div className='flex gap-2'>
-            {shopCategory === "FOOD" && (
+            {/* {shopCategory === "FOOD" && (
               <Badge variant='secondary'>
                 {cartItem.variation.withSalt ? "Con sal" : "Sin sal"}
               </Badge>
-            )}
+            )} */}
             <p className='text-muted-foreground'>${cartItem.product.price}</p>
           </div>
         </div>

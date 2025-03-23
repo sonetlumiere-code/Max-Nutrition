@@ -47,7 +47,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import SelectedAddressInfo from "@/components/shared/selected-address-info"
 import useSWR from "swr"
 import { getShippingZone } from "@/data/shipping-zones"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import Summary from "@/components/shared/summary"
 import { createOrder } from "@/actions/orders/create-order"
 import { toast } from "@/components/ui/use-toast"
@@ -56,6 +56,7 @@ import AppliedPromotions from "@/components/shared/applied-promotions"
 import AllowedDelivery from "@/components/shared/allowed-delivery"
 import { QuantityInput } from "@/components/shared/quantity-input"
 import ShopBranchField from "@/components/shared/shop-branch-field"
+import { Switch } from "@/components/ui/switch"
 
 type CreateOrderProps = {
   categories: PopulatedCategory[]
@@ -70,6 +71,7 @@ const CreateOrder = ({
   shopSettings,
   shopBranches,
 }: CreateOrderProps) => {
+  const [withSalt, setWithSalt] = useState(true)
   const router = useRouter()
 
   const { shippingSettings, allowedPaymentMethods } = shopSettings
@@ -95,12 +97,16 @@ const CreateOrder = ({
     watch,
   } = form
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: items,
+    append,
+    remove,
+  } = useFieldArray({
     control,
     name: "items",
   })
 
-  const { items, customerId, shippingMethod, customerAddressId, shopCategory } =
+  const { customerId, shippingMethod, customerAddressId, shopCategory } =
     watch()
 
   const selectedCustomer = customers?.find((c) => c.id === customerId)
@@ -189,6 +195,15 @@ const CreateOrder = ({
       false
     )
   })()
+
+  const handleWithSaltChange = (checked: boolean) => {
+    setWithSalt(checked)
+    const updatedItems = items.map((item) => ({
+      ...item,
+      variation: { withSalt: checked },
+    }))
+    setValue("items", updatedItems)
+  }
 
   return (
     <Form {...form}>
@@ -300,133 +315,151 @@ const CreateOrder = ({
                 <CardDescription>Selecciona los Productos</CardDescription>
               </CardHeader>
               <CardContent>
-                <fieldset className='border p-5 rounded-md'>
-                  <legend>
-                    <FormLabel className='mx-2'>Productos</FormLabel>
-                  </legend>
-                  <div className='space-y-3'>
-                    {fields.map((field, index) => (
-                      <div key={field.id} className='grid grid-cols-11 gap-3'>
-                        <FormField
-                          control={control}
-                          name={`items.${index}.productId`}
-                          render={({ field }) => (
-                            <FormItem className='col-span-5'>
-                              <FormLabel className='text-xs'>
-                                Producto
-                              </FormLabel>
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                disabled={isSubmitting}
-                              >
-                                <SelectTrigger>
-                                  <SelectValue placeholder='Selecciona un producto' />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {products.map(({ id, name }) => (
-                                    <SelectItem key={id} value={id}>
-                                      <p>{name}</p>
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage className='text-xs' />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={control}
-                          name={`items.${index}.variation.withSalt`}
-                          render={({ field }) => (
-                            <FormItem className='col-span-3'>
-                              <FormLabel className='text-xs'>Sal</FormLabel>
-                              <FormControl>
+                <div className='space-y-3'>
+                  <fieldset className='border p-5 rounded-md'>
+                    <legend>
+                      <FormLabel className='mx-2'>Productos</FormLabel>
+                    </legend>
+                    <div className='space-y-3'>
+                      {items.map((item, index) => (
+                        <div key={item.id} className='grid grid-cols-11 gap-3'>
+                          <FormField
+                            control={control}
+                            name={`items.${index}.productId`}
+                            render={({ field }) => (
+                              <FormItem className='col-span-5'>
+                                <FormLabel className='text-xs'>
+                                  Producto
+                                </FormLabel>
                                 <Select
-                                  onValueChange={(value) =>
-                                    field.onChange(value === "true")
-                                  }
-                                  value={field.value ? "true" : "false"}
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
                                   disabled={isSubmitting}
                                 >
                                   <SelectTrigger>
-                                    <SelectValue placeholder='Con/Sin sal' />
+                                    <SelectValue placeholder='Selecciona un producto' />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    <SelectItem value='true'>
-                                      <p>Con sal</p>
-                                    </SelectItem>
-                                    <SelectItem value='false'>
-                                      <p>Sin sal</p>
-                                    </SelectItem>
+                                    {products.map(({ id, name }) => (
+                                      <SelectItem key={id} value={id}>
+                                        <p>{name}</p>
+                                      </SelectItem>
+                                    ))}
                                   </SelectContent>
                                 </Select>
-                              </FormControl>
-                              <FormMessage className='text-xs' />
-                            </FormItem>
-                          )}
-                        />
+                                <FormMessage className='text-xs' />
+                              </FormItem>
+                            )}
+                          />
 
-                        <FormField
-                          control={control}
-                          name={`items.${index}.quantity`}
-                          render={({ field }) => (
-                            <FormItem className='col-span-2'>
-                              <FormLabel className='text-xs'>
-                                Cantidad
-                              </FormLabel>
-                              <FormControl>
-                                <QuantityInput
-                                  value={field.value}
-                                  onIncrement={() =>
-                                    field.onChange(field.value + 1)
-                                  }
-                                  onDecrement={() =>
-                                    field.value > 1
-                                      ? field.onChange(field.value - 1)
-                                      : null
-                                  }
-                                  disabled={isSubmitting}
-                                  minQuantity={1}
-                                />
-                              </FormControl>
-                              <FormMessage className='text-xs' />
-                            </FormItem>
-                          )}
-                        />
+                          <FormField
+                            control={control}
+                            name={`items.${index}.variation.withSalt`}
+                            render={({ field }) => (
+                              <FormItem className='col-span-3'>
+                                <FormLabel className='text-xs'>Sal</FormLabel>
+                                <FormControl>
+                                  <Select
+                                    onValueChange={(value) =>
+                                      field.onChange(value === "true")
+                                    }
+                                    value={field.value ? "true" : "false"}
+                                    disabled={isSubmitting}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder='Con/Sin sal' />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value='true'>
+                                        <p>Con sal</p>
+                                      </SelectItem>
+                                      <SelectItem value='false'>
+                                        <p>Sin sal</p>
+                                      </SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </FormControl>
+                                <FormMessage className='text-xs' />
+                              </FormItem>
+                            )}
+                          />
 
-                        <div className='flex justify-between mt-8'>
-                          <Button
-                            type='button'
-                            size='icon'
-                            variant='ghost'
-                            onClick={() => remove(index)}
-                            disabled={isSubmitting || fields.length === 1}
-                          >
-                            <Icons.x className='w-3 h-3' />
-                          </Button>
+                          <FormField
+                            control={control}
+                            name={`items.${index}.quantity`}
+                            render={({ field }) => (
+                              <FormItem className='col-span-2'>
+                                <FormLabel className='text-xs'>
+                                  Cantidad
+                                </FormLabel>
+                                <FormControl>
+                                  <QuantityInput
+                                    value={field.value}
+                                    onIncrement={() =>
+                                      field.onChange(field.value + 1)
+                                    }
+                                    onDecrement={() =>
+                                      field.value > 1
+                                        ? field.onChange(field.value - 1)
+                                        : null
+                                    }
+                                    disabled={isSubmitting}
+                                    minQuantity={1}
+                                  />
+                                </FormControl>
+                                <FormMessage className='text-xs' />
+                              </FormItem>
+                            )}
+                          />
+
+                          <div className='flex justify-between mt-8'>
+                            <Button
+                              type='button'
+                              size='icon'
+                              variant='ghost'
+                              onClick={() => remove(index)}
+                              disabled={isSubmitting || items.length === 1}
+                            >
+                              <Icons.x className='w-3 h-3' />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
 
-                    <Button
-                      type='button'
-                      variant='ghost'
-                      onClick={() =>
-                        append({
-                          productId: "",
-                          quantity: 1,
-                          variation: { withSalt: false },
-                        })
-                      }
-                      disabled={isSubmitting}
-                    >
-                      <Icons.plus className='w-4 h-4 mr-1' />
-                      <small>Agregar Producto</small>
-                    </Button>
-                  </div>
-                </fieldset>
+                      <Button
+                        type='button'
+                        variant='ghost'
+                        onClick={() =>
+                          append({
+                            productId: "",
+                            quantity: 1,
+                            variation: { withSalt: withSalt },
+                          })
+                        }
+                        disabled={isSubmitting}
+                      >
+                        <Icons.plus className='w-4 h-4 mr-1' />
+                        <small>Agregar Producto</small>
+                      </Button>
+                    </div>
+                  </fieldset>
+
+                  {shopCategory === "FOOD" && (
+                    <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                      <div className='space-y-0.5'>
+                        <FormLabel>Con sal</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={withSalt}
+                          onCheckedChange={handleWithSaltChange}
+                          disabled={isSubmitting}
+                          aria-readonly
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                </div>
               </CardContent>
               <CardFooter>
                 {errors.items?.message && (

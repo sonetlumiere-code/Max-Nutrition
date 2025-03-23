@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card"
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -54,6 +55,7 @@ import SelectedAddressInfo from "@/components/shared/selected-address-info"
 import AllowedDelivery from "@/components/shared/allowed-delivery"
 import ShopBranchField from "@/components/shared/shop-branch-field"
 import LoadingOverlay from "@/components/loading-overlay"
+import { Switch } from "@/components/ui/switch"
 
 type CheckoutProps = {
   customer: PopulatedCustomer
@@ -70,6 +72,7 @@ const Checkout = ({
 }: CheckoutProps) => {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
   const [isFulfilled, setIsFulfilled] = useState(false)
+  const [withSalt, setWithSalt] = useState(true)
   const [isBottomVisible, setIsBottomVisible] = useState(false)
 
   const totalSectionRef = useRef<HTMLDivElement>(null)
@@ -111,6 +114,7 @@ const Checkout = ({
     control,
     formState: { isSubmitting, isSubmitted, isValid },
     watch,
+    getValues,
     setValue,
   } = form
 
@@ -219,6 +223,16 @@ const Checkout = ({
     items.reduce((acc, item) => acc + item.product.price * item.quantity, 0) +
     shippingCost
 
+  const handleWithSaltChange = (checked: boolean) => {
+    setWithSalt(checked)
+    const currentItems = getValues("items")
+    const updatedItems = currentItems.map((item) => ({
+      ...item,
+      variation: { withSalt: checked },
+    }))
+    setValue("items", updatedItems)
+  }
+
   return (
     <>
       {items.length > 0 && (
@@ -254,7 +268,24 @@ const Checkout = ({
                       </div>
                     </CardHeader>
                     <CardContent className='p-3 md:p-6 md:pt-0'>
-                      <CheckoutListItems />
+                      <div className='space-y-3'>
+                        <CheckoutListItems />
+                        {shopCategory === "FOOD" && (
+                          <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                            <div className='space-y-0.5'>
+                              <FormLabel>Con sal</FormLabel>
+                            </div>
+                            <FormControl>
+                              <Switch
+                                checked={withSalt}
+                                onCheckedChange={handleWithSaltChange}
+                                disabled={isSubmitting}
+                                aria-readonly
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      </div>
                     </CardContent>
                   </Card>
 

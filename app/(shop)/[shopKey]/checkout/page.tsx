@@ -29,6 +29,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
 
   const shop = await getShop({
     where: { key: shopKey, isActive: true },
+    include: { operationalHours: true },
   })
 
   if (!shop) {

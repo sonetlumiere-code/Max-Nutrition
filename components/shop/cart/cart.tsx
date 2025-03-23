@@ -65,7 +65,7 @@ const Cart = () => {
 
               <DialogClose asChild>
                 <Button type='button' variant='outline' asChild>
-                  <Link href={`/${shop.key}/checkout`}>
+                  <Link href={`/${shop.key}`}>
                     <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver a
                     tienda
                   </Link>
@@ -107,7 +107,7 @@ const Cart = () => {
 
             <DrawerClose asChild>
               <Button type='button' variant='outline' asChild>
-                <Link href={`/${shop.key}/checkout`}>
+                <Link href={`/${shop.key}`}>
                   <Icons.moveLeftIcon className='w-4 h-4 mr-3' /> Volver a
                   tienda
                 </Link>

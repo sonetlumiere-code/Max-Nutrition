@@ -14,8 +14,6 @@ import { Button } from "@/components/ui/button"
 import { Product } from "@prisma/client"
 import { useCart } from "@/components/cart-provider"
 import { toast } from "@/components/ui/use-toast"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
 import { Icons } from "@/components/icons"
 
 interface DrawerProductDetailsProps {
@@ -32,8 +30,10 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
   const [quantity, setQuantity] = useState(1)
   const [variations, setVariations] = useState({ withSalt: true })
 
-  const { addItem, shop } = useCart()
-  const { shopCategory } = shop
+  const {
+    addItem,
+    // shop: { shopCategory },
+  } = useCart()
 
   useEffect(() => {
     if (open) {
@@ -76,7 +76,7 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
           </DrawerDescription>
         </DrawerHeader>
 
-        {shopCategory === "FOOD" && (
+        {/* {shopCategory === "FOOD" && (
           <RadioGroup
             value={variations.withSalt ? "true" : "false"}
             onValueChange={(value) =>
@@ -94,7 +94,7 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
               </div>
             ))}
           </RadioGroup>
-        )}
+        )} */}
 
         <DrawerFooter>
           <hr />

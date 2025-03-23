@@ -37,7 +37,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
                 </TableCell>
                 <TableCell>{item.product?.name}</TableCell>
                 {order.shop?.shopCategory === "FOOD" && (
-                  <TableCell className='whitespace-nowrap'>
+                  <TableCell className=''>
                     {item.withSalt ? (
                       <Badge variant='secondary'>Con sal</Badge>
                     ) : (
@@ -45,9 +45,7 @@ const CustomerViewOrderDetail = ({ order }: CustomerViewOrderDetailProps) => {
                     )}
                   </TableCell>
                 )}
-                <TableCell className='whitespace-nowrap'>
-                  x {item.quantity}
-                </TableCell>
+                <TableCell className='text-end'>x {item.quantity}</TableCell>
               </TableRow>
             ))}
           </TableBody>
