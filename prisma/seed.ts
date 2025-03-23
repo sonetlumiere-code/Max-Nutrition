@@ -1216,6 +1216,7 @@ const productRecipesTypes: Omit<ProductRecipeType, "id">[] = [
   { name: "Salsa" },
   { name: "Relleno" },
   { name: "Masa" },
+  { name: "Accesorios" },
 ]
 
 const branchesOperationalHours = [

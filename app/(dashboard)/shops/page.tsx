@@ -88,10 +88,10 @@ export default async function ShopsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Nombre</TableHead>
-                  <TableHead className='hidden md:table-cell'>Título</TableHead>
+                  {/* <TableHead className='hidden md:table-cell'>Título</TableHead>
                   <TableHead className='hidden md:table-cell'>
                     Descripción
-                  </TableHead>
+                  </TableHead> */}
                   <TableHead className='hidden md:table-cell'>URL</TableHead>
                   <TableHead className='hidden md:table-cell'>Activa</TableHead>
                   <TableHead className='text-end'>Acciones</TableHead>
@@ -101,12 +101,12 @@ export default async function ShopsPage() {
                 {shops?.map((shop) => (
                   <TableRow key={shop.id}>
                     <TableCell>{shop.name}</TableCell>
-                    <TableCell className='max-w-40 hidden md:table-cell'>
+                    {/* <TableCell className='max-w-40 hidden md:table-cell'>
                       {shop.title}
                     </TableCell>
                     <TableCell className='max-w-32 hidden md:table-cell'>
                       {shop.description}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell className='max-w-28 hidden md:table-cell'>
                       <Button variant='link' className='px-0' asChild>
                         <Link
