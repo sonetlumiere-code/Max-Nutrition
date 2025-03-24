@@ -52,6 +52,7 @@ const fetchOrders = async () => {
                       },
                     },
                   },
+                  type: true,
                 },
               },
             },
