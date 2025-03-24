@@ -1,5 +1,6 @@
 import DeleteCategory from "@/components/dashboard/categories/delete-category/delete-category"
 import { Icons } from "@/components/icons"
+import { Badge } from "@/components/ui/badge"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -121,7 +122,9 @@ export default async function CategoriesPage() {
                   <TableRow key={category.id}>
                     <TableCell>{category.name}</TableCell>
                     <TableCell>
-                      {translateShopCategory(category.shopCategory)}
+                      <Badge>
+                        {translateShopCategory(category.shopCategory)}
+                      </Badge>
                     </TableCell>
                     {(userPermissionsKeys.includes("update:categories") ||
                       userPermissionsKeys.includes("delete:categories")) && (

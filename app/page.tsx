@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { getShops } from "@/data/shops"
+import { redirect } from "next/navigation"
 
 const HomePage = async () => {
   const shops = await getShops({
@@ -25,6 +26,10 @@ const HomePage = async () => {
         />
       </div>
     )
+  }
+
+  if (shops.length === 1) {
+    return redirect(`/${shops[0].key}`)
   }
 
   return (
