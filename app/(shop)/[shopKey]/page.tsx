@@ -68,23 +68,25 @@ const ShopPage = async ({ params }: ShopPageProps) => {
 
       <ButtonsInfoShop shopCategory={shopCategory} />
 
-      {shop.message && (
-        <div className='flex items-center justify-between mb-8 bg-emerald-100 p-4 rounded-md w-full max-w-3xl mx-auto'>
-          <p className='text-sm text-muted-foreground'>{shop.message}</p>
-        </div>
-      )}
+      <div className='space-y-3 mb-3'>
+        {shop.message && (
+          <div className='flex items-center justify-between bg-emerald-100 p-4 rounded-md w-full max-w-3xl mx-auto'>
+            <p className='text-sm text-muted-foreground'>{shop.message}</p>
+          </div>
+        )}
 
-      {shop.operationalHours && !isShopAvailable && (
-        <div className='flex items-center justify-between mb-8 bg-red-100 p-4 rounded-md w-full max-w-3xl mx-auto'>
-          <p className='text-sm text-muted-foreground'>
-            {`La tienda no está disponible en este momento. `}
+        {shop.operationalHours && !isShopAvailable && (
+          <div className='flex items-center justify-between bg-red-100 p-4 rounded-md w-full max-w-3xl mx-auto'>
+            <p className='text-sm text-muted-foreground'>
+              {`La tienda no está disponible en este momento. `}
 
-            {`Podrás realizar pedidos ${getOperationalHoursMessage(
-              shop.operationalHours
-            )}.`}
-          </p>
-        </div>
-      )}
+              {`Podrás realizar pedidos ${getOperationalHoursMessage(
+                shop.operationalHours
+              )}.`}
+            </p>
+          </div>
+        )}
+      </div>
 
       <div className='w-full max-w-3xl mx-auto p-4'>
         <ProductsList
