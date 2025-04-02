@@ -56,6 +56,7 @@ import AllowedDelivery from "@/components/shared/allowed-delivery"
 import ShopBranchField from "@/components/shared/shop-branch-field"
 import LoadingOverlay from "@/components/loading-overlay"
 import { Switch } from "@/components/ui/switch"
+import CheckoutCustomerRequiredInfo from "./customer-required-info/checkout-customer-required-info"
 
 type CheckoutProps = {
   customer: PopulatedCustomer
@@ -74,6 +75,8 @@ const Checkout = ({
   const [isFulfilled, setIsFulfilled] = useState(false)
   const [withSalt, setWithSalt] = useState(true)
   const [isBottomVisible, setIsBottomVisible] = useState(false)
+  const [openCustomerRequiredInfo, setOpenCustomerRequiredInfo] =
+    useState(false)
 
   const totalSectionRef = useRef<HTMLDivElement>(null)
 
@@ -490,23 +493,41 @@ const Checkout = ({
                     />
                   </CardContent>
                   <CardFooter>
-                    <Button
-                      type='submit'
-                      className='ml-auto'
-                      disabled={
-                        isSubmitting ||
-                        (shippingMethod === "DELIVERY" &&
-                          !isValidMinQuantity) ||
-                        (shippingMethod === "DELIVERY" &&
-                          !customer?.addresses?.length) ||
-                        (isSubmitted && !isValid)
-                      }
-                    >
-                      {isSubmitting && (
-                        <Icons.spinner className='mr-2 w-4 h-4 animate-spin' />
-                      )}
-                      Realizar pedido
-                    </Button>
+                    {!customer.phone || customer.birthdate === null ? (
+                      <Button
+                        type='button'
+                        onClick={() => setOpenCustomerRequiredInfo(true)}
+                        className='ml-auto'
+                        disabled={
+                          isSubmitting ||
+                          (shippingMethod === "DELIVERY" &&
+                            !isValidMinQuantity) ||
+                          (shippingMethod === "DELIVERY" &&
+                            !customer?.addresses?.length) ||
+                          (isSubmitted && !isValid)
+                        }
+                      >
+                        Realizar pedido
+                      </Button>
+                    ) : (
+                      <Button
+                        type='submit'
+                        className='ml-auto'
+                        disabled={
+                          isSubmitting ||
+                          (shippingMethod === "DELIVERY" &&
+                            !isValidMinQuantity) ||
+                          (shippingMethod === "DELIVERY" &&
+                            !customer?.addresses?.length) ||
+                          (isSubmitted && !isValid)
+                        }
+                      >
+                        {isSubmitting && (
+                          <Icons.spinner className='mr-2 w-4 h-4 animate-spin' />
+                        )}
+                        Realizar pedido
+                      </Button>
+                    )}
                   </CardFooter>
                 </Card>
               </div>
@@ -544,6 +565,15 @@ const Checkout = ({
       )}
 
       {isPlacingOrder && <LoadingOverlay message='Procesando tu pedido...' />}
+
+      {openCustomerRequiredInfo && (
+        <CheckoutCustomerRequiredInfo
+          customer={customer}
+          open={openCustomerRequiredInfo}
+          setOpen={setOpenCustomerRequiredInfo}
+          placeOrder={handleSubmit(placeOrder)}
+        />
+      )}
     </>
   )
 }
