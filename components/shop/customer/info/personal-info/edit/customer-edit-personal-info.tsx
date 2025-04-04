@@ -45,20 +45,20 @@ const CustomerEditPersonalInfo = ({
           <DialogHeader>
             <DialogTitle>Editar información</DialogTitle>
             <DialogDescription>Editar información personal</DialogDescription>
-            <div className='py-4'>
-              <CustomerEditPersonalInfoForm
-                customer={customer}
-                setOpen={setOpen}
-              />
-            </div>
-            {/* <DialogFooter className='flex flex-col'>
+          </DialogHeader>
+          <div className='py-4'>
+            <CustomerEditPersonalInfoForm
+              customer={customer}
+              setOpen={setOpen}
+            />
+          </div>
+          {/* <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
                 <Button variant='outline'>
                   <MoveLeftIcon className='w-4 h-4 mr-3' /> Volver
                 </Button>
               </DialogClose>
             </DialogFooter> */}
-          </DialogHeader>
         </DialogContent>
       </Dialog>
     )

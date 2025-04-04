@@ -16,7 +16,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getOrders } from "@/data/orders"
 import { cn } from "@/lib/utils"
 import { PopulatedOrder, TimePeriod } from "@/types/types"
-import { OrderStatus } from "@prisma/client"
 import {
   getMonth,
   getYear,
@@ -29,9 +28,9 @@ import {
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
-import { exportOrdersToExcel } from "@/actions/orders/export-orders"
 import { useSession } from "next-auth/react"
 import { getPermissionsKeys } from "@/helpers/helpers"
+import ExportOrders from "./export-orders/export-orders"
 
 const fetchOrders = async () => {
   const orders = await getOrders({
@@ -174,16 +173,6 @@ export default function Orders() {
     setSelectedTab(tab)
   }
 
-  const handleExport = () => {
-    if (!orders) return
-
-    const ordersToExport = Object.values(groupedAndFilteredOrders)
-      .flat()
-      .filter((order) => order.status === OrderStatus.PENDING)
-
-    exportOrdersToExcel(ordersToExport, selectedTab)
-  }
-
   if (error) {
     return <div>Error buscando pedidos.</div>
   }
@@ -213,15 +202,20 @@ export default function Orders() {
                   <TabsTrigger value='all'>Todos</TabsTrigger>
                 </TabsList>
                 <div className='ml-auto flex items-center gap-2'>
-                  <Button
-                    size='sm'
-                    variant='outline'
-                    className='h-7 gap-1 text-sm'
-                    onClick={handleExport}
+                  <ExportOrders
+                    orders={groupedAndFilteredOrders}
+                    selectedTab={selectedTab}
                   >
-                    <Icons.file className='h-3.5 w-3.5' />
-                    <span className='sr-only sm:not-sr-only'>Exportar</span>
-                  </Button>
+                    <Button
+                      type='button'
+                      size='sm'
+                      variant='outline'
+                      className='h-7 gap-1 text-sm'
+                    >
+                      <Icons.file className='h-3.5 w-3.5' />
+                      <span className='sr-only sm:not-sr-only'>Exportar</span>
+                    </Button>
+                  </ExportOrders>
                 </div>
               </div>
               <TabsContent value={selectedTab}>

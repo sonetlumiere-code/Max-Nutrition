@@ -3,6 +3,7 @@ import { IngredientTotal, PopulatedOrder, TimePeriod } from "@/types/types"
 import {
   calculateIngredientData,
   getBaseMeasurement,
+  translateOrderStatus,
   translatePaymentMethod,
   translateShippingMethod,
   translateTimePeriod,
@@ -31,6 +32,7 @@ export const exportOrdersToExcel = (
       "N/A"
 
     return {
+      "Estado de la orden": translateOrderStatus(order.status),
       "Nombre Cliente": order.customer?.name || "N/A",
       Email: order.customer?.user?.email || "N/A",
       Teléfono: order.customer?.phone || "N/A",
