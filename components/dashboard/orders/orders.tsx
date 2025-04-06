@@ -16,21 +16,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getOrders } from "@/data/orders"
 import { cn } from "@/lib/utils"
 import { PopulatedOrder, TimePeriod } from "@/types/types"
-import {
-  getMonth,
-  getYear,
-  isWithinInterval,
-  startOfWeek,
-  subMonths,
-  subWeeks,
-  subYears,
-} from "date-fns"
+import { isWithinInterval } from "date-fns"
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 import { useSession } from "next-auth/react"
-import { getPermissionsKeys } from "@/helpers/helpers"
+import { getPermissionsKeys, groupOrdersByPeriod } from "@/helpers/helpers"
 import ExportOrders from "./export-orders/export-orders"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { CalendarIcon } from "lucide-react"
+import { DateRange } from "react-day-picker"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+type FilterMode = "period" | "custom"
 
 const fetchOrders = async () => {
   const orders = await getOrders({
@@ -81,25 +89,57 @@ const fetchOrders = async () => {
   return orders
 }
 
-const getStartDate = (tab: TimePeriod) => {
-  const now = new Date()
-  switch (tab) {
-    case "week":
-      return subWeeks(now, 1)
-    case "month":
-      return subMonths(now, 1)
-    case "year":
-      return subYears(now, 1)
-    default:
-      return null
-  }
+/* COMPONENTE: CalendarDateRangePicker */
+function CalendarDateRangePicker({
+  value,
+  onChange,
+}: {
+  value: DateRange | null
+  onChange: (range: DateRange | null) => void
+}) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant='outline'
+          className='w-[260px] justify-start text-left font-normal'
+        >
+          <CalendarIcon className='mr-2 h-4 w-4' />
+          {value?.from ? (
+            value.to ? (
+              <>
+                {value.from.toLocaleDateString()} -{" "}
+                {value.to.toLocaleDateString()}
+              </>
+            ) : (
+              value.from.toLocaleDateString()
+            )
+          ) : (
+            <span>Seleccionar rango</span>
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className='w-auto p-0'>
+        <Calendar
+          initialFocus
+          mode='range'
+          selected={value || undefined}
+          onSelect={(range) => onChange(range ?? null)}
+          numberOfMonths={2}
+        />
+      </PopoverContent>
+    </Popover>
+  )
 }
 
 export default function Orders() {
-  const [selectedTab, setSelectedTab] = useState<TimePeriod>("week")
   const [selectedOrder, setSelectedOrder] = useState<PopulatedOrder | null>(
     null
   )
+
+  const [filterMode, setFilterMode] = useState<FilterMode>("period")
+  const [selectedTab, setSelectedTab] = useState<TimePeriod>("week")
+  const [dateRange, setDateRange] = useState<DateRange | null>(null)
 
   const { data: session } = useSession()
 
@@ -111,55 +151,31 @@ export default function Orders() {
     data: orders,
     error,
     isLoading,
-  } = useSWR<PopulatedOrder[] | null>("orders", fetchOrders)
+  } = useSWR<PopulatedOrder[] | null>(["orders"], fetchOrders)
 
   const groupedAndFilteredOrders = useMemo(() => {
     if (!orders) return {}
 
-    const startDate = getStartDate(selectedTab)
-    const groupedOrders: { [key: string]: PopulatedOrder[] } = {}
+    let filteredOrders = orders
 
-    orders.forEach((order) => {
-      const orderDate = new Date(order.createdAt)
-      const isInDateRange =
-        !startDate ||
-        isWithinInterval(orderDate, { start: startDate, end: new Date() })
-
-      if (!isInDateRange) return
-
-      let groupKey = ""
-      if (selectedTab === "week") {
-        const weekStart = startOfWeek(orderDate, { weekStartsOn: 1 })
-        groupKey = weekStart.toISOString()
-      } else if (selectedTab === "month") {
-        const month = getMonth(orderDate) + 1
-        const year = getYear(orderDate)
-        groupKey = `${year}-${month.toString().padStart(2, "0")}`
-      } else if (selectedTab === "year") {
-        groupKey = getYear(orderDate).toString()
-      } else {
-        groupKey = "all"
-      }
-
-      if (!groupedOrders[groupKey]) {
-        groupedOrders[groupKey] = []
-      }
-      groupedOrders[groupKey].push(order)
-    })
-
-    if (["week", "month", "year"].includes(selectedTab)) {
-      const sortedGroupKeys = Object.keys(groupedOrders).sort(
-        (a, b) => new Date(b).getTime() - new Date(a).getTime()
+    if (filterMode === "custom" && dateRange?.from && dateRange?.to) {
+      filteredOrders = orders.filter((order) =>
+        isWithinInterval(new Date(order.createdAt), {
+          start: dateRange.from!,
+          end: dateRange.to!,
+        })
       )
-      const mostRecentGroupKey = sortedGroupKeys[0]
-      if (mostRecentGroupKey && groupedOrders[mostRecentGroupKey]) {
-        return { [mostRecentGroupKey]: groupedOrders[mostRecentGroupKey] }
-      }
-      return {}
+      return groupOrdersByPeriod(filteredOrders, "all")
     }
 
-    return groupedOrders
-  }, [orders, selectedTab])
+    return groupOrdersByPeriod(orders, selectedTab)
+  }, [orders, selectedTab, dateRange, filterMode])
+
+  useEffect(() => {
+    if (filterMode === "period") {
+      setDateRange(null)
+    }
+  }, [filterMode])
 
   useEffect(() => {
     if (selectedOrder) {
@@ -171,6 +187,7 @@ export default function Orders() {
 
   const handleTabChange = (tab: TimePeriod) => {
     setSelectedTab(tab)
+    setDateRange(null)
   }
 
   if (error) {
@@ -180,27 +197,59 @@ export default function Orders() {
   return (
     <>
       <main className='grid flex-1 items-start gap-4 md:gap-8 lg:grid-cols-3 xl:grid-cols-3'>
-        <div className='grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2'>
-          {isLoading ? (
-            <div className='h-screen space-y-4'>
-              <div className='flex justify-between'>
-                <Skeleton className='h-10 w-36' />
-                <Skeleton className='h-10 w-36' />
-              </div>
-              <Skeleton className='h-1/2' />
-            </div>
-          ) : (
+        <div className='grid auto-rows-max items-start gap-4 md:gap-4 lg:col-span-2'>
+          <>
             <Tabs
               defaultValue={selectedTab}
               onValueChange={(value) => handleTabChange(value as TimePeriod)}
             >
-              <div className='flex items-center'>
-                <TabsList>
-                  <TabsTrigger value='week'>Semana</TabsTrigger>
-                  <TabsTrigger value='month'>Mes</TabsTrigger>
-                  <TabsTrigger value='year'>Año</TabsTrigger>
-                  <TabsTrigger value='all'>Todos</TabsTrigger>
-                </TabsList>
+              <div className='flex items-bottom gap-1'>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild disabled={isLoading}>
+                    <Button type='button' size='icon' variant='outline'>
+                      <Icons.filter className='h-3.5 w-3.5' />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuCheckboxItem
+                      checked={filterMode === "period"}
+                      onClick={() => setFilterMode("period")}
+                    >
+                      Filtrar por período
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      checked={filterMode === "custom"}
+                      onClick={() => setFilterMode("custom")}
+                    >
+                      Filtrar por rango
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {filterMode === "period" && (
+                  <TabsList>
+                    <TabsTrigger value='week' disabled={isLoading}>
+                      Semana
+                    </TabsTrigger>
+                    <TabsTrigger value='month' disabled={isLoading}>
+                      Mes
+                    </TabsTrigger>
+                    <TabsTrigger value='year' disabled={isLoading}>
+                      Año
+                    </TabsTrigger>
+                    <TabsTrigger value='all' disabled={isLoading}>
+                      Todos
+                    </TabsTrigger>
+                  </TabsList>
+                )}
+
+                {filterMode === "custom" && (
+                  <CalendarDateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                  />
+                )}
+
                 <div className='ml-auto flex items-center gap-2'>
                   <ExportOrders
                     orders={groupedAndFilteredOrders}
@@ -208,16 +257,18 @@ export default function Orders() {
                   >
                     <Button
                       type='button'
-                      size='sm'
                       variant='outline'
-                      className='h-7 gap-1 text-sm'
+                      disabled={isLoading}
                     >
                       <Icons.file className='h-3.5 w-3.5' />
-                      <span className='sr-only sm:not-sr-only'>Exportar</span>
+                      <span className='sr-only sm:not-sr-only sm:ml-2'>
+                        Exportar
+                      </span>
                     </Button>
                   </ExportOrders>
                 </div>
               </div>
+
               <TabsContent value={selectedTab}>
                 <Card>
                   <CardHeader className='px-7'>
@@ -245,34 +296,47 @@ export default function Orders() {
                       )}
                     </div>
                   </CardHeader>
+
                   <CardContent>
-                    {Object.keys(groupedAndFilteredOrders).length > 0 ? (
-                      Object.entries(groupedAndFilteredOrders).map(
-                        ([groupKey, groupOrders]) => (
-                          <div key={groupKey}>
-                            <OrdersDataTable
-                              orders={groupOrders}
-                              selectedOrder={selectedOrder}
-                              setSelectedOrder={setSelectedOrder}
-                            />
-                          </div>
-                        )
-                      )
-                    ) : (
-                      <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
-                        <div className='flex flex-col items-center justify-center'>
-                          <Icons.file className='h-12 w-12 text-muted-foreground' />
-                          <p className='mt-2 text-sm text-muted-foreground'>
-                            No se encontraron pedidos recientes.
-                          </p>
+                    {isLoading ? (
+                      <div className='h-screen space-y-4'>
+                        <div className='flex justify-between'>
+                          <Skeleton className='h-10 w-36' />
+                          <Skeleton className='h-10 w-36' />
                         </div>
+                        <Skeleton className='h-1/2' />
                       </div>
+                    ) : (
+                      <>
+                        {Object.keys(groupedAndFilteredOrders).length > 0 ? (
+                          Object.entries(groupedAndFilteredOrders).map(
+                            ([groupKey, groupOrders]) => (
+                              <div key={groupKey} className='mb-8'>
+                                <OrdersDataTable
+                                  orders={groupOrders}
+                                  selectedOrder={selectedOrder}
+                                  setSelectedOrder={setSelectedOrder}
+                                />
+                              </div>
+                            )
+                          )
+                        ) : (
+                          <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
+                            <div className='flex flex-col items-center justify-center'>
+                              <Icons.file className='h-12 w-12 text-muted-foreground' />
+                              <p className='mt-2 text-sm text-muted-foreground'>
+                                No se encontraron pedidos.
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </>
                     )}
                   </CardContent>
                 </Card>
               </TabsContent>
             </Tabs>
-          )}
+          </>
         </div>
         {selectedOrder && <OrderItemDetails order={selectedOrder} />}
       </main>

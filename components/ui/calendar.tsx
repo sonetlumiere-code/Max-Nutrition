@@ -25,7 +25,7 @@ function Calendar({
       className={cn("p-3", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
-        month: "space-y-4",
+        month: "space-y-4 capitalize",
         caption: "flex justify-center pt-1 relative items-center",
         caption_label: cn("text-sm font-medium", {
           hidden: props.captionLayout,
@@ -83,7 +83,7 @@ function Calendar({
                 value={props.value?.toString()}
               >
                 <SelectTrigger className='capitalize'>
-                  {format(currentMonth, "MMM", { locale })}
+                  {format(currentMonth, "MMM", { locale })} asd
                 </SelectTrigger>
                 <SelectContent>
                   {selectItems.map((selectItem) => (

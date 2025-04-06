@@ -3,6 +3,7 @@ import {
   BaseMeasurement,
   HourGroup,
   PermissionKey,
+  PopulatedOrder,
   PopulatedProduct,
   PopulatedPromotion,
   PromotionToApply,
@@ -23,6 +24,15 @@ import {
   SubjectKey,
   OperationalHours,
 } from "@prisma/client"
+import {
+  getMonth,
+  getYear,
+  isWithinInterval,
+  startOfWeek,
+  subMonths,
+  subWeeks,
+  subYears,
+} from "date-fns"
 
 export const translateShopCategory = (group: ShopCategory): string => {
   switch (group) {
@@ -510,4 +520,50 @@ export function isShopCurrentlyAvailable(
 
   // Check if current time is within the interval
   return currentTotal >= startTotal && currentTotal <= endTotal
+}
+
+export const getStartDate = (tab: TimePeriod) => {
+  const now = new Date()
+  switch (tab) {
+    case "week":
+      return subWeeks(now, 1)
+    case "month":
+      return subMonths(now, 1)
+    case "year":
+      return subYears(now, 1)
+    default:
+      return null
+  }
+}
+
+export function groupOrdersByPeriod(orders: PopulatedOrder[], period: TimePeriod) {
+  const startDate = getStartDate(period)
+  const groupedOrders: { [key: string]: PopulatedOrder[] } = {}
+
+  for (const order of orders) {
+    const orderDate = new Date(order.createdAt)
+    const isInDateRange = !startDate || isWithinInterval(orderDate, { start: startDate, end: new Date() })
+    if (!isInDateRange) continue
+
+    let key = "all"
+    if (period === "week") {
+      key = startOfWeek(orderDate, { weekStartsOn: 1 }).toISOString()
+    } else if (period === "month") {
+      const month = getMonth(orderDate) + 1
+      const year = getYear(orderDate)
+      key = `${year}-${String(month).padStart(2, "0")}`
+    } else if (period === "year") {
+      key = String(getYear(orderDate))
+    }
+
+    groupedOrders[key] ??= []
+    groupedOrders[key].push(order)
+  }
+
+  if (["week", "month", "year"].includes(period)) {
+    const [mostRecentKey] = Object.keys(groupedOrders).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+    return { [mostRecentKey]: groupedOrders[mostRecentKey] }
+  }
+
+  return groupedOrders
 }
