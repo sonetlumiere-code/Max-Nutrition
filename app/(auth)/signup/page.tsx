@@ -29,7 +29,7 @@ export default function SignupPage({
         Iniciar sesión
       </Link>
       <div className='relative hidden h-full flex-col p-10 text-white dark:border-r lg:flex'>
-        <div className='absolute inset-0 bg-[url("../public/img/banner-crearcuenta.webp")]' />
+        <div className='absolute inset-0 bg-[url("../public/img/banner-crearcuenta.webp")] bg-cover bg-center bg-no-repeat' />
         <div className='relative z-20 flex items-center'>
           <Link href='/' className='block'>
             <span className='sr-only'>HOME</span>
