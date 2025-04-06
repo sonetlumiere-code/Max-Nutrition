@@ -16,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getOrders } from "@/data/orders"
 import { cn } from "@/lib/utils"
 import { PopulatedOrder, TimePeriod } from "@/types/types"
-import { isWithinInterval } from "date-fns"
+import { endOfDay, isWithinInterval } from "date-fns"
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
@@ -162,7 +162,7 @@ export default function Orders() {
       filteredOrders = orders.filter((order) =>
         isWithinInterval(new Date(order.createdAt), {
           start: dateRange.from!,
-          end: dateRange.to!,
+          end: endOfDay(dateRange.to!),
         })
       )
       return groupOrdersByPeriod(filteredOrders, "all")
@@ -276,7 +276,7 @@ export default function Orders() {
                       <div className='max-w-screen-sm'>
                         <CardTitle className='text-xl'>Pedidos</CardTitle>
                         <CardDescription className='hidden md:block'>
-                          Pedidos recientes de tu tienda.
+                          Pedidos recibidos.
                         </CardDescription>
                       </div>
                       {userPermissionsKeys?.includes("create:orders") && (
@@ -301,8 +301,8 @@ export default function Orders() {
                     {isLoading ? (
                       <div className='h-screen space-y-4'>
                         <div className='flex justify-between'>
-                          <Skeleton className='h-10 w-36' />
-                          <Skeleton className='h-10 w-36' />
+                          <Skeleton className='h-10 w-80' />
+                          <Skeleton className='h-8 w-20' />
                         </div>
                         <Skeleton className='h-1/2' />
                       </div>
