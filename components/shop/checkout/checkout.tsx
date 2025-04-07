@@ -46,7 +46,6 @@ import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useState, useRef } from "react"
 import { useForm } from "react-hook-form"
 import useSWR from "swr"
-import CustomerCreateAddress from "../customer/info/address/create/customer-create-address"
 import CheckoutListItems from "./checkout-list-items-table"
 import AppliedPromotions from "@/components/shared/applied-promotions"
 import PaymentMethodField from "@/components/shared/payment-method-field"
@@ -57,6 +56,7 @@ import ShopBranchField from "@/components/shared/shop-branch-field"
 import LoadingOverlay from "@/components/loading-overlay"
 import { Switch } from "@/components/ui/switch"
 import CheckoutCustomerRequiredInfo from "./customer-required-info/checkout-customer-required-info"
+import Link from "next/link"
 
 type CheckoutProps = {
   customer: PopulatedCustomer
@@ -397,9 +397,13 @@ const Checkout = ({
                               Registrá tu dirección a continuación.
                             </p>
 
-                            <CustomerCreateAddress customer={customer}>
-                              <Button type='button'>Agregar dirección</Button>
-                            </CustomerCreateAddress>
+                            <Button asChild>
+                              <Link
+                                href={`/${shop.key}/customer-info/create-address?redirectTo=/${shop.key}/checkout`}
+                              >
+                                Agregar dirección
+                              </Link>
+                            </Button>
                           </div>
                         </div>
                       ) : (
@@ -413,11 +417,13 @@ const Checkout = ({
                               </div>
                               <div className='ml-auto'>
                                 {customer && (
-                                  <CustomerCreateAddress customer={customer}>
-                                    <Button type='button'>
+                                  <Button asChild>
+                                    <Link
+                                      href={`/${shop.key}/customer-info/create-address?redirectTo=/${shop.key}/checkout`}
+                                    >
                                       Agregar dirección
-                                    </Button>
-                                  </CustomerCreateAddress>
+                                    </Link>
+                                  </Button>
                                 )}
                               </div>
                             </div>

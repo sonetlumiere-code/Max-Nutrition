@@ -9,13 +9,16 @@ import {
 import CustomerAddressActions from "./customer-address-actions"
 import { CustomerAddressLabel, CustomerAddress } from "@prisma/client"
 import { Icons } from "@/components/icons"
+import { PopulatedShop } from "@/types/types"
 
 type CustomerAddressesListProps = {
   customerAddresses: CustomerAddress[]
+  shop: PopulatedShop
 }
 
 const CustomerAddressesList = ({
   customerAddresses,
+  shop,
 }: CustomerAddressesListProps) => {
   return (
     <Table>
@@ -49,10 +52,7 @@ const CustomerAddressesList = ({
               {address.postCode}
             </TableCell>
             <TableCell className='text-end'>
-              <CustomerAddressActions
-                address={address}
-                customerAddresses={customerAddresses}
-              />
+              <CustomerAddressActions address={address} shop={shop} />
             </TableCell>
           </TableRow>
         ))}

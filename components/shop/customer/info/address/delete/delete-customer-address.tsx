@@ -1,3 +1,5 @@
+"use client"
+
 import { deleteCustomerAddress } from "@/actions/customer-address/delete-customer-address"
 import { useConfirmation } from "@/components/confirmation-provider"
 import { Icons } from "@/components/icons"

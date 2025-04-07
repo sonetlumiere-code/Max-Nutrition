@@ -1,5 +1,3 @@
-"use client"
-
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,21 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { CustomerAddress } from "@prisma/client"
-import { useState } from "react"
-import CustomerEditAddress from "../edit/customer-edit-address"
 import DeleteCustomerAddress from "../delete/delete-customer-address"
+import Link from "next/link"
+import { PopulatedShop } from "@/types/types"
 
 type CustomerAddressActionsProps = {
   address: CustomerAddress
-  customerAddresses: CustomerAddress[]
+  shop: PopulatedShop
 }
 
 const CustomerAddressActions = ({
   address,
-  customerAddresses,
+  shop,
 }: CustomerAddressActionsProps) => {
-  const [openEditDialog, setOpenEditDialog] = useState(false)
-
   return (
     <>
       <DropdownMenu modal={false}>
@@ -38,22 +34,19 @@ const CustomerAddressActions = ({
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setOpenEditDialog(true)}>
-            <Icons.pencil className='w-4 h-4 mr-2' />
-            <p>Editar</p>
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/${shop.key}/customer-info/edit-address/${address.id}?redirectTo=/${shop.key}/customer-info`}
+            >
+              <Icons.pencil className='w-4 h-4 mr-2' />
+              Editar
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <DeleteCustomerAddress address={address} />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <CustomerEditAddress
-        address={address}
-        customerAddresses={customerAddresses}
-        open={openEditDialog}
-        setOpen={setOpenEditDialog}
-      />
     </>
   )
 }

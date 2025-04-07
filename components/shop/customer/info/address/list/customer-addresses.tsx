@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { PopulatedCustomer } from "@/types/types"
-import CustomerCreateAddress from "../create/customer-create-address"
+import { PopulatedCustomer, PopulatedShop } from "@/types/types"
 import {
   Card,
   CardContent,
@@ -9,14 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Icons } from "@/components/icons"
 import CustomerAddressesList from "./customer-addresses-list"
+import Link from "next/link"
 
 type CustomerAddressesProps = {
   customer: PopulatedCustomer
+  shop: PopulatedShop
 }
 
-const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
+const CustomerAddresses = ({ customer, shop }: CustomerAddressesProps) => {
   const customerAddressesLength = customer.addresses?.length || 0
 
   return (
@@ -32,17 +32,21 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
                 </CardDescription>
               </div>
               <div className='ml-auto'>
-                <CustomerCreateAddress customer={customer}>
-                  <Button type='button'>
-                    <Icons.plus className='w-4 h-4 mr-1' />
-                    Agregar
-                  </Button>
-                </CustomerCreateAddress>
+                <Button asChild>
+                  <Link
+                    href={`/${shop.key}/customer-info/create-address?redirectTo=/${shop.key}/customer-info`}
+                  >
+                    Agregar dirección
+                  </Link>
+                </Button>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <CustomerAddressesList customerAddresses={customer.addresses} />
+            <CustomerAddressesList
+              customerAddresses={customer.addresses}
+              shop={shop}
+            />
           </CardContent>
           <CardFooter>
             <div className='text-xs text-muted-foreground'>
@@ -62,9 +66,13 @@ const CustomerAddresses = ({ customer }: CustomerAddressesProps) => {
               Cargá tu primera dirección haciendo click en el siguiente botón
             </p>
 
-            <CustomerCreateAddress customer={customer}>
-              <Button type='button'>Agregar dirección</Button>
-            </CustomerCreateAddress>
+            <Button asChild>
+              <Link
+                href={`/${shop.key}/customer-info/create-address?redirectTo=/${shop.key}/customer-info`}
+              >
+                Agregar dirección
+              </Link>
+            </Button>
           </div>
         </div>
       )}

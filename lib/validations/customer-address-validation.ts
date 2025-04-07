@@ -5,7 +5,9 @@ import { addressGeoRefSchema } from "./address-georef-validation"
 export const customerAddressSchema = z
   .object({
     id: z.string().optional(),
-    label: z.nativeEnum(CustomerAddressLabel),
+    label: z.nativeEnum(CustomerAddressLabel, {
+      errorMap: () => ({ message: "Selecciona una etiqueta." }),
+    }),
     labelString: z.string(),
     province: z.string().min(1, { message: "Ingresa tu provincia." }),
     municipality: z.string().min(1, { message: "Ingresa tu municipio." }),
