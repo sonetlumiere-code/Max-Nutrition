@@ -338,6 +338,7 @@ export default function Orders() {
             </Tabs>
           </>
         </div>
+
         {selectedOrder && <OrderItemDetails order={selectedOrder} />}
       </main>
     </>

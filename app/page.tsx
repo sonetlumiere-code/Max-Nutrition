@@ -22,7 +22,7 @@ const HomePage = async () => {
         <img
           src='img/logo-mxm.svg'
           alt='MXM Máxima Nutrición'
-          className='opacity-30 w-96'
+          className='opacity-30 w-72'
         />
       </div>
     )

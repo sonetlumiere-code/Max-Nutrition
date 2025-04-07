@@ -64,7 +64,7 @@ const ExportOrders = ({ children, orders, selectedTab }: ExportOrdersProps) => {
   }
 
   const FormContent = () => (
-    <div className='space-y-3'>
+    <div className='grid gap-6'>
       <div className='grid grid-cols-1 gap-1'>
         {statuses.map((status) => (
           <label
@@ -79,19 +79,15 @@ const ExportOrders = ({ children, orders, selectedTab }: ExportOrdersProps) => {
           </label>
         ))}
       </div>
-      {/* {errors.statuses && (
-        <p className='text-sm text-destructive'>{errors.statuses.message}</p>
-      )} */}
-      <div className='mt-4 flex justify-end'>
-        <Button
-          type='button'
-          onClick={onSubmit}
-          disabled={!selectedStatuses.length}
-        >
-          <Icons.download className='mr-2 h-4 w-4' />
-          Exportar ({filteredOrders.length})
-        </Button>
-      </div>
+
+      <Button
+        type='button'
+        onClick={onSubmit}
+        disabled={!selectedStatuses.length}
+      >
+        <Icons.download className='mr-2 h-4 w-4' />
+        Exportar ({filteredOrders.length})
+      </Button>
     </div>
   )
 
