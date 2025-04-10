@@ -33,7 +33,7 @@ export async function editShippingZone({
     return { error: "Campos inválidos." }
   }
 
-  const { province, municipality, locality, cost, isActive } =
+  const { province, municipality, locality, cost, isActive, operationalHours } =
     validatedFields.data
 
   try {
@@ -45,6 +45,22 @@ export async function editShippingZone({
         locality,
         cost,
         isActive,
+        operationalHours:
+          operationalHours && operationalHours.length > 0
+            ? {
+                deleteMany: {},
+                create: operationalHours.map(
+                  ({ dayOfWeek, startTime, endTime }) => ({
+                    dayOfWeek,
+                    startTime: startTime || null,
+                    endTime: endTime || null,
+                  })
+                ),
+              }
+            : {
+                deleteMany: {},
+                create: [],
+              },
       },
     })
 

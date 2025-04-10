@@ -42,8 +42,6 @@ const CreateShippingZonesPage = async () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <h2 className='font-semibold text-lg'>Agregar Zona de envío</h2>
-
       <CreateShippingZone />
     </>
   )

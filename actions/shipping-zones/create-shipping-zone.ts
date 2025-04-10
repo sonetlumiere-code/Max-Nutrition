@@ -32,7 +32,7 @@ export async function createShippingZone(values: ShippingZoneSchema) {
     return { error: "Campos inválidos." }
   }
 
-  const { province, municipality, locality, cost, isActive } =
+  const { province, municipality, locality, cost, isActive, operationalHours } =
     validatedFields.data
 
   try {
@@ -44,6 +44,13 @@ export async function createShippingZone(values: ShippingZoneSchema) {
         locality,
         cost,
         isActive,
+        operationalHours: {
+          create: operationalHours?.map((hours) => ({
+            dayOfWeek: hours.dayOfWeek,
+            startTime: hours.startTime || null,
+            endTime: hours.endTime || null,
+          })),
+        },
       },
     })
 

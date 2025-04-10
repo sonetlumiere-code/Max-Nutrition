@@ -121,6 +121,10 @@ export type PopulatedShippingSettings = ShippingSettings & {
   shopSettings?: ShopSettings
 }
 
+export type PopulatedShippingZone = ShippingZone & {
+  operationalHours?: OperationalHours[]
+}
+
 export type PopulatedShopBranch = ShopBranch & {
   operationalHours: OperationalHours[]
 }

@@ -33,7 +33,10 @@ const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
 
   const { shippingZoneId } = params
 
-  const shippingZone = await getShippingZone({ where: { id: shippingZoneId } })
+  const shippingZone = await getShippingZone({
+    where: { id: shippingZoneId },
+    include: { operationalHours: true },
+  })
 
   if (!shippingZone) {
     redirect(DEFAULT_REDIRECT_DASHBOARD)
@@ -56,8 +59,6 @@ const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-
-      <h2 className='font-semibold text-lg'>Editar Zona de envío</h2>
 
       <EditShippingZone shippingZone={shippingZone} />
     </>

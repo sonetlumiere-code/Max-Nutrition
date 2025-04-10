@@ -500,9 +500,11 @@ model OperationalHours {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  shop       Shop?       @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  shopBranch ShopBranch? @relation(fields: [shopBranchId], references: [id], onDelete: Cascade)
-  dayOfWeek  DayOfWeek
+  shop           Shop?         @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shopBranch     ShopBranch?   @relation(fields: [shopBranchId], references: [id], onDelete: Cascade)
+  dayOfWeek      DayOfWeek
+  ShippingZone   ShippingZone? @relation(fields: [shippingZoneId], references: [id])
+  shippingZoneId String?
 
   @@unique([dayOfWeek, shopBranchId])
   @@unique([dayOfWeek, shopId])
@@ -552,7 +554,8 @@ model ShippingZone {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  shopSettings ShopSettings @relation(fields: [shopSettingsId], references: [id], onDelete: Cascade)
+  shopSettings     ShopSettings       @relation(fields: [shopSettingsId], references: [id], onDelete: Cascade)
+  operationalHours OperationalHours[]
 
   @@map("shipping_zones")
 }
