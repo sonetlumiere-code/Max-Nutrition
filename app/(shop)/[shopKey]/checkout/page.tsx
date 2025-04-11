@@ -50,7 +50,10 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   const session = await auth()
 
   if (!session) {
-    redirect(`/${shop.key}` || DEFAULT_REDIRECT_SHOP)
+    if (shop.key) {
+      redirect(`/${shop.key}`)
+    }
+    redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   const [customer, shopSettings, shopBranches] = await Promise.all([

@@ -26,6 +26,9 @@ const ButtonsInfoShop = async ({
       where: {
         isActive: true,
       },
+      include: {
+        operationalHours: true,
+      },
     }),
   ])
 

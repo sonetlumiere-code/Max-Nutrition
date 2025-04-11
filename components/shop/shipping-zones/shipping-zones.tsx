@@ -21,23 +21,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { ShippingZone } from "@prisma/client"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import SearchInput from "@/components/search-input"
+import { getOperationalHoursMessage } from "@/helpers/helpers"
+import { PopulatedShippingZone } from "@/types/types"
 
 type ShippingZonesProps = {
   children: React.ReactNode
-  shippingZones: ShippingZone[]
+  shippingZones: PopulatedShippingZone[]
 }
 
 const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
@@ -48,43 +47,41 @@ const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
     zone.locality.toLowerCase().includes(search.toLowerCase())
   )
 
-  const renderTable = () => (
-    <>
-      <div className='p-2'>
-        <SearchInput
-          placeholder='Buscar localidad...'
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+  const renderAccordion = () => (
+    <div className='p-2 space-y-4'>
+      <SearchInput
+        placeholder='Buscar localidad...'
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Localidad</TableHead>
-            <TableHead className='text-right'>Costo</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredZones.length > 0 ? (
-            filteredZones.map((zone) => (
-              <TableRow key={zone.id}>
-                <TableCell className='text-xs md:text-sm'>
-                  {zone.locality}
-                </TableCell>
-                <TableCell className='text-right'>${zone.cost}</TableCell>
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={2} className='text-center py-4'>
-                No se encontraron resultados
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </>
+      {filteredZones.length > 0 ? (
+        <Accordion type='single' collapsible className='w-full'>
+          {filteredZones.map((zone) => (
+            <AccordionItem key={zone.id} value={zone.id.toString()}>
+              <AccordionTrigger className='text-xs md:text-sm'>
+                {zone.locality}
+              </AccordionTrigger>
+              <AccordionContent className='text-sm space-y-1'>
+                <div className='flex justify-between'>
+                  <span className='xs:text-xs'>Costo de envío:</span>
+                  <span className='xs:text-xs font-semibold'>${zone.cost}</span>
+                </div>
+                {zone.operationalHours && zone.operationalHours.length > 0 && (
+                  <div>
+                    {`${getOperationalHoursMessage(zone.operationalHours)}`}
+                  </div>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      ) : (
+        <div className='text-center py-4 text-muted-foreground'>
+          No se encontraron resultados
+        </div>
+      )}
+    </div>
   )
 
   if (isDesktop) {
@@ -97,7 +94,7 @@ const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
             <DialogDescription>Zonas de envío disponibles</DialogDescription>
           </DialogHeader>
 
-          {renderTable()}
+          {renderAccordion()}
 
           <DialogFooter className='flex flex-col'>
             <DialogClose asChild>
@@ -121,7 +118,7 @@ const ShippingZones = ({ children, shippingZones }: ShippingZonesProps) => {
             <DrawerDescription>Zonas de envío disponibles</DrawerDescription>
           </DrawerHeader>
 
-          <div className='space-y-3 p-4'>{renderTable()}</div>
+          <div className='px-4'>{renderAccordion()}</div>
 
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             <DrawerClose asChild>
