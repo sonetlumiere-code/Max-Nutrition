@@ -198,145 +198,146 @@ export default function Orders() {
     <>
       <main className='grid flex-1 items-start gap-4 md:gap-8 lg:grid-cols-3 xl:grid-cols-3'>
         <div className='grid auto-rows-max items-start gap-4 md:gap-4 lg:col-span-2'>
-          <>
-            <Tabs
-              defaultValue={selectedTab}
-              onValueChange={(value) => handleTabChange(value as TimePeriod)}
-            >
-              <div className='flex items-bottom gap-1'>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild disabled={isLoading}>
-                    <Button type='button' size='icon' variant='outline'>
-                      <Icons.filter className='h-3.5 w-3.5' />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuCheckboxItem
-                      checked={filterMode === "period"}
-                      onClick={() => setFilterMode("period")}
-                    >
-                      Filtrar por período
-                    </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem
-                      checked={filterMode === "custom"}
-                      onClick={() => setFilterMode("custom")}
-                    >
-                      Filtrar por rango
-                    </DropdownMenuCheckboxItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {filterMode === "period" && (
-                  <TabsList>
-                    <TabsTrigger value='week' disabled={isLoading}>
-                      Semana
-                    </TabsTrigger>
-                    <TabsTrigger value='month' disabled={isLoading}>
-                      Mes
-                    </TabsTrigger>
-                    <TabsTrigger value='year' disabled={isLoading}>
-                      Año
-                    </TabsTrigger>
-                    <TabsTrigger value='all' disabled={isLoading}>
-                      Todos
-                    </TabsTrigger>
-                  </TabsList>
-                )}
-
-                {filterMode === "custom" && (
-                  <CalendarDateRangePicker
-                    value={dateRange}
-                    onChange={setDateRange}
-                  />
-                )}
-
-                <div className='ml-auto flex items-center gap-2'>
-                  <ExportOrders
-                    orders={groupedAndFilteredOrders}
-                    selectedTab={selectedTab}
+          <Tabs
+            defaultValue={selectedTab}
+            onValueChange={(value) => handleTabChange(value as TimePeriod)}
+          >
+            <div className='flex items-bottom gap-1'>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild disabled={isLoading}>
+                  <Button type='button' size='icon' variant='outline'>
+                    <Icons.filter className='h-3.5 w-3.5' />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuCheckboxItem
+                    checked={filterMode === "period"}
+                    onClick={() => setFilterMode("period")}
                   >
-                    <Button
-                      type='button'
-                      variant='outline'
-                      disabled={isLoading}
-                    >
-                      <Icons.file className='h-3.5 w-3.5' />
-                      <span className='sr-only sm:not-sr-only sm:ml-2'>
-                        Exportar
-                      </span>
-                    </Button>
-                  </ExportOrders>
-                </div>
-              </div>
+                    Filtrar por período
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={filterMode === "custom"}
+                    onClick={() => setFilterMode("custom")}
+                  >
+                    Filtrar por rango
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-              <TabsContent value={selectedTab}>
-                <Card>
-                  <CardHeader className='px-7'>
-                    <div className='space-between flex items-center'>
-                      <div className='max-w-screen-sm'>
-                        <CardTitle className='text-xl'>Pedidos</CardTitle>
-                        <CardDescription className='hidden md:block'>
-                          Pedidos recibidos.
-                        </CardDescription>
+              {filterMode === "period" && (
+                <TabsList>
+                  <TabsTrigger value='week' disabled={isLoading}>
+                    Semana
+                  </TabsTrigger>
+                  <TabsTrigger value='month' disabled={isLoading}>
+                    Mes
+                  </TabsTrigger>
+                  <TabsTrigger value='year' disabled={isLoading}>
+                    Año
+                  </TabsTrigger>
+                  <TabsTrigger value='all' disabled={isLoading}>
+                    Todos
+                  </TabsTrigger>
+                </TabsList>
+              )}
+
+              {filterMode === "custom" && (
+                <CalendarDateRangePicker
+                  value={dateRange}
+                  onChange={setDateRange}
+                />
+              )}
+
+              <div className='ml-auto flex items-center gap-2'>
+                {groupedAndFilteredOrders &&
+                  Object.keys(groupedAndFilteredOrders)[0] !== "undefined" && (
+                    <ExportOrders
+                      orders={groupedAndFilteredOrders}
+                      selectedTab={selectedTab}
+                    >
+                      <Button
+                        type='button'
+                        variant='outline'
+                        disabled={isLoading}
+                      >
+                        <Icons.file className='h-3.5 w-3.5' />
+                        <span className='sr-only sm:not-sr-only sm:ml-2'>
+                          Exportar
+                        </span>
+                      </Button>
+                    </ExportOrders>
+                  )}
+              </div>
+            </div>
+
+            <TabsContent value={selectedTab}>
+              <Card>
+                <CardHeader className='px-7'>
+                  <div className='space-between flex items-center'>
+                    <div className='max-w-screen-sm'>
+                      <CardTitle className='text-xl'>Pedidos</CardTitle>
+                      <CardDescription className='hidden md:block'>
+                        Pedidos recibidos.
+                      </CardDescription>
+                    </div>
+                    {userPermissionsKeys?.includes("create:orders") && (
+                      <div className='ml-auto'>
+                        <Link
+                          href='orders/create-order'
+                          className={cn(buttonVariants({ variant: "default" }))}
+                        >
+                          <>
+                            <Icons.circlePlus className='mr-2 h-4 w-4' />
+                            Crear
+                          </>
+                        </Link>
                       </div>
-                      {userPermissionsKeys?.includes("create:orders") && (
-                        <div className='ml-auto'>
-                          <Link
-                            href='orders/create-order'
-                            className={cn(
-                              buttonVariants({ variant: "default" })
-                            )}
-                          >
-                            <>
-                              <Icons.circlePlus className='mr-2 h-4 w-4' />
-                              Crear
-                            </>
-                          </Link>
+                    )}
+                  </div>
+                </CardHeader>
+
+                <CardContent>
+                  {isLoading ? (
+                    <div className='h-screen space-y-4'>
+                      <div className='flex justify-between'>
+                        <Skeleton className='h-10 w-80' />
+                        <Skeleton className='h-8 w-20' />
+                      </div>
+                      <Skeleton className='h-1/2' />
+                    </div>
+                  ) : (
+                    <>
+                      {groupedAndFilteredOrders &&
+                      Object.keys(groupedAndFilteredOrders)[0] !==
+                        "undefined" ? (
+                        Object.entries(groupedAndFilteredOrders).map(
+                          ([groupKey, groupOrders]) => (
+                            <div key={groupKey} className='mb-8'>
+                              <OrdersDataTable
+                                orders={groupOrders}
+                                selectedOrder={selectedOrder}
+                                setSelectedOrder={setSelectedOrder}
+                              />
+                            </div>
+                          )
+                        )
+                      ) : (
+                        <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
+                          <div className='flex flex-col items-center justify-center'>
+                            <Icons.file className='h-12 w-12 text-muted-foreground' />
+                            <p className='mt-2 text-sm text-muted-foreground'>
+                              No se encontraron pedidos.
+                            </p>
+                          </div>
                         </div>
                       )}
-                    </div>
-                  </CardHeader>
-
-                  <CardContent>
-                    {isLoading ? (
-                      <div className='h-screen space-y-4'>
-                        <div className='flex justify-between'>
-                          <Skeleton className='h-10 w-80' />
-                          <Skeleton className='h-8 w-20' />
-                        </div>
-                        <Skeleton className='h-1/2' />
-                      </div>
-                    ) : (
-                      <>
-                        {Object.keys(groupedAndFilteredOrders).length > 0 ? (
-                          Object.entries(groupedAndFilteredOrders).map(
-                            ([groupKey, groupOrders]) => (
-                              <div key={groupKey} className='mb-8'>
-                                <OrdersDataTable
-                                  orders={groupOrders}
-                                  selectedOrder={selectedOrder}
-                                  setSelectedOrder={setSelectedOrder}
-                                />
-                              </div>
-                            )
-                          )
-                        ) : (
-                          <div className='flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm h-64 p-6'>
-                            <div className='flex flex-col items-center justify-center'>
-                              <Icons.file className='h-12 w-12 text-muted-foreground' />
-                              <p className='mt-2 text-sm text-muted-foreground'>
-                                No se encontraron pedidos.
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
 
         {selectedOrder && <OrderItemDetails order={selectedOrder} />}
