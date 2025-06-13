@@ -1,4 +1,4 @@
-"use server"
+"server-only"
 
 import prisma from "@/lib/db/db"
 import { PopulatedIngredient } from "@/types/types"
