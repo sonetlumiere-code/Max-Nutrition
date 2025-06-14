@@ -1,16 +1,23 @@
 "use client"
 
-import { getPromotions } from "@/data/promotions"
 import { PopulatedPromotion } from "@/types/types"
 import { ShopCategory } from "@prisma/client"
 import useSWR from "swr"
 
-const fetcher = async ({ shopCategory }: { shopCategory: ShopCategory }) => {
-  const promotions = await getPromotions({
-    where: { isActive: true, shopCategory },
-    include: { categories: true },
-  })
-  return promotions
+const fetchPromotions = async ({
+  shopCategory,
+}: {
+  shopCategory: ShopCategory
+}): Promise<PopulatedPromotion[] | null> => {
+  const res = await fetch(`/api/promotions?shopCategory=${shopCategory}`)
+
+  if (!res.ok) {
+    const errorBody = await res.json()
+    console.error("Failed to fetch promotions:", errorBody.error)
+    return null
+  }
+
+  return res.json()
 }
 
 export const useGetPromotions = ({
@@ -24,7 +31,7 @@ export const useGetPromotions = ({
     isLoading: isLoadingPromotions,
   } = useSWR<PopulatedPromotion[] | null>(
     `promotions-${shopCategory}`,
-    () => fetcher({ shopCategory }),
+    () => fetchPromotions({ shopCategory }),
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,

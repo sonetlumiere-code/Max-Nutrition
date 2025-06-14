@@ -2,6 +2,7 @@ import authConfig from "@/lib/auth/auth.config"
 import {
   DEFAULT_REDIRECT_SHOP,
   apiAuthPrefix,
+  apiPublicRoutes,
   authRoutes,
   publicRoutes,
   shopRoutes,
@@ -11,14 +12,19 @@ import NextAuth from "next-auth"
 const { auth } = NextAuth(authConfig)
 
 export default auth((req) => {
-  const { nextUrl } = req
+  const { nextUrl, method } = req
   const isLoggedIn = !!req.auth
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
+  const isApiPublicRoute = apiPublicRoutes.includes(nextUrl.pathname)
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
 
   if (isApiAuthRoute) {
+    return
+  }
+
+  if (isApiPublicRoute && method === "GET") {
     return
   }
 

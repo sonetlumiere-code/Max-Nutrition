@@ -15,6 +15,7 @@ const authRoutes: string[] = [
 ]
 
 const apiAuthPrefix: string = "/api/auth"
+const apiPublicRoutes: string[] = ["/api/promotions", "/api/categories"]
 
 const DEFAULT_REDIRECT_SHOP: string = ShopRoutes.FOODS
 const DEFAULT_REDIRECT_DASHBOARD: string = "/dashboard"
@@ -25,6 +26,7 @@ export {
   publicRoutes,
   authRoutes,
   apiAuthPrefix,
+  apiPublicRoutes,
   DEFAULT_REDIRECT_SHOP,
   DEFAULT_REDIRECT_DASHBOARD,
 }

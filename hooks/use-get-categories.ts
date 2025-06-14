@@ -1,6 +1,5 @@
 "use client"
 
-import { getCategories } from "@/data/categories"
 import { PopulatedCategory } from "@/types/types"
 import { ShopCategory } from "@prisma/client"
 import useSWR from "swr"
@@ -9,25 +8,18 @@ const fetchCategories = async ({
   shopCategory,
 }: {
   shopCategory: ShopCategory
-}) => {
-  const categories = await getCategories({
-    where: {
-      shopCategory,
-    },
-    include: {
-      products: {
-        where: {
-          show: true,
-        },
-        include: {
-          categories: true,
-        },
-      },
-      promotions: true,
-    },
-  })
+}): Promise<PopulatedCategory[] | null> => {
+  const res = await fetch(
+    `/api/categories?shopCategory=${encodeURIComponent(shopCategory)}`
+  )
 
-  return categories
+  if (!res.ok) {
+    const errorRes = await res.json()
+    console.error("Failed to fetch categories:", errorRes.error)
+    return null
+  }
+
+  return res.json()
 }
 
 export const useGetCategories = ({
@@ -43,17 +35,21 @@ export const useGetCategories = ({
     data: categories = fallbackData,
     error,
     isLoading: isLoadingCategories,
-  } = useSWR("categories", () => fetchCategories({ shopCategory }), {
-    fallbackData,
-    revalidateOnMount: false,
-    revalidateIfStale: false,
-    revalidateOnFocus: true,
-    onSuccess: (data) => {
-      if (onSuccess && data) {
-        onSuccess(data)
-      }
-    },
-  })
+  } = useSWR<PopulatedCategory[] | null>(
+    `categories-${shopCategory}`,
+    () => fetchCategories({ shopCategory }),
+    {
+      fallbackData,
+      revalidateOnMount: false,
+      revalidateIfStale: false,
+      revalidateOnFocus: true,
+      onSuccess: (data) => {
+        if (onSuccess && data) {
+          onSuccess(data)
+        }
+      },
+    }
+  )
 
   return { categories, error, isLoadingCategories }
 }
