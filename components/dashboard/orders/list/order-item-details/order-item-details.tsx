@@ -74,7 +74,7 @@ const OrderItemDetails = ({ order }: OrderItemDetailsProps) => {
         <div className='text-xs text-muted-foreground'>
           Actualizado el{" "}
           <time>
-            {order.updatedAt.toLocaleDateString("es-AR", {
+            {new Date(order.updatedAt).toLocaleDateString("es-AR", {
               year: "numeric",
               month: "long",
               day: "numeric",

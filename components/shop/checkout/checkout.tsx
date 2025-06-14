@@ -27,7 +27,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
-import { getShippingZone } from "@/data/shipping-zones"
 import {
   translateAddressLabel,
   translateShippingMethod,
@@ -57,6 +56,28 @@ import LoadingOverlay from "@/components/loading-overlay"
 import { Switch } from "@/components/ui/switch"
 import CheckoutCustomerRequiredInfo from "./customer-required-info/checkout-customer-required-info"
 import Link from "next/link"
+
+const fetchShippingZone = async ({
+  locality,
+  isActive,
+}: {
+  locality: string
+  isActive: boolean
+}) => {
+  const params = new URLSearchParams({
+    isActive: String(isActive),
+  })
+
+  const res = await fetch(`/api/shipping-zone/${locality}?${params.toString()}`)
+
+  if (!res.ok) {
+    const error = await res.json()
+    console.error("Failed to fetch shipping zone:", error.error)
+    return null
+  }
+
+  return res.json()
+}
 
 type CheckoutProps = {
   customer: PopulatedCustomer
@@ -143,10 +164,13 @@ const Checkout = ({
     shippingMethod === ShippingMethod.DELIVERY && selectedAddress?.locality
       ? [
           "shipping-zone",
-          { locality: selectedAddress.locality, isActive: true },
+          {
+            locality: selectedAddress.locality,
+            isActive: true,
+          },
         ]
       : null,
-    ([_, params]) => getShippingZone({ where: params }),
+    ([_, params]) => fetchShippingZone(params),
     { revalidateOnFocus: false }
   )
 

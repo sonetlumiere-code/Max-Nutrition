@@ -41,52 +41,11 @@ import {
 type FilterMode = "period" | "custom"
 
 const fetchOrders = async () => {
-  const orders = await getOrders({
-    include: {
-      items: {
-        include: {
-          product: {
-            include: {
-              productRecipes: {
-                include: {
-                  recipe: {
-                    include: {
-                      productRecipes: true,
-                      recipeIngredients: {
-                        include: {
-                          ingredient: true,
-                        },
-                      },
-                    },
-                  },
-                  type: true,
-                },
-              },
-            },
-          },
-        },
-      },
-      customer: {
-        include: {
-          user: {
-            select: {
-              email: true,
-              image: true,
-            },
-          },
-          orders: true,
-        },
-      },
-      address: true,
-      appliedPromotions: true,
-      shop: true,
-      shopBranch: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  })
-  return orders
+  const res = await fetch("/api/orders")
+  if (!res.ok) {
+    throw new Error("Failed to fetch orders")
+  }
+  return res.json()
 }
 
 /* COMPONENTE: CalendarDateRangePicker */
@@ -115,7 +74,7 @@ function CalendarDateRangePicker({
               value.from.toLocaleDateString()
             )
           ) : (
-            <span>Seleccionar rango</span>
+            <span>Seleccionar rango de fechas</span>
           )}
         </Button>
       </PopoverTrigger>
@@ -220,7 +179,7 @@ export default function Orders() {
                     checked={filterMode === "custom"}
                     onClick={() => setFilterMode("custom")}
                   >
-                    Filtrar por rango
+                    Filtrar por rango de fechas
                   </DropdownMenuCheckboxItem>
                 </DropdownMenuContent>
               </DropdownMenu>

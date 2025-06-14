@@ -15,7 +15,11 @@ const authRoutes: string[] = [
 ]
 
 const apiAuthPrefix: string = "/api/auth"
-const apiPublicRoutes: string[] = ["/api/promotions", "/api/categories"]
+const apiPublicRoutes: string[] = [
+  "/api/promotions",
+  "/api/categories",
+  "/api/shipping-zone",
+]
 
 const DEFAULT_REDIRECT_SHOP: string = ShopRoutes.FOODS
 const DEFAULT_REDIRECT_DASHBOARD: string = "/dashboard"

@@ -9,7 +9,9 @@ const fetchPromotions = async ({
 }: {
   shopCategory: ShopCategory
 }): Promise<PopulatedPromotion[] | null> => {
-  const res = await fetch(`/api/promotions?shopCategory=${shopCategory}`)
+  const params = new URLSearchParams({ shopCategory })
+
+  const res = await fetch(`/api/promotions?${params.toString()}`)
 
   if (!res.ok) {
     const errorBody = await res.json()

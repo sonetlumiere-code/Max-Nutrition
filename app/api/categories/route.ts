@@ -7,17 +7,22 @@ export const dynamic = "force-dynamic"
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const shopCategory = searchParams.get("shopCategory") as ShopCategory
+    const shopCategory = searchParams.get("shopCategory") as ShopCategory | null
 
-    if (!shopCategory || !Object.values(ShopCategory).includes(shopCategory)) {
-      return NextResponse.json(
-        { error: "Invalid shopCategory" },
-        { status: 400 }
-      )
+    const where = {} as { shopCategory?: ShopCategory }
+
+    if (shopCategory) {
+      if (!Object.values(ShopCategory).includes(shopCategory)) {
+        return NextResponse.json(
+          { error: "Invalid shopCategory" },
+          { status: 400 }
+        )
+      }
+      where.shopCategory = shopCategory
     }
 
     const categories = await getCategories({
-      where: { shopCategory },
+      where,
       include: {
         products: {
           where: { show: true },

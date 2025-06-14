@@ -46,7 +46,6 @@ import PaymentMethodField from "@/components/shared/payment-method-field"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import SelectedAddressInfo from "@/components/shared/selected-address-info"
 import useSWR from "swr"
-import { getShippingZone } from "@/data/shipping-zones"
 import { useMemo, useState } from "react"
 import Summary from "@/components/shared/summary"
 import { createOrder } from "@/actions/orders/create-order"
@@ -57,6 +56,28 @@ import AllowedDelivery from "@/components/shared/allowed-delivery"
 import { QuantityInput } from "@/components/shared/quantity-input"
 import ShopBranchField from "@/components/shared/shop-branch-field"
 import { Switch } from "@/components/ui/switch"
+
+const fetchShippingZone = async ({
+  locality,
+  isActive,
+}: {
+  locality: string
+  isActive: boolean
+}) => {
+  const params = new URLSearchParams({
+    isActive: String(isActive),
+  })
+
+  const res = await fetch(`/api/shipping-zone/${locality}?${params.toString()}`)
+
+  if (!res.ok) {
+    const error = await res.json()
+    console.error("Failed to fetch shipping zone:", error.error)
+    return null
+  }
+
+  return res.json()
+}
 
 type CreateOrderProps = {
   categories: PopulatedCategory[]
@@ -118,10 +139,13 @@ const CreateOrder = ({
     shippingMethod === ShippingMethod.DELIVERY && selectedAddress?.locality
       ? [
           "shipping-zone",
-          { locality: selectedAddress.locality, isActive: true },
+          {
+            locality: selectedAddress.locality,
+            isActive: true,
+          },
         ]
       : null,
-    ([_, params]) => getShippingZone({ where: params }),
+    ([_, params]) => fetchShippingZone(params),
     { revalidateOnFocus: false }
   )
 
