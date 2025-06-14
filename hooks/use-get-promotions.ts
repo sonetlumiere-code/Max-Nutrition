@@ -6,10 +6,15 @@ import useSWR from "swr"
 
 const fetchPromotions = async ({
   shopCategory,
+  isActive,
 }: {
   shopCategory: ShopCategory
+  isActive: boolean
 }): Promise<PopulatedPromotion[] | null> => {
-  const params = new URLSearchParams({ shopCategory })
+  const params = new URLSearchParams({
+    shopCategory,
+    isActive: String(isActive),
+  })
 
   const res = await fetch(`/api/promotions?${params.toString()}`)
 
@@ -33,7 +38,7 @@ export const useGetPromotions = ({
     isLoading: isLoadingPromotions,
   } = useSWR<PopulatedPromotion[] | null>(
     `promotions-${shopCategory}`,
-    () => fetchPromotions({ shopCategory }),
+    () => fetchPromotions({ shopCategory, isActive: true }),
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,
