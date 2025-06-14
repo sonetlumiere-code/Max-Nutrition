@@ -40,7 +40,7 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(shippingZone, { status: 200 })
+    return NextResponse.json(shippingZone)
   } catch (error) {
     console.error(
       "Unexpected error in GET /api/shipping-zone/[locality]:",

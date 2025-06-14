@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
       },
     })
 
-    return NextResponse.json(promotions, { status: 200 })
+    return NextResponse.json(promotions)
   } catch (error) {
     console.error("Unexpected error in GET /api/promotions:", error)
     return NextResponse.json(
