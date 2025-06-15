@@ -1,4 +1,4 @@
-"server-only"
+import "server-only"
 
 import prisma from "@/lib/db/db"
 import { PopulatedShopBranch } from "@/types/types"

@@ -1,4 +1,4 @@
-"server-only"
+import "server-only"
 
 import { excludeFromList, excludeFromObject } from "@/helpers/helpers"
 import prisma from "@/lib/db/db"
