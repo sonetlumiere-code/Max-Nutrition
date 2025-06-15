@@ -1,10 +1,17 @@
-import AdminProfileDropdown from "./admin-profile-dropdown"
 import SheetSideNavDashboard from "./sheet-sidenav-dashboard"
+import AdminProfileDropdown from "./admin-profile-dropdown"
+import { Session } from "next-auth"
 
-export default async function HeaderDashboard() {
+type HeaderDashboardProps = {
+  session: Session | null
+}
+
+export default async function HeaderDashboard({
+  session,
+}: HeaderDashboardProps) {
   return (
     <header className='flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6'>
-      <SheetSideNavDashboard />
+      <SheetSideNavDashboard session={session} />
       <div className='w-full flex-1'>
         {/* <div className='relative'>
           <Icons.search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
@@ -15,7 +22,8 @@ export default async function HeaderDashboard() {
           />
         </div> */}
       </div>
-      <AdminProfileDropdown />
+
+      <AdminProfileDropdown session={session} />
     </header>
   )
 }

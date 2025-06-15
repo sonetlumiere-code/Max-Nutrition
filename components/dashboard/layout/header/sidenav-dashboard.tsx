@@ -7,11 +7,13 @@ import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
 import { getPermissionsKeys } from "@/helpers/helpers"
 import { Separator } from "@/components/ui/separator"
-import { useSession } from "next-auth/react"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Session } from "next-auth"
 
-export default function SideNavDashboard() {
-  const { data: session, status } = useSession()
+type SideNavDashboardProps = {
+  session: Session | null
+}
+
+export default function SideNavDashboard({ session }: SideNavDashboardProps) {
   const pathname = usePathname()
   const isActive = (href: string) => pathname === href
 
@@ -39,14 +41,6 @@ export default function SideNavDashboard() {
         </div>
         <div className='flex-1'>
           <nav className='grid gap-1 items-start p-2 font-medium lg:p-4'>
-            {status === "loading" && (
-              <div className='space-y-2'>
-                {Array.from({ length: 12 }, (_, i) => (
-                  <Skeleton key={i} className='w-full h-8' />
-                ))}
-              </div>
-            )}
-
             {navItems
               .filter((item) =>
                 userPermissionsKeys?.includes(item.permissionKey)

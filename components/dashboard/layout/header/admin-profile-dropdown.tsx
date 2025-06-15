@@ -9,11 +9,13 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import UserAvatar from "@/components/user-avatar"
-import { auth } from "@/lib/auth/auth"
+import { Session } from "next-auth"
 
-const AdminProfileDropdown = async () => {
-  const session = await auth()
+type AdminProfileDropdownProps = {
+  session: Session | null
+}
 
+const AdminProfileDropdown = ({ session }: AdminProfileDropdownProps) => {
   const userName = session?.user?.name || ""
   const userEmail = session?.user.email || ""
   const roleName = session?.user?.role?.name || "Sin rol"

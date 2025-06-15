@@ -16,11 +16,13 @@ import { Button } from "@/components/ui/button"
 import { navItems } from "@/lib/constants/nav-items"
 import { Icons } from "@/components/icons"
 import { getPermissionsKeys } from "@/helpers/helpers"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useSession } from "next-auth/react"
+import { Session } from "next-auth"
 
-const SheetSideNavDashboard = () => {
-  const { data: session, status } = useSession()
+type SheetSideNavDashboardProps = {
+  session: Session | null
+}
+
+const SheetSideNavDashboard = ({ session }: SheetSideNavDashboardProps) => {
   const pathname = usePathname()
   const isActive = (href: string) => pathname === href
 
@@ -51,14 +53,6 @@ const SheetSideNavDashboard = () => {
           <SheetDescription></SheetDescription>
         </SheetHeader>
         <nav className='grid gap-2 font-medium'>
-          {status === "loading" && (
-            <div className='space-y-3'>
-              {Array.from({ length: 12 }, (_, i) => (
-                <Skeleton key={i} className='w-full h-8' />
-              ))}
-            </div>
-          )}
-
           {navItems
             .filter((item) => userPermissionsKeys?.includes(item.permissionKey))
             .map((item) => {
