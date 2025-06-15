@@ -278,9 +278,7 @@ const Checkout = ({
                     <CardHeader>
                       <div className='space-between flex items-center'>
                         <div className='max-w-screen-sm'>
-                          <CardTitle className='text-xl'>
-                            Resumen del pedido
-                          </CardTitle>
+                          <CardTitle className='text-xl'>Resumen</CardTitle>
                         </div>
                         <div className='ml-auto'>
                           <Button

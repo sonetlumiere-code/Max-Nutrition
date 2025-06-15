@@ -32,50 +32,53 @@ const AppliedPromotions = ({
         appliedPromotions.map((promotion) => (
           <Alert key={promotion.id} variant='success'>
             <Icons.badgePercent className='h-4 w-4' />
-            <AlertTitle className='w-full'>
-              <div className='flex items-center justify-between mb-1'>
+            <AlertTitle className='leading-5'>
+              <div className='flex justify-between'>
                 <span className='font-medium'>
                   ¡Promoción aplicada! ({promotion.name})
                 </span>
-                <Badge variant='outline'>x {promotion.appliedTimes}</Badge>
+                <Badge variant='outline' className='flex h-8'>
+                  <span>x</span>
+                  <span>{promotion.appliedTimes}</span>
+                </Badge>
               </div>
-              <Accordion type='single' collapsible className='w-full'>
-                <AccordionItem value='item-1' className='border-b-0'>
-                  <AccordionTrigger className='py-1 text-sm font-normal text-muted-foreground bg-muted/50 px-2 rounded-t-md'>
-                    Ver detalles
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className='flex flex-col gap-1 text-sm text-muted-foreground bg-muted/50 p-2 rounded-b-md'>
-                      <span>{promotion.description}</span>
-                      <span className='flex items-center'>
-                        <Icons.walletMinimal className='h-4 w-4 mr-2' />
-                        {new Intl.ListFormat("es", {
-                          style: "long",
-                          type: "conjunction",
-                        }).format(
-                          promotion.allowedPaymentMethods.map(
-                            translatePaymentMethod
-                          )
-                        )}
-                        {"."}
-                      </span>
-                      <span className='flex items-center'>
-                        <Icons.truck className='h-4 w-4 mr-2' />
-                        {new Intl.ListFormat("es", {
-                          style: "long",
-                          type: "conjunction",
-                        }).format(
-                          promotion.allowedShippingMethods.map(
-                            translateShippingMethod
-                          )
-                        )}
-                        {"."}
-                      </span>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
             </AlertTitle>
+            <Accordion type='single' collapsible className='w-full'>
+              <AccordionItem value='item-1' className='border-b-0'>
+                <AccordionTrigger className='text-sm font-normal text-muted-foreground bg-muted/50 px-2 rounded-t-md'>
+                  Ver detalles
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className='flex flex-col gap-1 text-sm text-muted-foreground bg-muted/50 p-2 rounded-b-md'>
+                    <span>{promotion.description}</span>
+                    <span className='flex items-center'>
+                      <Icons.walletMinimal className='h-4 w-4 mr-2' />
+                      {new Intl.ListFormat("es", {
+                        style: "long",
+                        type: "conjunction",
+                      }).format(
+                        promotion.allowedPaymentMethods.map(
+                          translatePaymentMethod
+                        )
+                      )}
+                      {"."}
+                    </span>
+                    <span className='flex items-center'>
+                      <Icons.truck className='h-4 w-4 mr-2' />
+                      {new Intl.ListFormat("es", {
+                        style: "long",
+                        type: "conjunction",
+                      }).format(
+                        promotion.allowedShippingMethods.map(
+                          translateShippingMethod
+                        )
+                      )}
+                      {"."}
+                    </span>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </Alert>
         ))
       ) : (
