@@ -4,9 +4,6 @@ import dynamic from "next/dynamic"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { getPromotions } from "@/data/promotions"
-import CustomerProfileDropdown from "./customer-profile-dropdown"
-import AuthButton from "./auth-button"
-import { Session } from "next-auth"
 import { PopulatedShop } from "@/types/types"
 
 const CartHeaderButton = dynamic(() => import("./cart-header-button"), {
@@ -20,12 +17,15 @@ const Promotions = dynamic(
   }
 )
 
+const CustomerAuth = dynamic(() => import("./customer-auth"), {
+  ssr: false,
+})
+
 type HeaderShopProps = {
-  session: Session | null
   shop: PopulatedShop
 }
 
-export default async function HeaderShop({ session, shop }: HeaderShopProps) {
+export default async function HeaderShop({ shop }: HeaderShopProps) {
   const promotions = await getPromotions({
     where: {
       shopCategory: shop.shopCategory,
@@ -66,11 +66,7 @@ export default async function HeaderShop({ session, shop }: HeaderShopProps) {
             <CartHeaderButton />
           </div>
 
-          {session?.user ? (
-            <CustomerProfileDropdown session={session} shop={shop} />
-          ) : (
-            <AuthButton />
-          )}
+          <CustomerAuth shop={shop} />
         </div>
       </header>
     </div>

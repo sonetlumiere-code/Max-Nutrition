@@ -1,6 +1,5 @@
 "use client"
 
-import { Session } from "next-auth"
 import { v4 as uuidv4 } from "uuid"
 import {
   createContext,
@@ -18,6 +17,7 @@ import {
   PopulatedShop,
   Variation,
 } from "@/types/types"
+import { useSession } from "next-auth/react"
 
 type CartProviderState = {
   items: LineItem[]
@@ -42,26 +42,12 @@ const LOCAL_STORAGE_KEYS = {
     userId ? `cart_${userId}_${shopCategory}` : `cart_guest_${shopCategory}`,
 }
 
-const initialState: Omit<CartProviderState, "shop"> = {
-  items: [],
-  setItems: () => null,
-  addItem: () => null,
-  removeItem: () => null,
-  clearCart: () => null,
-  getSubtotalPrice: () => 0,
-  incrementQuantity: () => null,
-  decrementQuantity: () => null,
-  open: false,
-  setOpen: () => null,
-}
-
 const CartProviderContext = createContext<CartProviderState | undefined>(
   undefined
 )
 
 type CartProviderProps = {
   children: ReactNode
-  session: Session | null
   shop: PopulatedShop
 }
 
@@ -73,56 +59,54 @@ const parseJSON = (value: string | null): any => {
   }
 }
 
-export function CartProvider({ children, session, shop }: CartProviderProps) {
+export function CartProvider({ children, shop }: CartProviderProps) {
+  const { data: session, status } = useSession()
   const { shopCategory } = shop
 
-  const storageKey = useMemo(
-    () => LOCAL_STORAGE_KEYS.CART(session?.user.id || null, shopCategory),
-    [session?.user.id, shopCategory]
-  )
-
-  const [items, setItems] = useState<LineItem[]>(() => {
-    if (typeof window === "undefined") return initialState.items
-    return parseJSON(localStorage.getItem(storageKey))
-  })
-
+  const [items, setItems] = useState<LineItem[]>([])
   const [open, setOpen] = useState(false)
 
+  // Load cart items from localStorage when session and window are ready
   useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(items))
-  }, [items, storageKey])
+    if (typeof window === "undefined" || status === "loading") return
 
-  useEffect(() => {
-    if (session?.user.id) {
-      const userKey = LOCAL_STORAGE_KEYS.CART(session.user.id, shopCategory)
-      const guestKey = LOCAL_STORAGE_KEYS.CART(null, shopCategory)
+    const userId = session?.user?.id || null
+    const userKey = LOCAL_STORAGE_KEYS.CART(userId, shopCategory)
+    const guestKey = LOCAL_STORAGE_KEYS.CART(null, shopCategory)
 
-      const userItems = parseJSON(localStorage.getItem(userKey))
-      const guestItems = parseJSON(localStorage.getItem(guestKey))
+    const userItems = parseJSON(localStorage.getItem(userKey)) as LineItem[]
+    const guestItems = parseJSON(localStorage.getItem(guestKey)) as LineItem[]
 
-      if (guestItems.length > 0) {
-        const mergedItems = [...userItems]
+    let mergedItems = userItems
 
-        guestItems.forEach((guestItem: LineItem) => {
-          const existingItem = mergedItems.find(
-            (i) =>
-              i.product.id === guestItem.product.id &&
-              JSON.stringify(i.variation) ===
-                JSON.stringify(guestItem.variation)
-          )
-          if (existingItem) {
-            existingItem.quantity += guestItem.quantity
-          } else {
-            mergedItems.push(guestItem)
-          }
-        })
+    if (userId && guestItems.length > 0) {
+      guestItems.forEach((guestItem: LineItem) => {
+        const existingItem = mergedItems.find(
+          (i) =>
+            i.product.id === guestItem.product.id &&
+            JSON.stringify(i.variation) === JSON.stringify(guestItem.variation)
+        )
+        if (existingItem) {
+          existingItem.quantity += guestItem.quantity
+        } else {
+          mergedItems.push(guestItem)
+        }
+      })
 
-        localStorage.setItem(userKey, JSON.stringify(mergedItems))
-        localStorage.removeItem(guestKey)
-        setItems(mergedItems)
-      }
+      localStorage.setItem(userKey, JSON.stringify(mergedItems))
+      localStorage.removeItem(guestKey)
     }
-  }, [session?.user.id, shopCategory])
+
+    setItems(mergedItems)
+  }, [session, status, shopCategory])
+
+  // Persist cart to localStorage
+  useEffect(() => {
+    if (typeof window === "undefined" || status === "loading") return
+
+    const key = LOCAL_STORAGE_KEYS.CART(session?.user?.id || null, shopCategory)
+    localStorage.setItem(key, JSON.stringify(items))
+  }, [items, session, status, shopCategory])
 
   const addItem = (
     product: PopulatedProduct,

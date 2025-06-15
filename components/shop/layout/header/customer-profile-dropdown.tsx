@@ -24,7 +24,7 @@ const CustomerProfileDropdown = ({ session, shop }: ProfileDropdownProps) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <UserAvatar user={session?.user} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
