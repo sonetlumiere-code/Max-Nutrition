@@ -39,7 +39,7 @@ const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
   })
 
   if (!shippingZone) {
-    redirect(DEFAULT_REDIRECT_DASHBOARD)
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

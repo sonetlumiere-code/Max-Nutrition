@@ -76,7 +76,7 @@ const ViewCustomer = async ({ params }: ViewCustomerProps) => {
   })
 
   if (!customer) {
-    redirect("/customers")
+    return redirect("/customers")
   }
 
   const customerOrdersLength = customer?.orders?.length || 0

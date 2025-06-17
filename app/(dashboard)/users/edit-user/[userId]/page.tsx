@@ -45,7 +45,7 @@ const EditUserPage = async ({ params }: EditUserPageProps) => {
   ])
 
   if (!userById || !roles) {
-    redirect("/users")
+    return redirect("/users")
   }
 
   return (

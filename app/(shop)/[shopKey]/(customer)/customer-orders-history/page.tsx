@@ -27,7 +27,7 @@ const CustomerOrdersHistoryPage = async ({
   })
 
   if (!shop) {
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   const customer = await getCustomer({
@@ -63,7 +63,7 @@ const CustomerOrdersHistoryPage = async ({
   })
 
   if (!customer) {
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   return (

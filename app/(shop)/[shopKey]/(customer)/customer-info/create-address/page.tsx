@@ -39,7 +39,7 @@ const CreateCustomerAddressPage = async ({
   })
 
   if (!shop) {
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   const customer = await getCustomer({
@@ -62,7 +62,7 @@ const CreateCustomerAddressPage = async ({
   })
 
   if (!customer) {
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   return (

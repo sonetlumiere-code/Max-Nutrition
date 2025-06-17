@@ -44,7 +44,7 @@ const EditShopBranchPage = async ({ params }: EditShopBranchProps) => {
   })
 
   if (!shopBranch) {
-    redirect("/shop-branches")
+    return redirect("/shop-branches")
   }
 
   return (

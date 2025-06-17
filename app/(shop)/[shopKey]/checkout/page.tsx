@@ -33,27 +33,27 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   })
 
   if (!shop) {
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   if (!shopSettingsId) {
     console.warn("Es necesario el ID de la configuración de tienda")
-    redirect(`/${shop.key}` || DEFAULT_REDIRECT_SHOP)
+    return redirect(`/${shop.key}` || DEFAULT_REDIRECT_SHOP)
   }
 
   const isShopAvailable = isShopCurrentlyAvailable(shop.operationalHours)
 
   if (!isShopAvailable) {
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   const session = await auth()
 
   if (!session) {
     if (shop.key) {
-      redirect(`/${shop.key}`)
+      return redirect(`/${shop.key}`)
     }
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   const [customer, shopSettings, shopBranches] = await Promise.all([
@@ -99,7 +99,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   ])
 
   if (!customer || !shopSettings) {
-    redirect(`/${shop.key}` || DEFAULT_REDIRECT_SHOP)
+    return redirect(`/${shop.key}` || DEFAULT_REDIRECT_SHOP)
   }
 
   return (

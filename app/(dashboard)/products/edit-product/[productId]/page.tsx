@@ -62,7 +62,7 @@ const EditProductPage = async ({ params }: EditProductPageProps) => {
   ])
 
   if (!product) {
-    redirect(DEFAULT_REDIRECT_DASHBOARD)
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

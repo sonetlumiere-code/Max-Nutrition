@@ -32,7 +32,7 @@ const ShopPage = async ({ params }: ShopPageProps) => {
   })
 
   if (!shop) {
-    redirect("/")
+    return redirect("/")
   }
 
   const { shopCategory } = shop

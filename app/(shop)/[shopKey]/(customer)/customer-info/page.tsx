@@ -26,7 +26,7 @@ const CustomerInfoPage = async ({ params }: CustomerInfoPageProps) => {
   })
 
   if (!shop) {
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   const customer = await getCustomer({
@@ -62,7 +62,7 @@ const CustomerInfoPage = async ({ params }: CustomerInfoPageProps) => {
   })
 
   if (!customer) {
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   return (

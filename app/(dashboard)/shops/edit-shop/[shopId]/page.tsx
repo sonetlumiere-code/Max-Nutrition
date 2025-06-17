@@ -41,7 +41,7 @@ const EditShopPage = async ({ params }: EditShopPageProps) => {
   })
 
   if (!shop) {
-    redirect(DEFAULT_REDIRECT_DASHBOARD)
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

@@ -41,7 +41,7 @@ const EditCustomerPage = async ({ params }: EditCustomerPageProps) => {
   })
 
   if (!customer) {
-    redirect("/customers")
+    return redirect("/customers")
   }
 
   return (

@@ -47,7 +47,7 @@ const EditRecipePage = async ({ params }: EditRecipePageProps) => {
   ])
 
   if (!recipe) {
-    redirect(DEFAULT_REDIRECT_DASHBOARD)
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

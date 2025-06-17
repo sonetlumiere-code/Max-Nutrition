@@ -16,7 +16,7 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
   const { orderId } = params
 
   if (!orderId) {
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
   const session = await auth()
@@ -53,7 +53,7 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
     })
 
     if (!order || !order.shop) {
-      redirect(DEFAULT_REDIRECT_SHOP)
+      return redirect(DEFAULT_REDIRECT_SHOP)
     }
 
     return (
@@ -75,6 +75,6 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
     )
   } catch (error) {
     console.error("Error fetching order data:", error)
-    redirect(DEFAULT_REDIRECT_SHOP)
+    return redirect(DEFAULT_REDIRECT_SHOP)
   }
 }

@@ -43,7 +43,7 @@ const EditPromotionPage = async ({ params }: EditPromotionPageProps) => {
   ])
 
   if (!promotion) {
-    redirect(DEFAULT_REDIRECT_DASHBOARD)
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

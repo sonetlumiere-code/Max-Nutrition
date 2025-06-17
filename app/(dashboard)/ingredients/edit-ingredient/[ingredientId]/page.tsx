@@ -36,7 +36,7 @@ const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
   })
 
   if (!ingredient) {
-    redirect(DEFAULT_REDIRECT_DASHBOARD)
+    return redirect(DEFAULT_REDIRECT_DASHBOARD)
   }
 
   return (

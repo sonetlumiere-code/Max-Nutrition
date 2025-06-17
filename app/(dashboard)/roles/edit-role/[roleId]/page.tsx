@@ -43,7 +43,7 @@ const EditRolePage = async ({ params }: EditRolePageProps) => {
   ])
 
   if (!role) {
-    redirect("/roles")
+    return redirect("/roles")
   }
 
   return (
