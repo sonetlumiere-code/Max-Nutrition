@@ -1,6 +1,5 @@
 import { getShops } from "@/data/shops"
 import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import {
   Breadcrumb,
@@ -10,7 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Icons } from "@/components/icons"
 import {
@@ -20,7 +19,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
 import {
   Table,
   TableBody,
@@ -38,9 +36,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 export default async function ShopsPage() {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

@@ -1,12 +1,12 @@
 "use server"
 
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
 import { revalidatePath } from "next/cache"
 import { hasPermission } from "@/helpers/helpers"
 
 export async function deleteProductRecipeType({ id }: { id: string }) {
-  const session = await auth()
+  const session = await verifySession()
 
   const user = session?.user
 

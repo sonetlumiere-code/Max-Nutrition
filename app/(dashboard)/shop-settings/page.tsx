@@ -1,4 +1,5 @@
 // import { hasPermission } from "@/helpers/helpers"
+// import { verifySession } from "@/lib/auth/verify-session"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
@@ -7,7 +8,7 @@ import { redirect } from "next/navigation"
 const ShopSettingsPage = async () => {
   return redirect(DEFAULT_REDIRECT_DASHBOARD)
 
-  // const session = await auth()
+  // const session = await verifySession()
   // const user = session?.user
 
   // if (!user) {

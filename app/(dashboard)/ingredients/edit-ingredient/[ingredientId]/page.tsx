@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getIngredient } from "@/data/ingredients"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
@@ -18,7 +18,7 @@ interface EditIngredientPageProps {
 }
 
 const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

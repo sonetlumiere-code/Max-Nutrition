@@ -9,12 +9,12 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getProducts } from "@/data/products"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 const CreateCategoryPage = async () => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

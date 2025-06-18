@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation"
 import { getOrder } from "@/data/orders"
 import OrderConfirmed from "@/components/shop/order-confirmed/order-confirmed"
-import { auth } from "@/lib/auth/auth"
 import Link from "next/link"
 import { Icons } from "@/components/icons"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { DEFAULT_REDIRECT_SHOP } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 interface PageProps {
   params: { orderId: string }
@@ -19,7 +19,7 @@ export default async function OrderConfirmedPage({ params }: PageProps) {
     return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
-  const session = await auth()
+  const session = await verifySession()
 
   if (!session?.user) {
     return null

@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
-import { auth } from "@/lib/auth/auth"
 import { getCustomer } from "@/data/customer"
 import { buttonVariants } from "@/components/ui/button"
 import dynamic from "next/dynamic"
@@ -11,6 +10,7 @@ import { getShopBranches } from "@/data/shop-branches"
 import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import { getShop } from "@/data/shops"
 import { isShopCurrentlyAvailable } from "@/helpers/helpers"
+import { verifySession } from "@/lib/auth/verify-session"
 
 const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
   ssr: false,
@@ -47,7 +47,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
     return redirect(DEFAULT_REDIRECT_SHOP)
   }
 
-  const session = await auth()
+  const session = await verifySession()
 
   if (!session) {
     if (shop.key) {

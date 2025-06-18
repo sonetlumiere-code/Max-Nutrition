@@ -18,14 +18,14 @@ import {
 } from "@/components/ui/card"
 import { getCustomers } from "@/data/customer"
 import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 export default async function CustomersPage() {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

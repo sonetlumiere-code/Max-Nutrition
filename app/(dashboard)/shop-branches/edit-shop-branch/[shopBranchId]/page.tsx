@@ -7,11 +7,11 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import EditShopBranch from "@/components/dashboard/shop-branches/edit-shop-branch/edit-shop-branch"
-import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { getShopBranch } from "@/data/shop-branches"
 import { hasPermission } from "@/helpers/helpers"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 interface EditShopBranchProps {
   params: {
@@ -20,7 +20,7 @@ interface EditShopBranchProps {
 }
 
 const EditShopBranchPage = async ({ params }: EditShopBranchProps) => {
-  const session = await auth()
+  const session = await verifySession()
 
   const user = session?.user
 

@@ -1,7 +1,7 @@
 "use server"
 
 import { getCustomer } from "@/data/customer"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
 import {
   CustomerAddressSchema,
@@ -14,7 +14,7 @@ export async function editCustomerAddress(
   id: string,
   values: CustomerAddressSchema
 ) {
-  const session = await auth()
+  const session = await verifySession()
 
   const customer = await getCustomer({
     where: {

@@ -1,10 +1,10 @@
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
 export default async function AnalyiticsPage() {
-  const session = await auth()
+  const session = await verifySession()
 
   const user = session?.user
 

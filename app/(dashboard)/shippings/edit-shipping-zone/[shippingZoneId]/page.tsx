@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { getShippingZone } from "@/data/shipping-zones"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
@@ -20,7 +20,7 @@ interface EditShippingZonePageProps {
 }
 
 const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

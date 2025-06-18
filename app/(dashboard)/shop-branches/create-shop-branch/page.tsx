@@ -1,5 +1,4 @@
 import CreateShopBranch from "@/components/dashboard/shop-branches/create-shop-branch/create-shop-branch"
-import { auth } from "@/lib/auth/auth"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,9 +10,10 @@ import {
 import { hasPermission } from "@/helpers/helpers"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 const CreateShopBranchPage = async () => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

@@ -10,7 +10,7 @@ import {
 import { getCategory } from "@/data/categories"
 import { getProducts } from "@/data/products"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
@@ -21,7 +21,7 @@ interface EditCategoryPageProps {
 }
 
 const EditCategoryPage = async ({ params }: EditCategoryPageProps) => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

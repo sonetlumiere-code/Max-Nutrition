@@ -1,7 +1,7 @@
 "use server"
 
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
 import {
   ProductRecipeSchema,
@@ -10,7 +10,7 @@ import {
 import { revalidatePath } from "next/cache"
 
 export async function createProductRecipeType(values: ProductRecipeSchema) {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

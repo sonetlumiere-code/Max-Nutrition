@@ -1,6 +1,6 @@
 "use server"
 
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
 import {
   CustomerSchema,
@@ -9,7 +9,7 @@ import {
 import { revalidatePath } from "next/cache"
 
 export async function customerEditPersonalInfo(values: CustomerSchema) {
-  const session = await auth()
+  const session = await verifySession()
 
   if (!session) {
     return { error: "No autorizado." }

@@ -10,9 +10,9 @@ import {
 import { getCategories } from "@/data/categories"
 import { getPromotion } from "@/data/promotions"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 interface EditPromotionPageProps {
   params: {
@@ -21,7 +21,7 @@ interface EditPromotionPageProps {
 }
 
 const EditPromotionPage = async ({ params }: EditPromotionPageProps) => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

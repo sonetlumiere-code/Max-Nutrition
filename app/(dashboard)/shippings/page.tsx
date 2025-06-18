@@ -18,12 +18,12 @@ import {
 } from "@/components/ui/card"
 import { getShopSettings } from "@/data/shop-settings"
 import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import { ShippingSettings } from "@prisma/client"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
@@ -32,7 +32,7 @@ const Shippings = async () => {
     return <span>Es necesario el ID de la configuración de tienda.</span>
   }
 
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

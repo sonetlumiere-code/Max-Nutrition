@@ -4,7 +4,7 @@ import { getCustomer } from "@/data/customer"
 import { getProducts } from "@/data/products"
 import { getShippingSettings } from "@/data/shipping-settings"
 import { getShippingZone } from "@/data/shipping-zones"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
 import { sendOrderDetailsEmail } from "@/lib/mail/mail"
 import { OrderSchema, orderSchema } from "@/lib/validations/order-validation"
@@ -29,7 +29,7 @@ export async function createOrder({
     return { error: "Es necesario el ID de la configuración de tienda." }
   }
 
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!session || !user) {

@@ -1,7 +1,7 @@
 "use server"
 
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
 import {
   partialProductSchema,
@@ -16,7 +16,7 @@ export async function editProduct({
   id: string
   values: PartialProductSchema
 }) {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

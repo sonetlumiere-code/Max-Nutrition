@@ -4,7 +4,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getCustomer } from "@/data/customer"
 import { getShop } from "@/data/shops"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { cn } from "@/lib/utils"
 import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import Link from "next/link"
@@ -24,7 +24,7 @@ const EditCustomerAddressPage = async ({
   params,
   searchParams,
 }: CreateCustomerAddressProps) => {
-  const session = await auth()
+  const session = await verifySession()
 
   const { shopKey } = params
   const { redirectTo } = searchParams

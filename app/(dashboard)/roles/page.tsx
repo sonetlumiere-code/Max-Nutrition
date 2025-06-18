@@ -33,14 +33,14 @@ import {
 } from "@/components/ui/table"
 import { getRoles } from "@/data/roles"
 import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 export default async function RolesPage() {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

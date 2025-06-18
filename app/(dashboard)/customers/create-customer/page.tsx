@@ -1,4 +1,3 @@
-import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import {
   Breadcrumb,
@@ -11,9 +10,10 @@ import {
 import CreateCustomer from "@/components/dashboard/customers/create-customer/create-customer"
 import { hasPermission } from "@/helpers/helpers"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 const CreateCustomerPage = async () => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

@@ -1,7 +1,7 @@
 "use server"
 
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
 import { UserSchema, userSchema } from "@/lib/validations/user-validation"
 import { revalidatePath } from "next/cache"
@@ -13,7 +13,7 @@ export async function editUser({
   id: string
   values: UserSchema
 }) {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

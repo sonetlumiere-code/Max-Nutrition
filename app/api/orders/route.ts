@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getOrders } from "@/data/orders"
 import { OrderStatus, PaymentStatus, Prisma } from "@prisma/client"
-import { auth } from "@/lib/auth/auth"
 import { hasPermission } from "@/helpers/helpers"
+import { verifySession } from "@/lib/auth/verify-session"
 
 export const dynamic = "force-dynamic"
 
 export async function GET(req: NextRequest) {
-  const session = await auth()
+  const session = await verifySession()
 
   if (!session) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 })

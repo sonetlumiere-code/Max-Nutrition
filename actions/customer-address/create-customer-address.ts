@@ -1,7 +1,7 @@
 "use server"
 
 import { getCustomer } from "@/data/customer"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
 import {
   CustomerAddressSchema,
@@ -11,7 +11,7 @@ import { CustomerAddressLabel } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
 export async function createCustomerAddress(values: CustomerAddressSchema) {
-  const session = await auth()
+  const session = await verifySession()
 
   const customer = await getCustomer({
     where: {

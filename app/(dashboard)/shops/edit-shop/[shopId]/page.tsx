@@ -1,6 +1,5 @@
 import { getShop } from "@/data/shops"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import {
   Breadcrumb,
@@ -12,6 +11,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import EditShop from "@/components/dashboard/shops/edit-shop/edit-shop"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 interface EditShopPageProps {
   params: {
@@ -20,7 +20,7 @@ interface EditShopPageProps {
 }
 
 const EditShopPage = async ({ params }: EditShopPageProps) => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

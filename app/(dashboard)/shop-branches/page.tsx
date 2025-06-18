@@ -35,13 +35,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import DeleteShopBranch from "@/components/dashboard/shop-branches/delete-shop-branch/delete-shop-branch"
 import { Badge } from "@/components/ui/badge"
-import { auth } from "@/lib/auth/auth"
 import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 const ShopBranchesPage = async () => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

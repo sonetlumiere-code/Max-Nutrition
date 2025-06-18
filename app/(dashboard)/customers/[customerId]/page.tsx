@@ -17,7 +17,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { getCustomer } from "@/data/customer"
 import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { redirect } from "next/navigation"
 import { format } from "date-fns"
 import CustomersOrdersTable from "@/components/dashboard/customers/view-customer/customer-orders-table/customer-orders-table"
@@ -28,7 +28,7 @@ interface ViewCustomerProps {
 }
 
 const ViewCustomer = async ({ params }: ViewCustomerProps) => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

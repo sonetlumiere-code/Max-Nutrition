@@ -1,6 +1,5 @@
 import { getSafeUsers } from "@/data/user"
-import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { hasPermission } from "@/helpers/helpers"
 import { redirect } from "next/navigation"
 import {
   Breadcrumb,
@@ -19,9 +18,10 @@ import {
 } from "@/components/ui/card"
 import UsersDataTable from "@/components/dashboard/users/list/users-data-table/users-data-table"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 const UsersPage = async () => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

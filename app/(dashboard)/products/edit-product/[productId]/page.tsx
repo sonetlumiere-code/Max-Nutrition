@@ -12,9 +12,9 @@ import { getProductRecipeTypes } from "@/data/product-recipe-types"
 import { getProduct } from "@/data/products"
 import { getRecipes } from "@/data/recipes"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 interface EditProductPageProps {
   params: {
@@ -23,7 +23,7 @@ interface EditProductPageProps {
 }
 
 const EditProductPage = async ({ params }: EditProductPageProps) => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

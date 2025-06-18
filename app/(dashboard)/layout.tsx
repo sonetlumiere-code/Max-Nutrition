@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 import SideNavDashboard from "@/components/dashboard/layout/header/sidenav-dashboard"
 import HeaderDashboard from "@/components/dashboard/layout/header/header-dashboard"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
-  const session = await auth()
+  const session = await verifySession()
 
   return (
     <div className='grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]'>

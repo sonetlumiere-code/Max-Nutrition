@@ -4,7 +4,7 @@ import CustomerPersonalInfo from "@/components/shop/customer/info/personal-info/
 import { buttonVariants } from "@/components/ui/button"
 import { getCustomer } from "@/data/customer"
 import { getShop } from "@/data/shops"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { cn } from "@/lib/utils"
 import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import Link from "next/link"
@@ -17,7 +17,7 @@ interface CustomerInfoPageProps {
 }
 
 const CustomerInfoPage = async ({ params }: CustomerInfoPageProps) => {
-  const session = await auth()
+  const session = await verifySession()
 
   const { shopKey } = params
 

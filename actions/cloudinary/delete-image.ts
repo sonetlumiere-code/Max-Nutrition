@@ -1,12 +1,12 @@
 "use server"
 
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { deleteFromCloudinary } from "@/lib/cloudinary/cloudinary-config"
 
 async function deleteImage(
   publicId: string
 ): Promise<{ success?: string; error?: string }> {
-  const session = await auth()
+  const session = await verifySession()
 
   if (!session) {
     return { error: "No autorizado." }

@@ -36,14 +36,14 @@ import {
 } from "@/components/ui/table"
 import { getProducts } from "@/data/products"
 import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { cn } from "@/lib/utils"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
 export default async function ProductsPage() {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

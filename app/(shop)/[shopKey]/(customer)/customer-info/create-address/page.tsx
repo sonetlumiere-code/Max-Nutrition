@@ -1,16 +1,10 @@
 import { Icons } from "@/components/icons"
 import CustomerCreateAddressForm from "@/components/shop/customer/info/address/create/customer-create-address-form"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getCustomer } from "@/data/customer"
 import { getShop } from "@/data/shops"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { cn } from "@/lib/utils"
 import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import Link from "next/link"
@@ -29,7 +23,7 @@ const CreateCustomerAddressPage = async ({
   params,
   searchParams,
 }: CreateCustomerAddressProps) => {
-  const session = await auth()
+  const session = await verifySession()
 
   const { shopKey } = params
   const { redirectTo } = searchParams

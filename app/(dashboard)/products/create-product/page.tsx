@@ -11,12 +11,12 @@ import { getCategories } from "@/data/categories"
 import { getProductRecipeTypes } from "@/data/product-recipe-types"
 import { getRecipes } from "@/data/recipes"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 const CreateProductPage = async () => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

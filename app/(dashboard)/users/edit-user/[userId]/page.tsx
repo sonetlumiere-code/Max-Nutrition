@@ -10,9 +10,9 @@ import {
 import { getRoles } from "@/data/roles"
 import { getSafeUser } from "@/data/user"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 interface EditUserPageProps {
   params: {
@@ -21,7 +21,7 @@ interface EditUserPageProps {
 }
 
 const EditUserPage = async ({ params }: EditUserPageProps) => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

@@ -3,7 +3,7 @@ import CustomerOrdersHistory from "@/components/shop/customer/orders-history/cus
 import { buttonVariants } from "@/components/ui/button"
 import { getCustomer } from "@/data/customer"
 import { getShop } from "@/data/shops"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { cn } from "@/lib/utils"
 import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import Link from "next/link"
@@ -18,7 +18,7 @@ interface CustomerOrdersHistoryPageProps {
 const CustomerOrdersHistoryPage = async ({
   params,
 }: CustomerOrdersHistoryPageProps) => {
-  const session = await auth()
+  const session = await verifySession()
 
   const { shopKey } = params
 

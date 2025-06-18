@@ -1,7 +1,7 @@
 "use server"
 
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
 import {
   ShippingZoneSchema,
@@ -16,7 +16,7 @@ export async function createShippingZone(values: ShippingZoneSchema) {
     return { error: "Es necesario el ID de la configuración de tienda." }
   }
 
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

@@ -12,9 +12,9 @@ import { getCustomers } from "@/data/customer"
 import { getShopBranches } from "@/data/shop-branches"
 import { getShopSettings } from "@/data/shop-settings"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
 import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
+import { verifySession } from "@/lib/auth/verify-session"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
@@ -23,7 +23,7 @@ const CreateOrderPage = async () => {
     return <span>Es necesario el ID de la configuración de tienda.</span>
   }
 
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {

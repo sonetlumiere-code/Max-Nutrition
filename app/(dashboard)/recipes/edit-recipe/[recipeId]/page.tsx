@@ -10,7 +10,7 @@ import {
 import { getIngredients } from "@/data/ingredients"
 import { getRecipe } from "@/data/recipes"
 import { hasPermission } from "@/helpers/helpers"
-import { auth } from "@/lib/auth/auth"
+import { verifySession } from "@/lib/auth/verify-session"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
@@ -21,7 +21,7 @@ interface EditRecipePageProps {
 }
 
 const EditRecipePage = async ({ params }: EditRecipePageProps) => {
-  const session = await auth()
+  const session = await verifySession()
   const user = session?.user
 
   if (!user) {
