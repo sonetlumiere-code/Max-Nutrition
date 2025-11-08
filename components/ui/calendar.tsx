@@ -83,7 +83,7 @@ function Calendar({
                 value={props.value?.toString()}
               >
                 <SelectTrigger className='capitalize'>
-                  {format(currentMonth, "MMM", { locale })} asd
+                  {format(currentMonth, "MMM", { locale })}
                 </SelectTrigger>
                 <SelectContent>
                   {selectItems.map((selectItem) => (
