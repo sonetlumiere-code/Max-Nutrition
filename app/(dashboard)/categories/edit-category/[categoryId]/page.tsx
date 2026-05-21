@@ -15,12 +15,13 @@ import { redirect } from "next/navigation"
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 interface EditCategoryPageProps {
-  params: {
+  params: Promise<{
     categoryId: string
-  }
+  }>
 }
 
-const EditCategoryPage = async ({ params }: EditCategoryPageProps) => {
+const EditCategoryPage = async (props: EditCategoryPageProps) => {
+  const params = await props.params;
   const session = await verifySession()
   const user = session?.user
 

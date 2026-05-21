@@ -7,14 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import dynamic from "next/dynamic"
-
-const CartBadge = dynamic(
-  () => import("@/components/shop/products/cart-badge"),
-  {
-    ssr: false,
-  }
-)
+import CartBadge from "@/components/shop/products/cart-badge.client"
 
 interface ProductCardProps {
   product: Product

@@ -11,19 +11,18 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 
 type CreateCustomerAddressProps = {
-  params: {
+  params: Promise<{
     shopKey: string
     addressId: string
-  }
-  searchParams: {
+  }>
+  searchParams: Promise<{
     redirectTo?: string
-  }
+  }>
 }
 
-const EditCustomerAddressPage = async ({
-  params,
-  searchParams,
-}: CreateCustomerAddressProps) => {
+const EditCustomerAddressPage = async (props: CreateCustomerAddressProps) => {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const session = await verifySession()
 
   const { shopKey } = params

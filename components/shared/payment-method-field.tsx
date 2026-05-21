@@ -15,6 +15,7 @@ import { usePromotion } from "@/hooks/use-promotion"
 import { OrderSchema } from "@/lib/validations/order-validation"
 import { LineItem } from "@/types/types"
 import { PaymentMethod, ShopCategory } from "@prisma/client"
+import { ReactElement } from "react"
 import { Control } from "react-hook-form"
 
 interface PaymentMethodFieldProps {
@@ -25,7 +26,7 @@ interface PaymentMethodFieldProps {
   shopCategory: ShopCategory
 }
 
-const paymentMethodIcons: Record<PaymentMethod, JSX.Element> = {
+const paymentMethodIcons: Record<PaymentMethod, ReactElement> = {
   CASH: <Icons.circleDollarSign className='mb-3 h-6 w-6' />,
   BANK_TRANSFER: <Icons.landmark className='mb-3 h-6 w-6' />,
   MERCADO_PAGO: <Icons.creditCard className='mb-3 h-6 w-6' />,

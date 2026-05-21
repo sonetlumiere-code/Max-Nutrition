@@ -4,10 +4,8 @@ import { Prisma } from "@prisma/client"
 
 export const dynamic = "force-dynamic"
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { locality: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ locality: string }> }) {
+  const params = await props.params;
   try {
     const searchParams = req.nextUrl.searchParams
 

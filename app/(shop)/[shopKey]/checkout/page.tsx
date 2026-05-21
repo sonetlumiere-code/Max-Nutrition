@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 import { getCustomer } from "@/data/customer"
 import { buttonVariants } from "@/components/ui/button"
-import dynamic from "next/dynamic"
 import { redirect } from "next/navigation"
 import { getShopSettings } from "@/data/shop-settings"
 import { getShopBranches } from "@/data/shop-branches"
@@ -11,20 +10,18 @@ import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import { getShop } from "@/data/shops"
 import { isShopCurrentlyAvailable } from "@/helpers/helpers"
 import { verifySession } from "@/lib/auth/verify-session"
-
-const Checkout = dynamic(() => import("@/components/shop/checkout/checkout"), {
-  ssr: false,
-})
+import Checkout from "@/components/shop/checkout/checkout.client"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
 
 interface CheckoutPageProps {
-  params: {
+  params: Promise<{
     shopKey: string
-  }
+  }>
 }
 
-export default async function CheckoutPage({ params }: CheckoutPageProps) {
+export default async function CheckoutPage(props: CheckoutPageProps) {
+  const params = await props.params;
   const { shopKey } = params
 
   const shop = await getShop({

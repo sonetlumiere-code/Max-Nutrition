@@ -1,25 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link"
-import dynamic from "next/dynamic"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { getPromotions } from "@/data/promotions"
 import { PopulatedShop } from "@/types/types"
-
-const CartHeaderButton = dynamic(() => import("./cart-header-button"), {
-  ssr: false,
-})
-
-const Promotions = dynamic(
-  () => import("@/components/shop/promotions/promotions"),
-  {
-    ssr: false,
-  }
-)
-
-const CustomerAuth = dynamic(() => import("./customer-auth"), {
-  ssr: false,
-})
+import CartHeaderButton from "./cart-header-button.client"
+import Promotions from "@/components/shop/promotions/promotions.client"
+import CustomerAuth from "./customer-auth.client"
 
 type HeaderShopProps = {
   shop: PopulatedShop

@@ -14,12 +14,13 @@ import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
 interface EditShippingZonePageProps {
-  params: {
+  params: Promise<{
     shippingZoneId: string
-  }
+  }>
 }
 
-const EditShippingZonePage = async ({ params }: EditShippingZonePageProps) => {
+const EditShippingZonePage = async (props: EditShippingZonePageProps) => {
+  const params = await props.params;
   const session = await verifySession()
   const user = session?.user
 

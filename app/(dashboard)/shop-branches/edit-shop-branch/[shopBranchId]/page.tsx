@@ -14,12 +14,13 @@ import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { verifySession } from "@/lib/auth/verify-session"
 
 interface EditShopBranchProps {
-  params: {
+  params: Promise<{
     shopBranchId: string
-  }
+  }>
 }
 
-const EditShopBranchPage = async ({ params }: EditShopBranchProps) => {
+const EditShopBranchPage = async (props: EditShopBranchProps) => {
+  const params = await props.params;
   const session = await verifySession()
 
   const user = session?.user

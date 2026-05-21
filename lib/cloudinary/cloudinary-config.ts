@@ -6,7 +6,10 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
-const folder = "MaxNutrition"
+const folder = process.env.CLOUDINARY_FOLDER
+if (!folder) {
+  throw new Error("CLOUDINARY_FOLDER environment variable is not set")
+}
 
 const uploadToCloudinary = async (image: File): Promise<UploadApiResponse> => {
   const fileBuffer = await image.arrayBuffer()

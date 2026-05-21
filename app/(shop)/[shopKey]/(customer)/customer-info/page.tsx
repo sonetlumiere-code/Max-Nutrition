@@ -11,12 +11,13 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 
 interface CustomerInfoPageProps {
-  params: {
+  params: Promise<{
     shopKey: string
-  }
+  }>
 }
 
-const CustomerInfoPage = async ({ params }: CustomerInfoPageProps) => {
+const CustomerInfoPage = async (props: CustomerInfoPageProps) => {
+  const params = await props.params;
   const session = await verifySession()
 
   const { shopKey } = params

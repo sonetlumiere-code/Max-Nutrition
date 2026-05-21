@@ -9,10 +9,11 @@ import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import { verifySession } from "@/lib/auth/verify-session"
 
 interface PageProps {
-  params: { orderId: string }
+  params: Promise<{ orderId: string }>
 }
 
-export default async function OrderConfirmedPage({ params }: PageProps) {
+export default async function OrderConfirmedPage(props: PageProps) {
+  const params = await props.params;
   const { orderId } = params
 
   if (!orderId) {

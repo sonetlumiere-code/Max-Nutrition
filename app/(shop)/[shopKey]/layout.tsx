@@ -7,15 +7,18 @@ import { ReactNode } from "react"
 
 interface ShopLayoutProps {
   children: ReactNode
-  params: {
+  params: Promise<{
     shopKey: string
-  }
+  }>
 }
 
-export default async function ShopLayout({
-  children,
-  params,
-}: ShopLayoutProps) {
+export default async function ShopLayout(props: ShopLayoutProps) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const { shopKey } = params
 
   const shop = await getShop({

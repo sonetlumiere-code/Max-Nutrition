@@ -1,14 +1,10 @@
-import dynamic from "next/dynamic"
 import { getPromotions } from "@/data/promotions"
 import { Icons } from "@/components/icons"
 import { Card, CardContent } from "@/components/ui/card"
 import { getShippingZones } from "@/data/shipping-zones"
 import ShippingZones from "./shipping-zones/shipping-zones"
 import { ShopCategory } from "@prisma/client"
-
-const Promotions = dynamic(() => import("./promotions/promotions"), {
-  ssr: false,
-})
+import Promotions from "./promotions/promotions.client"
 
 const ButtonsInfoShop = async ({
   shopCategory,

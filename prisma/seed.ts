@@ -15,6 +15,11 @@ import {
 const prisma = new PrismaClient()
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
+const cloudinaryFolder = process.env.CLOUDINARY_FOLDER
+
+if (!cloudinaryFolder) {
+  throw new Error("CLOUDINARY_FOLDER environment variable is not set")
+}
 
 const permissions: {
   name: string
@@ -280,7 +285,7 @@ const shops: Omit<Shop, "id" | "createdAt" | "updatedAt">[] = [
     description: "Y lo mejor ¡Todo sin gluten!",
     message:
       "Elige entre nuestra variedad semanal de platos. Cambiamos el menú cada lunes, así que si te gusta algo, pídelo antes de que acabe el domingo.",
-    bannerImage: "MaxNutrition/foods-banner_fxspi8",
+    bannerImage: `${cloudinaryFolder}/foods-banner_fxspi8`,
     shopCategory: ShopCategory.FOOD,
     isActive: true,
   },
@@ -291,7 +296,7 @@ const shops: Omit<Shop, "id" | "createdAt" | "updatedAt">[] = [
     description: "Y lo mejor ¡Todo sin gluten!",
     message:
       "Elige entre nuestra variedad semanal de pastelería. Cambiamos el menú cada lunes, así que si te gusta algo, pídelo antes de que acabe el domingo.",
-    bannerImage: "MaxNutrition/bakery-banner_esgsm9",
+    bannerImage: `${cloudinaryFolder}/bakery-banner_esgsm9`,
     shopCategory: ShopCategory.BAKERY,
     isActive: true,
   },
@@ -1421,4 +1426,4 @@ main()
     console.error(error)
     process.exit(1)
   })
-  .finally(() => prisma.$disconnect)
+  .finally(() => prisma.$disconnect())

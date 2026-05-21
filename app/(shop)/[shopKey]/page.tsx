@@ -1,5 +1,4 @@
 import { getShop } from "@/data/shops"
-import dynamic from "next/dynamic"
 import { getCategories } from "@/data/categories"
 import ButtonsInfoShop from "@/components/shop/buttons-info-shop"
 import ProductsList from "@/components/shop/products/products-list"
@@ -9,21 +8,16 @@ import {
   getOperationalHoursMessage,
   isShopCurrentlyAvailable,
 } from "@/helpers/helpers"
-
-const CartFixedButton = dynamic(
-  () => import("@/components/shop/cart/cart-fixed-button"),
-  {
-    ssr: false,
-  }
-)
+import CartFixedButton from "@/components/shop/cart/cart-fixed-button.client"
 
 interface ShopPageProps {
-  params: {
+  params: Promise<{
     shopKey: string
-  }
+  }>
 }
 
-const ShopPage = async ({ params }: ShopPageProps) => {
+const ShopPage = async (props: ShopPageProps) => {
+  const params = await props.params;
   const { shopKey } = params
 
   const shop = await getShop({

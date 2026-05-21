@@ -24,10 +24,11 @@ import CustomersOrdersTable from "@/components/dashboard/customers/view-customer
 import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 
 interface ViewCustomerProps {
-  params: { customerId: string }
+  params: Promise<{ customerId: string }>
 }
 
-const ViewCustomer = async ({ params }: ViewCustomerProps) => {
+const ViewCustomer = async (props: ViewCustomerProps) => {
+  const params = await props.params;
   const session = await verifySession()
   const user = session?.user
 

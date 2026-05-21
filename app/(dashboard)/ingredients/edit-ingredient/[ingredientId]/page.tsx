@@ -14,10 +14,11 @@ import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
 interface EditIngredientPageProps {
-  params: { ingredientId: string }
+  params: Promise<{ ingredientId: string }>
 }
 
-const EditIngredientPage = async ({ params }: EditIngredientPageProps) => {
+const EditIngredientPage = async (props: EditIngredientPageProps) => {
+  const params = await props.params;
   const session = await verifySession()
   const user = session?.user
 

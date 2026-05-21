@@ -15,12 +15,13 @@ import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { verifySession } from "@/lib/auth/verify-session"
 
 interface EditPromotionPageProps {
-  params: {
+  params: Promise<{
     promotionId: string
-  }
+  }>
 }
 
-const EditPromotionPage = async ({ params }: EditPromotionPageProps) => {
+const EditPromotionPage = async (props: EditPromotionPageProps) => {
+  const params = await props.params;
   const session = await verifySession()
   const user = session?.user
 

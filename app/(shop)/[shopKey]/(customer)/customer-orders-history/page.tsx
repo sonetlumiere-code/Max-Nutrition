@@ -10,14 +10,13 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 
 interface CustomerOrdersHistoryPageProps {
-  params: {
+  params: Promise<{
     shopKey: string
-  }
+  }>
 }
 
-const CustomerOrdersHistoryPage = async ({
-  params,
-}: CustomerOrdersHistoryPageProps) => {
+const CustomerOrdersHistoryPage = async (props: CustomerOrdersHistoryPageProps) => {
+  const params = await props.params;
   const session = await verifySession()
 
   const { shopKey } = params

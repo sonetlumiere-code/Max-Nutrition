@@ -11,12 +11,16 @@ export const metadata: Metadata = {
 }
 
 type SignUpPageSearchParams = {
-  searchParams: { redirectTo?: string }
+  searchParams: Promise<{ redirectTo?: string }>
 }
 
-export default function SignupPage({
-  searchParams: { redirectTo },
-}: SignUpPageSearchParams) {
+export default async function SignupPage(props: SignUpPageSearchParams) {
+  const searchParams = await props.searchParams;
+
+  const {
+    redirectTo
+  } = searchParams;
+
   return (
     <div className='container relative h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
       <Link

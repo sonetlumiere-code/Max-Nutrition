@@ -30,10 +30,13 @@ export const ConfirmationProvider = ({ children }: { children: ReactNode }) => {
   const [seconds, setSeconds] = useState<number>(0)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
-  const awaitingPromiseRef = useRef<{
-    resolve: (value: boolean) => void
-    reject: (value: boolean) => void
-  }>()
+  const awaitingPromiseRef = useRef<
+    | {
+        resolve: (value: boolean) => void
+        reject: (value: boolean) => void
+      }
+    | undefined
+  >(undefined)
 
   const openConfirmation = (options: ConfirmationOptions) => {
     setConfirmationState(options)

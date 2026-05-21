@@ -15,12 +15,13 @@ import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { redirect } from "next/navigation"
 
 interface EditRecipePageProps {
-  params: {
+  params: Promise<{
     recipeId: string
-  }
+  }>
 }
 
-const EditRecipePage = async ({ params }: EditRecipePageProps) => {
+const EditRecipePage = async (props: EditRecipePageProps) => {
+  const params = await props.params;
   const session = await verifySession()
   const user = session?.user
 

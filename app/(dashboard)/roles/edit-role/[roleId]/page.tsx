@@ -15,12 +15,13 @@ import { DEFAULT_REDIRECT_DASHBOARD } from "@/routes"
 import { verifySession } from "@/lib/auth/verify-session"
 
 interface EditRolePageProps {
-  params: {
+  params: Promise<{
     roleId: string
-  }
+  }>
 }
 
-const EditRolePage = async ({ params }: EditRolePageProps) => {
+const EditRolePage = async (props: EditRolePageProps) => {
+  const params = await props.params;
   const session = await verifySession()
   const user = session?.user
 
