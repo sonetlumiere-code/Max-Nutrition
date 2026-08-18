@@ -582,10 +582,17 @@ export function isShopCurrentlyAvailable(
   return currentTotal >= startTotal && currentTotal <= endTotal
 }
 
+export const BUSINESS_TIME_ZONE = "America/Argentina/Buenos_Aires"
+
+// Convierte una fecha al reloj de pared del negocio, para que los límites de
+// semana/mes/año no dependan de la zona horaria del navegador del admin.
+export const toBusinessTime = (date: Date) =>
+  new Date(date.toLocaleString("en-US", { timeZone: BUSINESS_TIME_ZONE }))
+
 // Cada período es el período calendario en curso: la semana desde el lunes,
 // el mes y el año actuales. Así el filtro y la agrupación usan el mismo límite.
 export const getStartDate = (tab: TimePeriod) => {
-  const now = new Date()
+  const now = toBusinessTime(new Date())
   switch (tab) {
     case "week":
       return startOfWeek(now, { weekStartsOn: 1 })
@@ -603,8 +610,13 @@ export function groupOrdersByPeriod(orders: PopulatedOrder[], period: TimePeriod
   const groupedOrders: { [key: string]: PopulatedOrder[] } = {}
 
   for (const order of orders) {
-    const orderDate = new Date(order.createdAt)
-    const isInDateRange = !startDate || isWithinInterval(orderDate, { start: startDate, end: new Date() })
+    const orderDate = toBusinessTime(new Date(order.createdAt))
+    const isInDateRange =
+      !startDate ||
+      isWithinInterval(orderDate, {
+        start: startDate,
+        end: toBusinessTime(new Date()),
+      })
     if (!isInDateRange) continue
 
     let key = "all"

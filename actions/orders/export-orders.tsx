@@ -70,7 +70,10 @@ export const exportOrdersToExcel = async (
       "Método de Envío": translateShippingMethod(order.shippingMethod),
       "Método de Pago": translatePaymentMethod(order.paymentMethod),
       "Cantidad Total de Productos": totalItems,
-      Subtotal: order.subtotal || order.total,
+      Subtotal:
+        // Órdenes legacy sin subtotal: se reconstruye desde el total guardado.
+        order.subtotal ??
+        order.total - (order.shippingCost || 0) + totalDiscount,
       "Costo de Envío": order.shippingCost || 0,
       Descuento: totalDiscount,
       "Promoción Aplicada": appliedPromotionNames,

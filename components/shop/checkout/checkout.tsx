@@ -104,7 +104,7 @@ const Checkout = ({
   const { shopCategory } = shop
 
   const { items, setOpen, clearCart } = useCart()
-  const { promotions, appliedPromotions } = usePromotion({
+  const { promotions, appliedPromotions, finalPrice } = usePromotion({
     items,
     shopCategory,
   })
@@ -246,9 +246,8 @@ const Checkout = ({
     }
   }, [])
 
-  const totalAmount =
-    items.reduce((acc, item) => acc + item.product.price * item.quantity, 0) +
-    shippingCost
+  // Total con promociones aplicadas, igual al que calcula el servidor.
+  const totalAmount = finalPrice + shippingCost
 
   const handleWithSaltChange = (checked: boolean) => {
     setWithSalt(checked)

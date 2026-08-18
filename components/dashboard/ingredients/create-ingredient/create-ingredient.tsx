@@ -51,6 +51,7 @@ const CreateIngredient = () => {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = form
 
@@ -156,7 +157,14 @@ const CreateIngredient = () => {
                   name='price'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Precio</FormLabel>
+                      <FormLabel>
+                        Precio
+                        {watch("measurement")
+                          ? ` (por ${watch("amountPerMeasurement") || 1} ${
+                              translateUnit(watch("measurement")).split(" ")[0]
+                            })`
+                          : ""}
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type='number'
@@ -176,12 +184,12 @@ const CreateIngredient = () => {
                   name='waste'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Desperdicio (%)</FormLabel>
+                      <FormLabel>Desperdicio / merma (%)</FormLabel>
                       <FormControl>
                         <Input
                           type='number'
                           step='0.1'
-                          placeholder='Desperdicio en porcentaje'
+                          placeholder='% del bruto que se descarta'
                           disabled={isSubmitting}
                           {...field}
                         />
