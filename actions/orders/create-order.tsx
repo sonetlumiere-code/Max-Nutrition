@@ -3,6 +3,7 @@
 import { getCustomer } from "@/data/customer"
 import { getProducts } from "@/data/products"
 import { getShippingSettings } from "@/data/shipping-settings"
+import { getShopSettings } from "@/data/shop-settings"
 import { getShippingZone } from "@/data/shipping-zones"
 import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
@@ -48,10 +49,24 @@ export async function createOrder({
     customerAddressId,
     shippingMethod,
     paymentMethod,
-    items,
+    items: rawItems,
     shopCategory,
     shopBranchId,
   } = validatedFields.data
+
+  // Consolida ítems repetidos (mismo producto y variante) para no violar la
+  // restricción única de OrderItem.
+  const items = Object.values(
+    rawItems.reduce<Record<string, (typeof rawItems)[number]>>((acc, item) => {
+      const key = `${item.productId}-${item.variation.withSalt}`
+      if (acc[key]) {
+        acc[key] = { ...acc[key], quantity: acc[key].quantity + item.quantity }
+      } else {
+        acc[key] = item
+      }
+      return acc
+    }, {})
+  )
 
   const shop = await getShop({
     where: { shopCategory, isActive: true },
@@ -87,6 +102,25 @@ export async function createOrder({
   )
 
   try {
+    const [shopSettings, shippingSettings] = await Promise.all([
+      getShopSettings({ where: { id: shopSettingsId } }),
+      getShippingSettings({ where: { shopSettingsId } }),
+    ])
+
+    if (
+      shopSettings &&
+      !shopSettings.allowedPaymentMethods.includes(paymentMethod)
+    ) {
+      return { error: "El método de pago no está habilitado por la tienda." }
+    }
+
+    if (
+      shippingSettings &&
+      !shippingSettings.allowedShippingMethods.includes(shippingMethod)
+    ) {
+      return { error: "El método de envío no está habilitado por la tienda." }
+    }
+
     const [products, customer] = await Promise.all([
       getProducts({
         where: {
@@ -126,9 +160,23 @@ export async function createOrder({
       })
       .filter(Boolean) as { product: PopulatedProduct; quantity: number }[]
 
-    const subtotal = populatedItems.reduce((acc, item) => {
-      return acc + item.product.price * item.quantity
-    }, 0)
+    const foreignProduct = populatedItems.find(
+      (item) =>
+        !item.product.categories?.some(
+          (category) => category.shopCategory === shopCategory
+        )
+    )
+
+    if (foreignProduct) {
+      return { error: "Hay productos que no pertenecen a esta tienda." }
+    }
+
+    const subtotal =
+      Math.round(
+        populatedItems.reduce((acc, item) => {
+          return acc + item.product.price * item.quantity
+        }, 0) * 100
+      ) / 100
 
     const { appliedPromotions, finalPrice } = await checkPromotion({
       items: populatedItems,
@@ -178,10 +226,6 @@ export async function createOrder({
     }
 
     if (shippingMethod === ShippingMethod.DELIVERY) {
-      const shippingSettings = await getShippingSettings({
-        where: { shopSettingsId },
-      })
-
       const totalProductsQuantity = items.reduce(
         (acc, curr) => acc + curr.quantity,
         0
@@ -220,12 +264,16 @@ export async function createOrder({
       shippingCost = shippingZone?.cost || 0
     }
 
-    const total = finalPrice + shippingCost
+    const total = Math.round((finalPrice + shippingCost) * 100) / 100
 
     const order = await prisma.order.create({
       data: {
         customerId: customer.id,
-        customerAddressId: customerAddressId || null,
+        // La dirección solo aplica a envíos a domicilio.
+        customerAddressId:
+          shippingMethod === ShippingMethod.DELIVERY
+            ? customerAddressId
+            : null,
         shippingMethod,
         shippingCost,
         paymentMethod,

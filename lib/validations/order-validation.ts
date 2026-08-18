@@ -2,6 +2,7 @@ import {
   ShopCategory,
   OrderStatus,
   PaymentMethod,
+  PaymentStatus,
   ShippingMethod,
 } from "@prisma/client"
 import { z } from "zod"
@@ -13,6 +14,7 @@ const coreOrderSchema = z.object({
   paymentMethod: z.nativeEnum(PaymentMethod),
   shippingMethod: z.nativeEnum(ShippingMethod),
   status: z.nativeEnum(OrderStatus).optional(),
+  paymentStatus: z.nativeEnum(PaymentStatus).optional(),
   shopCategory: z.nativeEnum(ShopCategory),
   shopBranchId: z.string().optional(),
   notes: z.string().optional(),
@@ -22,7 +24,9 @@ const coreOrderSchema = z.object({
         productId: z.string().min(1, { message: "Selecciona un producto." }),
         quantity: z.coerce
           .number()
-          .min(1, { message: "La cantidad debe ser al menos 1." }),
+          .int({ message: "La cantidad debe ser un número entero." })
+          .min(1, { message: "La cantidad debe ser al menos 1." })
+          .max(999, { message: "La cantidad máxima por producto es 999." }),
         variation: z.object({ withSalt: z.boolean() }),
       })
     )

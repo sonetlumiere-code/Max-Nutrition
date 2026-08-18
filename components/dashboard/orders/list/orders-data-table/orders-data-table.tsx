@@ -81,7 +81,7 @@ const OrdersDataTable = ({
       ),
       cell: ({ row }) => {
         const customer = row.original.customer as PopulatedCustomer
-        const isNewCustomer = customer.orders?.length === 1
+        const isNewCustomer = customer._count?.orders === 1
 
         return (
           <div className='ml-4'>
@@ -191,7 +191,11 @@ const OrdersDataTable = ({
           <Icons.caretSortIcon className='ml-2 h-4 w-4' />
         </Button>
       ),
-      cell: ({ row }) => <div className='ml-4'>${row.getValue("total")}</div>,
+      cell: ({ row }) => (
+        <div className='ml-4'>
+          ${Number(row.getValue("total")).toFixed(2)}
+        </div>
+      ),
     },
     // {
     //   accessorKey: "actions",

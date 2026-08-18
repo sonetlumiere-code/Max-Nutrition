@@ -35,8 +35,13 @@ export async function editOrder({
     return { error: "Campos inválidos." }
   }
 
-  const { customerAddressId, shippingMethod, paymentMethod, status } =
-    validatedFields.data
+  const {
+    customerAddressId,
+    shippingMethod,
+    paymentMethod,
+    paymentStatus,
+    status,
+  } = validatedFields.data
 
   try {
     const existingOrder = await prisma.order.findUnique({
@@ -106,6 +111,7 @@ export async function editOrder({
         customerAddressId,
         shippingMethod,
         paymentMethod,
+        paymentStatus,
         status,
         shippingCost,
         total,

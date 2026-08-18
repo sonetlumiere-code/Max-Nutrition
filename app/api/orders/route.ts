@@ -98,7 +98,13 @@ export async function GET(req: NextRequest) {
                 image: true,
               },
             },
-            orders: true,
+            // Solo el conteo: embeber el historial completo de cada cliente
+            // multiplica el payload cuadráticamente.
+            _count: {
+              select: {
+                orders: true,
+              },
+            },
           },
         },
         address: true,

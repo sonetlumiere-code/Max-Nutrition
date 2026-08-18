@@ -21,8 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { OrderStatus } from "@prisma/client"
-import { translateOrderStatus } from "@/helpers/helpers"
+import { OrderStatus, PaymentStatus } from "@prisma/client"
+import {
+  translateOrderStatus,
+  translatePaymentStatus,
+} from "@/helpers/helpers"
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
 import { editOrder } from "@/actions/orders/edit-order"
@@ -39,6 +42,7 @@ const EditOrderForm = ({ order, setOpen }: EditOrderFormProps) => {
     resolver: zodResolver(partialOrderSchema),
     defaultValues: {
       status: order.status,
+      paymentStatus: order.paymentStatus,
     },
   })
 
@@ -99,6 +103,39 @@ const EditOrderForm = ({ order, setOpen }: EditOrderFormProps) => {
                       className='capitalize'
                     >
                       {translateOrderStatus(status)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name={"paymentStatus"}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Estado del pago</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={isSubmitting}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder='' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.values(PaymentStatus).map((paymentStatus) => (
+                    <SelectItem
+                      key={paymentStatus}
+                      value={paymentStatus}
+                      className='capitalize'
+                    >
+                      {translatePaymentStatus(paymentStatus)}
                     </SelectItem>
                   ))}
                 </SelectContent>

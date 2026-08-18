@@ -61,7 +61,7 @@ const CustomersOrdersTable = ({
               </Badge>
             </TableCell>
             <TableCell className='hidden md:table-cell'>
-              ${order.total}
+              ${order.total.toFixed(2)}
             </TableCell>
             {(userPermissionsKeys.includes("view:orders") ||
               userPermissionsKeys.includes("update:orders") ||

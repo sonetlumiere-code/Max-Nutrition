@@ -329,6 +329,10 @@ model Order {
   shopBranch        ShopBranch?        @relation(fields: [shopBranchId], references: [id])
   status            OrderStatus        @default(PENDING)
 
+  @@index([customerId])
+  @@index([shopId])
+  @@index([status])
+  @@index([createdAt])
   @@map("orders")
 }
 
@@ -348,6 +352,7 @@ model OrderItem {
   product Product @relation(fields: [productId], references: [id])
 
   @@unique([orderId, productId, withSalt])
+  @@index([productId])
   @@map("order_items")
 }
 

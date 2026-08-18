@@ -5,7 +5,9 @@ export const shippingZoneSchema = z.object({
   province: z.string().min(1, { message: "Selecciona la provincia." }),
   municipality: z.string().min(1, { message: "Selecciona la municipalidad." }),
   locality: z.string().min(1, { message: "Selecciona la localidad" }),
-  cost: z.coerce.number(),
+  cost: z.coerce
+    .number()
+    .min(0, { message: "El costo no puede ser negativo." }),
   isActive: z.boolean(),
   operationalHours: z.array(operationalHoursSchema).optional(),
 })

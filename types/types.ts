@@ -85,6 +85,9 @@ export type PopulatedCustomer = Customer & {
   addresses?: CustomerAddress[]
   orders?: Order[]
   user?: Partial<User>
+  _count?: {
+    orders: number
+  }
 }
 
 export type PopulatedRecipeIngredient = RecipeIngredient & {

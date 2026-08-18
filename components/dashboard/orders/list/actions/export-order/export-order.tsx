@@ -29,8 +29,6 @@ type ExportOrderProps = {
 }
 
 const ExportOrder = ({ order, open, setOpen }: ExportOrderProps) => {
-  console.log(order)
-
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {

@@ -19,6 +19,7 @@ import {
   Measurement,
   OrderStatus,
   PaymentMethod,
+  PaymentStatus,
   Permission,
   ShippingMethod,
   SubjectKey,
@@ -84,6 +85,19 @@ export function translateOrderStatus(status: OrderStatus): string {
       return "Completado"
     case OrderStatus.CANCELLED:
       return "Cancelado"
+    default:
+      return "Desconocido"
+  }
+}
+
+export function translatePaymentStatus(paymentStatus: PaymentStatus): string {
+  switch (paymentStatus) {
+    case PaymentStatus.PENDING:
+      return "Pago pendiente"
+    case PaymentStatus.PAID:
+      return "Pagado"
+    case PaymentStatus.FAILED:
+      return "Pago fallido"
     default:
       return "Desconocido"
   }
