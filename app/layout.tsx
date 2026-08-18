@@ -32,7 +32,7 @@ export default function RootLayout({
   children: ReactNode
 }>) {
   return (
-    <html lang='en'>
+    <html lang='es'>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
