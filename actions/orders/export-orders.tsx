@@ -1,4 +1,4 @@
-import * as XLSX from "xlsx"
+import type { Workbook } from "exceljs"
 import { IngredientTotal, PopulatedOrder, TimePeriod } from "@/types/types"
 import {
   calculateIngredientData,
@@ -12,7 +12,30 @@ import {
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 
-export const exportOrdersToExcel = (
+// Replica el comportamiento de json_to_sheet de SheetJS: el encabezado es la
+// unión de las claves de todas las filas, en orden de primera aparición.
+const addJsonSheet = (
+  workbook: Workbook,
+  name: string,
+  rows: Record<string, unknown>[]
+) => {
+  const worksheet = workbook.addWorksheet(name)
+  const headers: string[] = []
+  rows.forEach((row) => {
+    Object.keys(row).forEach((key) => {
+      if (!headers.includes(key)) headers.push(key)
+    })
+  })
+  worksheet.columns = headers.map((header, index) => ({
+    header,
+    key: header,
+    width: index < 15 ? 15 : undefined,
+  }))
+  rows.forEach((row) => worksheet.addRow(row))
+  return worksheet
+}
+
+export const exportOrdersToExcel = async (
   orders: PopulatedOrder[],
   period: TimePeriod
 ) => {
@@ -345,28 +368,27 @@ export const exportOrdersToExcel = (
   // ------------------------------
   // Crear el workbook y agregar hojas.
   // ------------------------------
-  const ws1 = XLSX.utils.json_to_sheet(customerOrdersData)
-  const ws2 = XLSX.utils.json_to_sheet(productSummaryData)
-  const ws3 = XLSX.utils.json_to_sheet(ingredientSummaryData)
-  const ws4 = XLSX.utils.json_to_sheet(recipeDetailsData)
-  const ws5 = XLSX.utils.json_to_sheet(bagsData)
-
-  const wscols = Array(15).fill({ wch: 15 })
-  ws1["!cols"] = wscols
-  ws2["!cols"] = wscols
-  ws3["!cols"] = wscols
-  ws4["!cols"] = wscols
-  ws5["!cols"] = wscols
-
-  const workbook = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(workbook, ws1, "Pedidos Detallados")
-  XLSX.utils.book_append_sheet(workbook, ws2, "Resumen Productos")
-  XLSX.utils.book_append_sheet(workbook, ws3, "Resumen Ingredientes")
-  XLSX.utils.book_append_sheet(workbook, ws4, "Detalle Recetas")
-  XLSX.utils.book_append_sheet(workbook, ws5, "Bolsones")
+  // Import dinámico: exceljs solo se descarga al momento de exportar.
+  const { Workbook } = await import("exceljs")
+  const workbook = new Workbook()
+  addJsonSheet(workbook, "Pedidos Detallados", customerOrdersData)
+  addJsonSheet(workbook, "Resumen Productos", productSummaryData)
+  addJsonSheet(workbook, "Resumen Ingredientes", ingredientSummaryData)
+  addJsonSheet(workbook, "Detalle Recetas", recipeDetailsData)
+  addJsonSheet(workbook, "Bolsones", bagsData)
 
   const fileName = `MaxNutri_WEB_Pedidos_${translateTimePeriod(
     period
   )}_${format(new Date(), "dd-MM-yyyy", { locale: es })}.xlsx`
-  XLSX.writeFileXLSX(workbook, fileName)
+
+  const buffer = await workbook.xlsx.writeBuffer()
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = fileName
+  link.click()
+  URL.revokeObjectURL(url)
 }
