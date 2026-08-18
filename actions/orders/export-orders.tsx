@@ -1,7 +1,6 @@
 import type { Workbook } from "exceljs"
-import { IngredientTotal, PopulatedOrder, TimePeriod } from "@/types/types"
+import { PopulatedOrder, TimePeriod } from "@/types/types"
 import {
-  calculateIngredientData,
   getBaseMeasurement,
   translateOrderStatus,
   translatePaymentMethod,
@@ -9,6 +8,12 @@ import {
   translateTimePeriod,
   translateUnit,
 } from "@/helpers/helpers"
+import {
+  aggregateBags,
+  aggregateIngredients,
+  aggregateProducts,
+  aggregateRecipeGroups,
+} from "@/helpers/production"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
 
@@ -85,91 +90,17 @@ export const exportOrdersToExcel = async (
   // ------------------------------
   // Hoja 2: Resumen de productos totales (agrupado por producto)
   // ------------------------------
-  const productSummary = orders.reduce(
-    (
-      summary: Record<
-        string,
-        { withSalt: number; withoutSalt: number; total: number }
-      >,
-      order
-    ) => {
-      order.items?.forEach((item) => {
-        const productName = item.product.name
-        if (!summary[productName]) {
-          summary[productName] = { withSalt: 0, withoutSalt: 0, total: 0 }
-        }
-        if (item.withSalt) {
-          summary[productName].withSalt += item.quantity
-        } else {
-          summary[productName].withoutSalt += item.quantity
-        }
-        summary[productName].total += item.quantity
-      })
-      return summary
-    },
-    {}
-  )
-
-  const productSummaryData = Object.entries(productSummary).map(
-    ([product, { withSalt, withoutSalt, total }]) => ({
-      Producto: product,
-      "Cantidad con Sal": withSalt,
-      "Cantidad sin Sal": withoutSalt,
-      "Cantidad Total": total,
-    })
-  )
+  const productSummaryData = aggregateProducts(orders).map((product) => ({
+    Producto: product.name,
+    "Cantidad con Sal": product.withSalt,
+    "Cantidad sin Sal": product.withoutSalt,
+    "Cantidad Total": product.total,
+  }))
 
   // ------------------------------
   // Hoja 3: Resumen de ingredientes (agrupado por ingrediente)
   // ------------------------------
-  const ingredientTotals: Record<string, IngredientTotal & { waste: number }> =
-    {}
-
-  orders.forEach((order) => {
-    order.items?.forEach((item) => {
-      const product = item.product
-      product.productRecipes?.forEach((productRecipe) => {
-        const recipe = productRecipe.recipe
-        recipe?.recipeIngredients?.forEach((ingredientEntry) => {
-          const ingredient = ingredientEntry.ingredient
-          if (ingredient) {
-            const perProductQuantity = ingredientEntry.quantity
-            const { adjustedQuantity, totalQuantity, cost, baseMeasurement } =
-              calculateIngredientData({
-                ingredient,
-                quantity: perProductQuantity,
-                withWaste: true,
-              })
-
-            const finalAdjustedQuantity = adjustedQuantity * item.quantity
-            const finalTotalQuantity = totalQuantity * item.quantity
-            const finalCost = cost * item.quantity
-
-            if (ingredientTotals[ingredient.id]) {
-              ingredientTotals[ingredient.id].baseQuantity +=
-                finalAdjustedQuantity
-              ingredientTotals[ingredient.id].totalQuantity +=
-                finalTotalQuantity
-              ingredientTotals[ingredient.id].cost += finalCost
-              ingredientTotals[ingredient.id].waste = ingredient.waste
-            } else {
-              ingredientTotals[ingredient.id] = {
-                ingredientId: ingredient.id,
-                name: ingredient.name,
-                measurement: baseMeasurement,
-                baseQuantity: finalAdjustedQuantity,
-                totalQuantity: finalTotalQuantity,
-                cost: finalCost,
-                waste: ingredient.waste,
-              }
-            }
-          }
-        })
-      })
-    })
-  })
-
-  const ingredientSummaryData = Object.values(ingredientTotals).map(
+  const ingredientSummaryData = aggregateIngredients(orders).map(
     (ingredient) => ({
       Ingrediente: ingredient.name,
       "Cantidad Base": ingredient.baseQuantity.toFixed(2),
@@ -183,115 +114,8 @@ export const exportOrdersToExcel = async (
   // ------------------------------
   // Hoja 4: Detalle de Recetas con ingredientes
   // ------------------------------
-  type RecipeGroup = {
-    productId: string
-    productName: string
-    productRecipeType: string
-    totalQuantityForGroup: number
-    ingredientTotals: Record<string, IngredientTotal & { waste: number }>
-  }
-
-  const recipeGroups: Record<string, RecipeGroup> = {}
-
-  orders.forEach((order) => {
-    order.items?.forEach((item) => {
-      const product = item.product
-      product.productRecipes?.forEach((productRecipe) => {
-        const recipeTypeName =
-          productRecipe.type?.name || "Tipo de receta no especificada"
-        const key = `${product.id}-${recipeTypeName}`
-        if (!recipeGroups[key]) {
-          recipeGroups[key] = {
-            productId: product.id,
-            productName: product.name,
-            productRecipeType: recipeTypeName,
-            totalQuantityForGroup: 0,
-            ingredientTotals: {},
-          }
-        }
-        recipeGroups[key].totalQuantityForGroup += item.quantity
-
-        const recipe = productRecipe.recipe
-        recipe?.recipeIngredients?.forEach((ingredientEntry) => {
-          const ingredient = ingredientEntry.ingredient
-          if (ingredient) {
-            const perProductQuantity = ingredientEntry.quantity
-            const { adjustedQuantity, totalQuantity, cost, baseMeasurement } =
-              calculateIngredientData({
-                ingredient,
-                quantity: perProductQuantity,
-                withWaste: true,
-              })
-            const finalAdjustedQuantity = adjustedQuantity * item.quantity
-            const finalTotalQuantity = totalQuantity * item.quantity
-            const finalCost = cost * item.quantity
-
-            if (recipeGroups[key].ingredientTotals[ingredient.id]) {
-              recipeGroups[key].ingredientTotals[ingredient.id].baseQuantity +=
-                finalAdjustedQuantity
-              recipeGroups[key].ingredientTotals[ingredient.id].totalQuantity +=
-                finalTotalQuantity
-              recipeGroups[key].ingredientTotals[ingredient.id].cost +=
-                finalCost
-              recipeGroups[key].ingredientTotals[ingredient.id].waste =
-                ingredient.waste
-            } else {
-              recipeGroups[key].ingredientTotals[ingredient.id] = {
-                ingredientId: ingredient.id,
-                name: ingredient.name,
-                measurement: baseMeasurement,
-                baseQuantity: finalAdjustedQuantity,
-                totalQuantity: finalTotalQuantity,
-                cost: finalCost,
-                waste: ingredient.waste,
-              }
-            }
-          }
-        })
-      })
-    })
-  })
-
-  const productOrderTotals: Record<string, number> = {}
-  orders.forEach((order) => {
-    order.items?.forEach((item) => {
-      const productId = item.product.id
-      if (!productOrderTotals[productId]) {
-        productOrderTotals[productId] = 0
-      }
-      productOrderTotals[productId] += item.quantity
-    })
-  })
-
-  type ProductGroup = {
-    productId: string
-    productName: string
-    totalQuantitySold: number
-    totalCost: number
-    recipeGroups: RecipeGroup[]
-  }
-
-  const productGroups: Record<string, ProductGroup> = {}
-  Object.values(recipeGroups).forEach((group) => {
-    const groupTotalCost = Object.values(group.ingredientTotals).reduce(
-      (sum, ing) => sum + ing.cost,
-      0
-    )
-    if (!productGroups[group.productId]) {
-      productGroups[group.productId] = {
-        productId: group.productId,
-        productName: group.productName,
-        totalQuantitySold: productOrderTotals[group.productId] || 0,
-        totalCost: 0,
-        recipeGroups: [],
-      }
-    }
-    productGroups[group.productId].totalCost += groupTotalCost
-    productGroups[group.productId].recipeGroups.push(group)
-  })
-
   const recipeDetailsData: any[] = []
-  Object.values(productGroups).forEach((prodGroup) => {
+  aggregateRecipeGroups(orders).forEach((prodGroup) => {
     recipeDetailsData.push({
       Producto: prodGroup.productName,
       "Cantidad Vendida": prodGroup.totalQuantitySold,
@@ -299,7 +123,7 @@ export const exportOrdersToExcel = async (
     })
 
     prodGroup.recipeGroups.forEach((group) => {
-      const groupTotalCost = Object.values(group.ingredientTotals).reduce(
+      const groupTotalCost = group.ingredients.reduce(
         (sum, ing) => sum + ing.cost,
         0
       )
@@ -316,7 +140,7 @@ export const exportOrdersToExcel = async (
         "Unidad de Medida": "Unidad de Medida",
         Costo: "Costo",
       })
-      Object.values(group.ingredientTotals).forEach((ingredient) => {
+      group.ingredients.forEach((ingredient) => {
         recipeDetailsData.push({
           Producto: ingredient.name,
           "Cantidad Base": ingredient.baseQuantity.toFixed(2),
@@ -348,28 +172,10 @@ export const exportOrdersToExcel = async (
   // ------------------------------
   // Hoja 5: Bolsones (Total de productos por cada cliente)
   // ------------------------------
-  const uniqueCustomers = Array.from(
-    new Set(orders.map((order) => order.customer?.name || "N/A"))
-  )
-  const uniqueProducts = Array.from(
-    new Set(
-      orders.flatMap(
-        (order) => order.items?.map((item) => item.product.name) || []
-      )
-    )
-  )
-
-  const bagsData = uniqueCustomers.map((customer) => {
-    const row: Record<string, any> = { "Nombre Cliente": customer }
-    uniqueProducts.forEach((product) => {
-      row[product] = orders
-        .filter((order) => (order.customer?.name || "N/A") === customer)
-        .flatMap((order) => order.items || [])
-        .filter((item) => item.product.name === product)
-        .reduce((sum, item) => sum + item.quantity, 0)
-    })
-    return row
-  })
+  const bagsData = aggregateBags(orders).rows.map((row) => ({
+    "Nombre Cliente": row.customer,
+    ...row.quantities,
+  }))
 
   // ------------------------------
   // Crear el workbook y agregar hojas.

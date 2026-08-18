@@ -32,6 +32,12 @@ export const navItems: {
     permissionKey: "view:orders",
   },
   {
+    href: "/production",
+    label: "Producción",
+    icon: "scrollText",
+    permissionKey: "view:orders",
+  },
+  {
     href: "/products",
     label: "Productos",
     icon: "pizza",
