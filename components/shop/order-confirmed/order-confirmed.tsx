@@ -88,7 +88,7 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
                   </div>
                 </div>
                 <p className='font-medium'>
-                  ${item.product.price * item.quantity}
+                  ${(item.unitPrice ?? item.product.price) * item.quantity}
                 </p>
               </div>
             ))}

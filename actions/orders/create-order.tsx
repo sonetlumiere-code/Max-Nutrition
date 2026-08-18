@@ -239,6 +239,8 @@ export async function createOrder({
             productId: item.productId,
             quantity: item.quantity,
             withSalt: item.variation.withSalt,
+            unitPrice:
+              products.find((p) => p.id === item.productId)?.price ?? null,
           })),
         },
         appliedPromotions: {

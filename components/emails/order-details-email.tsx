@@ -142,7 +142,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, orderLink }) => {
                         align='center'
                         className='border-0 border-b border-solid border-gray-200 py-[8px]'
                       >
-                        <Text>${item.product.price}</Text>
+                        <Text>${item.unitPrice ?? item.product.price}</Text>
                       </td>
                     </tr>
                   ))}

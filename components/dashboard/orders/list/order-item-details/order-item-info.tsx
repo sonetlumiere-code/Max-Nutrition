@@ -32,7 +32,9 @@ const OrderItemInfo = ({ order }: OrderInfoProps) => {
                 )}
                 x <span>{item.quantity}</span>
               </span>
-              <span>${item.product?.price * item.quantity}</span>
+              <span>
+                ${(item.unitPrice ?? item.product?.price) * item.quantity}
+              </span>
             </li>
           ))}
         </ul>

@@ -338,6 +338,9 @@ model OrderItem {
   productId String
   quantity  Int
   withSalt  Boolean
+  // Precio unitario congelado al momento de la venta. Nullable: las órdenes
+  // anteriores a este campo no lo tienen y hacen fallback al precio actual.
+  unitPrice Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
