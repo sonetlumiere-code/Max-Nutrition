@@ -7,6 +7,7 @@ import {
 } from "@radix-ui/react-icons"
 import {
   ArrowDown,
+  ArrowUp,
   BadgePercent,
   Bell,
   Box,
@@ -95,6 +96,7 @@ export const Icons = {
   doubleArrowRightIcon: DoubleArrowRightIcon,
   download: Download,
   arrowDown: ArrowDown,
+  arrowUp: ArrowUp,
   eye: Eye,
   eyeOff: EyeOff,
   file: File,

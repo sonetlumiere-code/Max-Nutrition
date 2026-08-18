@@ -8,6 +8,12 @@ export const navItems: {
   permissionKey: PermissionKey
 }[] = [
   {
+    href: "/analytics",
+    label: "Dashboard",
+    icon: "lineChart",
+    permissionKey: "view:analytics",
+  },
+  {
     href: "/shops",
     label: "Tiendas",
     icon: "store",

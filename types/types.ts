@@ -134,6 +134,8 @@ export type PopulatedShopBranch = ShopBranch & {
 
 export type TimePeriod = "week" | "month" | "year" | "all"
 
+export type AnalyticsPeriod = "week" | "month" | "year"
+
 export type PromotionToApply = PopulatedPromotion & {
   appliedTimes: number
   discountAmount: number
