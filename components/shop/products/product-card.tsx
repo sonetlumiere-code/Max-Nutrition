@@ -18,6 +18,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
     <Card className='flex items-start p-2 relative'>
       <div className='w-32 h-32 flex-shrink-0 overflow-hidden rounded-md mr-2 relative'>
         <CartBadge product={product} className='translate-y-[6.1rem]' />
+        {!product.stock && (
+          <span className='absolute top-2 left-2 z-10 rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground'>
+            Sin stock
+          </span>
+        )}
         <img
           src={
             product.image
@@ -25,7 +30,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
               : "/img/no-image.jpg"
           }
           alt={product.name}
-          className='rounded-lg object-cover w-full h-full'
+          className={
+            product.stock
+              ? "rounded-lg object-cover w-full h-full"
+              : "rounded-lg object-cover w-full h-full opacity-50"
+          }
         />
       </div>
       <CardHeader className='text-start p-2'>

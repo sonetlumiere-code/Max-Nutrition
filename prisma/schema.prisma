@@ -372,6 +372,9 @@ model AppliedPromotion {
   promotionDiscountType String
   promotionDiscount     Float
   appliedTimes          Int
+  // Monto final descontado por esta promoción. Nullable: las órdenes
+  // anteriores a este campo lo derivan de promotionDiscount × appliedTimes.
+  discountAmount        Float?
 
   order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
   promotion Promotion @relation(fields: [promotionId], references: [id])

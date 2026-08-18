@@ -32,12 +32,7 @@ const Summary = ({ items, shippingCost, shopCategory }: SummaryProps) => {
 
       {appliedPromotions.length > 0 &&
         appliedPromotions.map((promotion) => {
-          const appliedDiscount =
-            promotion.discountType === "PERCENTAGE"
-              ? subtotalPrice * (promotion.discount / 100)
-              : promotion.discountType === "FIXED"
-              ? promotion.discount * (promotion.appliedTimes || 1)
-              : 0
+          const appliedDiscount = promotion.discountAmount
 
           return (
             <div

@@ -126,9 +126,10 @@ const DrawerProductDetail: React.FC<DrawerProductDetailsProps> = ({
             <Button
               size='lg'
               onClick={addToCart}
+              disabled={!product.stock}
               className='flex-grow w-full text-md bg-rose-300 hover:bg-rose-400 text-stone-900'
             >
-              Agregar al carrito
+              {product.stock ? "Agregar al carrito" : "Sin stock"}
             </Button>
           </div>
         </DrawerFooter>

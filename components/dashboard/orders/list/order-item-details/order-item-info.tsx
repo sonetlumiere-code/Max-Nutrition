@@ -64,9 +64,10 @@ const OrderItemInfo = ({ order }: OrderInfoProps) => {
                       <>
                         -{appliedPromotion.promotionDiscount}% (-$
                         {(
+                          appliedPromotion.discountAmount ??
                           ((order.subtotal || 0) *
                             appliedPromotion.promotionDiscount) /
-                          100
+                            100
                         ).toFixed(2)}
                         )
                       </>
@@ -74,8 +75,9 @@ const OrderItemInfo = ({ order }: OrderInfoProps) => {
                       <>
                         -$
                         {(
+                          appliedPromotion.discountAmount ??
                           appliedPromotion.promotionDiscount *
-                            appliedPromotion.appliedTimes || 0
+                            appliedPromotion.appliedTimes
                         ).toFixed(2)}
                       </>
                     ) : null}

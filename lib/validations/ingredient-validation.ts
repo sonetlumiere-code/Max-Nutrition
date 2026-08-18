@@ -15,7 +15,7 @@ export const ingredientSchema = z.object({
   waste: z.coerce
     .number()
     .min(0, { message: "Porcentaje mínimo 0%." })
-    .max(100, { message: "Porcentaje máximo 100%." })
+    .max(99, { message: "Porcentaje máximo 99%." })
     .optional(),
   carbs: z.coerce.number(),
   proteins: z.coerce.number(),

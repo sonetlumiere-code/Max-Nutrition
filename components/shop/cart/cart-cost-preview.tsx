@@ -34,21 +34,11 @@ const CartCostPreview = () => {
               {appliedPromotions.map((appliedPromotion) => (
                 <span key={appliedPromotion.id} className='text-destructive'>
                   {appliedPromotion.discountType === "FIXED" ? (
-                    <>
-                      -$
-                      {(
-                        appliedPromotion.appliedTimes *
-                        appliedPromotion.discount
-                      ).toFixed(2)}
-                    </>
+                    <>-${appliedPromotion.discountAmount.toFixed(2)}</>
                   ) : appliedPromotion.discountType === "PERCENTAGE" ? (
                     <>
                       -{appliedPromotion.discount}% (-$
-                      {(
-                        appliedPromotion.appliedTimes *
-                        appliedPromotion.discount
-                      ).toFixed(2)}
-                      )
+                      {appliedPromotion.discountAmount.toFixed(2)})
                     </>
                   ) : null}
                 </span>

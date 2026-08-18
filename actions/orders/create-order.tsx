@@ -149,6 +149,12 @@ export async function createOrder({
       return { error: "ID de producto inválido." }
     }
 
+    const outOfStockProduct = products.find((product) => !product.stock)
+
+    if (outOfStockProduct) {
+      return { error: `Producto sin stock: ${outOfStockProduct.name}.` }
+    }
+
     if (!customer) {
       return { error: "Cliente no encontrado." }
     }
@@ -210,6 +216,7 @@ export async function createOrder({
         promotionDiscountType: appliedPromotion.discountType,
         promotionDiscount: appliedPromotion.discount,
         appliedTimes: appliedPromotion.appliedTimes,
+        discountAmount: appliedPromotion.discountAmount,
       })
     }
 

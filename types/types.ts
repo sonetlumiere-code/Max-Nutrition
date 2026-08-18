@@ -136,6 +136,7 @@ export type TimePeriod = "week" | "month" | "year" | "all"
 
 export type PromotionToApply = PopulatedPromotion & {
   appliedTimes: number
+  discountAmount: number
 }
 
 export type LineItem = {

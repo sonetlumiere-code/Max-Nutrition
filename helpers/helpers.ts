@@ -248,36 +248,80 @@ export function calculatePromotions({
     })
   })
 
+  const candidates: PromotionToApply[] = []
+
   promotions.forEach((promotion) => {
-    if (promotion.discountType === "FIXED" && promotion.categories?.length) {
-      let applicable = true
-      let maxIterations = Infinity
+    if (!promotion.categories?.length) return
 
-      promotion.categories.forEach(({ categoryId, quantity }) => {
-        const availableQuantity = categoryCount[categoryId] || 0
-        const iterations = Math.floor(availableQuantity / quantity)
+    // Condición: el carrito debe cubrir la cantidad requerida de cada categoría.
+    let applicable = true
+    let maxIterations = Infinity
 
-        if (iterations === 0) {
-          applicable = false
-        }
-        maxIterations = Math.min(maxIterations, iterations)
-      })
+    promotion.categories.forEach(({ categoryId, quantity }) => {
+      const availableQuantity = categoryCount[categoryId] || 0
+      const iterations = Math.floor(availableQuantity / quantity)
 
+      if (iterations === 0) {
+        applicable = false
+      }
+      maxIterations = Math.min(maxIterations, iterations)
+    })
+
+    if (!applicable) return
+
+    if (promotion.discountType === "FIXED") {
       const cappedIterations = Math.min(
         maxIterations,
         promotion.maxApplicableTimes || Infinity
       )
 
-      if (applicable && cappedIterations > 0) {
-        const discountAmount = cappedIterations * promotion.discount
-        totalDiscountAmount += discountAmount
-        appliedPromotions.push({
+      if (cappedIterations > 0) {
+        candidates.push({
           ...promotion,
           appliedTimes: cappedIterations,
+          discountAmount: cappedIterations * promotion.discount,
+        })
+      }
+    }
+
+    if (promotion.discountType === "PERCENTAGE") {
+      // El porcentaje se aplica una vez, sobre el subtotal de los productos
+      // que pertenecen a las categorías de la promoción.
+      const promotionCategoryIds = new Set(
+        promotion.categories.map((category) => category.categoryId)
+      )
+
+      const qualifyingSubtotal = items.reduce((acc, item) => {
+        const belongs = item.product.categories?.some((category: Category) =>
+          promotionCategoryIds.has(category.id)
+        )
+        return belongs ? acc + item.product.price * item.quantity : acc
+      }, 0)
+
+      const discountAmount =
+        Math.round(qualifyingSubtotal * (promotion.discount / 100) * 100) / 100
+
+      if (discountAmount > 0) {
+        candidates.push({
+          ...promotion,
+          appliedTimes: 1,
+          discountAmount,
         })
       }
     }
   })
+
+  // Las promociones no se apilan: se aplica solo la de mayor descuento.
+  const bestPromotion = candidates.reduce<PromotionToApply | null>(
+    (best, candidate) =>
+      candidate.discountAmount > (best?.discountAmount ?? 0) ? candidate : best,
+    null
+  )
+
+  if (bestPromotion) {
+    appliedPromotions = [bestPromotion]
+    totalDiscountAmount = bestPromotion.discountAmount
+  }
 
   // El descuento nunca puede superar el subtotal: el precio final no baja de 0.
   const finalPrice = Math.max(0, subtotalPrice - totalDiscountAmount)
@@ -334,8 +378,10 @@ export const calculateIngredientData = ({
   const pricePerBaseUnit =
     ingredient.price / (ingredient.amountPerMeasurement * conversionFactor)
 
-  // Calculate total quantity including waste
-  const totalQuantity = quantity * (withWaste ? 1 + ingredient.waste / 100 : 1)
+  // Merma sobre bruto: para terminar con `quantity` neto hay que comprar
+  // quantity / (1 - desperdicio%). Se acota a 99% para no dividir por cero.
+  const wastePct = Math.min(Math.max(ingredient.waste, 0), 99)
+  const totalQuantity = withWaste ? quantity / (1 - wastePct / 100) : quantity
 
   // Calculate cost using the per–base-unit price
   const cost = totalQuantity * pricePerBaseUnit

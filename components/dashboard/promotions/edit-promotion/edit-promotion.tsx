@@ -199,7 +199,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                                 Descuento fijo
                               </FormLabel>
                             </FormItem>
-                            {/* <FormItem className='flex items-center space-x-3 space-y-0'>
+                            <FormItem className='flex items-center space-x-3 space-y-0'>
                               <FormControl>
                                 <RadioGroupItem
                                   value={PromotionDiscountType.PERCENTAGE}
@@ -208,7 +208,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                               <FormLabel className='font-normal'>
                                 Descuento porcentual
                               </FormLabel>
-                            </FormItem> */}
+                            </FormItem>
                           </RadioGroup>
                         </FormControl>
                         <FormMessage />
@@ -231,7 +231,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                           <Input
                             type='number'
                             step='0.1'
-                            placeholder='Descuento en porcentaje'
+                            placeholder='Valor del descuento'
                             disabled={isSubmitting}
                             {...field}
                           />
