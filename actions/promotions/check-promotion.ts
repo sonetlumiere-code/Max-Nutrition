@@ -18,7 +18,7 @@ export async function checkPromotion({
   shopCategory,
 }: CheckPromotionProps) {
   const promotions = await getPromotions({
-    where: { shopCategory },
+    where: { shopCategory, isActive: true },
     include: { categories: true },
   })
 

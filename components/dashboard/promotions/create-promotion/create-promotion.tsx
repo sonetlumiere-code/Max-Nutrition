@@ -63,6 +63,7 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
       isActive: true,
       discountType: PromotionDiscountType.FIXED,
       discount: 0,
+      maxApplicableTimes: null,
       shopCategory: ShopCategory.FOOD,
       categories: [{ categoryId: "", quantity: 0 }],
       allowedPaymentMethods: [PaymentMethod.CASH],
@@ -230,6 +231,30 @@ const CreatePromotion = ({ categories }: { categories: Category[] | null }) => {
                             placeholder='Descuento en porcentaje'
                             disabled={isSubmitting}
                             {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={control}
+                    name='maxApplicableTimes'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          Máximo de veces aplicable por pedido
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type='number'
+                            min='1'
+                            step='1'
+                            placeholder='Sin límite'
+                            disabled={isSubmitting}
+                            {...field}
+                            value={field.value ?? ""}
                           />
                         </FormControl>
                         <FormMessage />

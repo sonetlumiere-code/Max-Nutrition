@@ -28,10 +28,9 @@ import {
   getMonth,
   getYear,
   isWithinInterval,
+  startOfMonth,
   startOfWeek,
-  subMonths,
-  subWeeks,
-  subYears,
+  startOfYear,
 } from "date-fns"
 
 export const translateShopCategory = (group: ShopCategory): string => {
@@ -266,7 +265,8 @@ export function calculatePromotions({
     }
   })
 
-  const finalPrice = subtotalPrice - totalDiscountAmount
+  // El descuento nunca puede superar el subtotal: el precio final no baja de 0.
+  const finalPrice = Math.max(0, subtotalPrice - totalDiscountAmount)
 
   return {
     appliedPromotions,
@@ -522,15 +522,17 @@ export function isShopCurrentlyAvailable(
   return currentTotal >= startTotal && currentTotal <= endTotal
 }
 
+// Cada período es el período calendario en curso: la semana desde el lunes,
+// el mes y el año actuales. Así el filtro y la agrupación usan el mismo límite.
 export const getStartDate = (tab: TimePeriod) => {
   const now = new Date()
   switch (tab) {
     case "week":
-      return subWeeks(now, 1)
+      return startOfWeek(now, { weekStartsOn: 1 })
     case "month":
-      return subMonths(now, 1)
+      return startOfMonth(now)
     case "year":
-      return subYears(now, 1)
+      return startOfYear(now)
     default:
       return null
   }
@@ -558,11 +560,6 @@ export function groupOrdersByPeriod(orders: PopulatedOrder[], period: TimePeriod
 
     groupedOrders[key] ??= []
     groupedOrders[key].push(order)
-  }
-
-  if (["week", "month", "year"].includes(period)) {
-    const [mostRecentKey] = Object.keys(groupedOrders).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
-    return { [mostRecentKey]: groupedOrders[mostRecentKey] }
   }
 
   return groupedOrders

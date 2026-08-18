@@ -210,7 +210,7 @@ export default function Orders() {
 
               <div className='ml-auto flex items-center gap-2'>
                 {groupedAndFilteredOrders &&
-                  Object.keys(groupedAndFilteredOrders)[0] !== "undefined" && (
+                  Object.keys(groupedAndFilteredOrders).length > 0 && (
                     <ExportOrders
                       orders={groupedAndFilteredOrders}
                       selectedTab={selectedTab}
@@ -268,8 +268,7 @@ export default function Orders() {
                   ) : (
                     <>
                       {groupedAndFilteredOrders &&
-                      Object.keys(groupedAndFilteredOrders)[0] !==
-                        "undefined" ? (
+                      Object.keys(groupedAndFilteredOrders).length > 0 ? (
                         Object.entries(groupedAndFilteredOrders).map(
                           ([groupKey, groupOrders]) => (
                             <div key={groupKey} className='mb-8'>

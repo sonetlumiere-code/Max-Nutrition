@@ -1,5 +1,6 @@
 "use server"
 
+import { getShippingZone } from "@/data/shipping-zones"
 import { hasPermission } from "@/helpers/helpers"
 import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
@@ -7,7 +8,7 @@ import {
   PartialOrderSchema,
   partialOrderSchema,
 } from "@/lib/validations/order-validation"
-import { ShippingMethod } from "@prisma/client"
+import { OrderStatus, ShippingMethod } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
 export async function editOrder({
@@ -38,17 +39,66 @@ export async function editOrder({
     validatedFields.data
 
   try {
-    if (shippingMethod === ShippingMethod.DELIVERY) {
-      const customerAddress = await prisma.customerAddress.findUnique({
-        where: {
-          id: customerAddressId,
-        },
-      })
+    const existingOrder = await prisma.order.findUnique({
+      where: { id },
+    })
 
-      if (!customerAddress) {
-        return { error: "Invalid customer address id." }
+    if (!existingOrder) {
+      return { error: "Pedido no encontrado." }
+    }
+
+    if (existingOrder.status === OrderStatus.CANCELLED) {
+      return { error: "No se puede modificar un pedido cancelado." }
+    }
+
+    // Si cambia el método de envío o la dirección, el costo de envío y el
+    // total se recalculan para que la orden quede consistente.
+    const shippingChanged =
+      shippingMethod !== undefined || customerAddressId !== undefined
+
+    let shippingCost = existingOrder.shippingCost ?? 0
+
+    if (shippingChanged) {
+      const targetShippingMethod =
+        shippingMethod ?? existingOrder.shippingMethod
+
+      if (targetShippingMethod === ShippingMethod.DELIVERY) {
+        const targetAddressId =
+          customerAddressId ?? existingOrder.customerAddressId
+
+        if (!targetAddressId) {
+          return { error: "Debes seleccionar la dirección de envío." }
+        }
+
+        const customerAddress = await prisma.customerAddress.findUnique({
+          where: { id: targetAddressId },
+        })
+
+        if (
+          !customerAddress ||
+          customerAddress.customerId !== existingOrder.customerId
+        ) {
+          return { error: "La dirección no pertenece al cliente del pedido." }
+        }
+
+        const shippingZone = await getShippingZone({
+          where: { locality: customerAddress.locality, isActive: true },
+        })
+
+        if (!shippingZone) {
+          return {
+            error: `No hay envíos disponibles para la localidad: ${customerAddress.locality}.`,
+          }
+        }
+
+        shippingCost = shippingZone.cost || 0
+      } else {
+        shippingCost = 0
       }
     }
+
+    const total =
+      existingOrder.total - (existingOrder.shippingCost ?? 0) + shippingCost
 
     const order = await prisma.order.update({
       where: { id },
@@ -57,6 +107,8 @@ export async function editOrder({
         shippingMethod,
         paymentMethod,
         status,
+        shippingCost,
+        total,
       },
       include: {
         items: {

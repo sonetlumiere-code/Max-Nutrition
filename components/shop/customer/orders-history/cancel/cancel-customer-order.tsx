@@ -1,11 +1,10 @@
 "use client"
 
-import { editOrder } from "@/actions/orders/edit-order"
+import { cancelCustomerOrder } from "@/actions/orders/cancel-customer-order"
 import { useConfirmation } from "@/components/confirmation-provider"
 import { Icons } from "@/components/icons"
 import { toast } from "@/components/ui/use-toast"
 import { PopulatedOrder } from "@/types/types"
-import { OrderStatus } from "@prisma/client"
 
 type CancelCustomerOrderProps = {
   order: PopulatedOrder
@@ -20,12 +19,7 @@ const CancelCustomerOrder = ({ order }: CancelCustomerOrderProps) => {
       title: `¿Cancelar pedido?`,
       description: "Esta acción es irreversible.",
     }).then(async () => {
-      const res = await editOrder({
-        id: order.id,
-        values: {
-          status: OrderStatus.CANCELLED,
-        },
-      })
+      const res = await cancelCustomerOrder({ orderId: order.id })
 
       if (res.success) {
         toast({

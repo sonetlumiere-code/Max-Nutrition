@@ -69,6 +69,7 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
       isActive: promotion.isActive,
       discountType: promotion.discountType,
       discount: promotion.discount,
+      maxApplicableTimes: promotion.maxApplicableTimes ?? null,
       shopCategory: promotion.shopCategory,
       categories: promotion.categories,
       allowedPaymentMethods: promotion.allowedPaymentMethods,
@@ -233,6 +234,30 @@ const EditPromotion = ({ promotion, categories }: EditPromotionProps) => {
                             placeholder='Descuento en porcentaje'
                             disabled={isSubmitting}
                             {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={control}
+                    name='maxApplicableTimes'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          Máximo de veces aplicable por pedido
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type='number'
+                            min='1'
+                            step='1'
+                            placeholder='Sin límite'
+                            disabled={isSubmitting}
+                            {...field}
+                            value={field.value ?? ""}
                           />
                         </FormControl>
                         <FormMessage />

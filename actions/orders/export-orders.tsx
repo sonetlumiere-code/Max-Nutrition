@@ -47,7 +47,7 @@ export const exportOrdersToExcel = async (
       order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
     const totalDiscount =
       order.appliedPromotions?.reduce(
-        (sum, promo) => sum + promo.promotionDiscount,
+        (sum, promo) => sum + promo.promotionDiscount * promo.appliedTimes,
         0
       ) || 0
     const appliedPromotionNames =

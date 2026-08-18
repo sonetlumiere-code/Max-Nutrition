@@ -16,6 +16,15 @@ export const promotionSchema = z
     discount: z.coerce
       .number()
       .min(0, { message: "El descuento debe ser mayor o igual a 0." }),
+    maxApplicableTimes: z.preprocess(
+      (value) =>
+        value === "" || value === null || value === undefined ? null : value,
+      z.coerce
+        .number()
+        .int({ message: "Debe ser un número entero." })
+        .min(1, { message: "El mínimo es 1." })
+        .nullable()
+    ),
 
     isActive: z.boolean(),
     shopCategory: z.nativeEnum(ShopCategory),
