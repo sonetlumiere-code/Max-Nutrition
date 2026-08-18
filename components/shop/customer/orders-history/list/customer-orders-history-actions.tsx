@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { PopulatedOrder } from "@/types/types"
 import CancelCustomerOrder from "../cancel/cancel-customer-order"
+import RepeatCustomerOrder from "../repeat/repeat-customer-order"
 import { OrderStatus } from "@prisma/client"
 
 type CustomerOrdersHistoryActionsProps = {
@@ -37,6 +38,9 @@ const CustomerOrdersHistoryActions = ({
         <DropdownMenuItem onClick={() => onViewOrder(order)}>
           <Icons.eye className='w-4 h-4 mr-2' />
           <p>Ver</p>
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+          <RepeatCustomerOrder order={order} />
         </DropdownMenuItem>
         {order.status === OrderStatus.PENDING && (
           <DropdownMenuItem>
