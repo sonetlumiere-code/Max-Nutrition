@@ -1,14 +1,14 @@
 import "server-only"
 
 import prisma from "@/lib/db/db"
-import { getPeriodRange } from "@/data/analytics"
+import { DateRangeBounds } from "@/helpers/date-range"
 import {
   aggregateBags,
   aggregateIngredients,
   aggregateProducts,
   aggregateRecipeGroups,
 } from "@/helpers/production"
-import { AnalyticsPeriod, PopulatedOrder } from "@/types/types"
+import { PopulatedOrder } from "@/types/types"
 import { OrderStatus } from "@prisma/client"
 
 export type ProductionScope = "pending" | "committed" | "all"
@@ -33,10 +33,10 @@ export const PRODUCTION_SCOPES: Record<
 }
 
 export const getProductionPlan = async (
-  period: AnalyticsPeriod,
+  range: DateRangeBounds,
   scope: ProductionScope
 ) => {
-  const { start, end } = getPeriodRange(period)
+  const { start, end } = range
 
   const orders = (await prisma.order.findMany({
     where: {

@@ -31,11 +31,13 @@ import {
   formatNumber,
 } from "@/components/dashboard/analytics/format"
 import { formatQuantity } from "@/components/dashboard/production/format"
+import DateRangeFilter from "@/components/dashboard/production/date-range-filter"
 import {
   PRODUCTION_SCOPES,
   ProductionScope,
   getProductionPlan,
 } from "@/data/production"
+import { getPeriodRange, getRangeFromDates } from "@/helpers/date-range"
 import { hasPermission } from "@/helpers/helpers"
 import { verifySession } from "@/lib/auth/verify-session"
 import { cn } from "@/lib/utils"
@@ -73,7 +75,12 @@ const FilterLink = ({ href, active, children }: FilterLinkProps) => (
 export default async function ProductionPage({
   searchParams,
 }: {
-  searchParams: Promise<{ period?: string; scope?: string }>
+  searchParams: Promise<{
+    period?: string
+    scope?: string
+    from?: string
+    to?: string
+  }>
 }) {
   const session = await verifySession()
   const user = session?.user
@@ -98,9 +105,23 @@ export default async function ProductionPage({
     ? (params.scope as ProductionScope)
     : "committed"
 
-  const plan = await getProductionPlan(period, scope)
-  const buildHref = (next: { period?: string; scope?: string }) =>
-    `/production?period=${next.period ?? period}&scope=${next.scope ?? scope}`
+  // Un rango explícito manda sobre el período preestablecido.
+  const customRange = getRangeFromDates(params.from, params.to)
+  const range = customRange ?? getPeriodRange(period)
+
+  const plan = await getProductionPlan(range, scope)
+
+  const buildHref = (next: { period?: string; scope?: string }) => {
+    const nextPeriod = next.period ?? (customRange ? undefined : period)
+    const nextScope = next.scope ?? scope
+    // Al cambiar de período se abandona el rango manual; al cambiar de estado
+    // se conserva lo que esté activo.
+    const keepRange = customRange && !next.period
+
+    return keepRange
+      ? `/production?scope=${nextScope}&from=${params.from}&to=${params.to}`
+      : `/production?period=${nextPeriod ?? "week"}&scope=${nextScope}`
+  }
 
   return (
     <>
@@ -134,12 +155,15 @@ export default async function ProductionPage({
               <FilterLink
                 key={option.key}
                 href={buildHref({ period: option.key })}
-                active={option.key === period}
+                active={!customRange && option.key === period}
               >
                 {option.label}
               </FilterLink>
             ))}
           </div>
+
+          <DateRangeFilter from={params.from} to={params.to} scope={scope} />
+
           <div className='inline-flex rounded-lg border bg-muted/40 p-1'>
             {SCOPE_KEYS.map((key) => (
               <FilterLink

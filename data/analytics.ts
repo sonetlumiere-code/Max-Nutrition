@@ -1,64 +1,13 @@
 import "server-only"
 
 import prisma from "@/lib/db/db"
-import {
-  BUSINESS_TIME_ZONE,
-  calculateIngredientData,
-  toBusinessTime,
-} from "@/helpers/helpers"
+import { calculateIngredientData, toBusinessTime } from "@/helpers/helpers"
+import { getPeriodRange } from "@/helpers/date-range"
 import { AnalyticsPeriod } from "@/types/types"
 import { OrderStatus, Prisma } from "@prisma/client"
 
 // Los pedidos cancelados no cuentan como venta en ninguna métrica.
 const SALES_STATUS_FILTER = { not: OrderStatus.CANCELLED }
-
-/**
- * Diferencia entre la hora de pared del negocio y el instante real, tal como la
- * ve este runtime. Es 0 si el servidor ya corre en el huso del negocio. Se
- * redondea al minuto porque los offsets horarios nunca tienen fracciones.
- */
-const getBusinessSkewMs = (date: Date) => {
-  const skew = toBusinessTime(date).getTime() - date.getTime()
-  return Math.round(skew / 60_000) * 60_000
-}
-
-/** Inversa de toBusinessTime: de hora de pared del negocio a instante real. */
-const fromBusinessTime = (wallClock: Date) =>
-  new Date(wallClock.getTime() - getBusinessSkewMs(wallClock))
-
-/**
- * Límites del período calendario en curso y del período anterior equivalente,
- * calculados sobre la hora del negocio y devueltos como instantes UTC.
- */
-export const getPeriodRange = (period: AnalyticsPeriod) => {
-  const nowBusiness = toBusinessTime(new Date())
-  const year = nowBusiness.getFullYear()
-  const month = nowBusiness.getMonth()
-  const date = nowBusiness.getDate()
-
-  let currentStart: Date
-  let previousStart: Date
-
-  if (period === "week") {
-    // Semana desde el lunes.
-    const weekday = (nowBusiness.getDay() + 6) % 7
-    currentStart = new Date(year, month, date - weekday)
-    previousStart = new Date(year, month, date - weekday - 7)
-  } else if (period === "month") {
-    currentStart = new Date(year, month, 1)
-    previousStart = new Date(year, month - 1, 1)
-  } else {
-    currentStart = new Date(year, 0, 1)
-    previousStart = new Date(year - 1, 0, 1)
-  }
-
-  return {
-    start: fromBusinessTime(currentStart),
-    end: fromBusinessTime(nowBusiness),
-    previousStart: fromBusinessTime(previousStart),
-    previousEnd: fromBusinessTime(currentStart),
-  }
-}
 
 const MONTH_LABELS = [
   "Ene",
