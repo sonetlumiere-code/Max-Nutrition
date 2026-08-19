@@ -4,6 +4,7 @@ import { getShippingZone } from "@/data/shipping-zones"
 import { hasPermission } from "@/helpers/helpers"
 import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
+import { sendOrderStatusEmail } from "@/lib/mail/mail"
 import {
   PartialOrderSchema,
   partialOrderSchema,
@@ -122,8 +123,24 @@ export async function editOrder({
             product: true,
           },
         },
+        customer: {
+          include: { user: { select: { email: true } } },
+        },
+        shop: { select: { key: true } },
       },
     })
+
+    // El aviso sale solo si el estado efectivamente cambió: guardar el pedido
+    // sin tocarlo no debe llenarle la casilla al cliente.
+    if (status && status !== existingOrder.status) {
+      await sendOrderStatusEmail({
+        email: order.customer?.user?.email,
+        customerName: order.customer?.name || "cliente",
+        status,
+        shippingMethod: order.shippingMethod,
+        orderLink: `/${order.shop?.key}/customer-orders-history`,
+      })
+    }
 
     revalidatePath("/customer-orders-history")
     revalidatePath("/orders")

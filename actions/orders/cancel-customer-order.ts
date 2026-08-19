@@ -2,6 +2,7 @@
 
 import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
+import { sendOrderStatusEmail } from "@/lib/mail/mail"
 import { OrderStatus } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 
@@ -16,7 +17,10 @@ export async function cancelCustomerOrder({ orderId }: { orderId: string }) {
   try {
     const order = await prisma.order.findUnique({
       where: { id: orderId },
-      include: { customer: true },
+      include: {
+        customer: { include: { user: { select: { email: true } } } },
+        shop: { select: { key: true } },
+      },
     })
 
     if (!order || order.customer?.userId !== user.id) {
@@ -30,6 +34,15 @@ export async function cancelCustomerOrder({ orderId }: { orderId: string }) {
     await prisma.order.update({
       where: { id: order.id },
       data: { status: OrderStatus.CANCELLED },
+    })
+
+    // Comprobante de la cancelación, para que quede registro en su casilla.
+    await sendOrderStatusEmail({
+      email: order.customer?.user?.email,
+      customerName: order.customer?.name || "cliente",
+      status: OrderStatus.CANCELLED,
+      shippingMethod: order.shippingMethod,
+      orderLink: `/${order.shop?.key}/customer-orders-history`,
     })
 
     revalidatePath("/customer-orders-history")
