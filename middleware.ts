@@ -7,6 +7,7 @@ import {
   publicRoutes,
   shopRoutes,
   webhookPrefix,
+  cronPrefix,
 } from "@/routes"
 import NextAuth from "next-auth"
 
@@ -25,7 +26,10 @@ export default auth((req) => {
     return
   }
 
-  if (nextUrl.pathname.startsWith(webhookPrefix)) {
+  if (
+    nextUrl.pathname.startsWith(webhookPrefix) ||
+    nextUrl.pathname.startsWith(cronPrefix)
+  ) {
     return
   }
 

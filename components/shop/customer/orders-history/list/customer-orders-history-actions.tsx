@@ -13,6 +13,7 @@ import {
 import { PopulatedOrder } from "@/types/types"
 import CancelCustomerOrder from "../cancel/cancel-customer-order"
 import RepeatCustomerOrder from "../repeat/repeat-customer-order"
+import SubscribeCustomerOrder from "../subscribe/subscribe-customer-order"
 import { OrderStatus } from "@prisma/client"
 
 type CustomerOrdersHistoryActionsProps = {
@@ -41,6 +42,9 @@ const CustomerOrdersHistoryActions = ({
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
           <RepeatCustomerOrder order={order} />
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+          <SubscribeCustomerOrder order={order} />
         </DropdownMenuItem>
         {order.status === OrderStatus.PENDING && (
           <DropdownMenuItem>

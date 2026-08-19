@@ -25,6 +25,10 @@ const apiPublicRoutes: string[] = [
 // una valida su propia firma, que es lo que las autentica.
 const webhookPrefix: string = "/api/webhooks"
 
+// Tareas programadas: tampoco tienen sesión. Se autentican con un secreto en
+// el encabezado Authorization.
+const cronPrefix: string = "/api/cron"
+
 const DEFAULT_REDIRECT_SHOP: string = ShopRoutes.FOODS
 const DEFAULT_REDIRECT_DASHBOARD: string = "/dashboard"
 
@@ -36,6 +40,7 @@ export {
   apiAuthPrefix,
   apiPublicRoutes,
   webhookPrefix,
+  cronPrefix,
   DEFAULT_REDIRECT_SHOP,
   DEFAULT_REDIRECT_DASHBOARD,
 }

@@ -148,11 +148,59 @@ model Customer {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  addresses CustomerAddress[]
-  orders    Order[]
-  user      User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  addresses     CustomerAddress[]
+  orders        Order[]
+  subscriptions Subscription[]
+  user          User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("customers")
+}
+
+/// Pedido recurrente: cada semana, el día indicado, genera un pedido nuevo con
+/// estos productos. El cobro sigue el flujo normal del pedido generado.
+model Subscription {
+  id                String   @id @default(cuid())
+  customerId        String
+  shopId            String
+  customerAddressId String?
+  shopBranchId      String?
+  /// Día de la semana en que se genera el pedido, en hora del negocio.
+  weekday           DayOfWeek
+  isActive          Boolean  @default(true)
+  /// Última generación, para no repetir el pedido si el cron corre dos veces.
+  lastRunAt         DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  paymentMethod  PaymentMethod
+  shippingMethod ShippingMethod
+
+  customer   Customer            @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  shop       Shop                @relation(fields: [shopId], references: [id])
+  address    CustomerAddress?    @relation(fields: [customerAddressId], references: [id])
+  shopBranch ShopBranch?         @relation(fields: [shopBranchId], references: [id])
+  items      SubscriptionItem[]
+
+  @@index([customerId])
+  @@index([weekday, isActive])
+  @@map("subscriptions")
+}
+
+model SubscriptionItem {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  productId      String
+  quantity       Int
+  withSalt       Boolean
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  product      Product      @relation(fields: [productId], references: [id])
+
+  @@unique([subscriptionId, productId, withSalt])
+  @@index([productId])
+  @@map("subscription_items")
 }
 
 enum CustomerAddressLabel {
@@ -177,9 +225,10 @@ model CustomerAddress {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  customer Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  label    CustomerAddressLabel
-  order    Order[]
+  customer      Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  label         CustomerAddressLabel
+  order         Order[]
+  subscriptions Subscription[]
 
   @@unique([customerId, label, labelString])
   @@map("customer_addresses")
@@ -261,9 +310,10 @@ model Product {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  categories     Category[]
-  orderItems     OrderItem[]
-  productRecipes ProductRecipe[]
+  categories        Category[]
+  orderItems        OrderItem[]
+  productRecipes    ProductRecipe[]
+  subscriptionItems SubscriptionItem[]
 
   @@map("products")
 }
@@ -456,6 +506,7 @@ model Shop {
   shopCategory     ShopCategory       @unique
   operationalHours OperationalHours[]
   orders           Order[]
+  subscriptions    Subscription[]
 
   @@map("shops")
 }
@@ -498,6 +549,7 @@ model ShopBranch {
   branchType       BranchType         @default(RETAIL)
   operationalHours OperationalHours[]
   orders           Order[]
+  subscriptions    Subscription[]
 
   @@map("shop_branches")
 }

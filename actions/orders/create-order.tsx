@@ -7,6 +7,7 @@ import { getShopSettings } from "@/data/shop-settings"
 import { getShippingZone } from "@/data/shipping-zones"
 import { verifySession } from "@/lib/auth/verify-session"
 import prisma from "@/lib/db/db"
+import { calculateSubtotal, calculateTotal } from "@/lib/orders/pricing"
 import { sendOrderDetailsEmail } from "@/lib/mail/mail"
 import { OrderSchema, orderSchema } from "@/lib/validations/order-validation"
 import { PopulatedOrder, PopulatedProduct } from "@/types/types"
@@ -177,12 +178,7 @@ export async function createOrder({
       return { error: "Hay productos que no pertenecen a esta tienda." }
     }
 
-    const subtotal =
-      Math.round(
-        populatedItems.reduce((acc, item) => {
-          return acc + item.product.price * item.quantity
-        }, 0) * 100
-      ) / 100
+    const subtotal = calculateSubtotal(populatedItems)
 
     const { appliedPromotions, finalPrice } = await checkPromotion({
       items: populatedItems,
@@ -271,7 +267,7 @@ export async function createOrder({
       shippingCost = shippingZone?.cost || 0
     }
 
-    const total = Math.round((finalPrice + shippingCost) * 100) / 100
+    const total = calculateTotal(finalPrice, shippingCost)
 
     const order = await prisma.order.create({
       data: {

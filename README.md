@@ -44,6 +44,28 @@ desarrollo hay que exponer el puerto local con un túnel.
 Sin estas variables la integración queda inactiva: el resto del checkout sigue
 funcionando y el método Mercado Pago avisa que no está disponible.
 
+## Pedidos semanales (suscripciones)
+
+Un cliente puede convertir cualquiera de sus pedidos en un pedido semanal desde
+su historial. Cada semana, el día que eligió, el sistema genera un pedido nuevo
+con los precios y la disponibilidad de ese momento, y se lo avisa por mail.
+
+La generación la dispara un cron diario declarado en `vercel.json`, que llama a
+`/api/cron/subscriptions`. Ese endpoint exige la variable `CRON_SECRET` (ver
+`.env.example`): Vercel la envía en el encabezado `Authorization` de sus crons.
+Sin la variable el endpoint responde 503 y no genera nada.
+
+La función es idempotente —se apoya en `lastRunAt`—, así que un reintento o una
+corrida de más no duplica pedidos. Para ejecutarla a mano:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" https://TU-DOMINIO/api/cron/subscriptions
+```
+
+El cobro no es automático: el pedido generado sigue el mismo flujo de pago que
+uno hecho a mano. El débito recurrente con tarjeta requiere la API de
+preaprobación de Mercado Pago y todavía no está implementado.
+
 ## Tests
 
 The business math — unit conversions, ingredient cost with merma, promotions,
