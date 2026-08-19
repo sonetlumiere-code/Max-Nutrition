@@ -70,6 +70,8 @@ export default async function SubscriptionsPage(props: SubscriptionsPageProps) {
                 weekday: subscription.weekday,
                 isActive: subscription.isActive,
                 shippingMethod: subscription.shippingMethod,
+                amount: subscription.amount,
+                preapprovalStatus: subscription.preapprovalStatus,
                 items: subscription.items.map((item) => ({
                   id: item.id,
                   quantity: item.quantity,

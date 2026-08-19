@@ -35,6 +35,8 @@ type SubscriptionCardProps = {
     weekday: DayOfWeek
     isActive: boolean
     shippingMethod: "DELIVERY" | "TAKE_AWAY"
+    amount: number | null
+    preapprovalStatus: string | null
     items: { id: string; quantity: number; withSalt: boolean; productName: string }[]
   }
 }
@@ -105,6 +107,9 @@ const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
     0
   )
 
+  const needsAuthorization = subscription.preapprovalStatus === "pending"
+  const isCancelledAtProvider = subscription.preapprovalStatus === "cancelled"
+
   return (
     <Card>
       <CardHeader>
@@ -123,6 +128,31 @@ const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
       </CardHeader>
 
       <CardContent className='grid gap-4'>
+        {needsAuthorization && (
+          <div className='rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900'>
+            Falta autorizar el débito automático con tu tarjeta. Hasta que lo
+            hagas no vamos a preparar tus pedidos. Revisá el mail de Mercado
+            Pago o volvé a suscribirte desde el pedido.
+          </div>
+        )}
+
+        {isCancelledAtProvider && (
+          <div className='rounded-md border bg-muted p-3 text-sm text-muted-foreground'>
+            El débito automático fue cancelado en Mercado Pago, así que la
+            suscripción está detenida.
+          </div>
+        )}
+
+        {subscription.amount !== null && (
+          <p className='text-sm text-muted-foreground'>
+            Débito automático de{" "}
+            <strong className='text-foreground'>
+              ${subscription.amount.toFixed(2)} por semana
+            </strong>
+            .
+          </p>
+        )}
+
         <ul className='grid gap-1 text-sm'>
           {subscription.items.map((item) => (
             <li key={item.id} className='flex justify-between border-b py-1'>

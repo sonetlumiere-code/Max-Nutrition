@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { DayOfWeek } from "@prisma/client"
+import { DayOfWeek, PaymentMethod } from "@prisma/client"
 import { createSubscriptionFromOrder } from "@/actions/subscriptions/manage-subscription"
 import { useCart } from "@/components/cart-provider"
 import { Icons } from "@/components/icons"
@@ -45,7 +45,7 @@ const SubscribeCustomerOrder = ({ order }: SubscribeCustomerOrderProps) => {
     })
     setIsLoading(false)
 
-    if (res.error) {
+    if (res.error || !res.success) {
       toast({
         variant: "destructive",
         title: "No se pudo crear la suscripción",
@@ -55,6 +55,14 @@ const SubscribeCustomerOrder = ({ order }: SubscribeCustomerOrderProps) => {
     }
 
     setOpen(false)
+
+    // Con débito automático falta el paso decisivo: autorizar la tarjeta en
+    // Mercado Pago. Hasta que lo haga, la suscripción no genera pedidos.
+    if (res.success.authorizationUrl) {
+      window.location.href = res.success.authorizationUrl
+      return
+    }
+
     toast({
       title: "¡Listo! Ya tenés tu pedido semanal.",
       description: `Lo vamos a preparar todos los ${translateWeekday(
@@ -105,6 +113,18 @@ const SubscribeCustomerOrder = ({ order }: SubscribeCustomerOrderProps) => {
             Cada semana armamos el pedido con los precios y la disponibilidad
             de ese momento, y te avisamos por mail.
           </p>
+
+          {order.paymentMethod === PaymentMethod.MERCADO_PAGO && (
+            <div className='rounded-md bg-muted p-3 text-xs text-muted-foreground'>
+              Vas a autorizar un débito automático de{" "}
+              <strong className='text-foreground'>
+                ${order.total.toFixed(2)} por semana
+              </strong>{" "}
+              con tu tarjeta. Ese importe queda fijo: si algún precio cambia,
+              seguís pagando lo mismo hasta que canceles o vuelvas a
+              suscribirte. Podés darlo de baja cuando quieras.
+            </div>
+          )}
 
           <Button type='button' onClick={onSubscribe} disabled={isLoading}>
             {isLoading ? (

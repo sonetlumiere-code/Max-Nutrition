@@ -167,6 +167,13 @@ model Subscription {
   /// Día de la semana en que se genera el pedido, en hora del negocio.
   weekday           DayOfWeek
   isActive          Boolean  @default(true)
+  /// Monto fijo semanal acordado con el cliente para el débito automático.
+  /// Null cuando el cobro no es automático.
+  amount            Float?
+  /// Preaprobación de Mercado Pago que autoriza el débito recurrente.
+  mercadoPagoPreapprovalId String? @unique
+  /// Estado de esa preaprobación: pending, authorized, paused o cancelled.
+  preapprovalStatus        String?
   /// Última generación, para no repetir el pedido si el cron corre dos veces.
   lastRunAt         DateTime?
   createdAt         DateTime @default(now())

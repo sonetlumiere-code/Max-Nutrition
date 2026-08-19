@@ -7,6 +7,7 @@ import prisma from "@/lib/db/db"
 import { sendOrderDetailsEmail } from "@/lib/mail/mail"
 import { calculateSubtotal, calculateTotal } from "@/lib/orders/pricing"
 import { isSubscriptionDue } from "@/helpers/subscriptions"
+import { isPreapprovalActive } from "@/lib/mercado-pago/subscription-events"
 import { PopulatedOrder, PopulatedProduct } from "@/types/types"
 
 export type SubscriptionRunResult = {
@@ -44,6 +45,19 @@ export const generateSubscriptionOrders = async (
 
   for (const subscription of subscriptions) {
     if (!isSubscriptionDue(subscription, now)) continue
+
+    // Doble control: una suscripción con débito automático solo produce
+    // pedidos si Mercado Pago tiene la autorización vigente.
+    if (
+      subscription.mercadoPagoPreapprovalId &&
+      !isPreapprovalActive(subscription.preapprovalStatus)
+    ) {
+      result.skipped.push({
+        subscriptionId: subscription.id,
+        reason: `Débito automático no autorizado (${subscription.preapprovalStatus}).`,
+      })
+      continue
+    }
 
     result.processed += 1
 

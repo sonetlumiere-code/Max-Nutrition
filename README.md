@@ -62,9 +62,29 @@ corrida de más no duplica pedidos. Para ejecutarla a mano:
 curl -H "Authorization: Bearer $CRON_SECRET" https://TU-DOMINIO/api/cron/subscriptions
 ```
 
-El cobro no es automático: el pedido generado sigue el mismo flujo de pago que
-uno hecho a mano. El débito recurrente con tarjeta requiere la API de
-preaprobación de Mercado Pago y todavía no está implementado.
+### Débito automático
+
+Si el pedido que se repite se pagaba con Mercado Pago, la suscripción crea una
+preaprobación y el cliente autoriza el débito con su tarjeta. **El importe es
+fijo**: el del pedido que originó la suscripción.
+
+Es fijo a propósito. Mercado Pago cobra en su propio calendario y solo permite
+cambiar el importe, no la fecha; con un monto variable habría una carrera entre
+nuestra actualización y su cobro, y el cliente podría pagar un importe que no
+corresponde. Si el pedido de una semana termina costando distinto, se marca
+pagado igual —el cliente pagó lo que autorizó— y la diferencia queda anotada en
+las notas del pedido para conciliarla.
+
+Hasta que el cliente no autoriza la tarjeta la suscripción no genera pedidos. Si
+pausa o cancela, el cambio se envía a Mercado Pago **antes** de aplicarse acá: si
+esa llamada falla, la operación se rechaza, porque borrar la suscripción sin
+cancelar la preaprobación dejaría al cliente debitado sin forma de detenerlo.
+
+En el panel de Mercado Pago hay que suscribirse también a los eventos
+`subscription_preapproval` y `subscription_authorized_payment`, que llegan a la
+misma URL de webhook.
+
+Si un cobro falla, el pedido se genera igual y queda pendiente de pago.
 
 ## Tests
 
