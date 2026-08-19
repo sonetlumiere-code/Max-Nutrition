@@ -18,6 +18,32 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Pagos con Mercado Pago
+
+El cobro online usa Checkout Pro: el cliente paga en el sitio de Mercado Pago,
+así que ningún dato de tarjeta pasa por esta aplicación. El pedido se crea antes
+de pagar y queda como pendiente hasta que Mercado Pago confirma el cobro por
+webhook — el regreso del cliente al sitio no se toma como comprobante.
+
+Para habilitarlo hacen falta dos variables (ver `.env.example`):
+
+- `MP_ACCESS_TOKEN`: access token del comercio, en **Tus integraciones**.
+- `MP_WEBHOOK_SECRET`: clave de firma del webhook, en **Tus integraciones →
+  Webhooks**. Sin ella las notificaciones se descartan.
+
+En el panel de Mercado Pago hay que registrar la URL de notificaciones:
+
+```
+https://TU-DOMINIO/api/webhooks/mercado-pago
+```
+
+Conviene empezar con las credenciales de prueba y las tarjetas de test antes de
+pasar a las productivas. El webhook necesita una URL pública, así que en
+desarrollo hay que exponer el puerto local con un túnel.
+
+Sin estas variables la integración queda inactiva: el resto del checkout sigue
+funcionando y el método Mercado Pago avisa que no está disponible.
+
 ## Tests
 
 The business math — unit conversions, ingredient cost with merma, promotions,

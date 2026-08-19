@@ -21,6 +21,10 @@ const apiPublicRoutes: string[] = [
   "/api/shipping-zone",
 ]
 
+// Notificaciones de proveedores externos: llegan por POST y sin sesión. Cada
+// una valida su propia firma, que es lo que las autentica.
+const webhookPrefix: string = "/api/webhooks"
+
 const DEFAULT_REDIRECT_SHOP: string = ShopRoutes.FOODS
 const DEFAULT_REDIRECT_DASHBOARD: string = "/dashboard"
 
@@ -31,6 +35,7 @@ export {
   authRoutes,
   apiAuthPrefix,
   apiPublicRoutes,
+  webhookPrefix,
   DEFAULT_REDIRECT_SHOP,
   DEFAULT_REDIRECT_DASHBOARD,
 }

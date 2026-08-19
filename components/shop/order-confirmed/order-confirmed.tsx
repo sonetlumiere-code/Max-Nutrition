@@ -198,6 +198,21 @@ export default function OrderConfirmed({ order }: OrderConfirmedProps) {
                 {order.paymentMethod === "MERCADO_PAGO" && "Mercado Pago"}
               </p>
             </div>
+
+            {order.paymentMethod === "MERCADO_PAGO" && (
+              <div className='flex justify-between'>
+                <h3 className='font-semibold'>Estado del pago</h3>
+                <p className='text-muted-foreground'>
+                  {order.paymentStatus === "PAID" && "Pagado"}
+                  {order.paymentStatus === "FAILED" &&
+                    "El pago no se completó. Escribinos para resolverlo."}
+                  {/* Al volver de Mercado Pago la confirmación puede tardar
+                      unos segundos en llegar, así que no se afirma que falló. */}
+                  {order.paymentStatus === "PENDING" &&
+                    "Estamos confirmando tu pago."}
+                </p>
+              </div>
+            )}
           </div>
         </CardContent>
         <CardFooter className='flex flex-col space-y-4 sm:flex-row sm:justify-between sm:space-x-4 sm:space-y-0'>

@@ -6,6 +6,7 @@ import {
   authRoutes,
   publicRoutes,
   shopRoutes,
+  webhookPrefix,
 } from "@/routes"
 import NextAuth from "next-auth"
 
@@ -21,6 +22,10 @@ export default auth((req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
 
   if (isApiAuthRoute) {
+    return
+  }
+
+  if (nextUrl.pathname.startsWith(webhookPrefix)) {
     return
   }
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { createOrder } from "@/actions/orders/create-order"
+import { createPaymentPreference } from "@/actions/orders/create-payment-preference"
 import { useCart } from "@/components/cart-provider"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
@@ -196,6 +197,27 @@ const Checkout = ({
     if (res.success) {
       setIsFulfilled(true)
       clearCart()
+
+      // Con Mercado Pago el pedido queda creado y el cobro sigue en su sitio.
+      if (data.paymentMethod === PaymentMethod.MERCADO_PAGO) {
+        const payment = await createPaymentPreference({
+          orderId: res.order.id,
+        })
+
+        if (payment.success) {
+          window.location.href = payment.success.checkoutUrl
+          return
+        }
+
+        toast({
+          variant: "destructive",
+          title: "No se pudo iniciar el pago",
+          description: `${payment.error} Tu pedido quedó registrado como pendiente de pago.`,
+        })
+        router.push(`/order-confirmed/${res.order.id}`)
+        return
+      }
+
       toast({
         title: "Pedido realizado",
         description: "Tu pedido se ha realizado correctamente.",
