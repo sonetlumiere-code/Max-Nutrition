@@ -38,6 +38,12 @@ export const navItems: {
     permissionKey: "view:orders",
   },
   {
+    href: "/subscriptions",
+    label: "Suscripciones",
+    icon: "calendar",
+    permissionKey: "view:orders",
+  },
+  {
     href: "/products",
     label: "Productos",
     icon: "pizza",

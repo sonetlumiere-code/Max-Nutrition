@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge"
+import { Icons } from "@/components/icons"
 import { Separator } from "@/components/ui/separator"
 import {
   translateOrderStatus,
@@ -101,6 +102,22 @@ const OrderItemInfo = ({ order }: OrderInfoProps) => {
           </li>
         </ul>
       </div>
+
+      {/* Notas internas del pedido: acá aparecen, por ejemplo, las diferencias
+          entre lo debitado por una suscripción y el total del pedido. */}
+      {order.notes && (
+        <>
+          <Separator className='my-4' />
+          <div className='rounded-md border border-amber-300 bg-amber-50 p-3'>
+            <div className='mb-1 flex items-center gap-2 font-semibold text-amber-900'>
+              <Icons.circleAlert className='h-4 w-4' aria-hidden />
+              Nota del pedido
+            </div>
+            <p className='text-amber-900'>{order.notes}</p>
+          </div>
+        </>
+      )}
+
       <Separator className='my-4' />
       <div className='flex justify-between'>
         <div className='grid gap-3'>
