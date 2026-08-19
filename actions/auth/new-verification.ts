@@ -43,11 +43,14 @@ export const newVerification = async (token: string) => {
       prisma.verificationToken.delete({
         where: { id: existingToken.id },
       }),
-      sendWelcomeEmail({
-        email: existingToken.email,
-        userName: existingUser.name || existingToken.email,
-      }),
     ])
+
+    // Fuera del Promise.all: la cuenta ya quedó verificada, así que un fallo
+    // del aviso no debe presentarse como si la verificación hubiera fallado.
+    await sendWelcomeEmail({
+      email: existingToken.email,
+      userName: existingUser.name || existingToken.email,
+    })
 
     return { success: "Email verificado." }
   } catch (error) {

@@ -320,7 +320,7 @@ export async function createOrder({
     })
 
     if (sendEmail) {
-      sendOrderDetailsEmail({
+      await sendOrderDetailsEmail({
         email: customer.user?.email || "",
         order: order as PopulatedOrder,
         orderLink: `/${shop.key}/customer-orders-history`,

@@ -30,11 +30,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               userId: user.id,
               name: user.name || "",
             }),
-            sendWelcomeEmail({
-              email: user.email || "",
-              userName: user.name || user.email || "",
-            }),
           ])
+
+          // El aviso va aparte para no confundir un fallo de Resend con un
+          // error al crear la cuenta.
+          await sendWelcomeEmail({
+            email: user.email || "",
+            userName: user.name || user.email || "",
+          })
         } catch (error) {
           console.error("Error during linkAccount event:", error)
         }

@@ -45,6 +45,12 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   })
 }
 
+/**
+ * Aviso de bienvenida.
+ *
+ * Como todos los avisos, nunca lanza: que falle no puede romper la
+ * verificación de la cuenta, que para este punto ya ocurrió.
+ */
 export const sendWelcomeEmail = async ({
   email,
   userName,
@@ -52,14 +58,23 @@ export const sendWelcomeEmail = async ({
   email: string
   userName: string
 }) => {
-  await resend.emails.send({
-    from: resendEmail,
-    to: email,
-    subject: "¡Te damos la Bienvenida a Máxima Nutrición!",
-    react: WelcomeClient({
-      userName: userName,
-    }) as ReactElement,
-  })
+  if (!email) return false
+
+  try {
+    await resend.emails.send({
+      from: resendEmail,
+      to: email,
+      subject: "¡Te damos la Bienvenida a Máxima Nutrición!",
+      react: WelcomeClient({
+        userName: userName,
+      }) as ReactElement,
+    })
+
+    return true
+  } catch (error) {
+    console.error("Error enviando el email de bienvenida:", error)
+    return false
+  }
 }
 
 /**
@@ -106,6 +121,12 @@ export const sendOrderStatusEmail = async ({
   }
 }
 
+/**
+ * Detalle del pedido recién creado.
+ *
+ * Es un aviso: el pedido ya está guardado, así que un fallo de Resend se
+ * registra y se sigue adelante en vez de hacer fracasar la compra.
+ */
 export const sendOrderDetailsEmail = async ({
   email,
   order,
@@ -115,17 +136,22 @@ export const sendOrderDetailsEmail = async ({
   order: PopulatedOrder
   orderLink: string
 }) => {
-  if (!email) {
-    throw new Error("Email is required to send order details.")
-  }
+  if (!email) return false
 
-  await resend.emails.send({
-    from: resendEmail,
-    to: email,
-    subject: "Detalles de tu pedido en Máxima Nutrición",
-    react: OrderDetails({
-      order,
-      orderLink: `${baseUrl}/${orderLink}`,
-    }) as ReactElement,
-  })
+  try {
+    await resend.emails.send({
+      from: resendEmail,
+      to: email,
+      subject: "Detalles de tu pedido en Máxima Nutrición",
+      react: OrderDetails({
+        order,
+        orderLink: `${baseUrl}/${orderLink}`,
+      }) as ReactElement,
+    })
+
+    return true
+  } catch (error) {
+    console.error("Error enviando el detalle del pedido:", error)
+    return false
+  }
 }
