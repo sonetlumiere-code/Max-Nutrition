@@ -16,6 +16,7 @@ import {
   CustomerAddressLabel,
   DayOfWeek,
   Ingredient,
+  IngredientVariantScope,
   Measurement,
   OrderStatus,
   PaymentMethod,
@@ -72,6 +73,21 @@ export const translateAddressLabel = (value: CustomerAddressLabel) => {
       return "Trabajo"
     default:
       return "Otro"
+  }
+}
+
+export function translateIngredientVariantScope(
+  scope: IngredientVariantScope
+): string {
+  switch (scope) {
+    case IngredientVariantScope.ALWAYS:
+      return "Siempre"
+    case IngredientVariantScope.ONLY_WITH_SALT:
+      return "Solo con sal"
+    case IngredientVariantScope.ONLY_WITHOUT_SALT:
+      return "Solo sin sal"
+    default:
+      return "Siempre"
   }
 }
 

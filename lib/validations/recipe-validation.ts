@@ -1,3 +1,4 @@
+import { IngredientVariantScope } from "@prisma/client"
 import { z } from "zod"
 
 export const recipeSchema = z
@@ -12,6 +13,11 @@ export const recipeSchema = z
         quantity: z.coerce
           .number()
           .min(0.01, { message: "Ingresa la cantidad." }),
+        // En qué variante de la vianda entra el ingrediente. Por defecto en
+        // las dos, que es como se comportaban las recetas hasta ahora.
+        variantScope: z
+          .nativeEnum(IngredientVariantScope)
+          .default(IngredientVariantScope.ALWAYS),
       })
     ),
   })

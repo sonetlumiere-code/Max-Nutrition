@@ -159,33 +159,33 @@ model Customer {
 /// Pedido recurrente: cada semana, el día indicado, genera un pedido nuevo con
 /// estos productos. El cobro sigue el flujo normal del pedido generado.
 model Subscription {
-  id                String   @id @default(cuid())
-  customerId        String
-  shopId            String
-  customerAddressId String?
-  shopBranchId      String?
+  id                       String    @id @default(cuid())
+  customerId               String
+  shopId                   String
+  customerAddressId        String?
+  shopBranchId             String?
   /// Día de la semana en que se genera el pedido, en hora del negocio.
-  weekday           DayOfWeek
-  isActive          Boolean  @default(true)
+  weekday                  DayOfWeek
+  isActive                 Boolean   @default(true)
   /// Monto fijo semanal acordado con el cliente para el débito automático.
   /// Null cuando el cobro no es automático.
-  amount            Float?
+  amount                   Float?
   /// Preaprobación de Mercado Pago que autoriza el débito recurrente.
-  mercadoPagoPreapprovalId String? @unique
+  mercadoPagoPreapprovalId String?   @unique
   /// Estado de esa preaprobación: pending, authorized, paused o cancelled.
   preapprovalStatus        String?
   /// Última generación, para no repetir el pedido si el cron corre dos veces.
-  lastRunAt         DateTime?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  lastRunAt                DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
 
   paymentMethod  PaymentMethod
   shippingMethod ShippingMethod
 
-  customer   Customer            @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  shop       Shop                @relation(fields: [shopId], references: [id])
-  address    CustomerAddress?    @relation(fields: [customerAddressId], references: [id])
-  shopBranch ShopBranch?         @relation(fields: [shopBranchId], references: [id])
+  customer   Customer           @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  shop       Shop               @relation(fields: [shopId], references: [id])
+  address    CustomerAddress?   @relation(fields: [customerAddressId], references: [id])
+  shopBranch ShopBranch?        @relation(fields: [shopBranchId], references: [id])
   items      SubscriptionItem[]
 
   @@index([customerId])
@@ -279,7 +279,6 @@ model Recipe {
   description       String?
   instructions      String?
   timeToCookMinutes Int?     @default(0)
-  portions          Int      @default(1)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -289,6 +288,15 @@ model Recipe {
   @@map("recipes")
 }
 
+// En qué variante del pedido entra un ingrediente. La vianda se pide con o sin
+// sal, y hasta ahora esa elección se guardaba en OrderItem pero no cambiaba la
+// receta: un pedido sin sal igual sumaba la sal a la lista de compras.
+enum IngredientVariantScope {
+  ALWAYS
+  ONLY_WITH_SALT
+  ONLY_WITHOUT_SALT
+}
+
 model RecipeIngredient {
   id           String   @id @default(cuid())
   recipeId     String
@@ -296,6 +304,10 @@ model RecipeIngredient {
   quantity     Float
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  // Por defecto el ingrediente va en las dos variantes, que es como se
+  // comportaban todas las recetas antes de que existiera esta columna.
+  variantScope IngredientVariantScope @default(ALWAYS)
 
   ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
   recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)

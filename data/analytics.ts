@@ -3,6 +3,10 @@ import "server-only"
 import prisma from "@/lib/db/db"
 import { calculateIngredientData, toBusinessTime } from "@/helpers/helpers"
 import { getPeriodRange } from "@/helpers/date-range"
+import {
+  REFERENCE_VARIANT_WITH_SALT,
+  ingredientsForVariant,
+} from "@/helpers/recipe-variants"
 import { AnalyticsPeriod } from "@/types/types"
 import { OrderStatus, Prisma } from "@prisma/client"
 
@@ -83,7 +87,11 @@ const getProductCosts = async () => {
           recipe: {
             select: {
               recipeIngredients: {
-                select: { quantity: true, ingredient: true },
+                select: {
+                  quantity: true,
+                  ingredient: true,
+                  variantScope: true,
+                },
               },
             },
           },
@@ -95,7 +103,12 @@ const getProductCosts = async () => {
   return new Map(
     products.map((product) => {
       const cost = product.productRecipes.reduce((total, productRecipe) => {
-        const ingredients = productRecipe.recipe?.recipeIngredients ?? []
+        // El costo de referencia es el de la variante con sal, que lleva todos
+        // los ingredientes: así el margen que se muestra nunca queda inflado.
+        const ingredients = ingredientsForVariant(
+          productRecipe.recipe?.recipeIngredients,
+          REFERENCE_VARIANT_WITH_SALT
+        )
 
         return (
           total +

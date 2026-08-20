@@ -26,12 +26,13 @@ import { toast } from "@/components/ui/use-toast"
 import {
   calculateIngredientData,
   getBaseMeasurement,
+  translateIngredientVariantScope,
   translateUnit,
 } from "@/helpers/helpers"
 import { RecipeSchema, recipeSchema } from "@/lib/validations/recipe-validation"
 import { PopulatedRecipe } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Ingredient } from "@prisma/client"
+import { Ingredient, IngredientVariantScope } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useFieldArray, useForm } from "react-hook-form"
 
@@ -153,7 +154,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                     )
 
                     return (
-                      <div key={field.id} className='grid grid-cols-11 gap-3'>
+                      <div key={field.id} className='grid grid-cols-12 gap-3'>
                         <FormField
                           control={control}
                           name={`ingredients.${index}.ingredientId`}
@@ -195,7 +196,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                           control={control}
                           name={`ingredients.${index}.quantity`}
                           render={({ field }) => (
-                            <FormItem className='col-span-4'>
+                            <FormItem className='col-span-3'>
                               <FormLabel className='text-xs'>
                                 Cantidad
                               </FormLabel>
@@ -216,7 +217,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                           )}
                         />
 
-                        <div className='flex justify-between mt-8 items-center col-span-2'>
+                        <div className='flex justify-between mt-8 items-center col-span-1'>
                           <span className='text-xs text-gray-500 '>
                             {selectedIngredient
                               ? translateUnit(
@@ -227,6 +228,44 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                               : ""}
                           </span>
                         </div>
+
+                        <FormField
+                          control={control}
+                          name={`ingredients.${index}.variantScope`}
+                          render={({ field }) => (
+                            <FormItem className='col-span-3'>
+                              <FormLabel className='text-xs'>
+                                Variante
+                              </FormLabel>
+                              <FormControl>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={
+                                    field.value ??
+                                    IngredientVariantScope.ALWAYS
+                                  }
+                                  disabled={isSubmitting}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {Object.values(IngredientVariantScope).map(
+                                      (scope) => (
+                                        <SelectItem key={scope} value={scope}>
+                                          {translateIngredientVariantScope(
+                                            scope
+                                          )}
+                                        </SelectItem>
+                                      )
+                                    )}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage className='text-xs' />
+                            </FormItem>
+                          )}
+                        />
 
                         <div className='flex justify-between mt-8'>
                           <Button
@@ -246,7 +285,13 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
                   <Button
                     type='button'
                     variant='ghost'
-                    onClick={() => append({ ingredientId: "", quantity: 0 })}
+                    onClick={() =>
+                      append({
+                        ingredientId: "",
+                        quantity: 0,
+                        variantScope: IngredientVariantScope.ALWAYS,
+                      })
+                    }
                     disabled={isSubmitting}
                   >
                     <Icons.plus className='w-4 h-4 mr-1' />

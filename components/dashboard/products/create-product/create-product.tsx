@@ -35,6 +35,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { calculateIngredientData } from "@/helpers/helpers"
 import {
+  REFERENCE_VARIANT_WITH_SALT,
+  ingredientsForVariant,
+} from "@/helpers/recipe-variants"
+import {
   ProductSchema,
   productSchema,
 } from "@/lib/validations/product-validation"
@@ -117,8 +121,12 @@ const CreateProduct = ({
   }
 
   const recipesCostWithWaste = watch("recipes").reduce((acc, { recipeId }) => {
-    const recipeIngredients =
-      recipes?.find((recipe) => recipe.id === recipeId)?.recipeIngredients || []
+    // Costo de referencia: la variante con sal, que lleva todos los
+    // ingredientes de la receta.
+    const recipeIngredients = ingredientsForVariant(
+      recipes?.find((recipe) => recipe.id === recipeId)?.recipeIngredients,
+      REFERENCE_VARIANT_WITH_SALT
+    )
 
     const recipeCost = recipeIngredients.reduce((recipeAcc, curr) => {
       const ingredient = curr.ingredient

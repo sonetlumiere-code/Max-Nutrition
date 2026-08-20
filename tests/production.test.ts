@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { Measurement } from "@prisma/client"
+import { IngredientVariantScope, Measurement } from "@prisma/client"
 import {
   aggregateBags,
   aggregateIngredients,
@@ -19,6 +19,7 @@ const ingredient = (
 const CARNE = ingredient("i-carne", "Carne", 9000, 20)
 const ARROZ = ingredient("i-arroz", "Arroz", 3500)
 const SAL = ingredient("i-sal", "Sal", 270)
+const HIERBAS = ingredient("i-hierbas", "Hierbas", 1200)
 
 /** Producto con dos componentes: principal y guarnición. */
 const MILANESA = {
@@ -257,5 +258,97 @@ describe("aggregateBags", () => {
 
     expect(bags.customers).toEqual(["N/A"])
     expect(bags.rows[0].quantities[BOWL.name]).toBe(1)
+  })
+})
+
+/**
+ * La misma milanesa, pero con la sal marcada como exclusiva de la variante con
+ * sal y unas hierbas que la reemplazan en la variante sin sal.
+ */
+const MILANESA_CON_VARIANTES = {
+  id: "p-mila-var",
+  name: "Milanesa con variantes",
+  productRecipes: [
+    {
+      type: { name: "Principal" },
+      recipe: {
+        recipeIngredients: [
+          { quantity: 200, ingredient: CARNE },
+          {
+            quantity: 2,
+            ingredient: SAL,
+            variantScope: IngredientVariantScope.ONLY_WITH_SALT,
+          },
+          {
+            quantity: 5,
+            ingredient: HIERBAS,
+            variantScope: IngredientVariantScope.ONLY_WITHOUT_SALT,
+          },
+        ],
+      },
+    },
+  ],
+}
+
+const VARIANT_ORDERS: PopulatedOrder[] = [
+  order("Ana", [
+    { product: MILANESA_CON_VARIANTES, quantity: 3, withSalt: true },
+  ]),
+  order("Beto", [
+    { product: MILANESA_CON_VARIANTES, quantity: 4, withSalt: false },
+  ]),
+]
+
+describe("variantes con y sin sal", () => {
+  const totalDe = (orders: PopulatedOrder[], nombre: string) =>
+    aggregateIngredients(orders).find((i) => i.name === nombre)
+
+  it("compra sal solo para las viandas que la llevan", () => {
+    // 2 g × 3 unidades con sal. Las 4 sin sal no suman.
+    expect(totalDe(VARIANT_ORDERS, "Sal")!.baseQuantity).toBeCloseTo(6, 6)
+  })
+
+  it("compra el reemplazo solo para las viandas sin sal", () => {
+    // 5 g × 4 unidades sin sal.
+    expect(totalDe(VARIANT_ORDERS, "Hierbas")!.baseQuantity).toBeCloseTo(20, 6)
+  })
+
+  it("lo que va siempre se cobra por todas las unidades", () => {
+    // 200 g × 7 unidades, sin importar la variante.
+    expect(totalDe(VARIANT_ORDERS, "Carne")!.baseQuantity).toBeCloseTo(1400, 6)
+  })
+
+  it("un pedido enteramente sin sal no compra nada de sal", () => {
+    const soloSinSal = [
+      order("Beto", [
+        { product: MILANESA_CON_VARIANTES, quantity: 4, withSalt: false },
+      ]),
+    ]
+
+    expect(totalDe(soloSinSal, "Sal")).toBeUndefined()
+  })
+
+  it("el detalle por receta también separa las variantes", () => {
+    const [grupo] = aggregateRecipeGroups(VARIANT_ORDERS)
+    const principal = grupo.recipeGroups.find(
+      (r) => r.productRecipeType === "Principal"
+    )!
+
+    const sal = principal.ingredients.find((i) => i.name === "Sal")!
+    const hierbas = principal.ingredients.find((i) => i.name === "Hierbas")!
+
+    expect(sal.baseQuantity).toBeCloseTo(6, 6)
+    expect(hierbas.baseQuantity).toBeCloseTo(20, 6)
+    // El costo del bloque no cuenta ingredientes que nadie pidió.
+    expect(grupo.totalCost).toBeCloseTo(
+      principal.ingredients.reduce((sum, i) => sum + i.cost, 0),
+      6
+    )
+  })
+
+  it("las recetas sin variante declarada siguen entrando en todo", () => {
+    // ORDERS usa la milanesa vieja, con la sal sin variantScope.
+    // 2 g × 7 unidades, con y sin sal por igual.
+    expect(totalDe(ORDERS, "Sal")!.baseQuantity).toBeCloseTo(14, 6)
   })
 })

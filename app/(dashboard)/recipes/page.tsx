@@ -37,6 +37,10 @@ import {
   getPermissionsKeys,
   hasPermission,
 } from "@/helpers/helpers"
+import {
+  REFERENCE_VARIANT_WITH_SALT,
+  ingredientsForVariant,
+} from "@/helpers/recipe-variants"
 import { cn } from "@/lib/utils"
 import { PopulatedRecipeIngredient } from "@/types/types"
 import Link from "next/link"
@@ -77,7 +81,12 @@ export default async function RecipesPage() {
   ): number => {
     if (!recipeIngredients) return 0
 
-    return recipeIngredients.reduce((acc, curr) => {
+    // Costo de referencia: la variante con sal, que incluye todos los
+    // ingredientes de la receta.
+    return ingredientsForVariant(
+      recipeIngredients,
+      REFERENCE_VARIANT_WITH_SALT
+    ).reduce((acc, curr) => {
       if (!curr.ingredient) return acc
 
       const { ingredient, quantity } = curr

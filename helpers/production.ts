@@ -1,4 +1,5 @@
 import { calculateIngredientData } from "@/helpers/helpers"
+import { ingredientsForVariant } from "@/helpers/recipe-variants"
 import {
   IngredientTotal,
   PopulatedOrder,
@@ -121,7 +122,12 @@ export const aggregateIngredients = (
   orders.forEach((order) => {
     order.items?.forEach((item) => {
       item.product.productRecipes?.forEach((productRecipe) => {
-        productRecipe.recipe?.recipeIngredients?.forEach((ingredientEntry) => {
+        // Un pedido sin sal no compra la sal: la variante del ítem decide qué
+        // ingredientes de la receta entran en la lista de compras.
+        ingredientsForVariant(
+          productRecipe.recipe?.recipeIngredients,
+          item.withSalt
+        ).forEach((ingredientEntry) => {
           accumulateIngredient(totals, ingredientEntry, item.quantity)
         })
       })
@@ -161,7 +167,10 @@ export const aggregateRecipeGroups = (
 
         group.totalQuantityForGroup += item.quantity
 
-        productRecipe.recipe?.recipeIngredients?.forEach((ingredientEntry) => {
+        ingredientsForVariant(
+          productRecipe.recipe?.recipeIngredients,
+          item.withSalt
+        ).forEach((ingredientEntry) => {
           accumulateIngredient(
             group.ingredientTotals,
             ingredientEntry,
