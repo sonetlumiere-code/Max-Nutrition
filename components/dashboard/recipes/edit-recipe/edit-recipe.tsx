@@ -29,6 +29,10 @@ import {
   translateIngredientVariantScope,
   translateUnit,
 } from "@/helpers/helpers"
+import {
+  REFERENCE_VARIANT_WITH_SALT,
+  ingredientsForVariant,
+} from "@/helpers/recipe-variants"
 import { RecipeSchema, recipeSchema } from "@/lib/validations/recipe-validation"
 import { PopulatedRecipe } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -85,7 +89,12 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
     }
   }
 
-  const recipeCostWithWaste = watch("ingredients").reduce((acc, curr) => {
+  // Se cotiza la variante con sal, que es la que lleva todos los ingredientes:
+  // sumar los exclusivos de las dos variantes daría un costo que nadie paga.
+  const recipeCostWithWaste = ingredientsForVariant(
+    watch("ingredients"),
+    REFERENCE_VARIANT_WITH_SALT
+  ).reduce((acc, curr) => {
     const ingredient = ingredients?.find((i) => i.id === curr.ingredientId)
     if (!ingredient) return acc
 
@@ -307,7 +316,7 @@ const EditRecipe = ({ recipe, ingredients }: EditRecipeProps) => {
               </fieldset>
 
               <p className='text-xs text-end'>
-                Costo de la receta c/desperdicio:{" "}
+                Costo de la receta c/desperdicio, variante con sal:{" "}
                 <b>${recipeCostWithWaste.toFixed(2)}</b>
               </p>
             </div>
