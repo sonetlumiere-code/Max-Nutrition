@@ -78,6 +78,14 @@ solo el porcentaje: sin eso un reporte viejo no se puede reconstruir.
 → [promotions.test.ts](../tests/promotions.test.ts): *expone discountAmount
 consistente con el total*
 
+**Solo se consideran las promociones activas de la tienda.**
+El filtro vive en la consulta, así que una promoción apagada o de otra tienda no
+llega nunca al cálculo. Y si la consulta falla, el pedido se cobra sin descuento
+en vez de romperse.
+→ [check-promotion.test.ts](../tests/check-promotion.test.ts): *pide solo las
+activas de esa tienda*, *si la consulta falla y devuelve null, cobra sin
+descuento en vez de romper*
+
 **La promoción tiene que aceptar el medio de pago y de envío del pedido.**
 Si no los acepta, el pedido se rechaza en vez de aplicarla igual.
 → [create-order.test.ts](../tests/create-order.test.ts): *rechaza la promoción
@@ -166,6 +174,15 @@ Sin stock, oculto, inexistente o de otra tienda: se rechaza el pedido entero.
 sin stock*, *rechaza un producto que no existe o está oculto*, *rechaza un
 producto de otra tienda*
 
+**Un cliente solo puede cancelar sus propios pedidos, y solo si están
+pendientes.**
+El id del pedido viaja desde el navegador, así que la pertenencia se verifica
+contra la base. Un pedido ajeno responde lo mismo que uno inexistente, para no
+delatar cuál es cuál.
+→ [cancel-customer-order.test.ts](../tests/cancel-customer-order.test.ts): *no
+deja cancelar el pedido de otro cliente*, *responde lo mismo si el pedido no
+existe, sin delatar cuál es cuál*, *solo cancela pedidos pendientes*
+
 **El medio de pago y el de envío tienen que estar habilitados por la tienda.**
 → [create-order.test.ts](../tests/create-order.test.ts): *rechaza un método de
 pago que la tienda no habilitó*, *rechaza un método de envío que la tienda no
@@ -241,6 +258,22 @@ autorización vigente* ·
 [mercado-pago-webhook.test.ts](../tests/mercado-pago-webhook.test.ts):
 *desactiva la suscripción si el cliente la canceló en Mercado Pago*
 
+**Pausar o cancelar va a Mercado Pago antes que a la base, y si esa llamada
+falla la operación se rechaza entera.**
+Es el invariante más caro de todos: borrar la suscripción local sin cancelar la
+preaprobación dejaría al cliente debitándose todas las semanas sin forma de
+frenarlo desde la aplicación.
+→ [manage-subscription.test.ts](../tests/manage-subscription.test.ts): *pausa
+primero en Mercado Pago y después acá*, *cancela el débito en Mercado Pago antes
+de borrar*, *si no se pudo cancelar el débito, la suscripción no se borra*, *si
+Mercado Pago falla, no se pausa nada acá*
+
+**No se reanuda un débito que el cliente nunca autorizó.**
+Una preaprobación pendiente sigue pendiente hasta que la autorice con su
+tarjeta.
+→ [manage-subscription.test.ts](../tests/manage-subscription.test.ts): *no
+reanuda un débito que el cliente nunca autorizó*
+
 **La generación es idempotente y compara días del negocio, no instantes.**
 El cron corre en UTC; sin esto una corrida de más duplicaría pedidos.
 → [subscriptions.test.ts](../tests/subscriptions.test.ts): *no repite el pedido
@@ -276,7 +309,22 @@ pedido sin cambiarle el estado* ·
 [order-status-email.test.ts](../tests/order-status-email.test.ts): *no avisa
 cuando el pedido queda pendiente*
 
-## Permisos
+## Permisos y acceso
+
+**El middleware exige sesión en todo, salvo lo que se autentica solo.**
+Pasan sin sesión las rutas de NextAuth, los webhooks —que validan su firma— y el
+cron —que valida su secreto—, más un puñado de rutas de vitrina y solo por GET.
+Lo que no está en esa lista, incluido lo que todavía no existe, exige sesión.
+→ [route-access.test.ts](../tests/route-access.test.ts): *protege la API de
+pedidos*, *una ruta que no existe también queda protegida*, *una ruta pública de
+solo lectura sigue protegida por POST*
+
+**Ese permiso se corta en el límite del segmento, no por prefijo de texto.**
+`/api/webhooks` cubre `/api/webhooks/mercado-pago`, pero no una futura
+`/api/webhooks-internos`, que quedaría abierta a internet por parecerse.
+→ [route-access.test.ts](../tests/route-access.test.ts): *una ruta que solo
+empieza parecido no queda sin autenticar*, *pero sí cubre el prefijo exacto y lo
+que cuelga debajo*
 
 **Cada acción del panel verifica el permiso correspondiente, del lado del
 servidor.**
@@ -293,18 +341,7 @@ sujeto*
 
 Ciertas hoy, pero nada las sostiene si alguien las toca. Este es el backlog:
 
-- **Pausar o cancelar una suscripción va a Mercado Pago antes que a la base, y
-  si esa llamada falla la operación se rechaza.** Borrar la suscripción local sin
-  cancelar la preaprobación dejaría al cliente debitado sin forma de frenarlo.
-  Vive en `actions/subscriptions/manage-subscription.ts`.
-- **El middleware protege todas las rutas de API salvo `/api/webhooks`.** Ese
-  bypass existe porque el middleware redirigía cualquier POST sin sesión a
-  `/login`, lo que rompía el webhook. Si el prefijo se ensancha por accidente,
-  se abren rutas privadas. Vive en `middleware.ts` y `routes.ts`.
-- **Un cliente solo puede cancelar sus propios pedidos.** La verificación de
-  pertenencia vive en `actions/orders/cancel-customer-order.ts`.
-- **Solo se consideran las promociones activas de la tienda.** El filtro
-  `isActive` está en la consulta de `actions/promotions/check-promotion.ts`; lo
-  que está testeado es el cálculo, no el filtro.
 - **Un producto sin stock se muestra como "Sin stock" y no se puede agregar al
-  carrito.** Del lado del servidor ya está cubierto; lo que falta es la vitrina.
+  carrito.** Del lado del servidor ya está cubierto —crear el pedido lo rechaza—,
+  lo que falta es la vitrina. Necesita tests de componentes, que el repo todavía
+  no tiene.

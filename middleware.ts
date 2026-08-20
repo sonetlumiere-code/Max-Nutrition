@@ -1,14 +1,6 @@
 import authConfig from "@/lib/auth/auth.config"
-import {
-  DEFAULT_REDIRECT_SHOP,
-  apiAuthPrefix,
-  apiPublicRoutes,
-  authRoutes,
-  publicRoutes,
-  shopRoutes,
-  webhookPrefix,
-  cronPrefix,
-} from "@/routes"
+import { resolveRouteAccess } from "@/lib/auth/route-access"
+import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import NextAuth from "next-auth"
 
 const { auth } = NextAuth(authConfig)
@@ -17,39 +9,25 @@ export default auth((req) => {
   const { nextUrl, method } = req
   const isLoggedIn = !!req.auth
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
-  const isApiPublicRoute = apiPublicRoutes.includes(nextUrl.pathname)
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname)
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
+  const access = resolveRouteAccess(nextUrl.pathname, method)
 
-  if (isApiAuthRoute) {
+  if (access.kind === "bypass" || access.kind === "public") {
     return
   }
 
-  if (
-    nextUrl.pathname.startsWith(webhookPrefix) ||
-    nextUrl.pathname.startsWith(cronPrefix)
-  ) {
-    return
-  }
-
-  if (isApiPublicRoute && method === "GET") {
-    return
-  }
-
-  if (isAuthRoute) {
+  if (access.kind === "auth") {
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_REDIRECT_SHOP, nextUrl))
     }
     return
   }
 
-  if (!isLoggedIn && !isPublicRoute) {
-    const baseRoute =
-      shopRoutes.find((route) => nextUrl.pathname.startsWith(route)) || "/"
-
+  if (!isLoggedIn) {
     return Response.redirect(
-      new URL(`/login?redirectTo=${encodeURIComponent(baseRoute)}`, nextUrl)
+      new URL(
+        `/login?redirectTo=${encodeURIComponent(access.baseRoute)}`,
+        nextUrl
+      )
     )
   }
 
