@@ -183,6 +183,15 @@ delatar cuál es cuál.
 deja cancelar el pedido de otro cliente*, *responde lo mismo si el pedido no
 existe, sin delatar cuál es cuál*, *solo cancela pedidos pendientes*
 
+**Un producto sin stock se ve como tal y no se puede agregar al carrito.**
+Es la otra mitad de la regla anterior: el servidor rechaza el pedido igual, pero
+si el botón siguiera habilitado el cliente armaría todo el carrito y recién se
+enteraría al confirmar. Vale para las dos vistas del detalle, la de escritorio y
+la de móvil.
+→ [product-stock.test.tsx](../tests/product-stock.test.tsx): *muestra el cartel
+cuando no hay stock*, *dice Sin stock y deshabilita el botón cuando no hay*, *no
+agrega nada al carrito aunque le hagan clic igual*
+
 **El medio de pago y el de envío tienen que estar habilitados por la tienda.**
 → [create-order.test.ts](../tests/create-order.test.ts): *rechaza un método de
 pago que la tienda no habilitó*, *rechaza un método de envío que la tienda no
@@ -339,9 +348,8 @@ sujeto*
 
 ## Invariantes sin test
 
-Ciertas hoy, pero nada las sostiene si alguien las toca. Este es el backlog:
+Ninguno: hoy todos los de arriba tienen su test.
 
-- **Un producto sin stock se muestra como "Sin stock" y no se puede agregar al
-  carrito.** Del lado del servidor ya está cubierto —crear el pedido lo rechaza—,
-  lo que falta es la vitrina. Necesita tests de componentes, que el repo todavía
-  no tiene.
+Cuando aparezca una regla nueva que todavía no se pueda sostener con un test,
+va acá, con el archivo donde vive. Es preferible una lista corta de deudas
+anotadas que una regla que solo existe en la cabeza de alguien.

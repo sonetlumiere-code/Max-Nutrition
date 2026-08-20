@@ -84,6 +84,10 @@ componente de cliente con datos reales y revisarlo en el navegador.
   `server-only` o el cliente de Prisma va a `lib/` o `data/`.
 - Los `import "server-only"` son deliberados. Si un test necesita ese módulo, se
   doblan con `vi.mock`, que evita cargarlo.
+- Los tests de componentes van en `tests/*.test.tsx` y piden jsdom con
+  `// @vitest-environment jsdom` en la primera línea; el resto corre en node,
+  que es más liviano. El tsconfig usa `jsx: preserve` porque transforma Next, así
+  que la configuración de vitest le indica el runtime de React por su cuenta.
 - Las páginas del dashboard filtran del lado del servidor y pasan el filtro por
   la URL (ver `/analytics`, `/production` y la lista de pedidos). No bajar la
   tabla entera al cliente para filtrarla ahí.
