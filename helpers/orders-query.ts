@@ -2,6 +2,9 @@ import { DateRangeBounds } from "@/helpers/date-range"
 
 export const ORDERS_ENDPOINT = "/api/orders"
 
+/** Valor de `detail` que pide los ingredientes de cada receta del producto. */
+export const RECIPES_DETAIL = "recipes"
+
 /**
  * Formatea una fecha como "YYYY-MM-DD" usando sus componentes locales.
  *
@@ -26,7 +29,10 @@ export const toPickedDateString = (date: Date) => {
  * La URL es además la clave de SWR, así que dos filtros distintos son dos
  * entradas de caché distintas y volver a un filtro ya visto no espera red.
  */
-export const buildOrdersUrl = (range: Partial<DateRangeBounds> | null) => {
+export const buildOrdersUrl = (
+  range: Partial<DateRangeBounds> | null,
+  { withRecipes = false }: { withRecipes?: boolean } = {}
+) => {
   const params = new URLSearchParams()
 
   if (range?.start) {
@@ -35,6 +41,13 @@ export const buildOrdersUrl = (range: Partial<DateRangeBounds> | null) => {
 
   if (range?.end) {
     params.set("createdAt[lte]", range.end.toISOString())
+  }
+
+  // El árbol de recetas de cada producto pesa más que el pedido entero y se
+  // repite por ítem, pero la lista no lo muestra: solo lo necesita el Excel,
+  // que lo pide recién cuando se exporta.
+  if (withRecipes) {
+    params.set("detail", RECIPES_DETAIL)
   }
 
   const query = params.toString()

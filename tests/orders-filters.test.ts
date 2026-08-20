@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { OrderStatus, PaymentStatus } from "@prisma/client"
-import { buildOrdersWhere } from "@/lib/orders/list-filters"
+import { buildOrdersInclude, buildOrdersWhere } from "@/lib/orders/list-filters"
 import { buildOrdersUrl } from "@/helpers/orders-query"
 
 /** Recorre el camino real: la URL que arma el cliente, leída por el servidor. */
@@ -88,5 +88,48 @@ describe("buildOrdersWhere — resto de los filtros", () => {
       shopBranchId: "branch-1",
       customerId: "customer-1",
     })
+  })
+})
+
+describe("buildOrdersInclude", () => {
+  const productInclude = (url: string) => {
+    const include = buildOrdersInclude(
+      new URL(url, "http://localhost").searchParams
+    )
+    return (include.items as { include: { product: unknown } }).include.product
+  }
+
+  it("la lista trae el producto pelado, sin sus recetas", () => {
+    expect(productInclude(buildOrdersUrl(null))).toBe(true)
+  })
+
+  it("la exportación trae las recetas con sus ingredientes", () => {
+    const product = productInclude(
+      buildOrdersUrl(null, { withRecipes: true })
+    ) as {
+      include: {
+        productRecipes: {
+          include: { recipe: { include: { recipeIngredients: unknown } } }
+        }
+      }
+    }
+
+    expect(
+      product.include.productRecipes.include.recipe.include.recipeIngredients
+    ).toEqual({ include: { ingredient: true } })
+  })
+
+  it("siempre trae lo que la tabla muestra", () => {
+    const include = buildOrdersInclude(new URLSearchParams())
+
+    expect(include.customer).toBeTruthy()
+    expect(include.address).toBe(true)
+    expect(include.appliedPromotions).toBe(true)
+    expect(include.shop).toBe(true)
+    expect(include.shopBranch).toBe(true)
+  })
+
+  it("un valor desconocido de detail no habilita las recetas", () => {
+    expect(productInclude("/api/orders?detail=todo")).toBe(true)
   })
 })

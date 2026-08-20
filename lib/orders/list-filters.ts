@@ -1,4 +1,5 @@
 import { OrderStatus, PaymentStatus, Prisma } from "@prisma/client"
+import { RECIPES_DETAIL } from "@/helpers/orders-query"
 
 /**
  * Traduce los parámetros de consulta de la lista de pedidos al filtro de
@@ -64,4 +65,67 @@ const parseDate = (value: string | null) => {
   const parsed = new Date(value)
 
   return isNaN(parsed.getTime()) ? null : parsed
+}
+
+/**
+ * Include de Prisma para la lista de pedidos. Por defecto trae lo que la tabla
+ * y el panel de detalle muestran; con `detail=recipes` agrega el árbol de
+ * recetas de cada producto, que solo usa la exportación a Excel.
+ *
+ * La distinción importa: ese árbol se serializa una vez por ítem de pedido, así
+ * que un pedido de diez viandas repite diez veces las mismas recetas.
+ */
+export const buildOrdersInclude = (
+  searchParams: URLSearchParams
+): Prisma.OrderInclude => {
+  const withRecipes = searchParams.get("detail") === RECIPES_DETAIL
+
+  return {
+    items: {
+      include: {
+        product: withRecipes
+          ? {
+              include: {
+                productRecipes: {
+                  include: {
+                    recipe: {
+                      include: {
+                        productRecipes: true,
+                        recipeIngredients: {
+                          include: {
+                            ingredient: true,
+                          },
+                        },
+                      },
+                    },
+                    type: true,
+                  },
+                },
+              },
+            }
+          : true,
+      },
+    },
+    customer: {
+      include: {
+        user: {
+          select: {
+            email: true,
+            image: true,
+          },
+        },
+        // Solo el conteo: embeber el historial completo de cada cliente
+        // multiplica el payload cuadráticamente.
+        _count: {
+          select: {
+            orders: true,
+          },
+        },
+      },
+    },
+    address: true,
+    appliedPromotions: true,
+    shop: true,
+    shopBranch: true,
+  }
 }

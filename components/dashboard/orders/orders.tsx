@@ -127,14 +127,16 @@ export default function Orders() {
     [pickedDates?.from, pickedDates?.to]
   )
 
-  const ordersUrl = useMemo(() => {
-    if (customRange) return buildOrdersUrl(customRange)
-    if (selectedTab === "all") return buildOrdersUrl(null)
+  const requestRange = useMemo(() => {
+    if (customRange) return customRange
+    if (selectedTab === "all") return null
 
     // Sin tope superior: no hay pedidos en el futuro y así uno recién creado
-    // aparece al revalidar, sin depender de cuándo se calculó la URL.
-    return buildOrdersUrl({ start: getPeriodRange(selectedTab).start })
+    // aparece al revalidar, sin depender de cuándo se calculó el rango.
+    return { start: getPeriodRange(selectedTab).start }
   }, [selectedTab, customRange])
+
+  const ordersUrl = useMemo(() => buildOrdersUrl(requestRange), [requestRange])
 
   const {
     data: orders,
@@ -235,6 +237,7 @@ export default function Orders() {
                   Object.keys(groupedAndFilteredOrders).length > 0 && (
                     <ExportOrders
                       orders={groupedAndFilteredOrders}
+                      range={requestRange}
                       selectedTab={selectedTab}
                     >
                       <Button

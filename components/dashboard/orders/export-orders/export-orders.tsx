@@ -27,17 +27,27 @@ import { PopulatedOrder, TimePeriod } from "@/types/types"
 import { OrderStatus } from "@prisma/client"
 import { useState } from "react"
 import { translateOrderStatus } from "@/helpers/helpers"
+import { DateRangeBounds } from "@/helpers/date-range"
+import { buildOrdersUrl } from "@/helpers/orders-query"
+import { toast } from "@/components/ui/use-toast"
 
 type ExportOrdersProps = {
   children: React.ReactNode
   orders: Record<string, PopulatedOrder[]>
+  range: Partial<DateRangeBounds> | null
   selectedTab: TimePeriod
 }
 
 const statuses: OrderStatus[] = Object.values(OrderStatus)
 
-const ExportOrders = ({ children, orders, selectedTab }: ExportOrdersProps) => {
+const ExportOrders = ({
+  children,
+  orders,
+  range,
+  selectedTab,
+}: ExportOrdersProps) => {
   const [open, setOpen] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
   const [selectedStatuses, setSelectedStatuses] = useState<OrderStatus[]>([
     OrderStatus.PENDING,
   ])
@@ -57,10 +67,38 @@ const ExportOrders = ({ children, orders, selectedTab }: ExportOrdersProps) => {
     .flat()
     .filter((order) => selectedStatuses.includes(order.status))
 
-  const onSubmit = () => {
-    if (!filteredOrders.length) return
-    exportOrdersToExcel(filteredOrders, selectedTab)
-    setOpen(false)
+  const onSubmit = async () => {
+    if (!filteredOrders.length || isExporting) return
+
+    setIsExporting(true)
+
+    try {
+      // La planilla arma las hojas de ingredientes y recetas, que la lista no
+      // necesita y por eso no descarga. Se piden acá, para los mismos pedidos
+      // que ya están filtrados en pantalla.
+      const res = await fetch(buildOrdersUrl(range, { withRecipes: true }))
+
+      if (!res.ok) throw new Error("Failed to fetch orders")
+
+      const detailedOrders: PopulatedOrder[] = await res.json()
+      const selectedIds = new Set(filteredOrders.map((order) => order.id))
+
+      await exportOrdersToExcel(
+        detailedOrders.filter((order) => selectedIds.has(order.id)),
+        selectedTab
+      )
+
+      setOpen(false)
+    } catch (error) {
+      console.error("Error exporting orders:", error)
+      toast({
+        variant: "destructive",
+        title: "Error exportando pedidos.",
+        description: "No se pudieron traer los datos. Intentá de nuevo.",
+      })
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   const FormContent = () => (
@@ -83,9 +121,13 @@ const ExportOrders = ({ children, orders, selectedTab }: ExportOrdersProps) => {
       <Button
         type='button'
         onClick={onSubmit}
-        disabled={!selectedStatuses.length}
+        disabled={!selectedStatuses.length || isExporting}
       >
-        <Icons.download className='mr-2 h-4 w-4' />
+        {isExporting ? (
+          <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+        ) : (
+          <Icons.download className='mr-2 h-4 w-4' />
+        )}
         Exportar ({filteredOrders.length})
       </Button>
     </div>

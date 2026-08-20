@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getOrders } from "@/data/orders"
 import { hasPermission } from "@/helpers/helpers"
-import { buildOrdersWhere } from "@/lib/orders/list-filters"
+import { buildOrdersInclude, buildOrdersWhere } from "@/lib/orders/list-filters"
 import { verifySession } from "@/lib/auth/verify-session"
 
 export const dynamic = "force-dynamic"
@@ -18,56 +18,11 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const where = buildOrdersWhere(req.nextUrl.searchParams)
+    const searchParams = req.nextUrl.searchParams
 
     const orders = await getOrders({
-      where,
-      include: {
-        items: {
-          include: {
-            product: {
-              include: {
-                productRecipes: {
-                  include: {
-                    recipe: {
-                      include: {
-                        productRecipes: true,
-                        recipeIngredients: {
-                          include: {
-                            ingredient: true,
-                          },
-                        },
-                      },
-                    },
-                    type: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-        customer: {
-          include: {
-            user: {
-              select: {
-                email: true,
-                image: true,
-              },
-            },
-            // Solo el conteo: embeber el historial completo de cada cliente
-            // multiplica el payload cuadráticamente.
-            _count: {
-              select: {
-                orders: true,
-              },
-            },
-          },
-        },
-        address: true,
-        appliedPromotions: true,
-        shop: true,
-        shopBranch: true,
-      },
+      where: buildOrdersWhere(searchParams),
+      include: buildOrdersInclude(searchParams),
       orderBy: {
         createdAt: "desc",
       },

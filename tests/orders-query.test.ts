@@ -84,3 +84,27 @@ describe("isOrdersKey", () => {
     expect(isOrdersKey(undefined)).toBe(false)
   })
 })
+
+describe("buildOrdersUrl — detalle de recetas", () => {
+  it("la lista no pide el árbol de recetas", () => {
+    expect(buildOrdersUrl(null)).not.toContain("detail")
+    expect(buildOrdersUrl({ start: new Date() })).not.toContain("detail")
+  })
+
+  it("la exportación lo pide junto con el rango", () => {
+    const url = buildOrdersUrl(
+      { start: new Date("2026-05-01T03:00:00.000Z") },
+      { withRecipes: true }
+    )
+    const params = new URL(url, "http://x").searchParams
+
+    expect(params.get("detail")).toBe("recipes")
+    expect(params.get("createdAt[gte]")).toBe("2026-05-01T03:00:00.000Z")
+  })
+
+  it("sin rango sigue siendo una URL válida", () => {
+    expect(buildOrdersUrl(null, { withRecipes: true })).toBe(
+      "/api/orders?detail=recipes"
+    )
+  })
+})
