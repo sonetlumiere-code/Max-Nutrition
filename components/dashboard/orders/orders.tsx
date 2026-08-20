@@ -13,15 +13,15 @@ import {
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { getOrders } from "@/data/orders"
 import { cn } from "@/lib/utils"
 import { PopulatedOrder, TimePeriod } from "@/types/types"
-import { endOfDay, isWithinInterval } from "date-fns"
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import useSWR from "swr"
 import { useSession } from "next-auth/react"
 import { getPermissionsKeys, groupOrdersByPeriod } from "@/helpers/helpers"
+import { getPeriodRange, getRangeFromDates } from "@/helpers/date-range"
+import { buildOrdersUrl, toPickedDateString } from "@/helpers/orders-query"
 import ExportOrders from "./export-orders/export-orders"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -40,8 +40,8 @@ import {
 
 type FilterMode = "period" | "custom"
 
-const fetchOrders = async () => {
-  const res = await fetch("/api/orders")
+const fetchOrders = async (url: string) => {
+  const res = await fetch(url)
   if (!res.ok) {
     throw new Error("Failed to fetch orders")
   }
@@ -106,29 +106,51 @@ export default function Orders() {
     session?.user.role?.permissions
   )
 
+  // El rango del filtro activo viaja al servidor: la lista trae solo los
+  // pedidos que se van a mostrar en vez de la tabla entera. Un rango manual
+  // incompleto (el usuario abrió el calendario pero todavía no eligió los dos
+  // extremos) sigue mostrando el período, así que tampoco dispara una descarga
+  // completa.
+  const pickedDates =
+    filterMode === "custom" && dateRange?.from && dateRange?.to
+      ? {
+          from: toPickedDateString(dateRange.from),
+          to: toPickedDateString(dateRange.to),
+        }
+      : null
+
+  // Memoizado sobre los días elegidos para que el rango mantenga la identidad
+  // entre renders y no rearme la URL ni reagrupe la lista al pedo.
+  const customRange = useMemo(
+    () =>
+      pickedDates ? getRangeFromDates(pickedDates.from, pickedDates.to) : null,
+    [pickedDates?.from, pickedDates?.to]
+  )
+
+  const ordersUrl = useMemo(() => {
+    if (customRange) return buildOrdersUrl(customRange)
+    if (selectedTab === "all") return buildOrdersUrl(null)
+
+    // Sin tope superior: no hay pedidos en el futuro y así uno recién creado
+    // aparece al revalidar, sin depender de cuándo se calculó la URL.
+    return buildOrdersUrl({ start: getPeriodRange(selectedTab).start })
+  }, [selectedTab, customRange])
+
   const {
     data: orders,
     error,
     isLoading,
-  } = useSWR<PopulatedOrder[] | null>(["orders"], fetchOrders)
+  } = useSWR<PopulatedOrder[] | null>(ordersUrl, fetchOrders, {
+    keepPreviousData: true,
+  })
 
   const groupedAndFilteredOrders = useMemo(() => {
     if (!orders) return {}
 
-    let filteredOrders = orders
-
-    if (filterMode === "custom" && dateRange?.from && dateRange?.to) {
-      filteredOrders = orders.filter((order) =>
-        isWithinInterval(new Date(order.createdAt), {
-          start: dateRange.from!,
-          end: endOfDay(dateRange.to!),
-        })
-      )
-      return groupOrdersByPeriod(filteredOrders, "all")
-    }
-
-    return groupOrdersByPeriod(orders, selectedTab)
-  }, [orders, selectedTab, dateRange, filterMode])
+    // El servidor ya acotó el rango; acá solo se agrupa. Un rango manual puede
+    // abarcar varios períodos, así que va todo en un grupo.
+    return groupOrdersByPeriod(orders, customRange ? "all" : selectedTab)
+  }, [orders, selectedTab, customRange])
 
   useEffect(() => {
     if (filterMode === "period") {

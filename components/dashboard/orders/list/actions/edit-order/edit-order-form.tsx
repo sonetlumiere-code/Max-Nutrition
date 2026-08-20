@@ -31,6 +31,7 @@ import { toast } from "@/components/ui/use-toast"
 import { editOrder } from "@/actions/orders/edit-order"
 import { Icons } from "@/components/icons"
 import { mutate } from "swr"
+import { isOrdersKey } from "@/helpers/orders-query"
 
 type EditOrderFormProps = {
   order: PopulatedOrder
@@ -59,7 +60,9 @@ const EditOrderForm = ({ order, setOpen }: EditOrderFormProps) => {
     })
 
     if (res.success) {
-      mutate("orders")
+      // La clave de la lista incluye el filtro de fechas, así que se revalida
+      // cualquier rango cacheado en vez de una clave fija.
+      mutate(isOrdersKey)
       toast({
         title: "Pedido actualizado.",
         description: "La orden ha sido actualizada.",
