@@ -50,8 +50,8 @@ aplicación sigue funcionando. Ver [docs/operaciones.md](docs/operaciones.md).
 
 El panel está detrás de sesión y no hay forma de autenticarse desde una
 herramienta. El patrón que funciona: crear una página temporal en
-`app/<algo>.tmp/page.tsx` —el punto en el nombre la deja fuera del matcher del
-middleware—, comprobar ahí contra la base real, y **borrarla al terminar**.
+`app/<algo>.tmp/page.tsx` —el punto en el nombre la deja fuera del matcher
+del proxy—, comprobar ahí contra la base real, y **borrarla al terminar**.
 
 Sirve tanto para verificar consultas del servidor como para renderizar un
 componente de cliente con datos reales y revisarlo en el navegador.

@@ -5,7 +5,15 @@ import NextAuth from "next-auth"
 
 const { auth } = NextAuth(authConfig)
 
-export default auth((req) => {
+/**
+ * Se llamaba `middleware` hasta Next 16. Además del nombre cambia dónde corre:
+ * el proxy usa el runtime de Node y no se puede configurar, así que ya no hay
+ * que cuidar que lo que se importe acá sea compatible con el runtime edge.
+ *
+ * Qué pasa sin sesión y qué no vive en `resolveRouteAccess`, que está testeado
+ * aparte; acá queda solamente la redirección.
+ */
+export const proxy = auth((req) => {
   const { nextUrl, method } = req
   const isLoggedIn = !!req.auth
 

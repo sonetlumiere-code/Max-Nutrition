@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { resolveRouteAccess } from "@/lib/auth/route-access"
 
 /**
- * Qué queda expuesto sin sesión. El middleware deja pasar sin autenticar las
+ * Qué queda expuesto sin sesión. El proxy deja pasar sin autenticar las
  * rutas que se autentican solas —los webhooks con su firma, el cron con su
  * secreto— y protege todo lo demás. Es una lista corta y cualquier cosa que se
  * cuele en ella queda abierta a internet.
@@ -124,7 +124,7 @@ describe("pantallas públicas y de ingreso", () => {
   })
 
   it("las pantallas de ingreso se distinguen de las públicas", () => {
-    // El middleware saca de ahí a quien ya tiene sesión.
+    // El proxy saca de ahí a quien ya tiene sesión.
     for (const ruta of ["/login", "/signup", "/reset-password", "/new-password"]) {
       expect(acceso(ruta).kind).toBe("auth")
     }

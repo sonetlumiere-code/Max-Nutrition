@@ -320,7 +320,7 @@ cuando el pedido queda pendiente*
 
 ## Permisos y acceso
 
-**El middleware exige sesión en todo, salvo lo que se autentica solo.**
+**El proxy exige sesión en todo, salvo lo que se autentica solo.**
 Pasan sin sesión las rutas de NextAuth, los webhooks —que validan su firma— y el
 cron —que valida su secreto—, más un puñado de rutas de vitrina y solo por GET.
 Lo que no está en esa lista, incluido lo que todavía no existe, exige sesión.

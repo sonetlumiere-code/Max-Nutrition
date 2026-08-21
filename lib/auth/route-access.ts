@@ -11,7 +11,7 @@ import {
 /**
  * Qué trato le corresponde a una ruta antes de mirar si hay sesión.
  *
- * Vive separado del middleware para poder fijarlo por tests: de esta decisión
+ * Vive separado del proxy para poder fijarlo por tests: de esta decisión
  * depende qué queda expuesto sin autenticar, y es el tipo de cosa que se
  * rompe sin que nadie lo note hasta que alguien la encuentra.
  */
