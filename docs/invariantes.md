@@ -335,6 +335,15 @@ solo lectura sigue protegida por POST*
 empieza parecido no queda sin autenticar*, *pero sí cubre el prefijo exacto y lo
 que cuelga debajo*
 
+**La lista de rutas públicas se compara exacta, no por prefijo.**
+Es el mismo riesgo visto del otro lado: listar `/api/algo` no vuelve pública a
+`/api/algo/loquesea`. Por eso la consulta de zonas de envío exige sesión —solo
+la llaman el checkout y el panel, los dos detrás del login—, y abrirla tendría
+que ser una decisión, no un descuido.
+→ [route-access.test.ts](../tests/route-access.test.ts): *la lista de rutas
+públicas se compara exacta, no por prefijo*, *la consulta de zonas de envío
+exige sesión*
+
 **Cada acción del panel verifica el permiso correspondiente, del lado del
 servidor.**
 Esconder un botón no es un permiso.

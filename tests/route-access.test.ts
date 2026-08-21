@@ -85,6 +85,18 @@ describe("rutas que exigen sesión", () => {
     // El default es exigir sesión, no dejar pasar.
     expect(acceso("/lo-que-sea").kind).toBe("protected")
   })
+
+  it("la consulta de zonas de envío exige sesión", () => {
+    // Solo se llama desde el checkout y desde el panel, las dos detrás del
+    // login. Abrirla sería una decisión, no un descuido.
+    expect(acceso("/api/shipping-zone/lanus").kind).toBe("protected")
+  })
+
+  it("la lista de rutas públicas se compara exacta, no por prefijo", () => {
+    expect(acceso("/api/promotions").kind).toBe("bypass")
+    // Una ruta dinámica no queda pública por listar el tramo de arriba.
+    expect(acceso("/api/promotions/la-que-sea").kind).toBe("protected")
+  })
 })
 
 describe("adónde vuelve el cliente después de entrar", () => {

@@ -15,11 +15,9 @@ const authRoutes: string[] = [
 ]
 
 const apiAuthPrefix: string = "/api/auth"
-const apiPublicRoutes: string[] = [
-  "/api/promotions",
-  "/api/categories",
-  "/api/shipping-zone",
-]
+// Lecturas de la vitrina, que se ven sin haber entrado. La comparación es por
+// ruta exacta: una ruta dinámica no se cubre listando su prefijo.
+const apiPublicRoutes: string[] = ["/api/promotions", "/api/categories"]
 
 // Notificaciones de proveedores externos: llegan por POST y sin sesión. Cada
 // una valida su propia firma, que es lo que las autentica.
