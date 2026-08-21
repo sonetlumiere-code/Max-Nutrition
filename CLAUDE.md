@@ -69,8 +69,10 @@ componente de cliente con datos reales y revisarlo en el navegador.
 - El build tarda entre 20 s y 5 minutos según la carga de la máquina.
   Conviene lanzarlo en segundo plano en vez de arriesgar un timeout que deje el
   lock tomado. No lanzar dos builds concurrentes sobre el mismo `.next`.
-- Después de borrar una página `.tmp`, borrar también `.next/types`: quedan
-  tipos generados que apuntan al archivo que ya no está y `tsc` los reporta.
+- Después de borrar una página `.tmp`, borrar también los tipos generados que
+  apuntan a ella o `tsc` los reporta. En Next 16 el dev server escribe en
+  `.next/dev/types` y el build en `.next/types`; con borrar `.next` entero
+  alcanza.
 - **En PowerShell 5.1 no pongas comillas dobles dentro de un mensaje de
   commit:** rompe la tokenización de argumentos.
 

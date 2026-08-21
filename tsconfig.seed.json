@@ -1,0 +1,10 @@
+{
+  "//": "Los scripts de seed corren con ts-node, que necesita CommonJS. Va en un archivo aparte porque pasar las opciones en línea rompe la tokenización en Windows.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "noEmit": false
+  },
+  "include": ["prisma/**/*.ts"]
+}
