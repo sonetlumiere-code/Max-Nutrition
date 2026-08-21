@@ -86,8 +86,10 @@ componente de cliente con datos reales y revisarlo en el navegador.
   doblan con `vi.mock`, que evita cargarlo.
 - Los tests de componentes van en `tests/*.test.tsx` y piden jsdom con
   `// @vitest-environment jsdom` en la primera línea; el resto corre en node,
-  que es más liviano. El tsconfig usa `jsx: preserve` porque transforma Next, así
-  que la configuración de vitest le indica el runtime de React por su cuenta.
+  que es más liviano. El JSX lo transforma vitest tomando el `jsx: react-jsx`
+  del tsconfig, que mantiene Next: si alguien lo vuelve a `preserve`, los tests
+  de componentes dejan de parsear y hay que indicarle el runtime a mano
+  (`oxc: { jsx: { runtime: "automatic" } }`; vitest 4 usa oxc, no esbuild).
 - Las páginas del dashboard filtran del lado del servidor y pasan el filtro por
   la URL (ver `/analytics`, `/production` y la lista de pedidos). No bajar la
   tabla entera al cliente para filtrarla ahí.
