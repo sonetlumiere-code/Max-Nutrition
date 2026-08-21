@@ -4,7 +4,7 @@ Tienda de viandas sin TACC: catálogo y checkout para el cliente, y un panel
 para tomar pedidos, cargar recetas, planificar la producción y ver cómo va el
 negocio.
 
-Next.js 15 con App Router, Prisma sobre Postgres, NextAuth, Tailwind con
+Next.js 16 con App Router, Prisma sobre Postgres, NextAuth, Tailwind con
 shadcn/ui, Resend para los mails y Mercado Pago para el cobro online.
 
 ## Arrancar

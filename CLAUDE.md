@@ -1,6 +1,6 @@
 # Notas para trabajar en este repo
 
-Máxima Nutrición: tienda de viandas sin TACC. Next.js 15 (App Router), Prisma
+Máxima Nutrición: tienda de viandas sin TACC. Next.js 16 (App Router), Prisma
 sobre Postgres, NextAuth, Tailwind con shadcn/ui, Resend para mails y Mercado
 Pago para el cobro online.
 
@@ -13,6 +13,9 @@ redescubrir.
   que no se pueden romper, cada una con el test que la sostiene. Si un cambio
   hace fallar uno de esos tests, la pregunta es si de verdad se quiere cambiar
   la regla, no cómo arreglar el test.
+- **El build ya no lintea.** Next 16 sacó `next lint`: ESLint corre aparte con
+  `npm run lint` y config plana. Hoy da 0 errores y 24 warnings informativos del
+  plugin de React; si aparece un error nuevo, es de algo que se tocó.
 - **Los tests se corren.** `npm test`: todo es lógica pura o corre con la base
   doblada, así que no hace falta levantar infraestructura. No hay CI todavía,
   así que corren cuando alguien se acuerda.
