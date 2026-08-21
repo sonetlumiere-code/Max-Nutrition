@@ -97,6 +97,11 @@ export function CartProvider({ children, shop }: CartProviderProps) {
       localStorage.removeItem(guestKey)
     }
 
+    // La regla apunta a los efectos que encadenan renders, pero esto es lo
+    // contrario: es traer a React el estado que vive en localStorage, que es
+    // justamente para lo que existen los efectos. Sacarlo de acá obligaría a
+    // leer el carrito durante el render, y en el servidor no hay localStorage.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setItems(mergedItems)
   }, [session, status, shopCategory])
 

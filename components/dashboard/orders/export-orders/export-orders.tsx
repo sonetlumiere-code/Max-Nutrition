@@ -101,7 +101,10 @@ const ExportOrders = ({
     }
   }
 
-  const FormContent = () => (
+  // JSX guardado en una variable, no un componente definido acá adentro: al
+  // crearse en cada render, React lo trataba como un tipo nuevo y desmontaba y
+  // volvía a montar los checkboxes cada vez que cambiaba algo.
+  const formContent = (
     <div className='grid gap-6'>
       <div className='grid grid-cols-1 gap-1'>
         {statuses.map((status) => (
@@ -144,7 +147,7 @@ const ExportOrders = ({
               Selecciona los estados de pedidos que deseas exportar.
             </DialogDescription>
           </DialogHeader>
-          <FormContent />
+          {formContent}
         </DialogContent>
       </Dialog>
     )
@@ -161,7 +164,7 @@ const ExportOrders = ({
           </DrawerDescription>
         </DrawerHeader>
         <div className='px-4'>
-          <FormContent />
+          {formContent}
         </div>
         <DrawerFooter className='pt-2'>
           <DrawerClose asChild>

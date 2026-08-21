@@ -26,8 +26,13 @@ export default async function OrderConfirmedPage(props: PageProps) {
     return null
   }
 
+  // La consulta va dentro del try; el JSX y las redirecciones, afuera. Además
+  // de ser lo que pide React, evita que el catch se trague el error especial
+  // con el que `redirect` corta la ejecución y lo loguee como una falla.
+  let order
+
   try {
-    const order = await getOrder({
+    order = await getOrder({
       where: {
         id: orderId,
         customer: {
@@ -52,30 +57,30 @@ export default async function OrderConfirmedPage(props: PageProps) {
         appliedPromotions: true,
       },
     })
-
-    if (!order || !order.shop) {
-      return redirect(DEFAULT_REDIRECT_SHOP)
-    }
-
-    return (
-      <div className='space-y-6 w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
-        <div className='flex items-start'>
-          <Link
-            href={`/${order.shop.key}`}
-            className={cn(buttonVariants({ variant: "ghost" }), "")}
-          >
-            <>
-              <Icons.chevronLeft className='mr-2 h-4 w-4' />
-              Volver a tienda
-            </>
-          </Link>
-        </div>
-
-        <OrderConfirmed order={order} />
-      </div>
-    )
   } catch (error) {
     console.error("Error fetching order data:", error)
     return redirect(DEFAULT_REDIRECT_SHOP)
   }
+
+  if (!order || !order.shop) {
+    return redirect(DEFAULT_REDIRECT_SHOP)
+  }
+
+  return (
+    <div className='space-y-6 w-full max-w-3xl mx-auto pt-5 px-4 md:px-6'>
+      <div className='flex items-start'>
+        <Link
+          href={`/${order.shop.key}`}
+          className={cn(buttonVariants({ variant: "ghost" }), "")}
+        >
+          <>
+            <Icons.chevronLeft className='mr-2 h-4 w-4' />
+            Volver a tienda
+          </>
+        </Link>
+      </div>
+
+      <OrderConfirmed order={order} />
+    </div>
+  )
 }

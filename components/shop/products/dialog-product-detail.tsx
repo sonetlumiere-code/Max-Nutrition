@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import {
   Dialog,
   DialogContent,
@@ -34,12 +34,20 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
     // shop: { shopCategory },
   } = useCart()
 
-  useEffect(() => {
+  // Al abrirse, el detalle vuelve a empezar: una unidad y con sal. Se ajusta
+  // durante el render y no en un efecto, que es la forma que recomienda React
+  // para reaccionar a un cambio de prop; con un efecto se pinta primero el
+  // estado viejo y recién después el corregido.
+  const [estabaAbierto, setEstabaAbierto] = useState(open)
+
+  if (open !== estabaAbierto) {
+    setEstabaAbierto(open)
+
     if (open) {
       setQuantity(1)
       setVariations({ withSalt: true })
     }
-  }, [open])
+  }
 
   const addToCart = () => {
     addItem(product, quantity, variations)

@@ -102,6 +102,10 @@ describe("la tarjeta del producto avisa la falta de stock", () => {
  * El detalle existe en dos variantes según el ancho de pantalla, y las dos
  * tienen que comportarse igual: es fácil arreglar una y olvidarse de la otra.
  */
+/** La cantidad elegida se muestra suelta, entre los dos botones del contador. */
+const cantidadMostrada = () =>
+  document.querySelector(".text-xl.font-bold")?.textContent
+
 const detalles = [
   { nombre: "diálogo (escritorio)", Componente: DialogProductDetail },
   { nombre: "cajón (móvil)", Componente: DrawerProductDetail },
@@ -131,6 +135,30 @@ describe.each(detalles)("el detalle en $nombre", ({ Componente }) => {
     fireEvent.click(screen.getByRole("button", { name: "Sin stock" }))
 
     expect(addItem).not.toHaveBeenCalled()
+  })
+
+  it("vuelve a empezar cada vez que se abre", () => {
+    // El detalle arranca en una unidad. Como el reset se hace al renderizar y
+    // no en un efecto, tiene que valer también al reabrirlo después de haber
+    // tocado la cantidad.
+    const disponible = product()
+    const { rerender } = render(
+      <Componente product={disponible} open={true} setOpen={() => {}} />
+    )
+
+    // Los botones de cantidad son solo iconos: se los ubica por no tener texto.
+    const sumar = screen
+      .getAllByRole("button")
+      .filter((boton) => !boton.textContent?.trim())
+      .at(-1)!
+
+    fireEvent.click(sumar)
+    expect(cantidadMostrada()).toBe("2")
+
+    rerender(<Componente product={disponible} open={false} setOpen={() => {}} />)
+    rerender(<Componente product={disponible} open={true} setOpen={() => {}} />)
+
+    expect(cantidadMostrada()).toBe("1")
   })
 
   it("agrega al carrito el producto disponible", () => {

@@ -154,19 +154,13 @@ export default function Orders() {
     return groupOrdersByPeriod(orders, customRange ? "all" : selectedTab)
   }, [orders, selectedTab, customRange])
 
-  useEffect(() => {
-    if (filterMode === "period") {
-      setDateRange(null)
-    }
-  }, [filterMode])
-
-  useEffect(() => {
-    if (selectedOrder) {
-      setSelectedOrder((prev) => {
-        return orders?.find((order) => selectedOrder.id === order.id) || prev
-      })
-    }
-  }, [orders, selectedOrder])
+  // Después de revalidar, el panel tiene que mostrar la versión nueva del
+  // pedido. Se deriva de la lista en vez de sincronizarlo con un efecto: no
+  // hace falta guardarlo dos veces. Si el pedido elegido quedó fuera del filtro
+  // se sigue mostrando el que se venía viendo.
+  const selectedOrderDetail = selectedOrder
+    ? orders?.find((order) => order.id === selectedOrder.id) ?? selectedOrder
+    : null
 
   const handleTabChange = (tab: TimePeriod) => {
     setSelectedTab(tab)
@@ -195,7 +189,10 @@ export default function Orders() {
                 <DropdownMenuContent>
                   <DropdownMenuCheckboxItem
                     checked={filterMode === "period"}
-                    onClick={() => setFilterMode("period")}
+                    onClick={() => {
+                      setFilterMode("period")
+                      setDateRange(null)
+                    }}
                   >
                     Filtrar por período
                   </DropdownMenuCheckboxItem>
@@ -323,7 +320,9 @@ export default function Orders() {
           </Tabs>
         </div>
 
-        {selectedOrder && <OrderItemDetails order={selectedOrder} />}
+        {selectedOrderDetail && (
+          <OrderItemDetails order={selectedOrderDetail} />
+        )}
       </main>
     </>
   )
