@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/components/cart-provider"
+import { getShopOrderingState } from "@/helpers/shop-ordering"
 import { Product } from "@prisma/client"
 import { toast } from "@/components/ui/use-toast"
 import { Icons } from "@/components/icons"
@@ -29,10 +30,12 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
   const [quantity, setQuantity] = useState(1)
   const [variations, setVariations] = useState({ withSalt: true })
 
-  const {
-    addItem,
-    // shop: { shopCategory },
-  } = useCart()
+  const { addItem, shop } = useCart()
+
+  // El mismo interruptor que esconde el botón del carrito tiene que apagar el
+  // de agregar: si no, el cliente llena un carrito al que después no puede
+  // llegar.
+  const puedePedir = getShopOrderingState(shop).puedePedir
 
   // Al abrirse, el detalle vuelve a empezar: una unidad y con sal. Se ajusta
   // durante el render y no en un efecto, que es la forma que recomienda React
@@ -133,10 +136,14 @@ const DialogProductDetail: React.FC<DialogProductDetailProps> = ({
           <Button
             size='lg'
             onClick={addToCart}
-            disabled={!product.stock}
+            disabled={!puedePedir || !product.stock}
             className='flex-grow w-full text-md bg-rose-300 hover:bg-rose-400 text-stone-900'
           >
-            {product.stock ? "Agregar al carrito" : "Sin stock"}
+            {!puedePedir
+              ? "No disponible"
+              : product.stock
+                ? "Agregar al carrito"
+                : "Sin stock"}
           </Button>
         </div>
       </DialogContent>

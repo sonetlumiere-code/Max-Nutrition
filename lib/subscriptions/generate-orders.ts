@@ -46,6 +46,17 @@ export const generateSubscriptionOrders = async (
   for (const subscription of subscriptions) {
     if (!isSubscriptionDue(subscription, now)) continue
 
+    // La suscripción no pasa por `createOrder`, así que el interruptor del
+    // negocio hay que respetarlo también acá: si no, una tienda con la venta
+    // apagada seguiría generando pedidos sola todas las semanas.
+    if (!subscription.shop.acceptsOrders) {
+      result.skipped.push({
+        subscriptionId: subscription.id,
+        reason: "La tienda no está tomando pedidos.",
+      })
+      continue
+    }
+
     // Doble control: una suscripción con débito automático solo produce
     // pedidos si Mercado Pago tiene la autorización vigente.
     if (

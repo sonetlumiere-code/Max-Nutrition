@@ -16,6 +16,7 @@ import { revalidatePath } from "next/cache"
 import { checkPromotion } from "../promotions/check-promotion"
 import { getShopBranch } from "@/data/shop-branches"
 import { hasPermission, isShopCurrentlyAvailable } from "@/helpers/helpers"
+import { MENSAJE_SIN_PEDIDOS } from "@/helpers/shop-ordering"
 import { getShop } from "@/data/shops"
 
 const shopSettingsId = process.env.SHOP_SETTINGS_ID
@@ -82,6 +83,12 @@ export async function createOrder({
 
   if (!isShopAvailable) {
     return { error: "Tienda no disponible. Horario no operacional." }
+  }
+
+  // El interruptor del negocio frena la venta al público, no la carga interna:
+  // el equipo puede seguir tomando pedidos por teléfono desde el panel.
+  if (origin === "SHOP" && !shop.acceptsOrders) {
+    return { error: MENSAJE_SIN_PEDIDOS }
   }
 
   if (origin === "DASHBOARD" && !hasPermission(user, "create:orders")) {

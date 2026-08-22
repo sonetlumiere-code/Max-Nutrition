@@ -8,7 +8,7 @@ import { getShopSettings } from "@/data/shop-settings"
 import { getShopBranches } from "@/data/shop-branches"
 import { DEFAULT_REDIRECT_SHOP } from "@/routes"
 import { getShop } from "@/data/shops"
-import { isShopCurrentlyAvailable } from "@/helpers/helpers"
+import { getShopOrderingState } from "@/helpers/shop-ordering"
 import { verifySession } from "@/lib/auth/verify-session"
 import Checkout from "@/components/shop/checkout/checkout.client"
 
@@ -38,9 +38,8 @@ export default async function CheckoutPage(props: CheckoutPageProps) {
     return redirect(`/${shop.key}` || DEFAULT_REDIRECT_SHOP)
   }
 
-  const isShopAvailable = isShopCurrentlyAvailable(shop.operationalHours)
-
-  if (!isShopAvailable) {
+  // Sin pedidos no hay checkout: se vuelve al catálogo, que sí se puede ver.
+  if (!getShopOrderingState(shop).puedePedir) {
     return redirect(DEFAULT_REDIRECT_SHOP)
   }
 

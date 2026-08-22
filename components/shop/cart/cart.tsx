@@ -25,7 +25,7 @@ import CartContent from "./cart-content"
 import Link from "next/link"
 import useSyncCart from "@/hooks/use-sync-cart"
 import { Icons } from "@/components/icons"
-import { isShopCurrentlyAvailable } from "@/helpers/helpers"
+import { getShopOrderingState } from "@/helpers/shop-ordering"
 
 const Cart = () => {
   const { items, open, setOpen, shop } = useCart()
@@ -33,7 +33,7 @@ const Cart = () => {
 
   useSyncCart({ shopCategory: shop.shopCategory })
 
-  const isShopAvailable = isShopCurrentlyAvailable(shop.operationalHours)
+  const puedePedir = getShopOrderingState(shop).puedePedir
 
   if (isDesktop) {
     return (
@@ -53,7 +53,7 @@ const Cart = () => {
 
             <DialogFooter className='flex flex-col'>
               <DialogClose asChild>
-                {isShopAvailable &&
+                {puedePedir &&
                   (items.length >= 1 ? (
                     <Button type='button' asChild>
                       <Link href={`/${shop.key}/checkout`}>
@@ -95,7 +95,7 @@ const Cart = () => {
 
           <DrawerFooter className='border-t-2 lg:border-t-0'>
             <DrawerClose asChild>
-              {isShopAvailable &&
+              {puedePedir &&
                 (items.length >= 1 ? (
                   <Button type='button' asChild>
                     <Link href={`/${shop.key}/checkout`}>

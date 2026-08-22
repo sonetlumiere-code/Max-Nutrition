@@ -126,6 +126,7 @@ beforeEach(() => {
   mocks.getShop.mockResolvedValue({
     id: "shop-1",
     key: "viandas",
+    acceptsOrders: true,
     operationalHours: ALWAYS_OPEN,
   })
   mocks.getShopSettings.mockResolvedValue({
@@ -173,6 +174,7 @@ describe("createOrder — quién y cuándo", () => {
     mocks.getShop.mockResolvedValue({
       id: "shop-1",
       key: "viandas",
+      acceptsOrders: true,
       operationalHours: [],
     })
 
@@ -201,6 +203,53 @@ describe("createOrder — quién y cuándo", () => {
     // Lo ataja la validación del esquema antes que la guarda de la acción, así
     // que el mensaje es el genérico; lo que importa es que no se cree nada.
     expect(res.error).toBeTruthy()
+    expect(prisma.order.create).not.toHaveBeenCalled()
+  })
+})
+
+describe("createOrder — cuando el negocio no toma pedidos", () => {
+  const tiendaSinPedidos = () =>
+    mocks.getShop.mockResolvedValue({
+      id: "shop-1",
+      key: "viandas",
+      acceptsOrders: false,
+      operationalHours: ALWAYS_OPEN,
+    })
+
+  it("rechaza el pedido que viene de la tienda", async () => {
+    tiendaSinPedidos()
+
+    const res = await createOrder({ values: takeAwayOrder() })
+
+    expect(res.error).toContain("no estamos tomando pedidos")
+    expect(prisma.order.create).not.toHaveBeenCalled()
+  })
+
+  it("deja que el panel siga cargando pedidos a mano", async () => {
+    // El negocio sigue operando por teléfono aunque la web esté apagada.
+    tiendaSinPedidos()
+
+    const res = await createOrder({
+      values: takeAwayOrder({ origin: "DASHBOARD", customerId: "c-1" }),
+    })
+
+    expect(res.error).toBeUndefined()
+    expect(prisma.order.create).toHaveBeenCalledTimes(1)
+  })
+
+  it("el horario sigue valiendo para el panel", async () => {
+    mocks.getShop.mockResolvedValue({
+      id: "shop-1",
+      key: "viandas",
+      acceptsOrders: false,
+      operationalHours: [],
+    })
+
+    const res = await createOrder({
+      values: takeAwayOrder({ origin: "DASHBOARD", customerId: "c-1" }),
+    })
+
+    expect(res.error).toContain("Horario no operacional")
     expect(prisma.order.create).not.toHaveBeenCalled()
   })
 })

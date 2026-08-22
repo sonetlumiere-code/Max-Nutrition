@@ -40,6 +40,7 @@ export const shopSchema = z.object({
     )
     .optional(),
   isActive: z.boolean().optional().default(true),
+  acceptsOrders: z.boolean().optional().default(true),
   operationalHours: z.array(operationalHoursSchema).optional(),
 })
 

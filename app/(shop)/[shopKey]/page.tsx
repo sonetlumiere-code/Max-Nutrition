@@ -4,10 +4,11 @@ import ButtonsInfoShop from "@/components/shop/buttons-info-shop"
 import ProductsList from "@/components/shop/products/products-list"
 import BannerShop from "@/components/shop/banner-shop"
 import { redirect } from "next/navigation"
+import { getOperationalHoursMessage } from "@/helpers/helpers"
 import {
-  getOperationalHoursMessage,
-  isShopCurrentlyAvailable,
-} from "@/helpers/helpers"
+  MENSAJE_SIN_PEDIDOS,
+  getShopOrderingState,
+} from "@/helpers/shop-ordering"
 import CartFixedButton from "@/components/shop/cart/cart-fixed-button.client"
 
 interface ShopPageProps {
@@ -46,7 +47,7 @@ const ShopPage = async (props: ShopPageProps) => {
     },
   })
 
-  const isShopAvailable = isShopCurrentlyAvailable(shop.operationalHours)
+  const estadoPedidos = getShopOrderingState(shop)
 
   return (
     <>
@@ -69,14 +70,14 @@ const ShopPage = async (props: ShopPageProps) => {
           </div>
         )}
 
-        {shop.operationalHours && !isShopAvailable && (
+        {!estadoPedidos.puedePedir && (
           <div className='flex items-center justify-between bg-red-100 p-4 rounded-md w-full max-w-3xl mx-auto'>
             <p className='text-sm text-muted-foreground'>
-              {`La tienda no está disponible en este momento. `}
-
-              {`Podrás realizar pedidos ${getOperationalHoursMessage(
-                shop.operationalHours
-              )}.`}
+              {estadoPedidos.motivo === "no-toma-pedidos"
+                ? MENSAJE_SIN_PEDIDOS
+                : `La tienda no está disponible en este momento. Podrás realizar pedidos ${getOperationalHoursMessage(
+                    shop.operationalHours ?? []
+                  )}.`}
             </p>
           </div>
         )}
@@ -89,7 +90,7 @@ const ShopPage = async (props: ShopPageProps) => {
         />
       </div>
 
-      {isShopAvailable && <CartFixedButton />}
+      {estadoPedidos.puedePedir && <CartFixedButton />}
     </>
   )
 }

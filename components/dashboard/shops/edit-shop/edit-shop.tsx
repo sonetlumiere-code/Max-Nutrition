@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -49,6 +50,7 @@ const EditShop = ({ shop }: EditShopProps) => {
       message: shop.message || "",
       shopCategory: shop.shopCategory,
       isActive: shop.isActive,
+      acceptsOrders: shop.acceptsOrders,
       operationalHours: shop.operationalHours?.map((hour) => ({
         dayOfWeek: hour.dayOfWeek,
         startTime: hour.startTime || undefined,
@@ -291,6 +293,31 @@ const EditShop = ({ shop }: EditShopProps) => {
                         </FormLabel>
                         <FormControl>
                           <FormMessage />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='acceptsOrders'
+                    render={({ field }) => (
+                      <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                        <div className='space-y-0.5'>
+                          <FormLabel>Toma pedidos</FormLabel>
+                          <FormDescription>
+                            Apagado, la tienda muestra el catálogo pero nadie
+                            puede pedir online. El equipo igual puede cargar
+                            pedidos a mano desde el panel.
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            disabled={isSubmitting}
+                            aria-readonly
+                          />
                         </FormControl>
                       </FormItem>
                     )}

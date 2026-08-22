@@ -511,16 +511,20 @@ model Category {
 }
 
 model Shop {
-  id          String   @id @default(cuid())
-  key         String   @unique
-  name        String   @unique
-  title       String
-  description String
-  bannerImage String?
-  message     String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  key           String   @unique
+  name          String   @unique
+  title         String
+  description   String
+  bannerImage   String?
+  message       String?
+  isActive      Boolean  @default(true)
+  // Interruptor del negocio: con esto en false la tienda muestra el catálogo
+  // pero no toma pedidos del público. El panel puede seguir cargando pedidos a
+  // mano, y el horario de atención se sigue respetando aparte.
+  acceptsOrders Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   shopCategory     ShopCategory       @unique
   operationalHours OperationalHours[]

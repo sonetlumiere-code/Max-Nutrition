@@ -65,7 +65,9 @@ componente de cliente con datos reales y revisarlo en el navegador.
   Prisma y el build falla con `EPERM ... query_engine-windows.dll.node`.
 - **Si el build se cuelga o tira errores internos raros, es la caché.** Primero
   `npx tsc --noEmit` para separar errores de tipos del pipeline de Next; si los
-  tipos están limpios, borrar `.next` y rebuildear.
+  tipos están limpios, borrar `.next` y rebuildear. Con Turbopack la falla
+  aparece como `ChunkLoadError ... Failed to collect page data` en una página
+  cualquiera: el mismo build vuelve a pasar sin tocar nada.
 - El build tarda entre 20 s y 5 minutos según la carga de la máquina.
   Conviene lanzarlo en segundo plano en vez de arriesgar un timeout que deje el
   lock tomado. No lanzar dos builds concurrentes sobre el mismo `.next`.

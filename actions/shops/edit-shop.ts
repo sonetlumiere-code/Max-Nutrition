@@ -40,6 +40,7 @@ export async function editShop({
     shopCategory,
     operationalHours,
     isActive,
+    acceptsOrders,
   } = validatedFields.data
 
   try {
@@ -54,6 +55,7 @@ export async function editShop({
         key,
         shopCategory,
         isActive,
+        acceptsOrders,
         operationalHours:
           operationalHours && operationalHours.length > 0
             ? {

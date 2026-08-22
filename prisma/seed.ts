@@ -288,6 +288,7 @@ const shops: Omit<Shop, "id" | "createdAt" | "updatedAt">[] = [
     bannerImage: `${cloudinaryFolder}/foods-banner_fxspi8`,
     shopCategory: ShopCategory.FOOD,
     isActive: true,
+    acceptsOrders: true,
   },
   {
     name: "Pastelería",
@@ -299,6 +300,7 @@ const shops: Omit<Shop, "id" | "createdAt" | "updatedAt">[] = [
     bannerImage: `${cloudinaryFolder}/bakery-banner_esgsm9`,
     shopCategory: ShopCategory.BAKERY,
     isActive: true,
+    acceptsOrders: true,
   },
 ]
 

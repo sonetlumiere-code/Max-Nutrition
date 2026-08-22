@@ -22,9 +22,28 @@ import type { Product } from "@prisma/client"
 
 const addItem = vi.hoisted(() => vi.fn())
 
+const tienda = vi.hoisted(() => ({ acceptsOrders: true }))
+
 vi.mock("@/components/cart-provider", () => ({
-  useCart: () => ({ addItem }),
+  useCart: () => ({
+    addItem,
+    // La vitrina saca del contexto del carrito si la tienda toma pedidos.
+    shop: {
+      acceptsOrders: tienda.acceptsOrders,
+      operationalHours: [
+        {
+          dayOfWeek: "MONDAY",
+          startTime: "00:00",
+          endTime: "23:59",
+        },
+      ],
+    },
+  }),
 }))
+
+// El horario del doble cubre un solo día, así que se congela el reloj en ese
+// día para que la tienda esté abierta y lo único que varíe sea el interruptor.
+vi.setSystemTime(new Date("2026-05-18T15:00:00.000Z"))
 
 // El aviso de "agregado al carrito" no aporta nada acá y arrastra estado global.
 vi.mock("@/components/ui/use-toast", () => ({ toast: vi.fn() }))
@@ -72,6 +91,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  tienda.acceptsOrders = true
 })
 
 afterEach(() => {
@@ -159,6 +179,19 @@ describe.each(detalles)("el detalle en $nombre", ({ Componente }) => {
     rerender(<Componente product={disponible} open={true} setOpen={() => {}} />)
 
     expect(cantidadMostrada()).toBe("1")
+  })
+
+  it("no deja agregar cuando la tienda no está tomando pedidos", () => {
+    // El catálogo se sigue viendo, pero no se puede armar un carrito que
+    // después no tiene checkout.
+    tienda.acceptsOrders = false
+    abrir(product())
+
+    const boton = screen.getByRole("button", { name: "No disponible" })
+    expect(boton.hasAttribute("disabled")).toBe(true)
+
+    fireEvent.click(boton)
+    expect(addItem).not.toHaveBeenCalled()
   })
 
   it("agrega al carrito el producto disponible", () => {

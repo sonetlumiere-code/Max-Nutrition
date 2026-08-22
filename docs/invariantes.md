@@ -183,6 +183,32 @@ delatar cuál es cuál.
 deja cancelar el pedido de otro cliente*, *responde lo mismo si el pedido no
 existe, sin delatar cuál es cuál*, *solo cancela pedidos pendientes*
 
+**La tienda puede mostrar el catálogo sin tomar pedidos.**
+`Shop.acceptsOrders` en false deja la vitrina navegable y apaga la venta: no
+hay botón de carrito, el detalle no deja agregar, el checkout redirige y el
+servidor rechaza. El interruptor manda sobre el horario de atención, para no
+prometerle al cliente un horario en el que igual no va a poder pedir.
+→ [shop-ordering.test.ts](../tests/shop-ordering.test.ts): *no se puede pedir,
+aunque esté dentro del horario*, *el interruptor manda sobre el horario, para no
+prometer un horario que no sirve* ·
+[create-order.test.ts](../tests/create-order.test.ts): *rechaza el pedido que
+viene de la tienda* · [product-stock.test.tsx](../tests/product-stock.test.tsx):
+*no deja agregar cuando la tienda no está tomando pedidos*
+
+**Ese interruptor no frena la carga manual desde el panel.**
+El negocio puede seguir tomando pedidos por teléfono con la web apagada. El
+horario de atención, en cambio, sigue valiendo para los dos.
+→ [create-order.test.ts](../tests/create-order.test.ts): *deja que el panel siga
+cargando pedidos a mano*, *el horario sigue valiendo para el panel*
+
+**Una suscripción no genera pedidos si su tienda no los está tomando.**
+El cron no pasa por `createOrder`, así que sin esta comprobación una tienda con
+la venta apagada seguiría generando pedidos sola cada semana. Se saltea sin
+marcarla como corrida, así retoma sola al reabrir.
+→ [generate-subscription-orders.test.ts](../tests/generate-subscription-orders.test.ts):
+*no genera nada si la tienda no está tomando pedidos*, *no marca la suscripción
+como corrida, así retoma sola al reabrir*
+
 **Un producto sin stock se ve como tal y no se puede agregar al carrito.**
 Es la otra mitad de la regla anterior: el servidor rechaza el pedido igual, pero
 si el botón siguiera habilitado el cliente armaría todo el carrito y recién se

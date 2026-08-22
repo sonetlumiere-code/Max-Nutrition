@@ -29,6 +29,23 @@ Y las tres opcionales, que habilitan cobros y suscripciones:
 | `MP_WEBHOOK_SECRET` | Las notificaciones de pago se descartan sin procesar. |
 | `CRON_SECRET` | `/api/cron/subscriptions` responde 503 y no se genera ningún pedido. |
 
+## Abrir y cerrar la venta online
+
+Cada tienda tiene un interruptor **"Toma pedidos"** en el panel, en editar
+tienda. Apagado, la vitrina sigue navegable —el catálogo se ve, los precios se
+ven— pero no se puede pedir: no aparece el botón del carrito, el detalle de
+producto no deja agregar, el checkout redirige y el servidor rechaza cualquier
+pedido que llegue igual.
+
+Lo que **no** frena es la carga manual desde el panel: el equipo puede seguir
+tomando pedidos por teléfono y cargándolos a mano. Y las suscripciones no
+generan pedidos mientras esté apagado, pero tampoco se pierden: retoman solas
+al volver a prenderlo.
+
+Es independiente por tienda, así que se puede abrir viandas y dejar pastelería
+cerrada. Es distinto de **"Activa"**, que esconde la tienda entera, y del
+horario de atención, que sigue funcionando aparte para los días y horas.
+
 ## Pagos con Mercado Pago
 
 El cobro online usa Checkout Pro: el cliente paga en el sitio de Mercado Pago,
