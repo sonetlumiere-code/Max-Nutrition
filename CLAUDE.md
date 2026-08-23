@@ -19,6 +19,11 @@ redescubrir.
 - **Los tests se corren.** `npm test`: todo es lógica pura o corre con la base
   doblada, así que no hace falta levantar infraestructura. No hay CI todavía,
   así que corren cuando alguien se acuerda.
+- **El catálogo se carga con un seed, no a mano.** `npm run seed:catalogo` solo
+  informa; escribe con `-- --aplicar`. Los datos están en `prisma/catalogo.ts` y
+  las cantidades de receta van SIEMPRE en unidad base (gramos, mililitros,
+  unidades), sin importar cómo esté cargado el ingrediente. Ver
+  [docs/operaciones.md](docs/operaciones.md).
 - **La aritmética de dinero vive en un solo lugar:** `lib/orders/pricing.ts`. La
   comparten la creación manual y la generación automática de suscripciones para
   que un pedido recurrente no se cobre distinto que el mismo pedido hecho a

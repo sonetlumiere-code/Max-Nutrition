@@ -36,10 +36,11 @@ compartida, leer la advertencia en [CLAUDE.md](CLAUDE.md).
 npm test
 ```
 
-Cubren la matemática del negocio —conversiones de unidades, costo de
+Cubren tres cosas. La matemática del negocio —conversiones de unidades, costo de
 ingredientes con merma, promociones, límites de período y las agregaciones de
-producción— y las acciones por donde entra la plata, con la base doblada: crear
-y editar un pedido, el webhook de Mercado Pago y el endpoint del cron. No hace
+producción—; las acciones por donde entra la plata, con la base doblada: crear y
+editar un pedido, el webhook de Mercado Pago, el cron de suscripciones y el
+acceso a las rutas; y la vitrina, con tests de componentes sobre jsdom. No hace
 falta levantar ninguna infraestructura.
 
 El manejo de fechas tiene que ser independiente del huso de la máquina: el

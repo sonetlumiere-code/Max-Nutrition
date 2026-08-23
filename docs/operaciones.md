@@ -29,6 +29,36 @@ Y las tres opcionales, que habilitan cobros y suscripciones:
 | `MP_WEBHOOK_SECRET` | Las notificaciones de pago se descartan sin procesar. |
 | `CRON_SECRET` | `/api/cron/subscriptions` responde 503 y no se genera ningún pedido. |
 
+## Cargar el catálogo
+
+Los productos y sus recetas se declaran en
+[`prisma/catalogo.ts`](../prisma/catalogo.ts) —solo datos, sin lógica— y se
+cargan con:
+
+```bash
+npm run seed:catalogo
+```
+
+Así, **no escribe nada**: informa qué crearía y qué actualizaría, y se planta
+antes de tocar la base si el catálogo menciona un ingrediente, un tipo de receta
+o una categoría que no existe. Para aplicarlo de verdad:
+
+```bash
+npm run seed:catalogo -- --aplicar
+```
+
+Es idempotente —correrlo dos veces no duplica— y **no borra ninguna fila**: si
+una receta ya cargada tiene un ingrediente que el catálogo no declara, avisa y
+lo deja donde está. Como `Product.name` y `Recipe.name` no son únicos en el
+esquema, la idempotencia se apoya en buscar por nombre; un producto puede
+declarar `renombraDe` para adoptar una fila que ya existe en vez de dejar un
+duplicado al lado.
+
+**Las cantidades van siempre en la unidad base** —gramos, mililitros o
+unidades— sin importar cómo esté cargado el ingrediente. Un ingrediente en
+KILOGRAM con cantidad 150 son 150 gramos, no 150 kilos. Equivocarse ahí
+multiplica por mil la lista de compras y el costo.
+
 ## Abrir y cerrar la venta online
 
 Cada tienda tiene un interruptor **"Toma pedidos"** en el panel, en editar
