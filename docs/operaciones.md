@@ -102,6 +102,114 @@ desarrollo hay que exponer el puerto local con un túnel.
 Sin estas variables la integración queda inactiva: el resto del checkout sigue
 funcionando y el método Mercado Pago avisa que no está disponible.
 
+## Probar los cobros de punta a punta
+
+Nadie vio nunca entrar un cobro real en esta aplicación: el código está
+cubierto por tests, pero los tests doblan a Mercado Pago. Esta es la prueba que
+falta, y conviene hacerla entera con credenciales de prueba antes de tocar las
+productivas.
+
+### Antes de empezar
+
+El webhook necesita que Mercado Pago pueda llegar a la aplicación, así que hace
+falta exponer el puerto local con un túnel (`ngrok http 3000`,
+`cloudflared tunnel --url http://localhost:3000`, o el que se prefiera). Anotá
+la URL pública que te devuelve: se usa en los tres puntos siguientes.
+
+Cuatro cosas que hacen fracasar el primer intento, en orden de qué tan fácil es
+olvidarlas:
+
+1. **`BASE_URL` tiene que apuntar al túnel, no a `localhost`.** La preferencia
+   de pago declara su propia `notification_url` a partir de `BASE_URL`
+   ([create-payment-preference.ts](../actions/orders/create-payment-preference.ts)):
+   si ahí dice `localhost`, Mercado Pago no tiene a dónde notificar y el pedido
+   se queda en pendiente para siempre. Por el mismo motivo `auto_return` falla:
+   Mercado Pago rechaza volver a una URL que no sea pública.
+2. **Reiniciá el dev server después de tocar `.env`.** `BASE_URL` y
+   `MP_ACCESS_TOKEN` se leen una sola vez, al cargar el módulo.
+3. **La tienda tiene que estar tomando pedidos.** Hoy `acceptsOrders` está
+   apagado en las dos tiendas, así que el checkout redirige antes de llegar al
+   pago. Prendelo en el panel (editar tienda → "Toma pedidos") y acordate de
+   volver a apagarlo al terminar.
+4. **La clave de firma es por URL registrada.** Cuando pases del túnel al
+   dominio real vas a registrar otra URL, y esa trae **otra**
+   `MP_WEBHOOK_SECRET`. Reusar la vieja hace que todas las notificaciones se
+   rechacen con 401.
+
+En el panel de Mercado Pago, en **Tus integraciones → Webhooks**, registrá
+`https://TU-TUNEL/api/webhooks/mercado-pago`, suscribite a los eventos de pago
+y copiá la clave de firma a `MP_WEBHOOK_SECRET`.
+
+### El camino feliz
+
+Con las [tarjetas de prueba](https://www.mercadopago.com.ar/developers/es/docs/checkout-pro/additional-content/your-integrations/test/cards)
+(en Argentina, Visa `4509 9535 6623 3704`, código `123`, vencimiento `11/30`), y
+el nombre del titular como palabra clave para forzar el resultado: `APRO`
+aprueba, `OTHE` rechaza, `CONT` deja el pago pendiente.
+
+1. Hacé un pedido desde la tienda eligiendo Mercado Pago.
+2. Confirmá que el pedido se creó **antes** de pagar, con `paymentStatus`
+   `PENDING`. Es a propósito: el pedido existe aunque el cliente abandone el
+   pago.
+3. Pagá con `APRO`. Volvés a `/order-confirmed/<id>`.
+4. **Acá está lo que importa:** esa vuelta al sitio no marca nada. Mirá los
+   logs del dev server: tiene que llegar un `POST /api/webhooks/mercado-pago`
+   con 200. Recién entonces el pedido pasa a `PAID`.
+
+Para mirar la base sin escribir SQL:
+
+```bash
+npx prisma studio
+```
+
+y buscá el pedido en la tabla `Order`.
+
+### Los casos que no son el camino feliz
+
+Son los que justifican el código que ya está escrito, y los únicos que pueden
+dar una sorpresa:
+
+| Qué probar | Cómo | Qué tiene que pasar |
+| --- | --- | --- |
+| Pago rechazado | Titular `OTHE` | El pedido queda `PENDING`, no `CANCELLED`. El cliente puede reintentar. |
+| Pago pendiente | Titular `CONT` | Queda `PENDING`. Solo `approved` marca pagado. |
+| Firma inválida | `curl -X POST https://TU-TUNEL/api/webhooks/mercado-pago -d '{}'` | **401**, y nada cambia en la base. Es la prueba de que el endpoint público no es una puerta abierta. |
+| Notificación simulada desde el panel de MP | Botón "Simular notificación" | Responde 200 y no hace nada: el `data.id` es ficticio y el pago no existe. No es un fallo. |
+| Importe distinto | Cambiá el `total` del pedido en Prisma Studio entre el paso 1 y el 3 | El pedido **no** pasa a `PAID` y queda un `console.error` con los dos importes. Se revisa a mano. |
+| Sin credenciales | Comentá `MP_ACCESS_TOKEN` y reiniciá | El checkout avisa que el pago online no está disponible y el resto sigue andando. |
+
+### Suscripciones y débito automático
+
+Van aparte porque el cobro recurrente no pasa por el mismo evento. En el panel
+de Mercado Pago suscribite además a `subscription_preapproval` y
+`subscription_authorized_payment`, en la misma URL.
+
+1. Desde el historial del cliente, convertí un pedido en semanal.
+2. Autorizá el débito con una tarjeta de prueba. Hasta que no lo autorices la
+   suscripción no genera nada: es lo esperado.
+3. Verificá en la tabla `Subscription` que `preapprovalStatus` quedó en
+   `authorized`.
+4. Dispará la generación a mano, sin esperar al cron:
+
+   ```bash
+   curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/api/cron/subscriptions
+   ```
+
+5. Probá pausar y cancelar desde la aplicación, y confirmá en el panel de
+   Mercado Pago que la preaprobación cambió **allá también**. Si se cancela acá
+   y no allá, el cliente sigue debitándose sin forma de frenarlo — es el
+   invariante más caro que tiene el sistema.
+
+También conviene probar el otro lado: cancelar la suscripción **desde la cuenta
+de Mercado Pago del cliente**, sin pasar por la aplicación, y confirmar que
+llega el webhook y la suscripción se desactiva sola.
+
+### Al terminar
+
+Volvé `BASE_URL` a su valor anterior, apagá "Toma pedidos" si todavía no es
+momento de abrir, y borrá los pedidos de prueba que hayan quedado en la base
+—es la base productiva—.
+
 ## Pedidos semanales (suscripciones)
 
 Un cliente puede convertir cualquiera de sus pedidos en un pedido semanal desde
