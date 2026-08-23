@@ -336,6 +336,17 @@ trabado, así que es mejor que la operación falle y se pueda reintentar.
 → [mail.test.ts](../tests/mail.test.ts): *la verificación falla ruidosamente,
 porque el usuario necesita ese link*
 
+**Un envío que Resend rechaza cuenta como fallado.**
+Resend **no** rechaza la promesa cuando la API rechaza el envío: devuelve
+`{ data, error }`, y hasta una caída de red llega por ese campo. Sin leerlo, un
+mail que nunca salió es indistinguible de uno entregado, y las dos reglas de
+arriba se cumplen solo de palabra: los avisos informarían `true` y la
+verificación no fallaría nunca. Por eso todos los envíos pasan por un solo
+lugar, `enviar` en [mail.ts](../lib/mail/mail.ts), que traduce ese campo a una
+excepción y deja que cada llamador aplique su política.
+→ [mail.test.ts](../tests/mail.test.ts): *no dan por enviado un mail que Resend
+rechazó*, *y también cuando la promesa se rechaza de verdad*
+
 **Solo se avisa un cambio de estado si el estado efectivamente cambió.**
 Guardar un pedido sin tocarlo no le llena la casilla al cliente. Y `PENDING` no
 notifica nunca: el cliente acaba de hacer el pedido.

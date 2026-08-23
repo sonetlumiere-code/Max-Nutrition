@@ -18,10 +18,32 @@ if (!resendEmail) {
   throw new Error("RESEND_EMAIL is not defined in the environment variables.")
 }
 
+type EnvioResend = Parameters<typeof resend.emails.send>[0]
+
+/**
+ * Envía y convierte el rechazo de Resend en una excepción.
+ *
+ * Resend **nunca** rechaza la promesa: los errores de la API —dominio sin
+ * verificar, cuota agotada, destinatario inválido— vuelven en el campo `error`
+ * de la respuesta, y hasta una caída de red llega por ahí. Sin leer ese campo,
+ * un mail que nunca salió es indistinguible de uno entregado, que es
+ * exactamente lo que no puede pasar con la verificación de una cuenta.
+ *
+ * Lanzar acá deja que cada llamador aplique su política: los avisos lo capturan
+ * y siguen, los críticos lo dejan subir.
+ */
+const enviar = async (envio: EnvioResend) => {
+  const { error } = await resend.emails.send(envio)
+
+  if (error) {
+    throw new Error(`Resend rechazó el envío: ${error.name} — ${error.message}`)
+  }
+}
+
 export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${baseUrl}/new-verification?token=${token}`
 
-  await resend.emails.send({
+  await enviar({
     from: resendEmail,
     to: email,
     subject: "Confirma tu Email",
@@ -34,7 +56,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${baseUrl}/new-password?token=${token}`
 
-  await resend.emails.send({
+  await enviar({
     from: resendEmail,
     to: email,
     subject: "Cambia tu contraseña",
@@ -61,7 +83,7 @@ export const sendWelcomeEmail = async ({
   if (!email) return false
 
   try {
-    await resend.emails.send({
+    await enviar({
       from: resendEmail,
       to: email,
       subject: "¡Te damos la Bienvenida a Máxima Nutrición!",
@@ -102,7 +124,7 @@ export const sendOrderStatusEmail = async ({
   if (!email || !subject) return false
 
   try {
-    await resend.emails.send({
+    await enviar({
       from: resendEmail,
       to: email,
       subject,
@@ -139,7 +161,7 @@ export const sendOrderDetailsEmail = async ({
   if (!email) return false
 
   try {
-    await resend.emails.send({
+    await enviar({
       from: resendEmail,
       to: email,
       subject: "Detalles de tu pedido en Máxima Nutrición",
