@@ -28,6 +28,15 @@ redescubrir.
   comparten la creación manual y la generación automática de suscripciones para
   que un pedido recurrente no se cobre distinto que el mismo pedido hecho a
   mano.
+- **No subas `@react-email/components` a la línea 1.x.** `npm audit` va a
+  ofrecerlo para cerrar 3 moderate de `prismjs`, que entran por `code-block` —un
+  componente que este proyecto no usa, y cuya vulnerabilidad es DOM Clobbering
+  en el navegador—. A cambio rompe el envío: toda la línea 1.x trae
+  `@react-email/tailwind@2.x`, que es asíncrono, y el `<Tailwind>` de las cinco
+  plantillas suspende en el primer render de cada proceso. Como el que renderiza
+  es `resend@3.5.0` con su `@react-email/render@0.0.16` síncrono, el primer mail
+  de cada instancia fría falla — incluido el de verificación de cuenta. Ver
+  [docs/dependencias.md](docs/dependencias.md).
 
 ## La base de datos es productiva
 
