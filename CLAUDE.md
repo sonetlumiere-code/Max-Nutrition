@@ -10,9 +10,16 @@ redescubrir.
 ## Antes de tocar nada
 
 - **Leé [docs/invariantes.md](docs/invariantes.md).** Son las reglas de negocio
-  que no se pueden romper, cada una con el test que la sostiene. Si un cambio
-  hace fallar uno de esos tests, la pregunta es si de verdad se quiere cambiar
-  la regla, no cómo arreglar el test.
+  que no se pueden romper, cada una con el test que la sostiene y con **qué capa
+  la garantiza**: si es *estructural* (la base o una función única la hacen
+  cumplir sola), *puntual* (vive en una acción concreta, y un camino nuevo tiene
+  que acordarse) o pura *convención*. Si un cambio hace fallar uno de esos
+  tests, la pregunta es si de verdad se quiere cambiar la regla, no cómo
+  arreglar el test.
+- **Si una palabra del dominio no se entiende, está en
+  [docs/glosario.md](docs/glosario.md).** Merma, unidad base, bolsón, modo
+  catálogo, día del negocio, las tres puertas. El negocio habla en español y el
+  código en inglés; el glosario tiene las dos formas.
 - **El build ya no lintea.** Next 16 sacó `next lint`: ESLint corre aparte con
   `npm run lint` y config plana. Hoy da 0 errores y 24 warnings informativos del
   plugin de React; si aparece un error nuevo, es de algo que se tocó.
