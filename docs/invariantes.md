@@ -208,6 +208,30 @@ medianoche argentina*
 → [date-range.test.ts](../tests/date-range.test.ts): *el domingo cierra la
 semana que arrancó el lunes previo*
 
+**Si la tienda está abierta se resuelve con el reloj de Argentina, y los dos
+extremos del horario cuentan.**
+El servidor corre en UTC, donde a las 22:00 de un miércoles argentino ya es
+jueves: sin convertir, la tienda buscaría el horario del día siguiente y
+cerraría tres horas antes todas las noches. Y el minuto de apertura y el de
+cierre están **incluidos** — a las 18:00 clavadas de un local que cierra 18:00
+todavía se puede pedir. Un día cargado a medias, sin hora de inicio o de fin, se
+ignora en vez de asumir que está abierto.
+**Lo sostiene:** `isShopCurrentlyAvailable`, único lugar donde se resuelve, que
+usan tanto `createOrder` como la vitrina — *estructural*.
+→ [operational-hours.test.ts](../tests/operational-hours.test.ts): *el día que
+vale es el de Argentina, no el del servidor*, *los dos extremos del horario están
+incluidos*, *un día cargado a medias se ignora, no se asume abierto*
+
+**Lo que se le promete al cliente son los días que la tienda abre de verdad.**
+El cartel de horarios agrupa días consecutivos con el mismo horario —"Lunes a
+Viernes de 09:00 a 18:00"— y ahí está el riesgo: si agrupara días salteados,
+anunciaría un miércoles en el que el local está cerrado.
+**Lo sostiene:** `getOperationalHoursMessage` — *estructural* para las tres
+pantallas que lo usan.
+→ [operational-hours.test.ts](../tests/operational-hours.test.ts): *un día
+salteado corta el grupo en dos*, *no importa en qué orden vengan de la base, se
+anuncian de lunes a domingo*
+
 **El día que el usuario elige en un calendario es el día que ve, no el instante
 UTC.**
 Convertir con `toISOString()` corre la fecha un día en cualquier huso al oeste
