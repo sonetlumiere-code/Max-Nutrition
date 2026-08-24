@@ -78,6 +78,45 @@ caso, migrar a `react-email` v6 directamente —no a `@react-email/components`
 dar el cambio por bueno: los tests de `tests/mail.test.ts` doblan las
 plantillas, así que no ven una rotura del JSX ni un cambio de estilos.
 
+## Cuando GitHub y `npm audit` no dicen lo mismo
+
+Al pushear, GitHub avisa cuántas alertas de Dependabot tiene el repositorio, y
+ese número puede ser muchísimo más alto que el de `npm audit`. El 23/08/2026
+GitHub reportaba **95** (5 críticas, 42 altas, 42 moderadas, 6 bajas) mientras
+`npm audit` daba **3 moderate**.
+
+No son la misma medición. `npm audit` mira el árbol de dependencias **de hoy**;
+el contador de GitHub son **alertas abiertas acumuladas**, y una alerta sigue
+contando hasta que alguien la cierra o Dependabot detecta el arreglo.
+
+Se puede reconstruir la historia sin instalar nada, porque `npm audit` sabe
+trabajar solo con el lockfile:
+
+```bash
+git show COMMIT:package-lock.json > /tmp/x/package-lock.json
+git show COMMIT:package.json > /tmp/x/package.json
+cd /tmp/x && npm audit --package-lock-only
+```
+
+Aplicado a este repo, la trayectoria explica el número:
+
+| Momento | Estado del lockfile |
+| --- | --- |
+| jun–jul 2024 | 28–29 vulnerabilidades, **5 críticas** |
+| may 2026 | 25 vulnerabilidades, 3 críticas |
+| 18/08/2026 (`21fb7bc`, actualizaciones de seguridad) | 7 |
+| desde 21/08/2026 (Next 16) | **3 moderate** |
+
+Las 5 críticas de 2024 —`@auth/core`, `@auth/prisma-adapter`, `form-data`,
+`next`, `next-auth`— coinciden exactamente con las 5 que GitHub sigue contando.
+Hoy ninguna aplica: cuatro están en versiones parcheadas y `form-data` ya no
+está en el árbol. Entre las altas históricas están `nanoid` y `js-yaml`, las dos
+que en agosto de 2026 se revisaron una por una y tampoco aplicaban.
+
+**Conclusión: el número grande es historia, no estado.** Antes de asustarse hay
+que comparar contra el árbol de hoy, y antes de actualizar nada, verificar la
+alerta puntual con la receta de abajo.
+
 ## Verificar una alerta antes de actuar
 
 Las dos alertas *high* de agosto de 2026 —`nanoid` y `js-yaml`— resultaron no
