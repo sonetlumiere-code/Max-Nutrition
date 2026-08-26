@@ -223,8 +223,15 @@ const RecipeForm = ({
                               <FormLabel className='text-xs'>
                                 Cantidad
                               </FormLabel>
-                              <FormControl>
-                                <div className='flex items-center gap-1'>
+                              {/*
+                                El FormControl va por dentro del div: shadcn le
+                                pasa el id a su hijo directo, y con el div en el
+                                medio la etiqueta "Cantidad" quedaba apuntando a
+                                un contenedor. Un lector de pantalla no la
+                                anunciaba y hacer clic en ella no enfocaba nada.
+                              */}
+                              <div className='flex items-center gap-1'>
+                                <FormControl>
                                   <Input
                                     type='number'
                                     min={0}
@@ -233,8 +240,8 @@ const RecipeForm = ({
                                     disabled={isSubmitting}
                                     {...field}
                                   />
-                                </div>
-                              </FormControl>
+                                </FormControl>
+                              </div>
                               <FormMessage className='text-xs' />
                             </FormItem>
                           )}

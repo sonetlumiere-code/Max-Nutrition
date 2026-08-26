@@ -104,15 +104,11 @@ const montarEditar = async () => {
 const nombre = () =>
   screen.getByPlaceholderText("Nombre del cliente") as HTMLInputElement
 
-/**
- * El esquema declara el teléfono opcional, pero el formulario arranca con 0 y
- * eso no es "sin teléfono": es un número que no llega al mínimo de diez
- * dígitos, así que sin cargarlo el formulario no llega a la acción.
- */
 const cargarTelefono = () =>
-  fireEvent.change(screen.getByPlaceholderText("Número de teléfono del cliente"), {
-    target: { value: "1122334455" },
-  })
+  fireEvent.change(
+    screen.getByPlaceholderText("Número de teléfono del cliente"),
+    { target: { value: "1122334455" } }
+  )
 
 describe("crear cliente", () => {
   it("arranca vacío y sin ninguna dirección", async () => {
@@ -121,6 +117,30 @@ describe("crear cliente", () => {
     expect(nombre().value).toBe("")
     // Sin direcciones cargadas no hay campos de numeración.
     expect(screen.queryAllByPlaceholderText("Numeración")).toHaveLength(0)
+  })
+
+  it("se puede guardar un cliente sin teléfono, que es opcional", async () => {
+    // El formulario arrancaba con el teléfono en 0, que no es "sin teléfono"
+    // sino un número por debajo del mínimo de diez dígitos: el campo declarado
+    // opcional era obligatorio en la práctica.
+    await montarCrear()
+
+    expect(
+      (
+        screen.getByPlaceholderText(
+          "Número de teléfono del cliente"
+        ) as HTMLInputElement
+      ).value
+    ).toBe("")
+
+    fireEvent.change(nombre(), { target: { value: "Sin teléfono" } })
+    fireEvent.click(botonCrear())
+
+    await waitFor(() => {
+      expect(createCustomer).toHaveBeenCalledWith(
+        expect.objectContaining({ name: "Sin teléfono" })
+      )
+    })
   })
 
   it("manda el nombre a la acción de crear", async () => {

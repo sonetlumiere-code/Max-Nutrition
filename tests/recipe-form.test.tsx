@@ -105,6 +105,14 @@ const montarEditar = async () => {
 /** Los <select> del formulario: uno de ingrediente y uno de variante por fila. */
 const selects = () => screen.getAllByRole("combobox") as HTMLSelectElement[]
 
+/**
+ * La cantidad se busca por su etiqueta, no por el placeholder: es la prueba de
+ * que el label está asociado al input. Durante un tiempo apuntó al div que lo
+ * envolvía, así que un lector de pantalla no lo anunciaba.
+ */
+const cantidad = () =>
+  screen.getAllByLabelText("Cantidad")[0] as HTMLInputElement
+
 describe("crear receta", () => {
   it("arranca con una sola fila de ingrediente, vacía", async () => {
     await montarCrear()
@@ -133,7 +141,7 @@ describe("crear receta", () => {
       target: { value: "Masa de pizza" },
     })
     fireEvent.change(selects()[0], { target: { value: "ing_1" } })
-    fireEvent.change(screen.getAllByPlaceholderText("Cantidad")[0], {
+    fireEvent.change(cantidad(), {
       target: { value: "300" },
     })
     fireEvent.click(botonCrear())
@@ -157,7 +165,7 @@ describe("crear receta", () => {
       target: { value: "Masa" },
     })
     fireEvent.change(selects()[0], { target: { value: "ing_1" } })
-    fireEvent.change(screen.getAllByPlaceholderText("Cantidad")[0], {
+    fireEvent.change(cantidad(), {
       target: { value: "300" },
     })
     fireEvent.click(botonCrear())
@@ -178,7 +186,7 @@ describe("crear receta", () => {
       target: { value: "Repetida" },
     })
     fireEvent.change(selects()[0], { target: { value: "ing_1" } })
-    fireEvent.change(screen.getAllByPlaceholderText("Cantidad")[0], {
+    fireEvent.change(cantidad(), {
       target: { value: "300" },
     })
     fireEvent.click(botonCrear())

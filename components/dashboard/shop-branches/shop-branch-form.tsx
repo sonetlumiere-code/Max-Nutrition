@@ -1,5 +1,6 @@
 "use client"
 
+import NestedFormMessage from "@/components/dashboard/nested-form-message"
 import { ResultadoAccion } from "@/types/types"
 import { Button } from "@/components/ui/button"
 import {
@@ -58,9 +59,10 @@ const defaultOperationalHours = [
  * El formulario de sucursal, uno solo para crear y para editar.
  *
  * La sucursal es adónde va el cliente a retirar, así que la dirección se valida
- * entera contra georef: `addressGeoRef` es un objeto, no un texto, y si le
- * falta la calle el envío falla **sin mostrar ningún mensaje**, porque ese
- * campo anidado no tiene dónde rendirlo.
+ * entera contra georef: `addressGeoRef` es un objeto, no un texto. Cuando falla
+ * un campo de adentro, zod deja el error en la ruta anidada y `FormMessage` no
+ * lo ve, así que ese campo usa `NestedFormMessage` — sin él, el formulario no
+ * enviaba y no decía por qué.
  */
 
 type ShopBranchFormProps = {
@@ -89,7 +91,7 @@ const ShopBranchForm = ({
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     watch,
     setValue,
   } = form
@@ -309,7 +311,7 @@ const ShopBranchForm = ({
                             municipality={watch("municipality")}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <NestedFormMessage error={errors.addressGeoRef} />
                       </FormItem>
                     )}
                   />

@@ -162,17 +162,15 @@ describe("editar categoría", () => {
     expect(screen.getByTestId("multi-select").textContent).toBe("p1")
   })
 
-  it("el botón arranca deshabilitado hasta que el formulario se da por válido", async () => {
+  it("el botón de guardar está habilitado desde el primer render", async () => {
     await montarEditar()
 
-    // A diferencia de crear, editar exige `isValid`. Con react-hook-form en
-    // modo onSubmit eso es false en el primer render, aunque los datos que
-    // vienen de la base sean válidos.
-    expect(botonEditar().disabled).toBe(true)
-
-    await waitFor(() => {
-      expect(botonEditar().disabled).toBe(false)
-    })
+    // Antes editar exigía `isValid`, que con react-hook-form en modo onSubmit
+    // es false hasta el primer envío: el botón arrancaba deshabilitado y, con
+    // una categoría guardada que no cumpliera el esquema, no se habilitaba
+    // nunca ni decía por qué. Ahora la validación se muestra al enviar, como en
+    // los otros ocho formularios del panel.
+    expect(botonEditar().disabled).toBe(false)
   })
 
   it("manda el id por separado de los valores", async () => {

@@ -49,11 +49,6 @@ type CategoryFormProps = {
   textoBoton: string
   avisoExito: { title: string; description: string }
   tituloError: string
-  /**
-   * Editar deshabilita el botón hasta que el formulario se da por válido;
-   * crear no. Se mantiene la diferencia que ya existía en cada pantalla.
-   */
-  exigirValido?: boolean
 }
 
 const CategoryForm = ({
@@ -63,7 +58,6 @@ const CategoryForm = ({
   textoBoton,
   avisoExito,
   tituloError,
-  exigirValido = false,
 }: CategoryFormProps) => {
   const router = useRouter()
 
@@ -75,7 +69,7 @@ const CategoryForm = ({
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting },
   } = form
 
   const onSubmit = async (data: CategorySchema) => {
@@ -173,10 +167,7 @@ const CategoryForm = ({
             </div>
           </CardContent>
           <CardFooter>
-            <Button
-              type='submit'
-              disabled={isSubmitting || (exigirValido && !isValid)}
-            >
+            <Button type='submit' disabled={isSubmitting}>
               {isSubmitting && (
                 <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
               )}

@@ -204,6 +204,26 @@ describe("editar sucursal", () => {
     expect(push).not.toHaveBeenCalled()
   })
 
+  it("una dirección incompleta dice qué falta, en vez de no hacer nada", async () => {
+    // Sin calle, el esquema rechaza `addressGeoRef`. El error de zod queda en la
+    // ruta anidada (`addressGeoRef.calle.nombre`) y el FormMessage del campo
+    // solo mira la ruta exacta, así que el formulario se quedaba mudo: no
+    // enviaba y no explicaba por qué.
+    const sinCalle = { ...(sucursal as object), addressStreet: undefined } as never
+
+    const { default: EditShopBranch } = await import(
+      "@/components/dashboard/shop-branches/edit-shop-branch/edit-shop-branch"
+    )
+    render(<EditShopBranch shopBranch={sinCalle} />)
+
+    fireEvent.click(botonEditar())
+
+    await waitFor(() => {
+      expect(screen.getByText("Ingresa tu calle.")).toBeTruthy()
+    })
+    expect(editShopBranch).not.toHaveBeenCalled()
+  })
+
   it("el aviso de error habla de actualizar, no de crear", async () => {
     // Antes decía "Error creando sucursal" en la pantalla de editar: el texto
     // venía copiado del otro formulario, que es exactamente lo que la

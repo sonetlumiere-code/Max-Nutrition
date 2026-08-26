@@ -32,6 +32,7 @@ import {
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { cn } from "@/lib/utils"
+import NestedFormMessage from "@/components/dashboard/nested-form-message"
 import { ResultadoAccion } from "@/types/types"
 import { toast } from "@/components/ui/use-toast"
 import { useRouter } from "next/navigation"
@@ -88,7 +89,7 @@ const CustomerForm = ({
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     watch,
     setValue,
   } = form
@@ -424,7 +425,9 @@ const CustomerForm = ({
                                   )}
                                 />
                               </FormControl>
-                              <FormMessage />
+                              <NestedFormMessage
+                                error={errors.addresses?.[index]?.addressGeoRef}
+                              />
                             </FormItem>
                           )}
                         />

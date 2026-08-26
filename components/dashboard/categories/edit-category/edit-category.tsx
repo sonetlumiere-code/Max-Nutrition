@@ -26,7 +26,7 @@ const EditCategory = ({ category, products }: EditCategoryProps) => (
       description: "La categoría se actualizó correctamente.",
     }}
     tituloError='Error actualizando categoría.'
-    exigirValido
+
   />
 )
 
