@@ -31,7 +31,7 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import SearchInput from "@/components/search-input"
-import { getOperationalHoursMessage } from "@/helpers/helpers"
+import { getOperationalHoursMessage } from "@/helpers/shop-hours"
 import { PopulatedShippingZone } from "@/types/types"
 
 type ShippingZonesProps = {

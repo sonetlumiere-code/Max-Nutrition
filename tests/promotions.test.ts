@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { PromotionDiscountType } from "@prisma/client"
-import { calculatePromotions } from "@/helpers/helpers"
+import { calculatePromotions } from "@/helpers/promotions"
 import { PopulatedProduct, PopulatedPromotion } from "@/types/types"
 
 const VIANDAS = "cat-viandas"

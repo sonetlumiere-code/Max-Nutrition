@@ -1,4 +1,4 @@
-import { calculateIngredientData } from "@/helpers/helpers"
+import { calculateIngredientData } from "@/helpers/ingredients"
 import { ingredientsForVariant } from "@/helpers/recipe-variants"
 import {
   IngredientTotal,

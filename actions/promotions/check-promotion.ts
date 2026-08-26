@@ -1,7 +1,7 @@
 "use server"
 
 import { getPromotions } from "@/data/promotions"
-import { calculatePromotions } from "@/helpers/helpers"
+import { calculatePromotions } from "@/helpers/promotions"
 import { PopulatedProduct } from "@/types/types"
 import { ShopCategory } from "@prisma/client"
 

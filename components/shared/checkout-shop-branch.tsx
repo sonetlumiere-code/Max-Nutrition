@@ -1,5 +1,5 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { getOperationalHoursMessage } from "@/helpers/helpers"
+import { getOperationalHoursMessage } from "@/helpers/shop-hours"
 import { PopulatedShopBranch } from "@/types/types"
 
 type CheckoutOperationalHoursProps = {

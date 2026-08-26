@@ -3,7 +3,7 @@ import { DayOfWeek, OperationalHours } from "@prisma/client"
 import {
   getOperationalHoursMessage,
   isShopCurrentlyAvailable,
-} from "@/helpers/helpers"
+} from "@/helpers/shop-hours"
 
 /**
  * El horario de atención es una de las cosas que deciden si un pedido entra:

@@ -2,7 +2,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { cleanup, render, screen, waitFor } from "@testing-library/react"
-import { calculatePromotions } from "@/helpers/helpers"
+import { calculatePromotions } from "@/helpers/promotions"
 import { calculateSubtotal, calculateTotal } from "@/lib/orders/pricing"
 
 /**

@@ -24,11 +24,13 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import {
-  calculateIngredientData,
-  getBaseMeasurement,
   translateIngredientVariantScope,
   translateUnit,
 } from "@/helpers/helpers"
+import {
+  calculateIngredientData,
+  getBaseMeasurement,
+} from "@/helpers/ingredients"
 import {
   REFERENCE_VARIANT_WITH_SALT,
   ingredientsForVariant,

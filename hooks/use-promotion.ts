@@ -1,4 +1,4 @@
-import { calculatePromotions } from "@/helpers/helpers"
+import { calculatePromotions } from "@/helpers/promotions"
 import { useMemo } from "react"
 import { useGetPromotions } from "./use-get-promotions"
 import { LineItem } from "@/types/types"

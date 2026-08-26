@@ -1,5 +1,5 @@
 import { OperationalHours } from "@prisma/client"
-import { isShopCurrentlyAvailable } from "@/helpers/helpers"
+import { isShopCurrentlyAvailable } from "@/helpers/shop-hours"
 
 /**
  * Si la tienda está tomando pedidos del público, y si no, por qué no.

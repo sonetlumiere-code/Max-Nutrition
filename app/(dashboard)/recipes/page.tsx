@@ -32,11 +32,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getRecipes } from "@/data/recipes"
-import {
-  calculateIngredientData,
-  getPermissionsKeys,
-  hasPermission,
-} from "@/helpers/helpers"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
+import { calculateIngredientData } from "@/helpers/ingredients"
 import {
   REFERENCE_VARIANT_WITH_SALT,
   ingredientsForVariant,

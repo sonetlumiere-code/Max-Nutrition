@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { ActionKey, SubjectKey } from "@prisma/client"
-import { getPermissionsKeys, groupOrdersByPeriod, hasPermission } from "@/helpers/helpers"
+import { getPermissionsKeys, hasPermission } from "@/helpers/helpers"
+import { groupOrdersByPeriod } from "@/helpers/business-time"
 import { ExtendedUser } from "@/types/next-auth"
 import { PopulatedOrder } from "@/types/types"
 

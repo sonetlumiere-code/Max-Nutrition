@@ -99,7 +99,8 @@ mismo producto*
 **Las promociones no se apilan: se aplica solo la mejor.**
 Cuando varias califican, gana la que más descuenta en pesos, no la que tiene el
 número más grande.
-**Lo sostiene:** `calculatePromotions`, el único lugar donde se elige —
+**Lo sostiene:** `calculatePromotions` en
+[promotions.ts](../helpers/promotions.ts), el único lugar donde se elige —
 *estructural*.
 → [promotions.test.ts](../tests/promotions.test.ts): *aplica solo la promoción
 de mayor descuento*, *compara montos reales, no el valor nominal del descuento*
@@ -148,7 +149,8 @@ si el medio de pago no califica*
 **La merma se calcula sobre el bruto: `cantidad ÷ (1 − w%)`.**
 Es lo que hay que **comprar** para que quede la cantidad neta de la receta, no
 un recargo sobre la neta. Con tope del 99% para no dividir por cero.
-**Lo sostiene:** `calculateIngredientData`, función pura y única —
+**Lo sostiene:** `calculateIngredientData` en
+[ingredients.ts](../helpers/ingredients.ts), función pura y única —
 *estructural*.
 → [ingredients.test.ts](../tests/ingredients.test.ts): *compra de más para
 terminar con la cantidad neta pedida*, *acota la merma al 99% para no dividir
@@ -220,7 +222,8 @@ cerraría tres horas antes todas las noches. Y el minuto de apertura y el de
 cierre están **incluidos** — a las 18:00 clavadas de un local que cierra 18:00
 todavía se puede pedir. Un día cargado a medias, sin hora de inicio o de fin, se
 ignora en vez de asumir que está abierto.
-**Lo sostiene:** `isShopCurrentlyAvailable`, único lugar donde se resuelve, que
+**Lo sostiene:** `isShopCurrentlyAvailable` en
+[shop-hours.ts](../helpers/shop-hours.ts), único lugar donde se resuelve, que
 usan tanto `createOrder` como la vitrina — *estructural*.
 → [operational-hours.test.ts](../tests/operational-hours.test.ts): *el día que
 vale es el de Argentina, no el del servidor*, *los dos extremos del horario están

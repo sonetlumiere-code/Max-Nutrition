@@ -34,7 +34,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import { calculateIngredientData } from "@/helpers/helpers"
+import { calculateIngredientData } from "@/helpers/ingredients"
 import {
   REFERENCE_VARIANT_WITH_SALT,
   ingredientsForVariant,

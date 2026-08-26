@@ -1,5 +1,5 @@
 import { DayOfWeek } from "@prisma/client"
-import { toBusinessTime } from "@/helpers/helpers"
+import { toBusinessTime } from "@/helpers/business-time"
 import { toBusinessDateString } from "@/helpers/date-range"
 
 /** getDay() de JavaScript empieza en domingo. */

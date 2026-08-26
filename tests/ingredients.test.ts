@@ -4,7 +4,7 @@ import {
   calculateIngredientData,
   conversionFactors,
   getBaseMeasurement,
-} from "@/helpers/helpers"
+} from "@/helpers/ingredients"
 
 /** Ingrediente mínimo: solo los campos que intervienen en el cálculo. */
 const ingredient = (overrides: Partial<Ingredient>): Ingredient =>

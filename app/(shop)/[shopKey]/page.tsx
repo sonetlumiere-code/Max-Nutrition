@@ -4,7 +4,7 @@ import ButtonsInfoShop from "@/components/shop/buttons-info-shop"
 import ProductsList from "@/components/shop/products/products-list"
 import BannerShop from "@/components/shop/banner-shop"
 import { redirect } from "next/navigation"
-import { getOperationalHoursMessage } from "@/helpers/helpers"
+import { getOperationalHoursMessage } from "@/helpers/shop-hours"
 import {
   MENSAJE_SIN_PEDIDOS,
   getShopOrderingState,
