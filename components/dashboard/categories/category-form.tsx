@@ -8,7 +8,7 @@ import {
 import { PopulatedProduct, ResultadoAccion } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
+import { DefaultValues, useForm } from "react-hook-form"
 import { Icons } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
@@ -43,7 +43,7 @@ import { translateShopCategory } from "@/helpers/helpers"
 
 type CategoryFormProps = {
   products: PopulatedProduct[] | null
-  defaultValues: CategorySchema
+  defaultValues: DefaultValues<CategorySchema>
   /** Qué hacer con los datos: crear una categoría nueva o actualizar la que se está editando. */
   guardar: (data: CategorySchema) => Promise<ResultadoAccion>
   textoBoton: string

@@ -4,7 +4,7 @@ import { RoleSchema, roleSchema } from "@/lib/validations/role-validation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Permission, SubjectKey } from "@prisma/client"
 import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
+import { DefaultValues, useForm } from "react-hook-form"
 import {
   Form,
   FormControl,
@@ -33,7 +33,7 @@ import { ResultadoAccion } from "@/types/types"
 
 type RoleFormProps = {
   permissions: Permission[] | null
-  defaultValues: RoleSchema
+  defaultValues: DefaultValues<RoleSchema>
   guardar: (data: RoleSchema) => Promise<ResultadoAccion>
   textoBoton: string
   avisoExito: { title: string; description: string }
