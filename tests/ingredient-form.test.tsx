@@ -31,36 +31,10 @@ vi.mock("@/components/ui/use-toast", () => ({ toast }))
 // El Select de radix se abre con eventos de puntero que jsdom no implementa.
 // Acá no se prueba ese componente sino el formulario, así que se reemplaza por
 // un <select> nativo que se puede operar.
-vi.mock("@/components/ui/select", () => ({
-  Select: ({
-    children,
-    onValueChange,
-    defaultValue,
-  }: {
-    children: React.ReactNode
-    onValueChange: (v: string) => void
-    defaultValue?: string
-  }) => (
-    <select
-      aria-label='Unidad de medida'
-      defaultValue={defaultValue ?? ""}
-      onChange={(e) => onValueChange(e.target.value)}
-    >
-      <option value=''></option>
-      {children}
-    </select>
-  ),
-  SelectTrigger: () => null,
-  SelectValue: () => null,
-  SelectContent: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  SelectItem: ({
-    value,
-    children,
-  }: {
-    value: string
-    children: React.ReactNode
-  }) => <option value={value}>{children}</option>,
-}))
+vi.mock("@/components/ui/select", async () => {
+  const { selectMock } = await import("./helpers/select-mock")
+  return selectMock("Unidad de medida")
+})
 
 const ingrediente = {
   id: "ing_1",
