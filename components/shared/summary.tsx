@@ -3,6 +3,7 @@
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { usePromotion } from "@/hooks/use-promotion"
+import { calculateTotal } from "@/lib/orders/pricing"
 import { LineItem } from "@/types/types"
 import { ShopCategory } from "@prisma/client"
 
@@ -74,7 +75,7 @@ const Summary = ({ items, shippingCost, shopCategory }: SummaryProps) => {
         {isLoadingPromotions ? (
           <Skeleton className='w-20 h-6' />
         ) : (
-          <span>${(finalPrice + shippingCost).toFixed(2)}</span>
+          <span>${calculateTotal(finalPrice, shippingCost).toFixed(2)}</span>
         )}
       </div>
     </div>

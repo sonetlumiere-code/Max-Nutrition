@@ -67,11 +67,15 @@ después del descuento*
 Son pesos, no flotantes libres. Sin esto la suma de un pedido y su total dejan
 de coincidir por centésimas invisibles.
 **Lo sostiene:** `roundMoney` en [pricing.ts](../lib/orders/pricing.ts) —
-*estructural en el servidor*. **Ojo:** la vitrina calcula su propio subtotal en
-`cart-provider.tsx` y **no** redondea. Con precios enteros no se nota; si algún
-día hay centavos, el carrito y el cobro pueden mostrar números distintos.
+*estructural*. Durante un tiempo lo fue solo del lado del servidor: el carrito,
+el subtotal de `calculatePromotions` y el total de `summary` tenían cada uno su
+copia de la cuenta, sin redondear. Hoy los tres pasan por `pricing.ts`, así que
+el número que ve el cliente sale de la misma función que lo cobra.
 → [subscriptions.test.ts](../tests/subscriptions.test.ts): *redondea a dos
-decimales*, *no arrastra errores de punto flotante*
+decimales*, *no arrastra errores de punto flotante* ·
+[pricing-vitrina.test.tsx](../tests/pricing-vitrina.test.tsx): *redondea el
+subtotal igual que el servidor*, *coincide con lo que calcula el servidor para
+el mismo carrito*
 
 **El precio final nunca baja de cero.**
 Un descuento mayor que el subtotal deja el pedido en cero, no en negativo.

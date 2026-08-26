@@ -34,6 +34,7 @@ import {
   startOfWeek,
   startOfYear,
 } from "date-fns"
+import { calculateSubtotal, roundMoney } from "@/lib/orders/pricing"
 
 export const translateShopCategory = (group: ShopCategory): string => {
   switch (group) {
@@ -236,10 +237,7 @@ export function calculatePromotions({
   }[]
   promotions: PopulatedPromotion[]
 }) {
-  const subtotalPrice = items.reduce(
-    (acc, item) => acc + item.product.price * item.quantity,
-    0
-  )
+  const subtotalPrice = calculateSubtotal(items)
 
   let totalDiscountAmount = 0
   let appliedPromotions: PromotionToApply[] = []
@@ -307,15 +305,17 @@ export function calculatePromotions({
         promotion.categories.map((category) => category.categoryId)
       )
 
-      const qualifyingSubtotal = items.reduce((acc, item) => {
-        const belongs = item.product.categories?.some((category: Category) =>
-          promotionCategoryIds.has(category.id)
+      const qualifyingSubtotal = calculateSubtotal(
+        items.filter((item) =>
+          item.product.categories?.some((category: Category) =>
+            promotionCategoryIds.has(category.id)
+          )
         )
-        return belongs ? acc + item.product.price * item.quantity : acc
-      }, 0)
+      )
 
-      const discountAmount =
-        Math.round(qualifyingSubtotal * (promotion.discount / 100) * 100) / 100
+      const discountAmount = roundMoney(
+        qualifyingSubtotal * (promotion.discount / 100)
+      )
 
       if (discountAmount > 0) {
         candidates.push({
@@ -340,7 +340,7 @@ export function calculatePromotions({
   }
 
   // El descuento nunca puede superar el subtotal: el precio final no baja de 0.
-  const finalPrice = Math.max(0, subtotalPrice - totalDiscountAmount)
+  const finalPrice = roundMoney(Math.max(0, subtotalPrice - totalDiscountAmount))
 
   return {
     appliedPromotions,

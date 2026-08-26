@@ -18,6 +18,7 @@ import {
   Variation,
 } from "@/types/types"
 import { useSession } from "next-auth/react"
+import { calculateSubtotal } from "@/lib/orders/pricing"
 
 type CartProviderState = {
   items: LineItem[]
@@ -161,12 +162,11 @@ export function CartProvider({ children, shop }: CartProviderProps) {
     setItems([])
   }
 
+  // Misma función que usa el servidor para cobrar: si el carrito hiciera su
+  // propia cuenta, el número que ve el cliente y el que se le cobra podrían
+  // separarse por centavos.
   const getSubtotalPrice = useMemo(
-    () => () =>
-      items.reduce(
-        (total, item) => total + item.product.price * item.quantity,
-        0
-      ),
+    () => () => calculateSubtotal(items),
     [items]
   )
 
