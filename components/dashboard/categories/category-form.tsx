@@ -5,7 +5,7 @@ import {
   CategorySchema,
   categorySchema,
 } from "@/lib/validations/category-validation"
-import { PopulatedProduct } from "@/types/types"
+import { PopulatedProduct, ResultadoAccion } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
@@ -40,11 +40,6 @@ import { translateShopCategory } from "@/helpers/helpers"
  * significaba que cada campo nuevo había que agregarlo dos veces, y que
  * olvidarse de uno no rompía nada visible.
  */
-
-export type ResultadoAccion = {
-  success?: unknown
-  error?: string
-}
 
 type CategoryFormProps = {
   products: PopulatedProduct[] | null

@@ -164,3 +164,12 @@ export type HourGroup = {
   startTime: string
   endTime: string
 }
+
+/**
+ * Lo que devuelve una acción del panel: o salió bien, o hay un motivo.
+ * Los formularios lo usan para decidir si navegan o avisan del error.
+ */
+export type ResultadoAccion = {
+  success?: unknown
+  error?: string
+}
