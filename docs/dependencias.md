@@ -105,7 +105,9 @@ Aplicado a este repo, la trayectoria explica el número:
 | jun–jul 2024 | 28–29 vulnerabilidades, **5 críticas** |
 | may 2026 | 25 vulnerabilidades, 3 críticas |
 | 18/08/2026 (`21fb7bc`, actualizaciones de seguridad) | 7 |
-| desde 21/08/2026 (Next 16) | **3 moderate** |
+| 21/08/2026 (Next 16) | 3 moderate |
+| 08/09/2026 (lote de advisories de `next` y `sharp`) | 7 |
+| 14/09/2026 (Next 16.3.5) | **3 moderate** |
 
 Las 5 críticas de 2024 —`@auth/core`, `@auth/prisma-adapter`, `form-data`,
 `next`, `next-auth`— coinciden exactamente con las 5 que GitHub sigue contando.
@@ -117,10 +119,49 @@ que en agosto de 2026 se revisaron una por una y tampoco aplicaban.
 que comparar contra el árbol de hoy, y antes de actualizar nada, verificar la
 alerta puntual con la receta de abajo.
 
+## Septiembre de 2026: cuando las alertas sí aplican
+
+El 08/09/2026 llegaron dos mails —`next` crítico por AVIF y `js-yaml` alto— y
+esta vez **las dos aplicaban**: el repo estaba en `next@16.3.2` y
+`js-yaml@4.3.1`, dentro de los rangos vulnerables. Pero `npm audit` mostró
+**cinco** cosas, no dos: GitHub manda un mail por alerta nueva y las demás del
+mismo lote quedan solo en el panel.
+
+| Paquete | Alerta | Rango vulnerable | Estaba | Quedó |
+| --- | --- | --- | --- | --- |
+| `next` | [GHSA-2xp9-vwfh-vxw4](https://github.com/advisories/GHSA-2xp9-vwfh-vxw4), crítico: RCE al optimizar AVIF | `>= 16.0.0 < 16.3.3` | 16.3.2 | **16.3.5** |
+| `next` | [GHSA-p293-qw3h-jr36](https://github.com/advisories/GHSA-p293-qw3h-jr36), crítico: RCE en servidores hospedados en Windows | `>= 16.0.0 < 16.3.3` | 16.3.2 | **16.3.5** |
+| `sharp` | [GHSA-rgj7-g3m4-5g8c](https://github.com/advisories/GHSA-rgj7-g3m4-5g8c), alto: la causa de fondo, `libheif` | `< 0.35.4` | 0.35.3 | **0.35.4** |
+| `js-yaml` | [GHSA-2883-xcg3-v3hh](https://github.com/advisories/GHSA-2883-xcg3-v3hh), alto: CPU sin límite con merge keys vacías | `>= 4.0.0 < 4.3.2` | 4.3.1 | **4.3.2** |
+| `postcss-selector-parser` | [GHSA-w9m9-85wc-3x92](https://github.com/advisories/GHSA-w9m9-85wc-3x92), bajo: recursión sin control | `>= 6.1.0 < 6.1.3` | 6.1.2 | **6.1.4** |
+
+Lo que exponía el proyecto de verdad era la primera: la API de optimización
+de imágenes está activa (`/_next/image`) y `remotePatterns` acepta cualquier
+ruta de `res.cloudinary.com` —cualquier cuenta, no solo la del proyecto—, y
+Cloudinary sirve AVIF con `f_avif`. Un atacante podía hacer que la app
+optimizara un AVIF armado por él. La de Windows no llega a producción (Vercel
+corre en Linux) pero sí al dev server. `js-yaml` y `postcss-selector-parser`
+son de desarrollo —entran por eslint y tailwind— y no leen entrada de terceros;
+se subieron igual porque el fix estaba dentro del rango y así la alerta cierra
+como *fixed* en vez de descartada.
+
+Dos cosas para la próxima:
+
+- **No quedarse en `first_patched_version`.** 16.3.3 arregló el RCE
+  *desactivando* la optimización de AVIF; 16.3.4 la volvió a activar con el
+  `sharp` parcheado. Subir "a la primera parcheada" habría dejado la app con
+  una función menos sin que nadie lo note. Leer las release notes de todos los
+  parches posteriores.
+- **`next` fija el `sharp`.** `next@16.3.5` declara `sharp ^0.35.4`, así que
+  `npm install next@16.3.5` ya lo arrastra. `js-yaml` y
+  `postcss-selector-parser` necesitaron `npm update PAQUETE` aparte: son
+  transitivas y sus padres no cambiaron.
+
 ## Verificar una alerta antes de actuar
 
 Las dos alertas *high* de agosto de 2026 —`nanoid` y `js-yaml`— resultaron no
-aplicar: el repo ya estaba en una versión parcheada. Antes de tocar nada:
+aplicar: el repo ya estaba en una versión parcheada. Las de septiembre sí. Antes
+de tocar nada:
 
 1. `npm ls PAQUETE` — versión instalada y de dónde cuelga. Si dice `(dev)`, no
    llega a producción.
@@ -133,6 +174,10 @@ aplicar: el repo ya estaba en una versión parcheada. Antes de tocar nada:
    vulnerabilidad.
 4. `git show COMMIT:package-lock.json` para ver desde cuándo está la versión
    parcheada.
+5. `npm audit` — GitHub manda un mail por alerta nueva, pero el mismo lote
+   puede traer más. En septiembre de 2026 llegaron 2 mails y eran 5 alertas.
+6. Si aplica, subir al **último parche de la línea**, no al primero que cierra
+   el rango, y leer qué cambió entre medio.
 
 `gh` no está instalado en la máquina de desarrollo, así que descartar alertas en
 GitHub lo hace el dueño del proyecto desde la web.
