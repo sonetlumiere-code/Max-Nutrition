@@ -76,6 +76,9 @@ export async function editShop({
     })
 
     revalidatePath("/shops")
+    // La landing no se revalida por tiempo (ver app/page.tsx): si no se
+    // regenera acá, el cambio no se ve hasta el próximo deploy.
+    revalidatePath("/")
 
     return { success: updatedShop }
   } catch (error) {

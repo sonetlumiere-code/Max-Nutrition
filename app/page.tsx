@@ -71,8 +71,10 @@ const steps = [
   },
 ]
 
-// Revalida la landing cada hora para reflejar cambios de tiendas activas.
-export const revalidate = 3600
+// Sin revalidación por tiempo: cada regeneración consulta la base, y con una
+// por hora alcanzaba con que un bot pasara por la landing para despertar a
+// Neon. La regeneran las acciones que cambian tiendas, con revalidatePath("/").
+export const revalidate = false
 
 const HomePage = async () => {
   const shops = await getShops({
@@ -80,7 +82,15 @@ const HomePage = async () => {
     orderBy: { createdAt: "asc" },
   })
 
-  if (!shops?.length) {
+  // Si falla la consulta, cortar en vez de mostrar la landing vacía. Una
+  // regeneración que tira error deja en caché la versión anterior, y un build
+  // falla a la vista; la pantalla vacía, en cambio, quedaría publicada hasta
+  // el próximo cambio de tienda, porque ya no hay revalidación por tiempo.
+  if (!shops) {
+    throw new Error("No se pudieron leer las tiendas para la landing.")
+  }
+
+  if (!shops.length) {
     return (
       <div className='flex items-center justify-center h-screen'>
         <Image

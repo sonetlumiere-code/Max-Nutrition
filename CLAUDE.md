@@ -61,6 +61,12 @@ redescubrir.
   tuya.
 - Agregar una columna con `@default` es seguro y no necesita backfill. Borrar
   una columna no se puede deshacer.
+- **Neon suspende la base cuando nadie la usa, y casi siempre la despierta un
+  bot.** Por eso la landing no se revalida por tiempo y `getShop` no consulta
+  claves con punto (`/robots.txt`, `/wp-login.php`, `/.env` caen en
+  `[shopKey]`). Una ruta pública que lea la base la van a pedir bots, no solo
+  clientes. El cron de suscripciones responde 503 sin tocar la base mientras
+  no haya `CRON_SECRET`.
 
 ## Credenciales
 

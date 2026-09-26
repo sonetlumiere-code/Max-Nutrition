@@ -23,6 +23,8 @@ export async function deleteShop({ id }: { id: string }) {
     })
 
     revalidatePath("/shops")
+    // La landing lista las tiendas y no se revalida por tiempo.
+    revalidatePath("/")
 
     return { success: shop }
   } catch (error) {
