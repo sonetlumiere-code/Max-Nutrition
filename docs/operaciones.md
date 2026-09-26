@@ -1,7 +1,7 @@
 # Operaciones
 
-Cómo se configura y se corre esto en producción: variables de entorno, cobros y
-tareas programadas. Para las reglas de negocio ver
+Cómo se configura y se corre esto en producción: variables de entorno, cobros,
+tareas programadas, la configuración de Neon y Vercel, y qué cambiar al lanzar. Para las reglas de negocio ver
 [invariantes.md](invariantes.md); para las convenciones de desarrollo,
 [CLAUDE.md](../CLAUDE.md).
 
@@ -75,6 +75,98 @@ al volver a prenderlo.
 Es independiente por tienda, así que se puede abrir viandas y dejar pastelería
 cerrada. Es distinto de **"Activa"**, que esconde la tienda entera, y del
 horario de atención, que sigue funcionando aparte para los días y horas.
+
+## Neon y Vercel
+
+Lo que sigue se configura en los paneles de Neon y de Vercel, no en el código,
+así que esta sección es el único registro de cómo tiene que estar.
+
+### Neon: que la base duerma
+
+Neon cobra por el tiempo que el cómputo está encendido. Lo suspende solo a los
+5 minutos sin conexiones, y cualquier consulta lo vuelve a encender. La
+configuración del cómputo tiene que quedar así:
+
+- **Scale to zero activo**, para que se suspenda.
+- **Autoscaling en 0,25 CU**, mínimo y máximo. Con este volumen de datos
+  alcanza, y así cada despertar consume lo mínimo. Si con tráfico real las
+  páginas se ponen lentas, es lo primero que conviene subir.
+
+Qué la despierta, de más frecuente a menos:
+
+- Cualquier visita a una página de la tienda (`/foods`, `/bakery` y lo que
+  cuelga de ahí) o a las APIs públicas, venga de un cliente o de un bot.
+- Una pestaña de la aplicación abierta con sesión iniciada, cada vez que
+  vuelve a tener el foco: NextAuth relee el usuario y SWR recarga los datos.
+- Cada build, porque pre-genera la landing leyendo las tiendas. Solo `main`
+  genera deploys; subir a `development` no dispara ninguno.
+- El cron de suscripciones, una vez por día a las 9:00 de Argentina, pero solo
+  si `CRON_SECRET` está cargado. Sin la variable responde 503 sin consultar.
+- La consola de Neon con las pestañas **Tables** o **SQL Editor** abiertas.
+  **Monitoring** no la despierta.
+
+Y dos cosas que ya no la despiertan, para que nadie las reintroduzca: la landing
+no se revalida por tiempo (se regenera cuando se edita una tienda), y `getShop`
+no consulta claves con punto, así que `/robots.txt`, `/wp-login.php` o `/.env`
+ya no llegan a la base.
+
+Para comprobar si estaba dormida, sin la consola:
+
+```sql
+select now(), pg_postmaster_start_time();
+```
+
+Si las dos horas son casi iguales, el cómputo arrancó con esa misma consulta:
+estaba suspendido. Los contadores de `pg_stat_user_tables` sobreviven a la
+suspensión, así que comparar dos lecturas separadas en el tiempo muestra si algo
+leyó tablas en el medio.
+
+### Vercel: Node y región
+
+- **Node 24.** Lo fija `engines.node` en `package.json`, que manda sobre el
+  panel, pero el panel (Settings → Build and Deployment → Node.js Version)
+  tiene que decir lo mismo o muestra el aviso de versión sin soporte. Para subir
+  de versión se cambian los dos.
+- **Región de las funciones: Washington, D.C. (`iad1`)**, la misma región que
+  Neon (`us-east-1`). En otra región, cada consulta cruza el continente.
+
+### Vercel: bots
+
+Mientras la tienda no esté lanzada, [`public/robots.txt`](../public/robots.txt)
+les pide a todos los buscadores que no la recorran. Lo sirve el CDN como
+archivo estático, sin ejecutar ninguna función.
+
+El Firewall de Vercel frena a los que no respetan `robots.txt`. Se configura en
+el proyecto, en **Firewall → Rules**, y **el orden importa**:
+
+1. **Primero, una regla personalizada con acción Bypass** para las rutas que
+   empiezan con `/api/webhooks/` o `/api/cron/`. Mercado Pago no está entre los
+   bots que Vercel reconoce: sin esta regla, sus notificaciones reciben el
+   desafío de JavaScript, nunca llegan y los pagos no se acreditan.
+2. **Bot Protection en Log** unos días. En la vista general del Firewall se ve
+   qué se habría desafiado. WhatsApp tampoco es un bot reconocido: si aparece,
+   hay que sumarlo al Bypass por user agent (`WhatsApp`), o los links a la
+   tienda compartidos por WhatsApp salen sin vista previa.
+3. **Bot Protection en Challenge.** Los buscadores verificados (Google, Bing)
+   pasan igual.
+4. **AI Bots en Deny.** Bloquea los crawlers de IA, que son de los que más
+   recorren un sitio.
+
+## Al lanzar
+
+La lista de lo que está apagado a propósito mientras la tienda no abre:
+
+1. Cambiar el `Disallow: /` de [`public/robots.txt`](../public/robots.txt) por
+   `Allow: /`, o la tienda no aparece en Google.
+2. Revisar **AI Bots** en el Firewall: en Deny también bloquea a ChatGPT o
+   Perplexity cuando alguien les pregunta por la tienda.
+3. Prender **"Toma pedidos"** en cada tienda (ver
+   [Abrir y cerrar la venta online](#abrir-y-cerrar-la-venta-online)).
+4. Cargar las credenciales de Mercado Pago y registrar el webhook (ver
+   [Pagos con Mercado Pago](#pagos-con-mercado-pago)), con la regla de Bypass
+   ya creada.
+5. Cargar `CRON_SECRET` si se van a usar las suscripciones. Desde ahí el cron
+   despierta la base una vez por día.
 
 ## Pagos con Mercado Pago
 

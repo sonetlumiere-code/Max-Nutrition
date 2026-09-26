@@ -66,7 +66,11 @@ redescubrir.
   claves con punto (`/robots.txt`, `/wp-login.php`, `/.env` caen en
   `[shopKey]`). Una ruta pública que lea la base la van a pedir bots, no solo
   clientes. El cron de suscripciones responde 503 sin tocar la base mientras
-  no haya `CRON_SECRET`.
+  no haya `CRON_SECRET`. Qué más la despierta, cómo están configurados Neon y
+  Vercel y cómo comprobar que duerme: [docs/operaciones.md](docs/operaciones.md).
+- **`public/robots.txt` bloquea a todos los buscadores a propósito**, hasta el
+  lanzamiento. No es un error; la lista de lo que hay que cambiar al lanzar está
+  al final de [docs/operaciones.md](docs/operaciones.md).
 
 ## Credenciales
 

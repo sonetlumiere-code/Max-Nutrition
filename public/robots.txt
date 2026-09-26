@@ -1,0 +1,5 @@
+# Mientras la tienda no esté lanzada, ningún buscador la recorre: cada visita a
+# /foods o /bakery despierta la base en Neon. Al lanzar, cambiar el Disallow
+# por Allow. Ver docs/operaciones.md.
+User-agent: *
+Disallow: /
