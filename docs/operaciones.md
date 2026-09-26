@@ -139,16 +139,22 @@ archivo estático, sin ejecutar ninguna función.
 El Firewall de Vercel frena a los que no respetan `robots.txt`. Se configura en
 el proyecto, en **Firewall → Rules**, y **el orden importa**:
 
-1. **Primero, una regla personalizada con acción Bypass** para las rutas que
-   empiezan con `/api/webhooks/` o `/api/cron/`. Mercado Pago no está entre los
-   bots que Vercel reconoce: sin esta regla, sus notificaciones reciben el
-   desafío de JavaScript, nunca llegan y los pagos no se acreditan.
-2. **Bot Protection en Log** unos días. En la vista general del Firewall se ve
-   qué se habría desafiado. WhatsApp tampoco es un bot reconocido: si aparece,
-   hay que sumarlo al Bypass por user agent (`WhatsApp`), o los links a la
-   tienda compartidos por WhatsApp salen sin vista previa.
+1. **Primero, una regla personalizada con acción Bypass**, "Webhooks y cron",
+   con tres condiciones unidas por OR:
+   - Request Path empieza con `/api/webhooks/`. Mercado Pago no está entre los
+     bots que Vercel reconoce: sin esto, sus notificaciones reciben el desafío
+     de JavaScript, nunca llegan y los pagos no se acreditan.
+   - Request Path empieza con `/api/cron/`.
+   - User Agent contiene `WhatsApp`. Tampoco es un bot reconocido, y sin esto
+     los links a la tienda compartidos por WhatsApp salen sin vista previa. El
+     costo: un bot que se haga pasar por WhatsApp saltea el Firewall.
+2. **Bot Protection en Log** unos días, para ver en la vista general del
+   Firewall qué se habría desafiado y sumar al Bypass lo que haga falta.
 3. **Bot Protection en Challenge.** Los buscadores verificados (Google, Bing)
-   pasan igual.
+   pasan igual. Desde ahí, `curl` contra el sitio recibe un 429 con
+   `x-vercel-mitigated: challenge`: para probar producción desde la terminal
+   sirven las rutas del Bypass, como `/api/cron/subscriptions`, que sin
+   `CRON_SECRET` responde 503 sin tocar la base.
 4. **AI Bots en Deny.** Bloquea los crawlers de IA, que son de los que más
    recorren un sitio.
 
